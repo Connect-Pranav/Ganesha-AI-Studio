@@ -18,6 +18,7 @@ const paths = {
   check: 'M5 12l5 5L20 7',
   alert: 'M12 9v4m0 4h.01M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z',
   arrow: 'M5 12h14m-6-6l6 6-6 6',
+  universe: 'M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M3.5 9.5c3-4 14-4 17 0M3.5 14.5c3 4 14 4 17 0M19 5.5h.01M5 18.5h.01',
   pipelines: 'M5 6a2 2 0 1 0 0-.01M19 6a2 2 0 1 0 0-.01M12 18a2 2 0 1 0 0-.01M7 6h10M6.5 7.5l4.5 9M17.5 7.5l-4.5 9',
 } satisfies Record<string, string>;
 

@@ -8,6 +8,7 @@ interface NavItem {
 }
 
 const workspace: NavItem[] = [
+  { id: 'universe', label: '3D Command Center', icon: 'universe' },
   { id: 'overview', label: 'Overview', icon: 'overview' },
   { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
 ];

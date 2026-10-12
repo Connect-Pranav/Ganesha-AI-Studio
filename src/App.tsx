@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
@@ -10,8 +10,11 @@ import { loadDashboard } from './services/dashboardService';
 import { deriveAiStatus } from './services/aiStatusService';
 import type { ActivityKind, AgentId, AiStatus, DashboardData, ProductId, Task, TaskStatus, View } from './types';
 
-const VIEWS: View[] = ['overview', 'pipelines', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const Universe3D = lazy(() => import('./components/universe/Universe3D'));
+
+const VIEWS: View[] = ['universe', 'overview', 'pipelines', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
 const TITLES: Record<View, string> = {
+  universe: '3D Command Center',
   overview: 'Studio overview',
   pipelines: 'Pipelines',
   littleloop: 'LittleLoop',
@@ -24,7 +27,7 @@ const PRODUCT_VIEWS: View[] = ['littleloop', 'sunverse', 'foliocraft'];
 
 function viewFromHash(): View {
   const v = window.location.hash.replace(/^#\/?/, '') as View;
-  return VIEWS.includes(v) ? v : 'overview';
+  return VIEWS.includes(v) ? v : 'universe';
 }
 
 function readCollapsed(): boolean {
@@ -169,7 +172,11 @@ export default function App() {
       </div>
     ) : null;
     const body =
-      view === 'agents' ? (
+      view === 'universe' ? (
+        <Suspense fallback={<div className="u-loading">Loading 3D command center…</div>}>
+          <Universe3D data={load.data} ai={ai} onNavigate={navigate} />
+        </Suspense>
+      ) : view === 'agents' ? (
         <AgentsView {...common} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
@@ -204,7 +211,7 @@ export default function App() {
         live={isLive}
       />
 
-      <div className="main">
+      <div className={`main ${view === 'universe' ? 'is-universe' : ''}`}>
         <header className="topbar">
           <button className="icon-btn mobile-only" onClick={() => setMobileOpen(true)} aria-label="Open menu">
             <Icon name="menu" />
