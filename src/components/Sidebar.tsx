@@ -58,7 +58,7 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
       <div className={`scrim ${mobileOpen ? 'show' : ''}`} onClick={onCloseMobile} aria-hidden="true" />
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'open' : ''}`} aria-label="Main navigation">
         <div className="brand">
-          <div className="brand-mark" aria-hidden="true">G</div>
+          <img className="brand-mark" src="./brand/mark-96.png" alt="" width="40" height="40" />
           <div className="brand-text">
             <span className="brand-name">Ganesha</span>
             <span className="brand-sub">AI Studio</span>

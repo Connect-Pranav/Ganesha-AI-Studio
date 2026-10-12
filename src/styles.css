@@ -71,10 +71,8 @@ h1, h2, h3, p { margin: 0; }
 }
 .brand { display: flex; align-items: center; gap: 12px; padding: 4px 8px 22px; }
 .brand-mark {
-  width: 38px; height: 38px; flex: none; border-radius: 12px;
-  background: var(--green); color: #f5efe0; display: grid; place-items: center;
-  font-family: var(--serif); font-size: 20px; font-weight: 600;
-  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.18);
+  width: 42px; height: 42px; flex: none; border-radius: 12px; object-fit: cover;
+  background: #fefbf4; border: 1px solid var(--line); box-shadow: var(--shadow-sm);
 }
 .brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
 .brand-name { font-family: var(--serif); font-weight: 600; font-size: 18px; }
