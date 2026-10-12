@@ -1,0 +1,9 @@
+{
+  // Cloudflare Worker serving the built static site (npm run build → dist).
+  "name": "ganesha-studio",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  }
+}
