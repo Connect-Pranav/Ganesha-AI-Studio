@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261012T190426Z_narada_claude_1",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "startedAt": "2026-10-12T19:03:15Z",
+      "finishedAt": "2026-10-12T19:04:26Z",
+      "status": "success",
+      "summary": "3 new findings (1 per brand); earlier findings from today not repeated."
+    },
+    {
+      "id": "run_20261012T190426Z_ganesha_claude_2",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-12T19:04:02Z",
+      "finishedAt": "2026-10-12T19:04:26Z",
+      "status": "success",
+      "summary": "5 new tasks planned; open tasks from today's earlier run not duplicated."
+    },
+    {
       "id": "run_20261012T190245Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",

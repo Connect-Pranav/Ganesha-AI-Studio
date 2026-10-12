@@ -1,6 +1,66 @@
 {
-  "updatedAt": "2026-10-12T19:02:45Z",
+  "updatedAt": "2026-10-12T19:04:26Z",
   "findings": [
+    {
+      "id": "f_20261012T190426Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Calm, low-stimulation pacing is a growing ask for toddler content",
+      "insight": "A kids-animation studio (May 2026) lists calming and bedtime content with slow pacing, soft colours and gentle music as a growing niche. ABC News (2025) reported parents seeking slower shows, citing a child psychiatrist on overstimulation risks. LittleLoop can test a gentle wind-down episode style next to its regular shorts. Note: one source is promotional.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Kids Animation Trends 2026 - What's Growing on YouTube",
+          "url": "https://www.whizzystudios.com/post/kids-animation-trends-2026-whats-growing-on-youtube",
+          "source": "Whizzy Studios",
+          "retrievedAt": "2026-10-12T19:03:40Z"
+        },
+        {
+          "title": "The 'Slow TV' movement: Why parents are turning back the clock on kids' programming",
+          "url": "https://abcnews.com/GMA/Family/slow-tv-movement/story?id=118533593",
+          "source": "ABC News",
+          "retrievedAt": "2026-10-12T19:03:55Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:04:26Z"
+    },
+    {
+      "id": "f_20261012T190426Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "Spotify India report: non-film I-Pop and regional languages are growing",
+      "insight": "Spotify's India Loud & Clear report (Sep 2, 2026) says non-film I-Pop made up half of its 2025 India year-end top 10, regional-language royalties rose sharply (Telugu over 120%), and over 40% of Indian artists' royalties came from listeners abroad. Sunverse can weigh independent, non-film releases, regional-language tracks and international audiences in its slate.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Indian Artists Are Finding Success Across More Languages, Genres, and Borders",
+          "url": "https://newsroom.spotify.com/2026-09-02/india-loud-and-clear-report/",
+          "source": "Spotify Newsroom",
+          "retrievedAt": "2026-10-12T19:03:40Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:04:26Z"
+    },
+    {
+      "id": "f_20261012T190426Z_foliocraft_3_claude",
+      "brand": "foliocraft",
+      "title": "Design hiring favours shipped work, few focused case studies",
+      "insight": "A 2026 design-hiring article advises 3-5 focused case studies of shipped, verifiable work, short project pages with a live link and outcome, and decision-focused narratives over process diagrams; it warns look-alike AI-generated portfolios signal sameness. Foliocraft could offer a 'shipped project' block and case-study prompts that steer users this way.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "What Actually Gets Senior Product Designers Hired in 2026",
+          "url": "https://www.thefountaininstitute.com/blog/senior-product-designers-hired",
+          "source": "The Fountain Institute",
+          "retrievedAt": "2026-10-12T19:03:40Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:04:26Z"
+    },
     {
       "id": "f_20261012T190245Z_littleloop_1_claude",
       "brand": "littleloop",
