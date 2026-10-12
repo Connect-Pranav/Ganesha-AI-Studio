@@ -1,7 +1,7 @@
 // Reads REAL agent output published with the site at ./agent-data/*.json.
 // Written by the Gemini engine (GitHub Actions) and the Claude engine
 // (scheduled tasks). Validated by scripts/validate.mjs before every deploy.
-import type { ActivityKind, AgentId, BrandId, EngineId, Finding, Priority, Run, TaskStatus } from '../types';
+import type { ActivityKind, AgentId, BrandId, EngineId, Finding, Pipeline, Priority, Run, TaskStatus } from '../types';
 
 const AGENT_MAP: Record<string, AgentId> = {
   narada_market_intelligence: 'narada',
@@ -40,6 +40,7 @@ export interface AgentData {
   findings: Finding[];
   tasks: (Omit<RawTask, 'agent'> & { agent: AgentId })[];
   events: (Omit<RawEvent, 'agent'> & { agent: AgentId | null })[];
+  pipelines: Pipeline[];
 }
 
 export const mapAgent = (id: string): AgentId | null => AGENT_MAP[id] ?? null;
@@ -57,6 +58,8 @@ export async function loadAgentData(): Promise<AgentData> {
     getJson<{ tasks: RawTask[] }>('tasks.json'),
     getJson<{ events: RawEvent[] }>('activity.json'),
   ]);
+  // Older deployments may not have pipelines.json yet — treat as none.
+  const pipelines = await getJson<{ pipelines: Pipeline[] }>('pipelines.json').catch(() => ({ pipelines: [] }));
   return {
     runs: (runs.runs ?? []).flatMap((r) => {
       const agent = mapAgent(r.agent);
@@ -68,5 +71,6 @@ export async function loadAgentData(): Promise<AgentData> {
       return agent ? [{ ...t, agent }] : [];
     }),
     events: (activity.events ?? []).map((e) => ({ ...e, agent: e.agent ? mapAgent(e.agent) : null })),
+    pipelines: pipelines.pipelines ?? [],
   };
 }

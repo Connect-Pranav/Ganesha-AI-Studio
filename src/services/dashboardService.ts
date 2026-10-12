@@ -59,6 +59,8 @@ export function mergeLive(base: DashboardData, live: AgentData): DashboardData {
     data.live.research = true;
   }
 
+  data.pipelines = live.pipelines;
+
   if (live.runs.length) {
     const runs = [...live.runs].sort((a, b) => Date.parse(b.finishedAt) - Date.parse(a.finishedAt));
     data.runs = runs;

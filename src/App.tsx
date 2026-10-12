@@ -3,16 +3,17 @@ import { Sidebar } from './components/Sidebar';
 import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
 import { QuickActionModal } from './components/QuickActionModal';
-import { AgentsView, ConnectionView, OverviewView, ProductView } from './components/Views';
+import { AgentsView, ConnectionView, OverviewView, PipelinesView, ProductView } from './components/Views';
 import { ErrorState, SkeletonDashboard, agentNames } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
 import { deriveAiStatus } from './services/aiStatusService';
 import type { ActivityKind, AgentId, AiStatus, DashboardData, ProductId, Task, TaskStatus, View } from './types';
 
-const VIEWS: View[] = ['overview', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const VIEWS: View[] = ['overview', 'pipelines', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
 const TITLES: Record<View, string> = {
   overview: 'Studio overview',
+  pipelines: 'Pipelines',
   littleloop: 'LittleLoop',
   sunverse: 'Sunverse',
   foliocraft: 'Foliocraft',
@@ -170,6 +171,8 @@ export default function App() {
     const body =
       view === 'agents' ? (
         <AgentsView {...common} />
+      ) : view === 'pipelines' ? (
+        <PipelinesView {...common} />
       ) : view === 'connection' ? (
         <ConnectionView {...common} />
       ) : view === 'overview' ? (

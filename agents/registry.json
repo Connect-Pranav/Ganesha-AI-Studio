@@ -1,40 +1,246 @@
 {
-  "version": 1,
+  "version": 2,
   "brands": {
     "littleloop": { "name": "LittleLoop", "focus": "Instagram animated shorts for children aged 2-8", "queries": ["kids animated shorts trends", "toddler nursery rhyme videos", "children's animation Instagram Reels"] },
     "sunverse": { "name": "Sunverse", "focus": "YouTube music channel and music production house", "queries": ["YouTube music channel growth trends", "independent music production trends India", "lofi music YouTube trends"] },
     "foliocraft": { "name": "Foliocraft", "focus": "Portfolio website builder with paid premium features", "queries": ["portfolio website builder trends", "personal portfolio templates 2026", "freemium SaaS conversion portfolio builder"] }
   },
+  "teams": {
+    "master": { "name": "Master Control", "brand": "studio" },
+    "sunverse": { "name": "Sunverse — Music Production Studio", "brand": "sunverse" },
+    "littleloop": { "name": "LittleLoop — Children's Animation Studio", "brand": "littleloop" },
+    "foliocraft": { "name": "Foliocraft — Portfolio Product Studio", "brand": "foliocraft" },
+    "ops": { "name": "Shared Operations", "brand": "studio" }
+  },
   "agents": [
     {
-      "id": "narada_market_intelligence",
-      "name": "NARADA",
-      "role": "Market intelligence and trend research",
-      "contract": "agents/narada_market_intelligence.md",
-      "engines": ["claude", "gemini"],
-      "permissions": ["read_public_web", "write:public/agent-data/research.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
-      "approvalRequired": [],
-      "maxRetries": 2
+      "id": "ganesha_orchestrator", "name": "GANESHA", "team": "master", "role": "Chief Orchestrator",
+      "mission": "Turn one goal into a pipeline: pick the template, assign specialists, track status and present one consolidated result.",
+      "inputs": ["goal issue", "pipeline templates", "NARADA findings"], "outputs": ["pipeline plan", "final summary"],
+      "acceptance": ["Every step has an owner agent and a deliverable", "Dependencies respected", "Approval-required steps flagged"],
+      "permissions": ["read:vault", "write:vault/pipelines", "write:public/agent-data"], "approvalRequired": ["publish_content", "spend_money", "deploy"],
+      "engines": ["claude", "gemini"], "maxRetries": 2, "contract": "agents/ganesha_orchestrator.md"
     },
     {
-      "id": "ganesha_orchestrator",
-      "name": "GANESHA",
-      "role": "Master orchestrator: turns research into prioritised tasks per brand",
-      "contract": "agents/ganesha_orchestrator.md",
-      "engines": ["claude", "gemini"],
-      "permissions": ["read:public/agent-data/research.json", "write:public/agent-data/tasks.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
-      "approvalRequired": ["publish_content", "spend_money", "deploy"],
-      "maxRetries": 2
+      "id": "narada_market_intelligence", "name": "NARADA", "team": "master", "role": "Research & Intelligence",
+      "mission": "Research the question, separate evidence from assumptions and hand usable findings to the right specialist.",
+      "inputs": ["research question or brand focus"], "outputs": ["findings with sources and retrieval dates"],
+      "acceptance": ["Every claim cites a retrieved source", "Facts and assumptions separated", "Confidence stated honestly"],
+      "permissions": ["read_public_web", "write:public/agent-data/research.json"], "approvalRequired": [],
+      "engines": ["claude", "gemini"], "maxRetries": 2, "contract": "agents/narada_market_intelligence.md"
     },
     {
-      "id": "code_shakti",
-      "name": "CODE-SHAKTI",
-      "role": "Coding and verification: implements one queued coding task as a pull request",
-      "contract": "agents/code_shakti.md",
-      "engines": ["claude"],
-      "permissions": ["read:repo", "create_branch", "open_pull_request", "write:public/agent-data/tasks.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
-      "approvalRequired": ["merge_pull_request"],
-      "maxRetries": 1
+      "id": "chitragupta_quality_audit", "name": "CHITRAGUPTA", "team": "master", "role": "Quality & Audit Controller",
+      "mission": "Check every deliverable against the brief and acceptance criteria; pass, or fail with specific fixes, before anything is handed off.",
+      "inputs": ["deliverable", "brief", "agent acceptance criteria"], "outputs": ["QA verdict: pass / fail + issues list"],
+      "acceptance": ["Each acceptance criterion checked explicitly", "Failures name the exact problem and fix", "No pass without evidence"],
+      "permissions": ["read:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/master.md"
+    },
+    {
+      "id": "samvada_handoffs", "name": "SAMVADA", "team": "master", "role": "Communication & Handoffs",
+      "mission": "Write structured handoffs, status updates, blockers and version notes so context is never lost between specialists.",
+      "inputs": ["completed steps", "QA verdicts"], "outputs": ["handoff note", "status update"],
+      "acceptance": ["Lists decisions, files, open blockers and next owner", "Under 300 words"],
+      "permissions": ["read:vault", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/master.md"
+    },
+
+    {
+      "id": "sunverse_tumburu_music_director", "name": "TUMBURU", "team": "sunverse", "role": "Music Director & Composer",
+      "mission": "Turn a song idea into a composition brief: genre, mood, tempo (BPM), key, structure and instrumentation for the chosen music tool.",
+      "inputs": ["song idea", "GANDHARVA trends"], "outputs": ["composition brief"],
+      "acceptance": ["States genre, mood, BPM, key, structure with section timings, instrumentation", "Includes a ready prompt for the music tool", "Original — no imitation of a named artist's song"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md",
+      "limits": "Writes the brief and tool prompt; audio generation happens in your music tool."
+    },
+    {
+      "id": "sunverse_vagdevi_lyricist", "name": "VAGDEVI", "team": "sunverse", "role": "Lyricist",
+      "mission": "Write original Hindi lyrics with a memorable hook that fit the composition brief's structure and emotional arc.",
+      "inputs": ["composition brief"], "outputs": ["lyrics (Devanagari + Roman transliteration) with section labels and pronunciation notes"],
+      "acceptance": ["Matches brief structure section by section", "Clear repeated hook", "Original — no lines from existing songs", "Singable meter"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md"
+    },
+    {
+      "id": "sunverse_saraswati_vocal_director", "name": "SARASWATI", "team": "sunverse", "role": "Vocal & Performance Director",
+      "mission": "Specify a consistent vocal character, phrasing, delivery and harmonies for the lyrics.",
+      "inputs": ["lyrics", "composition brief"], "outputs": ["vocal direction sheet"],
+      "acceptance": ["Voice type and character defined", "Per-section delivery notes", "Pronunciation of tricky words"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md"
+    },
+    {
+      "id": "sunverse_vishvavasu_sound_engineer", "name": "VISHVAVASU", "team": "sunverse", "role": "Sound Engineer",
+      "mission": "Write the mix/master brief and loudness targets; review an uploaded track when one is provided.",
+      "inputs": ["composition brief", "optional audio file"], "outputs": ["mix & master brief / review"],
+      "acceptance": ["Targets loudness for YouTube delivery", "Vocal balance, EQ, compression notes", "States what was measured vs. recommended"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md",
+      "limits": "Cannot process audio; analyses only files you upload and recommends settings."
+    },
+    {
+      "id": "sunverse_gandharva_trend_analyst", "name": "GANDHARVA", "team": "sunverse", "role": "Music Trend Analyst",
+      "mission": "Research music genres, audience trends and formats; report evidence-backed opportunities without copying competitors.",
+      "inputs": ["release goal"], "outputs": ["trend brief with sources"],
+      "acceptance": ["Every trend cites a retrieved source with date", "Opportunities specific to Sunverse"],
+      "permissions": ["read_public_web", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md"
+    },
+    {
+      "id": "sunverse_vishvakarma_video_producer", "name": "VISHVAKARMA", "team": "sunverse", "role": "Music Video Producer",
+      "mission": "Convert the approved track into a timed video plan: shot list, scenes, costumes and continuity, 9:16 and 16:9.",
+      "inputs": ["lyrics", "composition brief"], "outputs": ["timed shot list with scene prompts"],
+      "acceptance": ["Timestamps cover the full song", "Costume/location/lighting locked across scenes", "Each scene has a copy-paste video prompt"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md",
+      "limits": "Writes prompts; video generation happens in your video tool."
+    },
+    {
+      "id": "sunverse_surya_release_manager", "name": "SURYA", "team": "sunverse", "role": "Release & Publishing Manager",
+      "mission": "Prepare the YouTube release package: title, description, tags, chapters, thumbnail brief, schedule and checklist.",
+      "inputs": ["all release deliverables"], "outputs": ["release package"],
+      "acceptance": ["Title <= 70 chars", "Description with chapters", "Checklist complete", "Marked approval-required — never publishes"],
+      "permissions": ["write:vault"], "approvalRequired": ["publish_content"], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md"
+    },
+    {
+      "id": "sunverse_nata_visual_designer", "name": "NATA", "team": "sunverse", "role": "Artwork & Visual Identity Designer",
+      "mission": "Write cover-art and thumbnail briefs plus image prompts consistent with the Sunverse visual identity.",
+      "inputs": ["composition brief", "lyrics"], "outputs": ["artwork brief + image prompts"],
+      "acceptance": ["Composition, palette, typography direction", "Prompts contain no text/logos (typography added in edit)", "Consistent with prior releases"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/sunverse.md"
+    },
+
+    {
+      "id": "littleloop_krishna_story_director", "name": "KRISHNA", "team": "littleloop", "role": "Story & Character Director",
+      "mission": "Develop an age-appropriate episode concept with a clear opening, small problem and satisfying ending.",
+      "inputs": ["episode goal", "character bible"], "outputs": ["episode concept"],
+      "acceptance": ["Target age stated", "Opening / problem / resolution", "One gentle learning point", "No scary, violent or unsafe content"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_vyasa_scriptwriter", "name": "VYASA", "team": "littleloop", "role": "Scriptwriter & Dialogue Specialist",
+      "mission": "Turn the concept into a timestamped script with exact spoken lines and scene breakdown.",
+      "inputs": ["episode concept"], "outputs": ["timed script"],
+      "acceptance": ["Timestamps total the target length (15-60s default)", "Every line attributed", "Simple vocabulary for the age group"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_drishti_visual_planner", "name": "DRISHTI", "team": "littleloop", "role": "Research & Visual Planner",
+      "mission": "Create the visual research brief and shot plan before any scene is generated.",
+      "inputs": ["timed script"], "outputs": ["visual brief + shot plan"],
+      "acceptance": ["Shot per script beat", "Framing and composition per shot", "Audience-fit notes"],
+      "permissions": ["read_public_web", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_maya_prompt_engineer", "name": "MAYA", "team": "littleloop", "role": "Animation Prompt Engineer",
+      "mission": "Write one complete video prompt per shot within the chosen tool's limits, locking character, style and continuity.",
+      "inputs": ["shot plan", "character sheet"], "outputs": ["per-shot video prompts"],
+      "acceptance": ["One self-contained prompt per shot", "9:16 vertical stated", "Character references locked", "No text/logos in frame"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md",
+      "limits": "Writes prompts; generation happens in your animation tool."
+    },
+    {
+      "id": "littleloop_chitra_character_designer", "name": "CHITRA", "team": "littleloop", "role": "Character & Art Designer",
+      "mission": "Define reusable character sheets: proportions, expressions, palette, costumes and props.",
+      "inputs": ["episode concept"], "outputs": ["character sheet"],
+      "acceptance": ["Exact palette (hex)", "Proportions and silhouette", "Expressions list", "Reusable across episodes"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_nataraja_edit_director", "name": "NATARAJA", "team": "littleloop", "role": "Animation & Editing Director",
+      "mission": "Create the edit plan: timing, transitions, sequencing and music sync, ending on a closing card.",
+      "inputs": ["timed script", "shot plan"], "outputs": ["edit plan"],
+      "acceptance": ["Cut list with timings", "Transitions specified", "Deliberate closing card"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_nada_sound_director", "name": "NADA", "team": "littleloop", "role": "Voice & Sound Director",
+      "mission": "Specify voice traits, dialogue timing, sound effects and music for every scene, consistent across episodes.",
+      "inputs": ["timed script"], "outputs": ["voice & sound sheet"],
+      "acceptance": ["Voice trait per character", "SFX per scene", "Music cue sheet"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
+    },
+    {
+      "id": "littleloop_lakshmi_growth_analyst", "name": "LAKSHMI", "team": "littleloop", "role": "Channel Growth Analyst",
+      "mission": "Write caption, hashtags, posting plan and next experiments; analyse performance numbers you provide.",
+      "inputs": ["final episode package", "optional performance numbers"], "outputs": ["posting package + experiment ideas"],
+      "acceptance": ["Caption and hashtags", "Posting slot rationale", "Never invents performance numbers"],
+      "permissions": ["write:vault"], "approvalRequired": ["publish_content"], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md",
+      "limits": "No Instagram analytics access; uses numbers you supply."
+    },
+
+    {
+      "id": "foliocraft_brahma_product_architect", "name": "BRAHMA", "team": "foliocraft", "role": "Product Architect",
+      "mission": "Turn an idea into a spec: user journey, MVP scope and acceptance criteria.",
+      "inputs": ["feature idea"], "outputs": ["product spec"],
+      "acceptance": ["Problem, user, journey", "In / out of scope", "Testable acceptance criteria"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/foliocraft.md"
+    },
+    {
+      "id": "foliocraft_nirnaya_strategy_analyst", "name": "NIRNAYA", "team": "foliocraft", "role": "Product Strategy Analyst",
+      "mission": "Decide build-now vs later with competitor evidence, trade-offs and a decision log.",
+      "inputs": ["product spec", "NARADA findings"], "outputs": ["decision log"],
+      "acceptance": ["Options compared", "Competitor claims sourced", "Clear recommendation with trade-offs"],
+      "permissions": ["read_public_web", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/foliocraft.md"
+    },
+    {
+      "id": "foliocraft_sutradhara_ux_architect", "name": "SUTRADHARA", "team": "foliocraft", "role": "UX/UI & Design-System Architect",
+      "mission": "Specify screens, responsive layout, components and accessibility for the approved spec.",
+      "inputs": ["product spec"], "outputs": ["UX spec"],
+      "acceptance": ["Screens and states (empty, loading, error)", "Mobile + desktop layout", "Accessibility notes"],
+      "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/foliocraft.md"
+    },
+    {
+      "id": "code_shakti", "name": "KARMA", "team": "foliocraft", "role": "Software Engineer (CODE-SHAKTI skill)",
+      "mission": "Implement approved specs as small, tested pull requests using the CODE-SHAKTI skill.",
+      "inputs": ["product spec", "UX spec", "coding task"], "outputs": ["pull request"],
+      "acceptance": ["Build passes", "PR lists commands run and real results", "Never merges"],
+      "permissions": ["read:repo", "create_branch", "open_pull_request"], "approvalRequired": ["merge_pull_request", "deploy"],
+      "engines": ["claude"], "maxRetries": 1, "contract": "agents/code_shakti.md"
+    },
+    {
+      "id": "foliocraft_kubera_monetisation", "name": "KUBERA", "team": "foliocraft", "role": "Monetisation Analyst",
+      "mission": "Compare free vs paid features, pricing tiers and operating costs with sourced competitor prices.",
+      "inputs": ["product spec"], "outputs": ["pricing analysis"],
+      "acceptance": ["Competitor prices sourced and dated", "Assumptions labelled", "Price changes marked approval-required"],
+      "permissions": ["read_public_web", "write:vault"], "approvalRequired": ["spend_money"], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/foliocraft.md"
+    },
+
+    {
+      "id": "ops_agni_automation", "name": "AGNI", "team": "ops", "role": "Automation Engineer",
+      "mission": "Automate repeatable workflows with retries and error handling, delivered as pull requests.",
+      "inputs": ["automation request"], "outputs": ["automation PR"],
+      "acceptance": ["Retries and error alerts", "No secrets in code", "Build passes"],
+      "permissions": ["read:repo", "create_branch", "open_pull_request"], "approvalRequired": ["merge_pull_request"], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+    },
+    {
+      "id": "ops_soma_analytics", "name": "SOMA", "team": "ops", "role": "Data & Analytics Analyst",
+      "mission": "Report weekly on pipelines, runs, tasks and costs from real agent data.",
+      "inputs": ["public/agent-data", "vault pipelines"], "outputs": ["weekly metrics report"],
+      "acceptance": ["Only real recorded numbers", "Week-over-week where available", "States data gaps"],
+      "permissions": ["read:repo", "read:vault", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+    },
+    {
+      "id": "ops_hanuman_recovery", "name": "HANUMAN", "team": "ops", "role": "Troubleshooting & Recovery Specialist",
+      "mission": "Diagnose failed or partial runs from logs and recommend safe recovery steps.",
+      "inputs": ["runs.json failures", "workflow logs"], "outputs": ["incident note with root cause and fix"],
+      "acceptance": ["Root cause backed by log evidence", "Safe, reversible recovery steps"],
+      "permissions": ["read:repo", "read:actions_logs", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+    },
+    {
+      "id": "ops_dharma_safety", "name": "DHARMA", "team": "ops", "role": "Safety & Policy Reviewer",
+      "mission": "Review content and workflows for privacy, copyright, child safety and platform policy before release.",
+      "inputs": ["deliverables"], "outputs": ["safety verdict"],
+      "acceptance": ["Copyright: no reproduced lyrics/characters", "Child safety for LittleLoop", "Platform AI-disclosure noted", "Clear pass/fail"],
+      "permissions": ["read:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+    },
+    {
+      "id": "ops_maya_docs", "name": "MAYA-OPS", "team": "ops", "role": "Documentation Manager",
+      "mission": "Maintain SOPs, version notes and the change log from completed pipelines.",
+      "inputs": ["completed pipelines"], "outputs": ["SOP / changelog updates"],
+      "acceptance": ["Changes dated", "SOPs match what agents actually do"],
+      "permissions": ["read:vault", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+    },
+    {
+      "id": "ops_lakshmi_growth", "name": "LAKSHMI-OPS", "team": "ops", "role": "Growth & Distribution Analyst",
+      "mission": "Coordinate cross-brand growth experiments and evaluate them with recorded metrics.",
+      "inputs": ["NARADA findings", "SOMA report"], "outputs": ["experiment plan / review"],
+      "acceptance": ["Hypothesis, metric, duration per experiment", "No invented results"],
+      "permissions": ["read:vault", "write:vault"], "approvalRequired": ["publish_content"], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
     }
   ]
 }

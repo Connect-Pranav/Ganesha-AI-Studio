@@ -7,7 +7,8 @@ export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const DATA_DIR = join(ROOT, 'public', 'agent-data');
 
 export const BRANDS = ['littleloop', 'sunverse', 'foliocraft', 'studio'];
-export const AGENTS = ['narada_market_intelligence', 'ganesha_orchestrator', 'code_shakti'];
+// Agent IDs come from the registry so new agents never need code changes here.
+export const AGENTS = JSON.parse(readFileSync(join(ROOT, 'agents', 'registry.json'), 'utf8')).agents.map((a) => a.id);
 export const ENGINES = ['claude', 'gemini'];
 export const LIMITS = { runs: 100, findings: 60, tasks: 80, events: 100 };
 
@@ -119,6 +120,7 @@ export function validateAll() {
   const research = load('research.json');
   const tasks = load('tasks.json');
   const activity = load('activity.json');
+  const pipelines = load('pipelines.json');
 
   const each = (file, list, key, fn) => {
     if (!Array.isArray(list)) return errors.push(`${file}: "${key}" must be an array`);
@@ -133,6 +135,7 @@ export function validateAll() {
   if (research) each('research.json', research.findings, 'findings', validateFinding);
   if (tasks) each('tasks.json', tasks.tasks, 'tasks', validateTask);
   if (activity) each('activity.json', activity.events, 'events', validateEvent);
+  if (pipelines) each('pipelines.json', pipelines.pipelines, 'pipelines', validatePipeline);
 
   if (research && tasks && Array.isArray(research.findings) && Array.isArray(tasks.tasks)) {
     const fids = new Set(research.findings.map((f) => f.id));
@@ -151,4 +154,53 @@ export function validateAll() {
 /** Prepend items and trim to limit (newest first). */
 export function prependTrim(list, items, limit) {
   return [...items, ...list].slice(0, limit);
+}
+
+/* ---------------- pipelines ---------------- */
+export const STEP_STATUSES = ['pending', 'running', 'completed', 'failed', 'approval_required', 'skipped'];
+export const PIPELINE_STATUSES = ['pending', 'running', 'completed', 'failed', 'approval_required'];
+LIMITS.pipelines = 40;
+
+export function readPipelineTemplates() {
+  return JSON.parse(readFileSync(join(ROOT, 'agents', 'pipelines.json'), 'utf8'));
+}
+
+/** Pipeline status is always derived from its steps — never set by hand. */
+export function derivePipelineStatus(steps) {
+  if (steps.some((s) => s.status === 'failed')) return 'failed';
+  if (steps.every((s) => s.status === 'completed' || s.status === 'skipped')) return 'completed';
+  if (steps.some((s) => s.status === 'approval_required')) return 'approval_required';
+  if (steps.some((s) => s.status === 'running' || s.status === 'completed')) return 'running';
+  return 'pending';
+}
+
+export function validatePipeline(p, where = 'pipeline') {
+  const e = [];
+  const templates = readPipelineTemplates().templates;
+  check(e, isStr(p?.id, 120), `${where}.id`);
+  check(e, Boolean(templates[p?.template]), `${where}.template unknown "${p?.template}"`);
+  check(e, oneOf(p?.brand, BRANDS), `${where}.brand`);
+  check(e, isStr(p?.title, 100), `${where}.title (<=100)`);
+  check(e, p?.goalRef === null || isStr(p?.goalRef, 60), `${where}.goalRef`);
+  check(e, oneOf(p?.status, PIPELINE_STATUSES), `${where}.status`);
+  check(e, oneOf(p?.engine, ENGINES), `${where}.engine`);
+  check(e, isIso(p?.createdAt) && isIso(p?.updatedAt), `${where}.createdAt/updatedAt`);
+  check(e, Array.isArray(p?.steps) && p.steps.length > 0, `${where}.steps`);
+  const keys = new Set((p?.steps ?? []).map((s) => s.key));
+  (p?.steps ?? []).forEach((s, i) => {
+    const w = `${where}.steps[${i}]`;
+    check(e, isStr(s?.key, 40), `${w}.key`);
+    check(e, oneOf(s?.agent, AGENTS), `${w}.agent`);
+    check(e, oneOf(s?.status, STEP_STATUSES), `${w}.status`);
+    check(e, Number.isInteger(s?.attempts) && s.attempts >= 0 && s.attempts <= 3, `${w}.attempts (0-3)`);
+    check(e, (s?.dependsOn ?? []).every((d) => keys.has(d)), `${w}.dependsOn unknown key`);
+    if (s?.qa !== undefined) check(e, oneOf(s.qa, ['pass', 'fail']), `${w}.qa`);
+    if (s?.status === 'completed' || s?.status === 'running') {
+      const unmet = (s.dependsOn ?? []).filter((d) => p.steps.find((x) => x.key === d)?.status !== 'completed');
+      check(e, unmet.length === 0, `${w} is ${s.status} but dependencies not completed: ${unmet.join(', ')}`);
+    }
+    if (s?.gate && s?.status === 'completed') check(e, s.qa === 'pass', `${w} gate completed without qa=pass`);
+  });
+  if (Array.isArray(p?.steps)) check(e, p.status === derivePipelineStatus(p.steps), `${where}.status must equal derived status`);
+  return e;
 }

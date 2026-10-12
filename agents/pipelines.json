@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "routing": {
+    "labels": {
+      "sunverse": "sunverse_song_release",
+      "littleloop": "littleloop_episode",
+      "foliocraft": "foliocraft_feature",
+      "research": "research_brief",
+      "ops": "ops_weekly_review"
+    },
+    "keywords": {
+      "sunverse_song_release": ["song", "track", "music", "lyrics", "sunverse", "album", "single"],
+      "littleloop_episode": ["episode", "kids", "children", "animation", "short", "littleloop", "rhyme"],
+      "foliocraft_feature": ["feature", "foliocraft", "portfolio", "pricing", "premium", "template", "builder"],
+      "research_brief": ["research", "trend", "competitor", "market", "analyse", "analyze"],
+      "ops_weekly_review": ["report", "metrics", "weekly review", "incident", "failures"]
+    },
+    "fallback": "research_brief"
+  },
+  "templates": {
+    "sunverse_song_release": {
+      "name": "Sunverse song release",
+      "brand": "sunverse",
+      "steps": [
+        { "key": "trends", "agent": "sunverse_gandharva_trend_analyst", "deliverable": "Trend brief", "dependsOn": [] },
+        { "key": "composition", "agent": "sunverse_tumburu_music_director", "deliverable": "Composition brief + music-tool prompt", "dependsOn": ["trends"] },
+        { "key": "lyrics", "agent": "sunverse_vagdevi_lyricist", "deliverable": "Original Hindi lyrics", "dependsOn": ["composition"] },
+        { "key": "vocals", "agent": "sunverse_saraswati_vocal_director", "deliverable": "Vocal direction sheet", "dependsOn": ["lyrics"] },
+        { "key": "mix", "agent": "sunverse_vishvavasu_sound_engineer", "deliverable": "Mix & master brief", "dependsOn": ["composition"] },
+        { "key": "artwork", "agent": "sunverse_nata_visual_designer", "deliverable": "Artwork brief + image prompts", "dependsOn": ["composition", "lyrics"] },
+        { "key": "video", "agent": "sunverse_vishvakarma_video_producer", "deliverable": "Timed music-video plan + scene prompts", "dependsOn": ["lyrics", "composition"] },
+        { "key": "safety", "agent": "ops_dharma_safety", "deliverable": "Copyright & policy review", "dependsOn": ["lyrics", "artwork", "video"], "gate": true },
+        { "key": "qa", "agent": "chitragupta_quality_audit", "deliverable": "QA verdict", "dependsOn": ["safety", "vocals", "mix"], "gate": true },
+        { "key": "release", "agent": "sunverse_surya_release_manager", "deliverable": "YouTube release package", "dependsOn": ["qa"], "approval": true },
+        { "key": "handoff", "agent": "samvada_handoffs", "deliverable": "Handoff note", "dependsOn": ["release"] }
+      ]
+    },
+    "littleloop_episode": {
+      "name": "LittleLoop episode",
+      "brand": "littleloop",
+      "steps": [
+        { "key": "concept", "agent": "littleloop_krishna_story_director", "deliverable": "Episode concept", "dependsOn": [] },
+        { "key": "characters", "agent": "littleloop_chitra_character_designer", "deliverable": "Character sheet", "dependsOn": ["concept"] },
+        { "key": "script", "agent": "littleloop_vyasa_scriptwriter", "deliverable": "Timed script", "dependsOn": ["concept"] },
+        { "key": "visual_plan", "agent": "littleloop_drishti_visual_planner", "deliverable": "Visual brief + shot plan", "dependsOn": ["script"] },
+        { "key": "prompts", "agent": "littleloop_maya_prompt_engineer", "deliverable": "Per-shot video prompts", "dependsOn": ["visual_plan", "characters"] },
+        { "key": "sound", "agent": "littleloop_nada_sound_director", "deliverable": "Voice & sound sheet", "dependsOn": ["script"] },
+        { "key": "edit", "agent": "littleloop_nataraja_edit_director", "deliverable": "Edit plan", "dependsOn": ["visual_plan", "sound"] },
+        { "key": "safety", "agent": "ops_dharma_safety", "deliverable": "Child-safety & policy review", "dependsOn": ["script", "prompts"], "gate": true },
+        { "key": "qa", "agent": "chitragupta_quality_audit", "deliverable": "QA verdict", "dependsOn": ["safety", "edit"], "gate": true },
+        { "key": "posting", "agent": "littleloop_lakshmi_growth_analyst", "deliverable": "Posting package", "dependsOn": ["qa"], "approval": true },
+        { "key": "handoff", "agent": "samvada_handoffs", "deliverable": "Handoff note", "dependsOn": ["posting"] }
+      ]
+    },
+    "foliocraft_feature": {
+      "name": "Foliocraft feature",
+      "brand": "foliocraft",
+      "steps": [
+        { "key": "spec", "agent": "foliocraft_brahma_product_architect", "deliverable": "Product spec", "dependsOn": [] },
+        { "key": "decision", "agent": "foliocraft_nirnaya_strategy_analyst", "deliverable": "Build-now decision log", "dependsOn": ["spec"] },
+        { "key": "ux", "agent": "foliocraft_sutradhara_ux_architect", "deliverable": "UX spec", "dependsOn": ["spec"] },
+        { "key": "pricing", "agent": "foliocraft_kubera_monetisation", "deliverable": "Pricing analysis", "dependsOn": ["spec"] },
+        { "key": "qa", "agent": "chitragupta_quality_audit", "deliverable": "Spec QA verdict", "dependsOn": ["decision", "ux", "pricing"], "gate": true },
+        { "key": "build", "agent": "code_shakti", "deliverable": "Coding task queued for KARMA (PR via weekly run) or 'not now' per decision", "dependsOn": ["qa"], "approval": true },
+        { "key": "handoff", "agent": "samvada_handoffs", "deliverable": "Handoff note", "dependsOn": ["build"] }
+      ]
+    },
+    "research_brief": {
+      "name": "Research brief",
+      "brand": "studio",
+      "steps": [
+        { "key": "research", "agent": "narada_market_intelligence", "deliverable": "Sourced research brief", "dependsOn": [] },
+        { "key": "qa", "agent": "chitragupta_quality_audit", "deliverable": "Source & claim check", "dependsOn": ["research"], "gate": true },
+        { "key": "handoff", "agent": "samvada_handoffs", "deliverable": "Summary + routed next steps", "dependsOn": ["qa"] }
+      ]
+    },
+    "ops_weekly_review": {
+      "name": "Weekly operations review",
+      "brand": "studio",
+      "steps": [
+        { "key": "metrics", "agent": "ops_soma_analytics", "deliverable": "Weekly metrics report", "dependsOn": [] },
+        { "key": "incidents", "agent": "ops_hanuman_recovery", "deliverable": "Failure diagnosis & recovery notes", "dependsOn": [] },
+        { "key": "growth", "agent": "ops_lakshmi_growth", "deliverable": "Growth experiment review", "dependsOn": ["metrics"] },
+        { "key": "docs", "agent": "ops_maya_docs", "deliverable": "SOP / changelog update", "dependsOn": ["metrics", "incidents"] },
+        { "key": "automation", "agent": "ops_agni_automation", "deliverable": "Automation proposals (PR only if approved)", "dependsOn": ["incidents"], "approval": true },
+        { "key": "handoff", "agent": "samvada_handoffs", "deliverable": "Weekly status note", "dependsOn": ["growth", "docs", "automation"] }
+      ]
+    }
+  }
+}

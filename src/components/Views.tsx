@@ -11,6 +11,7 @@ import {
   type QuickActionKind,
 } from './Widgets';
 import { ResearchPanel, RunHistory } from './AgentWidgets';
+import { AgentDirectory, PipelineBoard } from './PipelineWidgets';
 import { AiStatusCard } from './AiConnection';
 import type { AgentId, AiStatus, DashboardData, Product, ProductId, TaskStatus } from '../types';
 
@@ -54,6 +55,7 @@ export function OverviewView(p: Common) {
 
       <div className="grid-main">
         <div className="col">
+          <PipelineBoard pipelines={data.pipelines} limit={3} />
           <AgentPanel agents={data.agents} onToggle={p.onToggleAgent} live={data.live.agents} />
           <ResearchPanel findings={data.research} limit={4} title="Latest NARADA research" />
           <TaskBoard tasks={data.tasks} onAdvance={p.onAdvanceTask} live={data.live.tasks} />
@@ -139,13 +141,20 @@ export function AgentsView(p: Common) {
   return (
     <div className="grid-main">
       <div className="col">
-        <AgentPanel agents={p.data.agents} onToggle={p.onToggleAgent} live={p.data.live.agents} detailed />
-        <ResearchPanel findings={p.data.research} />
+        <AgentDirectory pipelines={p.data.pipelines} liveAgents={p.data.agents} />
       </div>
       <div className="col">
         <RunHistory runs={p.data.runs} />
         <Card title="How the agents work">
           <ul className="bullets">
+            <li>
+              <strong>31 agents</strong> in 5 teams. You post a goal; GANESHA routes it to a pipeline and the specialists
+              work step by step.
+            </li>
+            <li>
+              <strong>CHITRAGUPTA</strong> (quality) and <strong>DHARMA</strong> (safety) gate every pipeline — failures
+              go back for one fix.
+            </li>
             <li>
               <strong>NARADA</strong> researches each brand daily and must cite real sources — no source, no finding.
             </li>
@@ -160,6 +169,31 @@ export function AgentsView(p: Common) {
             <li>Every output is schema-validated before it reaches this page.</li>
           </ul>
         </Card>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Pipelines ---------- */
+export function PipelinesView(p: Common) {
+  return (
+    <div className="grid-main">
+      <div className="col">
+        <PipelineBoard pipelines={p.data.pipelines} />
+      </div>
+      <div className="col">
+        <Card title="How a goal flows">
+          <ol className="flow">
+            <li><strong>You</strong> post a goal (buttons below the board) — it opens a private issue in the vault.</li>
+            <li><strong>GANESHA</strong> picks it up on the next run (every 3 hours, 8 AM–11 PM) and builds the pipeline.</li>
+            <li><strong>Specialists</strong> produce each deliverable into the private vault.</li>
+            <li><strong>DHARMA + CHITRAGUPTA</strong> check safety and quality; failures get one fix.</li>
+            <li><strong>Approval</strong> — publishing, pricing or code merges stop here. Reply <code>approve</code> or <code>reject</code> on the issue.</li>
+            <li><strong>SAMVADA</strong> writes the handoff and closes the goal.</li>
+          </ol>
+          <p className="ai-note">This public page shows status only. Lyrics, scripts and plans stay in the private vault.</p>
+        </Card>
+        <ResearchPanel findings={p.data.research} limit={3} title="Latest NARADA research" />
       </div>
     </div>
   );

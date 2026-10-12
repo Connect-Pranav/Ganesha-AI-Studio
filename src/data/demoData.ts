@@ -157,5 +157,6 @@ export const demoData: DashboardData = {
   ],
   research: [],
   runs: [],
+  pipelines: [],
   live: { tasks: false, activity: false, agents: false, research: false },
 };

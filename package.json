@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "validate:data": "node scripts/validate.mjs",
-    "agents:gemini": "node scripts/agent-runner.mjs --agent all"
+    "agents:gemini": "node scripts/agent-runner.mjs --agent all",
+    "test": "node --test scripts/test.mjs",
+    "contracts:gen": "node scripts/gen-contracts.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",

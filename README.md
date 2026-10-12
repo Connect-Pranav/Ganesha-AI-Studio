@@ -4,15 +4,20 @@ Control-room dashboard for three brands — **LittleLoop** (kids' animated short
 
 **Status:** dashboard + working agent layer. Sections marked **Live** show real agent output; sections marked **Demo** are illustrative.
 
-## Agents
-| Agent | ID | Does | Engines |
-|---|---|---|---|
-| NARADA | `narada_market_intelligence` | Daily trend research per brand, every finding cites real sources | Claude, Gemini |
-| GANESHA | `ganesha_orchestrator` | Turns findings into ≤3 tasks per brand, routes to agents | Claude, Gemini |
-| CODE-SHAKTI | `code_shakti` | Implements one coding task as a pull request (you merge) | Claude |
+## Agents — 31 in 5 teams
+| Team | Agents |
+|---|---|
+| Master control | GANESHA (orchestrator), NARADA (research), CHITRAGUPTA (quality gate), SAMVADA (handoffs) |
+| Sunverse | TUMBURU, VAGDEVI, SARASWATI, VISHVAVASU, GANDHARVA, VISHVAKARMA, SURYA, NATA |
+| LittleLoop | KRISHNA, VYASA, DRISHTI, MAYA, CHITRA, NATARAJA, NADA, LAKSHMI |
+| Foliocraft | BRAHMA, NIRNAYA, SUTRADHARA, KARMA (CODE-SHAKTI), KUBERA |
+| Shared ops | AGNI, SOMA, HANUMAN, DHARMA, MAYA-OPS, LAKSHMI-OPS |
 
-Contracts: `agents/*.md` · registry: `agents/registry.json` · data schema: `agents/DATA_SCHEMA.md`.
-Output lives in `public/agent-data/*.json` and is validated (`npm run validate:data`) before every deploy.
+- Registry (single source of truth): `agents/registry.json` → team contracts generated into `agents/teams/*.md`
+- Pipelines: `agents/pipelines.json` (song release, episode, feature, research, weekly ops) with
+  DHARMA/CHITRAGUPTA gates and human-approval stops
+- Runtime protocol: `agents/RUNTIME.md` · status CLI: `scripts/pipeline.mjs` · tests: `npm test`
+- Goals go in as Issues in the **private** vault repo; deliverables stay there. This repo/site holds status only.
 
 ### Engines (both zero-cost)
 - **Gemini** — `.github/workflows/agents.yml`, daily 05:53 IST + manual "Run workflow".

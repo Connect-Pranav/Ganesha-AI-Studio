@@ -1,7 +1,7 @@
 export type ProductId = 'littleloop' | 'sunverse' | 'foliocraft';
 export type BrandId = ProductId | 'studio';
 export type AgentId = 'ganesha' | 'narada' | 'code-shakti';
-export type View = 'overview' | ProductId | 'agents' | 'connection';
+export type View = 'overview' | 'pipelines' | ProductId | 'agents' | 'connection';
 export type EngineId = 'claude' | 'gemini';
 
 export interface Metric {
@@ -114,6 +114,35 @@ export interface LiveFlags {
   research: boolean;
 }
 
+export type StepStatus = 'pending' | 'running' | 'completed' | 'failed' | 'approval_required' | 'skipped';
+export type PipelineStatus = 'pending' | 'running' | 'completed' | 'failed' | 'approval_required';
+
+export interface PipelineStep {
+  key: string;
+  agent: string;
+  deliverable: string;
+  dependsOn: string[];
+  gate?: boolean;
+  approval?: boolean;
+  status: StepStatus;
+  attempts: number;
+  qa?: 'pass' | 'fail';
+  finishedAt?: string;
+}
+
+export interface Pipeline {
+  id: string;
+  template: string;
+  brand: BrandId;
+  title: string;
+  goalRef: string | null;
+  status: PipelineStatus;
+  engine: EngineId;
+  createdAt: string;
+  updatedAt: string;
+  steps: PipelineStep[];
+}
+
 export interface DashboardData {
   overview: Metric[];
   products: Product[];
@@ -123,6 +152,7 @@ export interface DashboardData {
   workflows: Workflow[];
   research: Finding[];
   runs: Run[];
+  pipelines: Pipeline[];
   live: LiveFlags;
 }
 

@@ -7,7 +7,10 @@ interface NavItem {
   icon: IconName;
 }
 
-const workspace: NavItem[] = [{ id: 'overview', label: 'Overview', icon: 'overview' }];
+const workspace: NavItem[] = [
+  { id: 'overview', label: 'Overview', icon: 'overview' },
+  { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
+];
 const brands: NavItem[] = [
   { id: 'littleloop', label: 'LittleLoop', icon: 'littleloop' },
   { id: 'sunverse', label: 'Sunverse', icon: 'sunverse' },
