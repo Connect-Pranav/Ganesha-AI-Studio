@@ -1,1 +1,152 @@
-{ "updatedAt": null, "tasks": [] }
+{
+  "updatedAt": "2026-10-12T19:02:45Z",
+  "tasks": [
+    {
+      "id": "t_20261012T190245Z_littleloop_1_claude",
+      "title": "Draft a 4-week LittleLoop Reels format plan built around 15-60s episodes",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit1: Instagram's 2026 guide names 15-60s as the primary Reels sweet spot, with 60s-3min for storytelling. Plan only; no publishing.",
+      "sourceFindings": [
+        "f_20261012T190245Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_littleloop_2_claude",
+      "title": "Write an AI-disclosure and human-review checklist for LittleLoop episodes",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit2: growing pressure to label AI-made kids' video and Instagram's AI-label changes; a checklist reduces policy and trust risk.",
+      "sourceFindings": [
+        "f_20261012T190245Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_littleloop_3_claude",
+      "title": "Research Instagram's current AI-label rules for animated kids' accounts",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit2: Instagram changed AI profile labels in Sep 2026; exact current rules for animated content were not confirmed in this run.",
+      "sourceFindings": [
+        "f_20261012T190245Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_sunverse_4_claude",
+      "title": "Prepare 2-3 alternate opening hooks for the next Sunverse release",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun1: YouTube video-cut A/B testing is coming soon; sun3: beat-synced Shorts editing. Running a live test publishes content, so approval needed.",
+      "sourceFindings": [
+        "f_20261012T190245Z_sunverse_3_claude",
+        "f_20261012T190245Z_sunverse_5_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_sunverse_5_claude",
+      "title": "Audit Sunverse uploads for template-like visuals at risk under YPP policy",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun2: since Jul 16, 2026 generic/template-based content is ineligible for monetization; identify uploads that look near-identical.",
+      "sourceFindings": [
+        "f_20261012T190245Z_sunverse_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_sunverse_6_claude",
+      "title": "Check when video A/B testing and Gemini Shorts editing reach Sunverse's channel",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "sun1, sun3: both announced without release dates or eligibility criteria.",
+      "sourceFindings": [
+        "f_20261012T190245Z_sunverse_3_claude",
+        "f_20261012T190245Z_sunverse_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_foliocraft_7_claude",
+      "title": "Draft a clear free-vs-premium comparison for Foliocraft's pricing page",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "fol1: Squarespace annual price rises of up to 26% may push creatives to compare builders. Publishing the page needs approval.",
+      "sourceFindings": [
+        "f_20261012T190245Z_foliocraft_6_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_foliocraft_8_claude",
+      "title": "Prototype a content-only collaborator role for Foliocraft premium",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol2: Framer added a cheaper content-only editor seat. Prototype via PR only; pricing and deploy need human approval.",
+      "sourceFindings": [
+        "f_20261012T190245Z_foliocraft_7_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261012T190245Z_foliocraft_9_claude",
+      "title": "Compare current premium pricing of Wix, Framer, Webflow and Squarespace",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "fol1, fol2: competitor pricing shifted in mid-2026; Foliocraft needs a verified, dated comparison before setting prices.",
+      "sourceFindings": [
+        "f_20261012T190245Z_foliocraft_6_claude",
+        "f_20261012T190245Z_foliocraft_7_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-12T19:02:45Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    }
+  ]
+}

@@ -1,1 +1,155 @@
-{ "updatedAt": null, "findings": [] }
+{
+  "updatedAt": "2026-10-12T19:02:45Z",
+  "findings": [
+    {
+      "id": "f_20261012T190245Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram's 2026 Reels guide names 15-60s as the main sweet spot",
+      "insight": "Instagram's creator guide (reported Sep 28) sets three length tiers: 3-15s for quick moments, 15-60s as the primary sweet spot, and 60s-3min for storytelling and education. LittleLoop can make 15-60s episodes its core format, test occasional longer story or learning episodes, and use auto-captions plus the Edits app's keyframes for animation polish.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram Shares Ultimate Blueprint for Viral Reels in 2026",
+          "url": "https://www.iphoneincanada.ca/2026/09/28/instagram-shares-ultimate-blueprint-for-viral-reels-in-2026/",
+          "source": "iPhone in Canada",
+          "retrievedAt": "2026-10-12T19:00:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Pressure is rising on AI-generated kids' video and AI labelling",
+      "insight": "About 200 groups led by Fairplay asked YouTube (Apr 2026) to label all AI content and stop recommending it to minors; YouTube said it is building AI labels for YouTube Kids. In Sep 2026 Instagram changed how it labels AI profiles amid pushback. LittleLoop should disclose AI use plainly, keep human review on every episode, and favour original recurring characters over template output.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "200 experts tell YouTube to stop recommending AI slop to kids",
+          "url": "https://www.tubefilter.com/2026/04/01/youtube-fairplay-kids-ai-open-letter/",
+          "source": "Tubefilter",
+          "retrievedAt": "2026-10-12T19:00:30Z"
+        },
+        {
+          "title": "The biggest Instagram updates from 2026: A social media manager's guide",
+          "url": "https://www.heyorca.com/blog/instagram-social-news",
+          "source": "HeyOrca",
+          "retrievedAt": "2026-10-12T19:00:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube is adding A/B tests for up to three video cuts",
+      "insight": "Announced at Made on YouTube (Sep 23, 2026): creators will be able to upload two or three cuts of a video and compare retention curves, alongside dynamic thumbnails served by audience segment. Marked 'coming soon' with no date. Sunverse can prepare alternate opening hooks for music videos and Shorts so it is ready to test when the feature reaches the channel.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube to test up to 3 versions of one video on real viewers, Shorts too",
+          "url": "https://ppc.land/youtube-to-test-up-to-3-versions-of-one-video-on-real-viewers-shorts-too/",
+          "source": "PPC Land",
+          "retrievedAt": "2026-10-12T19:01:30Z"
+        },
+        {
+          "title": "Made on YouTube 2026: the AI creator stack",
+          "url": "https://www.ngram.com/blog/made-on-youtube-2026-ai-creator-stack",
+          "source": "Ngram",
+          "retrievedAt": "2026-10-12T19:01:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "YouTube clarified that generic, template-based AI content can't be monetized",
+      "insight": "From Jul 16, 2026, YPP defines 'inauthentic content' including generic, repetitive or template-based videos easy to mass-produce with AI or templates; channels with too much of it lose monetization. Loop-style music uploads with near-identical visuals are exposed. Sunverse should keep releases distinct per track (original visuals, credits, production context).",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube clarifies policies around AI slop and upsetting videos",
+          "url": "https://techcrunch.com/2026/07/20/youtube-clarifies-policies-around-ai-slop-and-upsetting-videos/",
+          "source": "TechCrunch",
+          "retrievedAt": "2026-10-12T19:00:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_sunverse_5_claude",
+      "brand": "sunverse",
+      "title": "Gemini chat editing for Shorts can sync music to the beat",
+      "insight": "Made on YouTube 2026 showed conversational editing in Shorts and YouTube Create: draft a cut from a prompt, then refine by chat, including reordering, trimming and syncing music to the beat, with manual timeline fallback. Availability not specified. Sunverse could use it to cut beat-synced Shorts teasers from each release once available.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Made on YouTube 2026: New Live, Music, Studio and AI features announced",
+          "url": "https://www.fonearena.com/blog/493327/made-on-youtube-2026-announcements.html/amp",
+          "source": "Fone Arena",
+          "retrievedAt": "2026-10-12T18:59:59Z"
+        },
+        {
+          "title": "Made on YouTube 2026: the AI creator stack",
+          "url": "https://www.ngram.com/blog/made-on-youtube-2026-ai-creator-stack",
+          "source": "Ngram",
+          "retrievedAt": "2026-10-12T19:01:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_foliocraft_6_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace raised annual prices by up to 26% in July 2026",
+      "insight": "Two reports say Squarespace's annual Core and Plus plans rose 26% and Basic 19% (Advanced unchanged), effective July 6 and applying to existing users at renewal, with no feature changes reported. Price-sensitive creatives may be comparing options; Foliocraft can make its free vs premium value clear and transparent.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Squarespace Is Increasing Prices By Up to 26%",
+          "url": "https://petapixel.com/2026/07/17/squarespace-is-increasing-prices-by-up-to-26/",
+          "source": "PetaPixel",
+          "retrievedAt": "2026-10-12T19:01:00Z"
+        },
+        {
+          "title": "Squarespace Is Raising Prices by Up to 26%",
+          "url": "https://topsitehosters.com/blog/squarespace-is-raising-prices-by-up-to-26-heres-what-it-costs-you/",
+          "source": "TopSiteHosters",
+          "retrievedAt": "2026-10-12T19:01:45Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    },
+    {
+      "id": "f_20261012T190245Z_foliocraft_7_claude",
+      "brand": "foliocraft",
+      "title": "Framer added a cheaper content-only editor seat and more Basic bandwidth",
+      "insight": "Framer (June 2026) raised Basic plan bandwidth 5x and added a $10/month Content Editor seat for CMS and on-page edits without design permissions, below its $20 Editor role. Role-based, lower-cost collaborator access is a possible Foliocraft premium feature, e.g. letting a client or mentor edit text only.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Framer upgrades Basic plan with 5x bandwidth and introduces new Content Editor tier",
+          "url": "https://www.createwith.com/tool/framer/updates/framer-upgrades-basic-plan-with-5x-bandwidth-and-introduces-new-content-editor-t",
+          "source": "CreateWith",
+          "retrievedAt": "2026-10-12T19:01:45Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:02:45Z"
+    }
+  ]
+}
