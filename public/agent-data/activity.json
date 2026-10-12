@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261012T193958Z_1_claude",
+      "at": "2026-10-12T19:39:58Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Pipeline p_20261012T193219Z_foliocraft ran 5 steps; QA passed; build step awaiting owner approval (Foliocraft repo not yet accessible)."
+    },
+    {
       "id": "e_20261012T193100Z_1_claude",
       "at": "2026-10-12T19:31:00Z",
       "brand": "sunverse",

@@ -1,6 +1,15 @@
 {
   "runs": [
     {
+      "id": "run_20261012T193958Z_ganesha_claude_1",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-12T19:32:19Z",
+      "finishedAt": "2026-10-12T19:39:58Z",
+      "status": "success",
+      "summary": "Goal runner: p_20261012T193219Z_foliocraft (vault#3) approval_required; vault#1 and vault#2 still awaiting owner approval."
+    },
+    {
       "id": "run_20261012T193100Z_ganesha_claude_1",
       "agent": "ganesha_orchestrator",
       "engine": "claude",

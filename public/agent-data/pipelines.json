@@ -1,6 +1,97 @@
 {
   "pipelines": [
     {
+      "id": "p_20261012T193219Z_foliocraft",
+      "template": "foliocraft_feature",
+      "brand": "foliocraft",
+      "title": "One-click theme switcher with preview (test)",
+      "goalRef": "vault#3",
+      "status": "approval_required",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:32:19Z",
+      "updatedAt": "2026-10-12T19:39:52Z",
+      "steps": [
+        {
+          "key": "spec",
+          "agent": "foliocraft_brahma_product_architect",
+          "deliverable": "Product spec",
+          "dependsOn": [],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:32:47Z"
+        },
+        {
+          "key": "decision",
+          "agent": "foliocraft_nirnaya_strategy_analyst",
+          "deliverable": "Build-now decision log",
+          "dependsOn": [
+            "spec"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:39:31Z"
+        },
+        {
+          "key": "ux",
+          "agent": "foliocraft_sutradhara_ux_architect",
+          "deliverable": "UX spec",
+          "dependsOn": [
+            "spec"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:39:32Z"
+        },
+        {
+          "key": "pricing",
+          "agent": "foliocraft_kubera_monetisation",
+          "deliverable": "Pricing analysis",
+          "dependsOn": [
+            "spec"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:39:32Z"
+        },
+        {
+          "key": "qa",
+          "agent": "chitragupta_quality_audit",
+          "deliverable": "Spec QA verdict",
+          "dependsOn": [
+            "decision",
+            "ux",
+            "pricing"
+          ],
+          "gate": true,
+          "status": "completed",
+          "attempts": 1,
+          "qa": "pass",
+          "finishedAt": "2026-10-12T19:39:32Z"
+        },
+        {
+          "key": "build",
+          "agent": "code_shakti",
+          "deliverable": "Coding task queued for KARMA (PR via weekly run) or 'not now' per decision",
+          "dependsOn": [
+            "qa"
+          ],
+          "approval": true,
+          "status": "approval_required",
+          "attempts": 0
+        },
+        {
+          "key": "handoff",
+          "agent": "samvada_handoffs",
+          "deliverable": "Handoff note",
+          "dependsOn": [
+            "build"
+          ],
+          "status": "pending",
+          "attempts": 0
+        }
+      ]
+    },
+    {
       "id": "p_20261012T191610Z_littleloop",
       "template": "littleloop_episode",
       "brand": "littleloop",
