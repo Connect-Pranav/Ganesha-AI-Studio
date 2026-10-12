@@ -1,0 +1,261 @@
+import { useState } from 'react';
+import { Icon, type IconName } from './Icon';
+import { Card, DemoBadge, EmptyState, agentNames, productNames, timeAgo } from './ui';
+import type { Activity, Agent, Metric, Product, ProductId, Task, TaskStatus, Workflow } from '../types';
+
+/* ---------- Stat card ---------- */
+export function StatCard({ metric }: { metric: Metric }) {
+  return (
+    <div className="stat">
+      <p className="stat-label">{metric.label}</p>
+      <p className="stat-value">{metric.value}</p>
+      <div className="stat-foot">
+        {metric.delta && <span className={`delta delta-${metric.trend ?? 'flat'}`}>{metric.delta}</span>}
+        {metric.hint && <span className="stat-hint">{metric.hint}</span>}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Product card ---------- */
+export function ProductCard({ product, onOpen }: { product: Product; onOpen: (id: ProductId) => void }) {
+  return (
+    <article className="product" style={{ ['--accent' as string]: product.accent }}>
+      <div className="product-top">
+        <div className="product-icon" aria-hidden="true">
+          <Icon name={product.id} size={20} />
+        </div>
+        <DemoBadge label="Demo" />
+      </div>
+      <h3 className="product-name">{product.name}</h3>
+      <p className="product-tag">{product.tagline}</p>
+      <dl className="product-metrics">
+        {product.metrics.map((m) => (
+          <div key={m.label}>
+            <dt>{m.label}</dt>
+            <dd>{m.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <button className="btn btn-ghost product-open" onClick={() => onOpen(product.id)}>
+        Open workspace <Icon name="arrow" size={16} />
+      </button>
+    </article>
+  );
+}
+
+/* ---------- Agents ---------- */
+const stateLabel = { running: 'Running', idle: 'Idle', paused: 'Paused' } as const;
+
+export function AgentPanel({
+  agents,
+  onToggle,
+  detailed = false,
+}: {
+  agents: Agent[];
+  onToggle: (id: Agent['id']) => void;
+  detailed?: boolean;
+}) {
+  return (
+    <Card title="Agent workspace" action={<DemoBadge label="Simulated" />}>
+      <ul className={`agents ${detailed ? 'agents-detailed' : ''}`}>
+        {agents.map((a) => (
+          <li key={a.id} className="agent">
+            <div className="agent-avatar" aria-hidden="true">{a.name[0]}</div>
+            <div className="agent-body">
+              <div className="agent-row">
+                <span className="agent-name">{a.name}</span>
+                <span className={`pill pill-${a.state}`}>{stateLabel[a.state]}</span>
+              </div>
+              <p className="agent-role">{a.role}</p>
+              {detailed && <p className="agent-desc">{a.description}</p>}
+              <p className="agent-task">{a.currentTask ?? 'Waiting for a task'}</p>
+              {detailed && <p className="agent-meta">{a.completedToday} tasks completed today (demo)</p>}
+            </div>
+            <button
+              className="btn btn-small"
+              onClick={() => onToggle(a.id)}
+              aria-label={`${a.state === 'paused' ? 'Resume' : 'Pause'} ${a.name}`}
+            >
+              {a.state === 'paused' ? 'Resume' : 'Pause'}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </Card>
+  );
+}
+
+/* ---------- Activity ---------- */
+const kindIcon: Record<Activity['kind'], IconName> = {
+  task: 'check',
+  research: 'research',
+  code: 'code',
+  publish: 'content',
+  system: 'connection',
+};
+
+export function ActivityFeed({ items }: { items: Activity[] }) {
+  return (
+    <Card title="Recent activity" action={<DemoBadge />}>
+      {items.length === 0 ? (
+        <EmptyState title="No activity yet" hint="Agent actions and releases will appear here." />
+      ) : (
+        <ul className="activity">
+          {items.map((a) => (
+            <li key={a.id}>
+              <span className={`act-icon act-${a.kind}`} aria-hidden="true">
+                <Icon name={kindIcon[a.kind]} size={15} />
+              </span>
+              <div className="act-body">
+                <p className="act-text">{a.text}</p>
+                <p className="act-meta">
+                  {productNames[a.product]}
+                  {a.agent && ` · ${agentNames[a.agent]}`} · {timeAgo(a.minutesAgo)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+/* ---------- Tasks ---------- */
+const statusLabel: Record<TaskStatus, string> = {
+  queued: 'Queued',
+  in_progress: 'In progress',
+  review: 'Review',
+  done: 'Done',
+};
+const nextStatus: Record<TaskStatus, TaskStatus> = {
+  queued: 'in_progress',
+  in_progress: 'review',
+  review: 'done',
+  done: 'done',
+};
+
+export function TaskBoard({ tasks, onAdvance }: { tasks: Task[]; onAdvance: (id: string, s: TaskStatus) => void }) {
+  const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
+  const shown = filter === 'all' ? tasks : tasks.filter((t) => t.status === filter);
+  const count = (s: TaskStatus) => tasks.filter((t) => t.status === s).length;
+
+  return (
+    <Card title="Task status" action={<DemoBadge />}>
+      <div className="tabs" role="tablist" aria-label="Filter tasks">
+        {(['all', 'queued', 'in_progress', 'review', 'done'] as const).map((s) => (
+          <button
+            key={s}
+            role="tab"
+            aria-selected={filter === s}
+            className={`tab ${filter === s ? 'active' : ''}`}
+            onClick={() => setFilter(s)}
+          >
+            {s === 'all' ? 'All' : statusLabel[s]}
+            <span className="tab-count">{s === 'all' ? tasks.length : count(s)}</span>
+          </button>
+        ))}
+      </div>
+      {shown.length === 0 ? (
+        <EmptyState
+          title={tasks.length === 0 ? 'No tasks yet' : 'Nothing in this column'}
+          hint={tasks.length === 0 ? 'Use a quick action to create the first task.' : undefined}
+        />
+      ) : (
+        <ul className="tasks">
+          {shown.map((t) => (
+            <li key={t.id} className="task">
+              <span className={`prio prio-${t.priority}`} title={`${t.priority} priority`} />
+              <div className="task-body">
+                <p className="task-title">{t.title}</p>
+                <p className="task-meta">
+                  {productNames[t.product]} · {agentNames[t.agent]}
+                </p>
+              </div>
+              <span className={`status status-${t.status}`}>{statusLabel[t.status]}</span>
+              {t.status !== 'done' && (
+                <button
+                  className="icon-btn"
+                  onClick={() => onAdvance(t.id, nextStatus[t.status])}
+                  aria-label={`Move "${t.title}" to ${statusLabel[nextStatus[t.status]]}`}
+                  title={`Move to ${statusLabel[nextStatus[t.status]]}`}
+                >
+                  <Icon name="arrow" size={16} />
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+/* ---------- Workflows ---------- */
+export function WorkflowMonitor({ workflows }: { workflows: Workflow[] }) {
+  return (
+    <Card title="Workflow monitoring" action={<DemoBadge />}>
+      {workflows.length === 0 ? (
+        <EmptyState title="No active workflows" hint="Production pipelines will show here once started." />
+      ) : (
+        <ul className="workflows">
+          {workflows.map((w) => {
+            const done = w.steps.filter((s) => s.state === 'done').length;
+            const failed = w.steps.some((s) => s.state === 'failed');
+            return (
+              <li key={w.id} className="workflow">
+                <div className="wf-head">
+                  <div>
+                    <p className="wf-name">{w.name}</p>
+                    <p className="wf-meta">{productNames[w.product]}</p>
+                  </div>
+                  <span className={`pill ${failed ? 'pill-error' : 'pill-running'}`}>
+                    {failed ? 'Needs attention' : `${done}/${w.steps.length} steps`}
+                  </span>
+                </div>
+                <ol className="steps">
+                  {w.steps.map((s) => (
+                    <li key={s.name} className={`step step-${s.state}`}>
+                      <span className="step-dot" aria-hidden="true" />
+                      <span className="step-name">{s.name}</span>
+                      <span className="sr-only"> — {s.state}</span>
+                    </li>
+                  ))}
+                </ol>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Card>
+  );
+}
+
+/* ---------- Quick actions ---------- */
+export type QuickActionKind = 'content' | 'research' | 'code' | 'analytics';
+
+const actions: { kind: QuickActionKind; label: string; desc: string; icon: IconName }[] = [
+  { kind: 'content', label: 'Create content', desc: 'Script, track or theme', icon: 'content' },
+  { kind: 'research', label: 'Research', desc: 'Ask NARADA', icon: 'research' },
+  { kind: 'code', label: 'Coding task', desc: 'Send to CODE-SHAKTI', icon: 'code' },
+  { kind: 'analytics', label: 'Analytics', desc: 'Weekly brand report', icon: 'analytics' },
+];
+
+export function QuickActions({ onAction }: { onAction: (k: QuickActionKind) => void }) {
+  return (
+    <Card title="Quick actions">
+      <div className="quick">
+        {actions.map((a) => (
+          <button key={a.kind} className="quick-btn" onClick={() => onAction(a.kind)}>
+            <span className="quick-icon" aria-hidden="true">
+              <Icon name={a.icon} />
+            </span>
+            <span className="quick-label">{a.label}</span>
+            <span className="quick-desc">{a.desc}</span>
+          </button>
+        ))}
+      </div>
+    </Card>
+  );
+}

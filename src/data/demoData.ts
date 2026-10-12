@@ -1,0 +1,158 @@
+// DEMO DATA — illustrative values only. Nothing here comes from a real
+// account, payment system or analytics source. The UI labels it "Demo".
+import type { DashboardData } from '../types';
+
+export const demoData: DashboardData = {
+  overview: [
+    { label: 'Total Revenue', value: '₹1,84,500', delta: '+12.4%', trend: 'up', hint: 'Demo · last 30 days' },
+    { label: 'Content Published', value: '46', delta: '+9', trend: 'up', hint: 'Demo · shorts, tracks, templates' },
+    { label: 'Active Projects', value: '12', delta: '3 due this week', trend: 'flat', hint: 'Demo · across 3 brands' },
+    { label: 'AI Tasks', value: '128', delta: '−6%', trend: 'down', hint: 'Demo · queued + completed' },
+  ],
+  products: [
+    {
+      id: 'littleloop',
+      name: 'LittleLoop',
+      tagline: "Children's animated shorts",
+      description: 'Story-led 60–90 second animations for kids, from idea to render-ready storyboard.',
+      accent: '#c9822b',
+      metrics: [
+        { label: 'Episodes live', value: '18', delta: '+3', trend: 'up' },
+        { label: 'Avg. watch time', value: '71%', delta: '+4 pts', trend: 'up' },
+        { label: 'In production', value: '5', trend: 'flat' },
+      ],
+      pipeline: [
+        { name: 'Idea', count: 9 },
+        { name: 'Script', count: 4 },
+        { name: 'Storyboard', count: 3 },
+        { name: 'Animation', count: 2 },
+        { name: 'Published', count: 18 },
+      ],
+    },
+    {
+      id: 'sunverse',
+      name: 'Sunverse',
+      tagline: 'Music and YouTube content',
+      description: 'Original tracks, lyric videos and channel growth for the Sunverse YouTube presence.',
+      accent: '#b5502f',
+      metrics: [
+        { label: 'Tracks released', value: '22', delta: '+2', trend: 'up' },
+        { label: 'Subscribers', value: '8.4K', delta: '+640', trend: 'up' },
+        { label: 'Videos queued', value: '4', trend: 'flat' },
+      ],
+      pipeline: [
+        { name: 'Concept', count: 6 },
+        { name: 'Composition', count: 3 },
+        { name: 'Mix & master', count: 2 },
+        { name: 'Video', count: 4 },
+        { name: 'Published', count: 22 },
+      ],
+    },
+    {
+      id: 'foliocraft',
+      name: 'Foliocraft',
+      tagline: 'Portfolio builder & premium conversions',
+      description: 'Portfolio themes and a builder that converts free users into premium plans.',
+      accent: '#2f6f5b',
+      metrics: [
+        { label: 'Free users', value: '1,240', delta: '+118', trend: 'up' },
+        { label: 'Premium conversion', value: '4.8%', delta: '+0.6 pts', trend: 'up' },
+        { label: 'Themes live', value: '14', trend: 'flat' },
+      ],
+      pipeline: [
+        { name: 'Visitors', count: 5200 },
+        { name: 'Sign-ups', count: 1240 },
+        { name: 'Activated', count: 610 },
+        { name: 'Trial', count: 132 },
+        { name: 'Premium', count: 60 },
+      ],
+    },
+  ],
+  agents: [
+    {
+      id: 'ganesha',
+      name: 'GANESHA',
+      role: 'Master orchestrator',
+      description: 'Plans work, assigns tasks to agents and keeps the three brand workspaces separate.',
+      state: 'running',
+      currentTask: 'Weekly plan: LittleLoop episode 19',
+      completedToday: 14,
+    },
+    {
+      id: 'narada',
+      name: 'NARADA',
+      role: 'Market & trend research',
+      description: 'Finds trends with sources attached. Flags anything it cannot verify.',
+      state: 'idle',
+      currentTask: null,
+      completedToday: 6,
+    },
+    {
+      id: 'code-shakti',
+      name: 'CODE-SHAKTI',
+      role: 'Coding & verification',
+      description: 'Builds features, fixes bugs and runs the production build before reporting.',
+      state: 'running',
+      currentTask: 'Foliocraft: theme preview page',
+      completedToday: 9,
+    },
+  ],
+  tasks: [
+    { id: 't1', title: 'Script: "Moon Loop" episode 19', product: 'littleloop', agent: 'ganesha', status: 'in_progress', priority: 'high' },
+    { id: 't2', title: 'Storyboard review: episode 18', product: 'littleloop', agent: 'ganesha', status: 'review', priority: 'medium' },
+    { id: 't3', title: 'Trend scan: kids lullaby formats', product: 'littleloop', agent: 'narada', status: 'queued', priority: 'medium' },
+    { id: 't4', title: 'Lyric video: "Golden Hour"', product: 'sunverse', agent: 'ganesha', status: 'in_progress', priority: 'high' },
+    { id: 't5', title: 'Thumbnail A/B brief', product: 'sunverse', agent: 'narada', status: 'queued', priority: 'low' },
+    { id: 't6', title: 'Release checklist: track 23', product: 'sunverse', agent: 'ganesha', status: 'done', priority: 'medium' },
+    { id: 't7', title: 'Theme preview page', product: 'foliocraft', agent: 'code-shakti', status: 'in_progress', priority: 'high' },
+    { id: 't8', title: 'Upgrade-modal copy test', product: 'foliocraft', agent: 'narada', status: 'review', priority: 'medium' },
+    { id: 't9', title: 'Fix: mobile nav overlap', product: 'foliocraft', agent: 'code-shakti', status: 'done', priority: 'high' },
+    { id: 't10', title: 'Studio: weekly report template', product: 'studio', agent: 'code-shakti', status: 'queued', priority: 'low' },
+  ],
+  activity: [
+    { id: 'a1', minutesAgo: 4, product: 'foliocraft', agent: 'code-shakti', kind: 'code', text: 'Build passed for theme preview branch' },
+    { id: 'a2', minutesAgo: 18, product: 'littleloop', agent: 'ganesha', kind: 'task', text: 'Assigned episode 19 script draft' },
+    { id: 'a3', minutesAgo: 41, product: 'sunverse', agent: null, kind: 'publish', text: 'Track 22 "Monsoon Letters" published' },
+    { id: 'a4', minutesAgo: 75, product: 'littleloop', agent: 'narada', kind: 'research', text: 'Trend note: counting songs up in 3–5 age group (2 sources)' },
+    { id: 'a5', minutesAgo: 130, product: 'foliocraft', agent: 'code-shakti', kind: 'code', text: 'Fixed mobile nav overlap; build verified' },
+    { id: 'a6', minutesAgo: 260, product: 'studio', agent: null, kind: 'system', text: 'Demo Mode active — AI provider not configured' },
+  ],
+  workflows: [
+    {
+      id: 'w1',
+      name: 'Episode 19 · "Moon Loop"',
+      product: 'littleloop',
+      steps: [
+        { name: 'Idea', state: 'done' },
+        { name: 'Script', state: 'active' },
+        { name: 'Storyboard', state: 'pending' },
+        { name: 'Animation', state: 'pending' },
+        { name: 'Publish', state: 'pending' },
+      ],
+    },
+    {
+      id: 'w2',
+      name: 'Lyric video · "Golden Hour"',
+      product: 'sunverse',
+      steps: [
+        { name: 'Track final', state: 'done' },
+        { name: 'Lyrics sync', state: 'done' },
+        { name: 'Visuals', state: 'active' },
+        { name: 'Thumbnail', state: 'pending' },
+        { name: 'Upload', state: 'pending' },
+      ],
+    },
+    {
+      id: 'w3',
+      name: 'Theme release · "Ledger"',
+      product: 'foliocraft',
+      steps: [
+        { name: 'Design', state: 'done' },
+        { name: 'Build', state: 'done' },
+        { name: 'Preview page', state: 'failed' },
+        { name: 'QA', state: 'pending' },
+        { name: 'Launch', state: 'pending' },
+      ],
+    },
+  ],
+};

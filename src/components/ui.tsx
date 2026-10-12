@@ -1,0 +1,100 @@
+import type { ReactNode } from 'react';
+import { Icon } from './Icon';
+import type { AgentId, ProductId } from '../types';
+
+export const productNames: Record<ProductId | 'studio', string> = {
+  littleloop: 'LittleLoop',
+  sunverse: 'Sunverse',
+  foliocraft: 'Foliocraft',
+  studio: 'Studio',
+};
+
+export const agentNames: Record<AgentId, string> = {
+  ganesha: 'GANESHA',
+  narada: 'NARADA',
+  'code-shakti': 'CODE-SHAKTI',
+};
+
+export function timeAgo(minutes: number): string {
+  if (minutes < 1) return 'just now';
+  if (minutes < 60) return `${minutes}m ago`;
+  const h = Math.floor(minutes / 60);
+  return h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`;
+}
+
+export function DemoBadge({ label = 'Demo data' }: { label?: string }) {
+  return (
+    <span className="demo-badge" title="Illustrative values — not from a live source">
+      {label}
+    </span>
+  );
+}
+
+export function Card({
+  title,
+  action,
+  children,
+  className = '',
+}: {
+  title?: string;
+  action?: ReactNode;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`card ${className}`}>
+      {(title || action) && (
+        <header className="card-head">
+          {title && <h2 className="card-title">{title}</h2>}
+          {action}
+        </header>
+      )}
+      {children}
+    </section>
+  );
+}
+
+export function EmptyState({ title, hint }: { title: string; hint?: string }) {
+  return (
+    <div className="empty">
+      <div className="empty-mark" aria-hidden="true">
+        <Icon name="plus" />
+      </div>
+      <p className="empty-title">{title}</p>
+      {hint && <p className="empty-hint">{hint}</p>}
+    </div>
+  );
+}
+
+export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  return (
+    <div className="error-state" role="alert">
+      <Icon name="alert" size={22} />
+      <div>
+        <p className="error-title">Something went wrong</p>
+        <p className="error-msg">{message}</p>
+      </div>
+      <button className="btn btn-primary" onClick={onRetry}>
+        <Icon name="refresh" size={16} /> Try again
+      </button>
+    </div>
+  );
+}
+
+export function SkeletonDashboard() {
+  return (
+    <div className="skeleton-wrap" aria-busy="true" aria-label="Loading dashboard">
+      <div className="grid-4">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="skeleton sk-stat" />
+        ))}
+      </div>
+      <div className="grid-3">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="skeleton sk-product" />
+        ))}
+      </div>
+      <div className="skeleton sk-wide" />
+    </div>
+  );
+}
