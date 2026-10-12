@@ -1,1 +1,284 @@
-{ "pipelines": [] }
+{
+  "pipelines": [
+    {
+      "id": "p_20261012T191610Z_littleloop",
+      "template": "littleloop_episode",
+      "brand": "littleloop",
+      "title": "Counting to five with raindrops (test)",
+      "goalRef": "vault#2",
+      "status": "approval_required",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:16:10Z",
+      "updatedAt": "2026-10-12T19:31:00Z",
+      "steps": [
+        {
+          "key": "concept",
+          "agent": "littleloop_krishna_story_director",
+          "deliverable": "Episode concept",
+          "dependsOn": [],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:27:26Z"
+        },
+        {
+          "key": "characters",
+          "agent": "littleloop_chitra_character_designer",
+          "deliverable": "Character sheet",
+          "dependsOn": [
+            "concept"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:28:13Z"
+        },
+        {
+          "key": "script",
+          "agent": "littleloop_vyasa_scriptwriter",
+          "deliverable": "Timed script",
+          "dependsOn": [
+            "concept"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:28:13Z"
+        },
+        {
+          "key": "visual_plan",
+          "agent": "littleloop_drishti_visual_planner",
+          "deliverable": "Visual brief + shot plan",
+          "dependsOn": [
+            "script"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:29:17Z"
+        },
+        {
+          "key": "prompts",
+          "agent": "littleloop_maya_prompt_engineer",
+          "deliverable": "Per-shot video prompts",
+          "dependsOn": [
+            "visual_plan",
+            "characters"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:30:08Z"
+        },
+        {
+          "key": "sound",
+          "agent": "littleloop_nada_sound_director",
+          "deliverable": "Voice & sound sheet",
+          "dependsOn": [
+            "script"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:29:17Z"
+        },
+        {
+          "key": "edit",
+          "agent": "littleloop_nataraja_edit_director",
+          "deliverable": "Edit plan",
+          "dependsOn": [
+            "visual_plan",
+            "sound"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:30:09Z"
+        },
+        {
+          "key": "safety",
+          "agent": "ops_dharma_safety",
+          "deliverable": "Child-safety & policy review",
+          "dependsOn": [
+            "script",
+            "prompts"
+          ],
+          "gate": true,
+          "status": "completed",
+          "attempts": 1,
+          "qa": "pass",
+          "finishedAt": "2026-10-12T19:30:40Z"
+        },
+        {
+          "key": "qa",
+          "agent": "chitragupta_quality_audit",
+          "deliverable": "QA verdict",
+          "dependsOn": [
+            "safety",
+            "edit"
+          ],
+          "gate": true,
+          "status": "completed",
+          "attempts": 1,
+          "qa": "pass",
+          "finishedAt": "2026-10-12T19:30:40Z"
+        },
+        {
+          "key": "posting",
+          "agent": "littleloop_lakshmi_growth_analyst",
+          "deliverable": "Posting package",
+          "dependsOn": [
+            "qa"
+          ],
+          "approval": true,
+          "status": "approval_required",
+          "attempts": 0
+        },
+        {
+          "key": "handoff",
+          "agent": "samvada_handoffs",
+          "deliverable": "Handoff note",
+          "dependsOn": [
+            "posting"
+          ],
+          "status": "pending",
+          "attempts": 0
+        }
+      ]
+    },
+    {
+      "id": "p_20261012T191608Z_sunverse",
+      "template": "sunverse_song_release",
+      "brand": "sunverse",
+      "title": "Hindi monsoon love song (test)",
+      "goalRef": "vault#1",
+      "status": "approval_required",
+      "engine": "claude",
+      "createdAt": "2026-10-12T19:16:08Z",
+      "updatedAt": "2026-10-12T19:26:58Z",
+      "steps": [
+        {
+          "key": "trends",
+          "agent": "sunverse_gandharva_trend_analyst",
+          "deliverable": "Trend brief",
+          "dependsOn": [],
+          "status": "completed",
+          "attempts": 2,
+          "finishedAt": "2026-10-12T19:26:30Z"
+        },
+        {
+          "key": "composition",
+          "agent": "sunverse_tumburu_music_director",
+          "deliverable": "Composition brief + music-tool prompt",
+          "dependsOn": [
+            "trends"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:23:22Z"
+        },
+        {
+          "key": "lyrics",
+          "agent": "sunverse_vagdevi_lyricist",
+          "deliverable": "Original Hindi lyrics",
+          "dependsOn": [
+            "composition"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:24:08Z"
+        },
+        {
+          "key": "vocals",
+          "agent": "sunverse_saraswati_vocal_director",
+          "deliverable": "Vocal direction sheet",
+          "dependsOn": [
+            "lyrics"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:25:11Z"
+        },
+        {
+          "key": "mix",
+          "agent": "sunverse_vishvavasu_sound_engineer",
+          "deliverable": "Mix & master brief",
+          "dependsOn": [
+            "composition"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:24:08Z"
+        },
+        {
+          "key": "artwork",
+          "agent": "sunverse_nata_visual_designer",
+          "deliverable": "Artwork brief + image prompts",
+          "dependsOn": [
+            "composition",
+            "lyrics"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:25:11Z"
+        },
+        {
+          "key": "video",
+          "agent": "sunverse_vishvakarma_video_producer",
+          "deliverable": "Timed music-video plan + scene prompts",
+          "dependsOn": [
+            "lyrics",
+            "composition"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-12T19:25:11Z"
+        },
+        {
+          "key": "safety",
+          "agent": "ops_dharma_safety",
+          "deliverable": "Copyright & policy review",
+          "dependsOn": [
+            "lyrics",
+            "artwork",
+            "video"
+          ],
+          "gate": true,
+          "status": "completed",
+          "attempts": 1,
+          "qa": "pass",
+          "finishedAt": "2026-10-12T19:25:45Z"
+        },
+        {
+          "key": "qa",
+          "agent": "chitragupta_quality_audit",
+          "deliverable": "QA verdict",
+          "dependsOn": [
+            "safety",
+            "vocals",
+            "mix"
+          ],
+          "gate": true,
+          "status": "completed",
+          "attempts": 2,
+          "qa": "pass",
+          "finishedAt": "2026-10-12T19:26:39Z"
+        },
+        {
+          "key": "release",
+          "agent": "sunverse_surya_release_manager",
+          "deliverable": "YouTube release package",
+          "dependsOn": [
+            "qa"
+          ],
+          "approval": true,
+          "status": "approval_required",
+          "attempts": 0
+        },
+        {
+          "key": "handoff",
+          "agent": "samvada_handoffs",
+          "deliverable": "Handoff note",
+          "dependsOn": [
+            "release"
+          ],
+          "status": "pending",
+          "attempts": 0
+        }
+      ]
+    }
+  ]
+}

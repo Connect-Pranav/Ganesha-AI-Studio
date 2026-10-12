@@ -1,6 +1,15 @@
 {
   "runs": [
     {
+      "id": "run_20261012T193100Z_ganesha_claude_1",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-12T19:16:08Z",
+      "finishedAt": "2026-10-12T19:31:00Z",
+      "status": "success",
+      "summary": "Goal runner: p_20261012T191608Z_sunverse (vault#1) and p_20261012T191610Z_littleloop (vault#2) both approval_required; vault#3 deferred (2-goal limit)."
+    },
+    {
       "id": "run_20261012T190426Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",
