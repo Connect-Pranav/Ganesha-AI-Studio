@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Commits made by the Agents workflow don't trigger "push" workflows,
+  # so redeploy whenever an agent run finishes.
+  workflow_run:
+    workflows: ['Agents (Gemini engine)']
+    types: [completed]
   workflow_dispatch:
 
 permissions:
@@ -19,6 +24,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
           node-version: 20

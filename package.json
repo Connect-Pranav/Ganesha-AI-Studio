@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "node scripts/validate.mjs && tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b"
+    "typecheck": "tsc -b",
+    "validate:data": "node scripts/validate.mjs",
+    "agents:gemini": "node scripts/agent-runner.mjs --agent all"
   },
   "dependencies": {
     "react": "^18.3.1",

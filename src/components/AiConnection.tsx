@@ -1,6 +1,7 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
-import { Card } from './ui';
+import { Card, formatWhen } from './ui';
+import { AGENTS_WORKFLOW_URL, SECRETS_URL } from '../config';
 import type { AiConnectionState, AiStatus } from '../types';
 
 export const aiStateMeta: Record<AiConnectionState, { label: string; tone: string }> = {
@@ -34,26 +35,40 @@ export function AiStatusCard({
   onConnect: () => void;
   full?: boolean;
 }) {
-  const state = status?.state;
+  const allConnected = status?.engines.every((e) => e.state === 'connected');
   return (
     <Card title="API connection status" className={full ? 'ai-card-full' : ''}>
       <div className="ai-status">
         <AiStatusPill status={checking ? null : status} />
-        <p className="ai-msg">{checking ? 'Checking connection…' : status?.message}</p>
-        {status?.provider && <p className="ai-provider">Provider: {status.provider}</p>}
+        <p className="ai-msg">{checking ? 'Reading agent run log…' : status?.message}</p>
       </div>
 
-      <ul className="ai-legend" aria-label="Connection states">
-        {(Object.keys(aiStateMeta) as AiConnectionState[]).map((s) => (
-          <li key={s} className={state === s ? 'current' : ''}>
-            <span className={`ai-dot tone-${aiStateMeta[s].tone}`} aria-hidden="true" />
-            {aiStateMeta[s].label}
-          </li>
-        ))}
-      </ul>
+      {status && !checking && (
+        <ul className="engines">
+          {status.engines.map((e) => {
+            const meta = aiStateMeta[e.state];
+            return (
+              <li key={e.engine} className="engine">
+                <div className="engine-top">
+                  <span className="engine-name">{e.label}</span>
+                  <span className={`ai-pill tone-${meta.tone}`}>
+                    <span className="ai-dot" aria-hidden="true" />
+                    {meta.label}
+                  </span>
+                </div>
+                <p className="engine-where">{e.where}</p>
+                <p className={`engine-msg ${e.state === 'error' ? 'meta-error' : ''}`}>
+                  {e.lastRun ? `Last run ${formatWhen(e.lastRun.finishedAt)} — ` : ''}
+                  {e.message}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+      )}
 
       <div className="ai-actions">
-        {state !== 'connected' && (
+        {!allConnected && (
           <button className="btn btn-primary" onClick={onConnect}>
             <Icon name="connection" size={16} /> Connect AI
           </button>
@@ -63,8 +78,8 @@ export function AiStatusCard({
         </button>
       </div>
       <p className="ai-note">
-        The dashboard works fully without AI. Nothing retries automatically, and no provider is called from the
-        browser.
+        Status comes from the real agent run log. Keys stay in GitHub Secrets or Claude — never in this page. Nothing
+        retries automatically.
       </p>
     </Card>
   );
@@ -105,31 +120,36 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
 
 export function ConnectAiModal({ onClose }: { onClose: () => void }) {
   return (
-    <Modal title="Connect AI (setup guide)" onClose={onClose}>
-      <p className="modal-lead">
-        API keys never go into this dashboard. They live on a small server-side adapter that the dashboard asks
-        for status only.
-      </p>
+    <Modal title="Connect AI engines" onClose={onClose}>
+      <p className="modal-lead">Two free engines power the agents. Keys never go into this page or into Git.</p>
+
+      <h3 className="modal-sub">Gemini — daily backup in GitHub Actions</h3>
       <ol className="setup-steps">
         <li>
-          <strong>Choose a provider</strong> and create a key in its console. Free tiers are fine for testing.
+          Create a free API key at <strong>aistudio.google.com</strong> → Get API key.
         </li>
         <li>
-          <strong>Store the key server-side</strong> as <code>AI_API_KEY</code> (plus <code>AI_PROVIDER</code>) in
-          your backend's environment — never in a <code>VITE_</code> variable.
+          Open{' '}
+          <a href={SECRETS_URL} target="_blank" rel="noreferrer">
+            repo Settings → Secrets → Actions
+          </a>{' '}
+          → New repository secret. Name <code>GEMINI_API_KEY</code>, paste the key, save.
         </li>
         <li>
-          <strong>Expose a status route</strong> on that backend returning{' '}
-          <code>{'{ "status": "connected" | "disconnected" | "error" }'}</code>.
-        </li>
-        <li>
-          <strong>Point the dashboard at it</strong>: set <code>VITE_AI_STATUS_ENDPOINT</code> in{' '}
-          <code>.env.local</code> and restart <code>npm run dev</code>.
+          Open{' '}
+          <a href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
+            Actions → Agents
+          </a>{' '}
+          → Run workflow. Results appear here in ~3 minutes.
         </li>
       </ol>
-      <p className="modal-note">
-        Until then, Ganesha AI Studio stays in Demo Mode. The backend adapter is planned for Milestone 3.
+
+      <h3 className="modal-sub">Claude — research + coding</h3>
+      <p className="modal-lead">
+        Runs as Claude scheduled tasks on your Claude plan. No key needed. Its runs show up in the run history
+        automatically.
       </p>
+
       <div className="modal-actions">
         <button className="btn btn-primary" onClick={onClose}>
           Got it

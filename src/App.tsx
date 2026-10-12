@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
@@ -7,7 +7,7 @@ import { AgentsView, ConnectionView, OverviewView, ProductView } from './compone
 import { ErrorState, SkeletonDashboard, agentNames } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
-import { getAiStatus } from './services/aiStatusService';
+import { deriveAiStatus } from './services/aiStatusService';
 import type { ActivityKind, AgentId, AiStatus, DashboardData, ProductId, Task, TaskStatus, View } from './types';
 
 const VIEWS: View[] = ['overview', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
@@ -34,38 +34,42 @@ function readCollapsed(): boolean {
   }
 }
 
-type LoadState = { status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; data: DashboardData };
+type LoadState =
+  | { status: 'loading' }
+  | { status: 'error'; message: string }
+  | { status: 'ready'; data: DashboardData; agentDataError: string | null };
 
 export default function App() {
   const [view, setView] = useState<View>(viewFromHash);
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [load, setLoad] = useState<LoadState>({ status: 'loading' });
-  const [ai, setAi] = useState<AiStatus | null>(null);
-  const [aiChecking, setAiChecking] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [showConnect, setShowConnect] = useState(false);
   const [quick, setQuick] = useState<QuickActionKind | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   /* ---- data ---- */
-  const fetchData = useCallback(() => {
-    setLoad({ status: 'loading' });
+  const fetchData = useCallback((background = false) => {
+    if (background) setRefreshing(true);
+    else setLoad({ status: 'loading' });
     loadDashboard()
-      .then((r) => setLoad({ status: 'ready', data: r.data }))
-      .catch((e: unknown) => setLoad({ status: 'error', message: e instanceof Error ? e.message : 'Unknown error' }));
-  }, []);
-
-  const checkAi = useCallback(() => {
-    setAiChecking(true);
-    getAiStatus()
-      .then(setAi)
-      .finally(() => setAiChecking(false));
+      .then((r) => setLoad({ status: 'ready', data: r.data, agentDataError: r.agentDataError }))
+      .catch((e: unknown) => setLoad({ status: 'error', message: e instanceof Error ? e.message : 'Unknown error' }))
+      .finally(() => setRefreshing(false));
   }, []);
 
   useEffect(() => {
-    fetchData();
-    checkAi(); // runs once; never retries on its own
-  }, [fetchData, checkAi]);
+    fetchData(); // once on load; never retries on its own
+  }, [fetchData]);
+
+  // AI status is derived from the real run log — no provider call.
+  const ai: AiStatus | null = useMemo(
+    () => (load.status === 'ready' ? deriveAiStatus(load.data.runs) : null),
+    [load],
+  );
+  const aiChecking = load.status === 'loading' || refreshing;
+  const isLive = load.status === 'ready' && Object.values(load.data.live).some(Boolean);
 
   /* ---- routing ---- */
   useEffect(() => {
@@ -100,7 +104,7 @@ export default function App() {
 
   /* ---- local mutations (demo only, not persisted) ---- */
   const update = (fn: (d: DashboardData) => DashboardData) =>
-    setLoad((s) => (s.status === 'ready' ? { status: 'ready', data: fn(s.data) } : s));
+    setLoad((s) => (s.status === 'ready' ? { ...s, data: fn(s.data) } : s));
 
   const advanceTask = (id: string, status: TaskStatus) =>
     update((d) => ({ ...d, tasks: d.tasks.map((t) => (t.id === id ? { ...t, status } : t)) }));
@@ -146,7 +150,7 @@ export default function App() {
   /* ---- render ---- */
   const renderBody = () => {
     if (load.status === 'loading') return <SkeletonDashboard />;
-    if (load.status === 'error') return <ErrorState message={load.message} onRetry={fetchData} />;
+    if (load.status === 'error') return <ErrorState message={load.message} onRetry={() => fetchData()} />;
     const common = {
       data: load.data,
       ai,
@@ -155,13 +159,30 @@ export default function App() {
       onAdvanceTask: advanceTask,
       onToggleAgent: toggleAgent,
       onQuickAction: setQuick,
-      onRecheckAi: checkAi,
+      onRecheckAi: () => fetchData(true),
       onConnectAi: () => setShowConnect(true),
     };
-    if (view === 'agents') return <AgentsView {...common} />;
-    if (view === 'connection') return <ConnectionView {...common} />;
-    if (view === 'overview') return <OverviewView {...common} />;
-    return <ProductView {...common} productId={view as ProductId} />;
+    const notice = load.agentDataError ? (
+      <div className="notice" role="status">
+        Live agent data couldn’t be read ({load.agentDataError}). Showing demo data.
+      </div>
+    ) : null;
+    const body =
+      view === 'agents' ? (
+        <AgentsView {...common} />
+      ) : view === 'connection' ? (
+        <ConnectionView {...common} />
+      ) : view === 'overview' ? (
+        <OverviewView {...common} />
+      ) : (
+        <ProductView {...common} productId={view as ProductId} />
+      );
+    return (
+      <>
+        {notice}
+        {body}
+      </>
+    );
   };
 
   return (
@@ -177,6 +198,7 @@ export default function App() {
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
         aiState={aiChecking ? 'checking' : (ai?.state ?? 'not_configured')}
+        live={isLive}
       />
 
       <div className="main">
@@ -189,7 +211,7 @@ export default function App() {
             <h1>{TITLES[view]}</h1>
           </div>
           <div className="topbar-right">
-            <span className="mode-banner">Demo Mode</span>
+            <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'Demo Mode'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">
               <AiStatusPill status={aiChecking ? null : ai} />
             </button>
@@ -201,7 +223,8 @@ export default function App() {
         </main>
 
         <footer className="foot">
-          Demo Mode — all figures are illustrative and not from live sources. Changes are kept only until refresh.
+          Sections marked <strong>Live</strong> come from real agent runs. Sections marked <strong>Demo</strong> are
+          illustrative only. Changes you make here are kept until refresh.
         </footer>
       </div>
 

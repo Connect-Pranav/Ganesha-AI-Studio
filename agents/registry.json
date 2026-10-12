@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "brands": {
+    "littleloop": { "name": "LittleLoop", "focus": "Instagram animated shorts for children aged 2-8", "queries": ["kids animated shorts trends", "toddler nursery rhyme videos", "children's animation Instagram Reels"] },
+    "sunverse": { "name": "Sunverse", "focus": "YouTube music channel and music production house", "queries": ["YouTube music channel growth trends", "independent music production trends India", "lofi music YouTube trends"] },
+    "foliocraft": { "name": "Foliocraft", "focus": "Portfolio website builder with paid premium features", "queries": ["portfolio website builder trends", "personal portfolio templates 2026", "freemium SaaS conversion portfolio builder"] }
+  },
+  "agents": [
+    {
+      "id": "narada_market_intelligence",
+      "name": "NARADA",
+      "role": "Market intelligence and trend research",
+      "contract": "agents/narada_market_intelligence.md",
+      "engines": ["claude", "gemini"],
+      "permissions": ["read_public_web", "write:public/agent-data/research.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
+      "approvalRequired": [],
+      "maxRetries": 2
+    },
+    {
+      "id": "ganesha_orchestrator",
+      "name": "GANESHA",
+      "role": "Master orchestrator: turns research into prioritised tasks per brand",
+      "contract": "agents/ganesha_orchestrator.md",
+      "engines": ["claude", "gemini"],
+      "permissions": ["read:public/agent-data/research.json", "write:public/agent-data/tasks.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
+      "approvalRequired": ["publish_content", "spend_money", "deploy"],
+      "maxRetries": 2
+    },
+    {
+      "id": "code_shakti",
+      "name": "CODE-SHAKTI",
+      "role": "Coding and verification: implements one queued coding task as a pull request",
+      "contract": "agents/code_shakti.md",
+      "engines": ["claude"],
+      "permissions": ["read:repo", "create_branch", "open_pull_request", "write:public/agent-data/tasks.json", "write:public/agent-data/activity.json", "write:public/agent-data/runs.json"],
+      "approvalRequired": ["merge_pull_request"],
+      "maxRetries": 1
+    }
+  ]
+}

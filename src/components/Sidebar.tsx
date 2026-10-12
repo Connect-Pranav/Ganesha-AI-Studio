@@ -26,9 +26,10 @@ interface Props {
   mobileOpen: boolean;
   onCloseMobile: () => void;
   aiState: AiConnectionState | 'checking';
+  live: boolean;
 }
 
-export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileOpen, onCloseMobile, aiState }: Props) {
+export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileOpen, onCloseMobile, aiState, live }: Props) {
   const group = (label: string, items: NavItem[]) => (
     <div className="nav-group">
       <p className="nav-label">{label}</p>
@@ -71,8 +72,8 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
 
         <div className="sidebar-foot">
           <div className="mode-chip">
-            <span className="dot dot-demo" aria-hidden="true" />
-            <span className="nav-text">Demo Mode</span>
+            <span className={`dot ${live ? 'dot-connected' : 'dot-demo'}`} aria-hidden="true" />
+            <span className="nav-text">{live ? 'Live agents' : 'Demo Mode'}</span>
           </div>
           <button
             className="icon-btn desktop-only"

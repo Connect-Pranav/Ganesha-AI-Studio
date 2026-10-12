@@ -30,6 +30,28 @@ export function DemoBadge({ label = 'Demo data' }: { label?: string }) {
   );
 }
 
+export function LiveBadge({ label = 'Live' }: { label?: string }) {
+  return (
+    <span className="live-badge" title="Written by a real agent run">
+      <span className="live-dot" aria-hidden="true" />
+      {label}
+    </span>
+  );
+}
+
+/** Live badge when the section shows real agent output, Demo badge otherwise. */
+export function SourceBadge({ live, demoLabel }: { live: boolean; demoLabel?: string }) {
+  return live ? <LiveBadge /> : <DemoBadge label={demoLabel} />;
+}
+
+export const engineNames = { claude: 'Claude', gemini: 'Gemini' } as const;
+
+export function formatWhen(iso: string): string {
+  const t = Date.parse(iso);
+  if (Number.isNaN(t)) return '—';
+  return timeAgo(Math.max(0, Math.round((Date.now() - t) / 60000)));
+}
+
 export function Card({
   title,
   action,

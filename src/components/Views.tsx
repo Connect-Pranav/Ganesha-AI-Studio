@@ -10,6 +10,7 @@ import {
   WorkflowMonitor,
   type QuickActionKind,
 } from './Widgets';
+import { ResearchPanel, RunHistory } from './AgentWidgets';
 import { AiStatusCard } from './AiConnection';
 import type { AgentId, AiStatus, DashboardData, Product, ProductId, TaskStatus } from '../types';
 
@@ -53,14 +54,15 @@ export function OverviewView(p: Common) {
 
       <div className="grid-main">
         <div className="col">
-          <AgentPanel agents={data.agents} onToggle={p.onToggleAgent} />
+          <AgentPanel agents={data.agents} onToggle={p.onToggleAgent} live={data.live.agents} />
+          <ResearchPanel findings={data.research} limit={4} title="Latest NARADA research" />
+          <TaskBoard tasks={data.tasks} onAdvance={p.onAdvanceTask} live={data.live.tasks} />
           <WorkflowMonitor workflows={data.workflows} />
-          <TaskBoard tasks={data.tasks} onAdvance={p.onAdvanceTask} />
         </div>
         <div className="col">
           <QuickActions onAction={p.onQuickAction} />
           <AiStatusCard status={p.ai} checking={p.aiChecking} onRecheck={p.onRecheckAi} onConnect={p.onConnectAi} />
-          <ActivityFeed items={data.activity} />
+          <ActivityFeed items={data.activity} live={data.live.activity} />
         </div>
       </div>
     </>
@@ -118,13 +120,14 @@ export function ProductView(p: Common & { productId: ProductId }) {
 
       <div className="grid-main">
         <div className="col">
+          <ResearchPanel findings={p.data.research} brand={product.id} title={`NARADA research · ${product.name}`} />
+          <TaskBoard tasks={tasks} onAdvance={p.onAdvanceTask} live={p.data.live.tasks} />
           <Pipeline product={product} />
           <WorkflowMonitor workflows={workflows} />
-          <TaskBoard tasks={tasks} onAdvance={p.onAdvanceTask} />
         </div>
         <div className="col">
           <QuickActions onAction={p.onQuickAction} />
-          <ActivityFeed items={activity} />
+          <ActivityFeed items={activity} live={p.data.live.activity} />
         </div>
       </div>
     </div>
@@ -136,18 +139,27 @@ export function AgentsView(p: Common) {
   return (
     <div className="grid-main">
       <div className="col">
-        <AgentPanel agents={p.data.agents} onToggle={p.onToggleAgent} detailed />
+        <AgentPanel agents={p.data.agents} onToggle={p.onToggleAgent} live={p.data.live.agents} detailed />
+        <ResearchPanel findings={p.data.research} />
       </div>
       <div className="col">
-        <Card title="How agents work in Demo Mode">
+        <RunHistory runs={p.data.runs} />
+        <Card title="How the agents work">
           <ul className="bullets">
-            <li>GANESHA routes each task to the right agent and keeps brands separate.</li>
-            <li>NARADA research must cite sources; unverified claims get flagged.</li>
-            <li>CODE-SHAKTI reports only real build and test results.</li>
-            <li>Right now agents are simulated — pausing or resuming only changes this screen.</li>
+            <li>
+              <strong>NARADA</strong> researches each brand daily and must cite real sources — no source, no finding.
+            </li>
+            <li>
+              <strong>GANESHA</strong> turns findings into at most 3 tasks per brand and routes them to the right agent.
+            </li>
+            <li>
+              <strong>CODE-SHAKTI</strong> picks one coding task, opens a pull request and waits — you approve by
+              merging.
+            </li>
+            <li>Anything that publishes, spends money or deploys is marked “Needs approval”.</li>
+            <li>Every output is schema-validated before it reaches this page.</li>
           </ul>
         </Card>
-        <TaskBoard tasks={p.data.tasks} onAdvance={p.onAdvanceTask} />
       </div>
     </div>
   );
@@ -158,34 +170,35 @@ export function ConnectionView(p: Common) {
   return (
     <div className="narrow">
       <AiStatusCard status={p.ai} checking={p.aiChecking} onRecheck={p.onRecheckAi} onConnect={p.onConnectAi} full />
-      <Card title="Environment variables">
+      <Card title="Where keys live">
         <table className="env-table">
           <thead>
             <tr>
-              <th>Variable</th>
+              <th>Name</th>
               <th>Where</th>
               <th>Purpose</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td><code>VITE_AI_STATUS_ENDPOINT</code></td>
-              <td>Frontend (.env.local)</td>
-              <td>Your backend's status URL. Optional; empty = Demo Mode.</td>
+              <td><code>GEMINI_API_KEY</code></td>
+              <td>GitHub repo secret</td>
+              <td>Free Gemini key for the Actions engine. Never in the browser or Git.</td>
             </tr>
             <tr>
-              <td><code>AI_PROVIDER</code></td>
-              <td>Backend only</td>
-              <td>Provider name, read by the server adapter.</td>
+              <td><code>GEMINI_MODEL</code></td>
+              <td>GitHub repo variable (optional)</td>
+              <td>Model ID. Default <code>gemini-2.5-flash</code>.</td>
             </tr>
             <tr>
-              <td><code>AI_API_KEY</code></td>
-              <td>Backend only</td>
-              <td>Secret key. Never in the browser or in Git.</td>
+              <td>Claude</td>
+              <td>Claude scheduled tasks</td>
+              <td>Uses your Claude plan. No key stored anywhere.</td>
             </tr>
           </tbody>
         </table>
       </Card>
+      <RunHistory runs={p.data.runs} />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Icon, type IconName } from './Icon';
-import { Card, DemoBadge, EmptyState, agentNames, productNames, timeAgo } from './ui';
+import { Card, DemoBadge, EmptyState, SourceBadge, agentNames, engineNames, formatWhen, productNames, timeAgo } from './ui';
+import { AGENTS_WORKFLOW_URL } from '../config';
 import type { Activity, Agent, Metric, Product, ProductId, Task, TaskStatus, Workflow } from '../types';
 
 /* ---------- Stat card ---------- */
@@ -45,19 +46,34 @@ export function ProductCard({ product, onOpen }: { product: Product; onOpen: (id
 }
 
 /* ---------- Agents ---------- */
-const stateLabel = { running: 'Running', idle: 'Idle', paused: 'Paused' } as const;
+const stateLabel: Record<Agent['state'], string> = {
+  running: 'Running',
+  idle: 'Ready',
+  paused: 'Paused',
+  error: 'Last run failed',
+  never_run: 'Not run yet',
+};
+const statePill: Record<Agent['state'], string> = {
+  running: 'pill-running',
+  idle: 'pill-running',
+  paused: 'pill-paused',
+  error: 'pill-error',
+  never_run: 'pill-idle',
+};
 
 export function AgentPanel({
   agents,
   onToggle,
+  live,
   detailed = false,
 }: {
   agents: Agent[];
   onToggle: (id: Agent['id']) => void;
+  live: boolean;
   detailed?: boolean;
 }) {
   return (
-    <Card title="Agent workspace" action={<DemoBadge label="Simulated" />}>
+    <Card title="Agent workspace" action={<SourceBadge live={live} demoLabel="Simulated" />}>
       <ul className={`agents ${detailed ? 'agents-detailed' : ''}`}>
         {agents.map((a) => (
           <li key={a.id} className="agent">
@@ -65,20 +81,35 @@ export function AgentPanel({
             <div className="agent-body">
               <div className="agent-row">
                 <span className="agent-name">{a.name}</span>
-                <span className={`pill pill-${a.state}`}>{stateLabel[a.state]}</span>
+                <span className={`pill ${statePill[a.state]}`}>{stateLabel[a.state]}</span>
               </div>
               <p className="agent-role">{a.role}</p>
               {detailed && <p className="agent-desc">{a.description}</p>}
-              <p className="agent-task">{a.currentTask ?? 'Waiting for a task'}</p>
-              {detailed && <p className="agent-meta">{a.completedToday} tasks completed today (demo)</p>}
+              <p className="agent-task">{a.currentTask ?? (live ? 'No open task' : 'Waiting for a task')}</p>
+              {a.lastRun && (
+                <p className={`agent-meta ${a.lastRun.status === 'failed' ? 'meta-error' : ''}`}>
+                  Last run {formatWhen(a.lastRun.finishedAt)} via {engineNames[a.lastRun.engine]} · {a.lastRun.summary}
+                </p>
+              )}
+              {!live && detailed && a.completedToday !== undefined && (
+                <p className="agent-meta">{a.completedToday} tasks completed today (demo)</p>
+              )}
             </div>
-            <button
-              className="btn btn-small"
-              onClick={() => onToggle(a.id)}
-              aria-label={`${a.state === 'paused' ? 'Resume' : 'Pause'} ${a.name}`}
-            >
-              {a.state === 'paused' ? 'Resume' : 'Pause'}
-            </button>
+            {live ? (
+              a.id !== 'code-shakti' && (
+                <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
+                  Run
+                </a>
+              )
+            ) : (
+              <button
+                className="btn btn-small"
+                onClick={() => onToggle(a.id)}
+                aria-label={`${a.state === 'paused' ? 'Resume' : 'Pause'} ${a.name}`}
+              >
+                {a.state === 'paused' ? 'Resume' : 'Pause'}
+              </button>
+            )}
           </li>
         ))}
       </ul>
@@ -95,9 +126,9 @@ const kindIcon: Record<Activity['kind'], IconName> = {
   system: 'connection',
 };
 
-export function ActivityFeed({ items }: { items: Activity[] }) {
+export function ActivityFeed({ items, live }: { items: Activity[]; live: boolean }) {
   return (
-    <Card title="Recent activity" action={<DemoBadge />}>
+    <Card title="Recent activity" action={<SourceBadge live={live} />}>
       {items.length === 0 ? (
         <EmptyState title="No activity yet" hint="Agent actions and releases will appear here." />
       ) : (
@@ -111,7 +142,8 @@ export function ActivityFeed({ items }: { items: Activity[] }) {
                 <p className="act-text">{a.text}</p>
                 <p className="act-meta">
                   {productNames[a.product]}
-                  {a.agent && ` · ${agentNames[a.agent]}`} · {timeAgo(a.minutesAgo)}
+                  {a.agent && ` · ${agentNames[a.agent]}`}
+                  {a.engine && ` · ${engineNames[a.engine]}`} · {timeAgo(a.minutesAgo)}
                 </p>
               </div>
             </li>
@@ -136,13 +168,21 @@ const nextStatus: Record<TaskStatus, TaskStatus> = {
   done: 'done',
 };
 
-export function TaskBoard({ tasks, onAdvance }: { tasks: Task[]; onAdvance: (id: string, s: TaskStatus) => void }) {
+export function TaskBoard({
+  tasks,
+  onAdvance,
+  live,
+}: {
+  tasks: Task[];
+  onAdvance: (id: string, s: TaskStatus) => void;
+  live: boolean;
+}) {
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const shown = filter === 'all' ? tasks : tasks.filter((t) => t.status === filter);
   const count = (s: TaskStatus) => tasks.filter((t) => t.status === s).length;
 
   return (
-    <Card title="Task status" action={<DemoBadge />}>
+    <Card title="Task status" action={<SourceBadge live={live} />}>
       <div className="tabs" role="tablist" aria-label="Filter tasks">
         {(['all', 'queued', 'in_progress', 'review', 'done'] as const).map((s) => (
           <button
@@ -171,7 +211,14 @@ export function TaskBoard({ tasks, onAdvance }: { tasks: Task[]; onAdvance: (id:
                 <p className="task-title">{t.title}</p>
                 <p className="task-meta">
                   {productNames[t.product]} · {agentNames[t.agent]}
+                  {t.requiresApproval && <span className="approval">Needs approval</span>}
+                  {t.prUrl && (
+                    <a className="pr-link" href={t.prUrl} target="_blank" rel="noreferrer">
+                      Review PR
+                    </a>
+                  )}
                 </p>
+                {t.reason && <p className="task-reason">{t.reason}</p>}
               </div>
               <span className={`status status-${t.status}`}>{statusLabel[t.status]}</span>
               {t.status !== 'done' && (

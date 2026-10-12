@@ -447,3 +447,60 @@ h1, h2, h3, p { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+/* ===== Live agent data ===== */
+.live-badge {
+  display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+  color: var(--ok); background: var(--ok-soft); padding: 3px 9px; border-radius: 999px; white-space: nowrap;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 3px rgba(46,125,79,.18); }
+.mode-banner.live { color: var(--ok); background: var(--ok-soft); border-color: #c4e2cd; }
+.notice { padding: 12px 16px; border-radius: var(--radius-sm); background: var(--warn-soft); color: #7a5214; font-size: 13.5px; border: 1px solid #ecd9b0; }
+.meta-error { color: var(--err) !important; }
+.foot strong { color: var(--ink-2); font-weight: 600; }
+
+.approval { display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 600; color: var(--warn); background: var(--warn-soft); padding: 1px 7px; border-radius: 999px; }
+.pr-link { margin-left: 8px; font-weight: 600; color: var(--green-2); }
+.task-reason { font-size: 12.5px; color: var(--ink-2); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.findings { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+.finding { padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
+.finding-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.finding-meta { font-size: 12px; color: var(--ink-3); }
+.finding-title { font-weight: 600; font-size: 14.5px; }
+.finding-insight { font-size: 13.5px; color: var(--ink-2); margin-top: 4px; }
+.conf { font-size: 11px; font-weight: 600; text-transform: capitalize; padding: 2px 8px; border-radius: 999px; }
+.conf-high { color: var(--ok); background: var(--ok-soft); }
+.conf-medium { color: #3b5486; background: #e6eaf3; }
+.conf-low { color: var(--ink-2); background: var(--muted-soft); }
+.sources { list-style: none; margin: 10px 0 0; padding: 10px 0 0; border-top: 1px dashed var(--line); display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
+.sources a { color: var(--green-2); font-weight: 500; text-decoration: underline; text-decoration-color: rgba(45,106,80,.35); text-underline-offset: 2px; word-break: break-word; }
+.sources span { color: var(--ink-3); }
+
+.runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+.run { display: flex; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--line); align-items: flex-start; }
+.run:last-child { border-bottom: 0; }
+.run-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex: none; }
+.run-success { background: var(--ok); }
+.run-partial { background: var(--warn); }
+.run-failed { background: var(--err); }
+.run-body { flex: 1; min-width: 0; }
+.run-title { font-weight: 600; font-size: 13.5px; letter-spacing: 0.02em; }
+.run-engine { font-weight: 400; color: var(--ink-3); letter-spacing: 0; }
+.run-summary { font-size: 13px; color: var(--ink-2); }
+.run-error { font-size: 12.5px; color: var(--err); margin-top: 2px; word-break: break-word; }
+.run-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex: none; }
+.run-when { font-size: 11.5px; color: var(--ink-3); }
+.run-status-success { background: var(--ok-soft); color: var(--ok); text-transform: capitalize; }
+.run-status-partial { background: var(--warn-soft); color: var(--warn); text-transform: capitalize; }
+.run-status-failed { background: var(--err-soft); color: var(--err); text-transform: capitalize; }
+
+.engines { list-style: none; margin: 16px 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.engine { padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-2); }
+.engine-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.engine-name { font-weight: 600; font-size: 14px; }
+.engine-where { font-size: 12px; color: var(--ink-3); margin-top: 2px; }
+.engine-msg { font-size: 12.5px; color: var(--ink-2); margin-top: 6px; word-break: break-word; }
+.modal-sub { font-family: var(--serif); font-weight: 500; font-size: 16px; margin: 18px 0 4px; }
+.setup-steps a, .modal-lead a { color: var(--green-2); font-weight: 600; }
+a.btn { text-decoration: none; color: inherit; }
