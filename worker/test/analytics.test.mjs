@@ -116,6 +116,15 @@ test('cron writes SOMA analysis for fresh data that has none yet, without refetc
   assert.ok((await getReport(ENV, db, 'sunverse', { deps: { fetch } })).insights.headline);
 });
 
+test('SOMA failure is stored and shown on the public report', async () => {
+  const fetch = fakeApis();
+  const bad = async (url, init) => (url.includes('generativelanguage') ? new Response('{"error":{"message":"quota"}}', { status: 400 }) : fetch(url, init));
+  await scheduledAnalytics(ENV, db, { fetch: bad, sleep: noSleep });
+  const r = await getReport(ENV, db, 'sunverse', { deps: { fetch } });
+  assert.equal(r.insights, null);
+  assert.match(r.insightsError, /SOMA analysis failed for sunverse: .*gemini HTTP 400/);
+});
+
 test('no key / API error / unconnected brand are reported honestly', async () => {
   const noKey = await getReport({}, db, 'sunverse');
   assert.equal(noKey.connected, false);

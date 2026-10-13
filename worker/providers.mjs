@@ -93,7 +93,9 @@ function buildRequest(env, cfg, { system, prompt, maxTokens, json }) {
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: system }] },
         contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.5, maxOutputTokens: maxTokens, ...(json ? { responseMimeType: 'application/json' } : {}) },
+        // No maxOutputTokens: Gemini 3.x counts "thinking" tokens against it, which can cut the
+        // answer off. The working GitHub runner also leaves it at the model default.
+        generationConfig: { temperature: 0.5, ...(json ? { responseMimeType: 'application/json' } : {}) },
       }),
     },
     parse(body) {

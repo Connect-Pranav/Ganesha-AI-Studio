@@ -286,7 +286,17 @@ export async function getReport(env, db, brand, { force = false, withInsights = 
       insights = { ...(await generateInsights(env, db, row, summary, deps)), basedOn: row.fetched_at };
     } catch (e) {
       insightsError = e.message;
+      // Keep the failure visible to the dashboard (public report + owner notifications).
+      await db.prepare('INSERT INTO events (workflow_id, task_id, kind, message, created_at) VALUES (NULL, NULL, ?, ?, ?)')
+        .bind('analytics_insights_failed', `SOMA analysis failed for ${brand}: ${e.message}`.slice(0, 1000), nowIso()).run();
     }
+  }
+  if (!insightsError) {
+    const fail = await db
+      .prepare("SELECT message, created_at FROM events WHERE kind = 'analytics_insights_failed' AND message LIKE ? ORDER BY id DESC LIMIT 1")
+      .bind(`%for ${brand}:%`)
+      .first();
+    if (fail && (!insights?.at || fail.created_at > insights.at)) insightsError = `${fail.message} (${fail.created_at})`;
   }
 
   const gaps = [...GAPS_YOUTUBE_PUBLIC];
