@@ -245,6 +245,21 @@ test('provider test: not_configured without key, connected only after a live rep
   assert.ok(!logged.error.includes(ENV.ANTHROPIC_API_KEY));
 });
 
+test('gemini fallback: overloaded main model falls back to the next free model; bad key does not', async () => {
+  const seen = [];
+  const fetch = async (url) => {
+    const model = /models\/([^:]+):/.exec(url)[1];
+    seen.push(model);
+    if (model === 'gemini-3.8-flash') return new Response('{"error":{"code":503,"message":"high demand"}}', { status: 503 });
+    return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: '{"ok":true}' }] } }], usageMetadata: {} }), { status: 200 });
+  };
+  const r = await callProvider({ GEMINI_API_KEY: 'k' }, db, 'gemini', { system: 's', prompt: 'p', json: true }, { fetch, sleep: noSleep });
+  assert.equal(r.model, 'gemini-3.6-flash');
+  assert.deepEqual(seen, ['gemini-3.8-flash', 'gemini-3.8-flash', 'gemini-3.8-flash', 'gemini-3.6-flash']);
+  const authFail = async () => new Response('{"error":"bad key"}', { status: 403 });
+  await assert.rejects(callProvider({ GEMINI_API_KEY: 'k' }, db, 'gemini', { system: 's', prompt: 'p' }, { fetch: authFail, sleep: noSleep }), /HTTP 403/);
+});
+
 test('gemini adapter: sends key in header (not URL) and parses JSON + usage', async () => {
   let seen;
   const fetch = async (url, init) => {

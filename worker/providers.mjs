@@ -132,11 +132,37 @@ export function parseJsonOutput(text) {
  * Calls a provider with timeout + bounded retries. Returns { text, json?, usage, model, provider }.
  * `fetchImpl` and `sleep` are injectable for tests.
  */
+/** Gemini models to try in order when the main one is overloaded or unavailable (all free-tier Flash models). */
+export function geminiModels(env) {
+  const main = providerConfig(env, 'gemini').model;
+  const extra = (env.GEMINI_FALLBACK_MODELS ?? 'gemini-3.6-flash,gemini-3.5-flash-lite').split(',').map((m) => m.trim()).filter(Boolean);
+  return [...new Set([main, ...extra])];
+}
+const FALLBACK_KINDS = new Set(['server', 'rate_limited', 'timeout']);
+
 export async function callProvider(env, db, provider, opts, deps = {}) {
-  const fetchImpl = deps.fetch ?? fetch;
-  const sleep = deps.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
   const cfg = providerConfig(env, provider);
   if (!cfg.configured) throw new ProviderError(`${provider} is not configured: secret ${cfg.secretName} is not set`, { kind: 'not_configured' });
+  const models = provider === 'gemini' ? geminiModels(env) : [cfg.model];
+  const errors = [];
+  for (const model of models) {
+    try {
+      return await callModel(env, db, { ...cfg, model }, opts, deps);
+    } catch (e) {
+      errors.push(e);
+      const unavailable = e.httpStatus === 404 || FALLBACK_KINDS.has(e.kind);
+      if (!unavailable) throw e; // bad key / bad request / bad output: another model won't help
+    }
+  }
+  if (errors.length === 1) throw errors[0];
+  const last = errors[errors.length - 1];
+  throw new ProviderError(errors.map((e) => e.message).join(' | '), { httpStatus: last.httpStatus, retryable: true, kind: last.kind });
+}
+
+async function callModel(env, db, cfg, opts, deps) {
+  const provider = cfg.provider;
+  const fetchImpl = deps.fetch ?? fetch;
+  const sleep = deps.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
   const req = buildRequest(env, cfg, { maxTokens: 4096, json: false, ...opts });
   const timeoutMs = opts.timeoutMs ?? DEFAULTS[provider].timeoutMs;
 
