@@ -16,6 +16,7 @@ import {
 import { PROVIDERS, providerConfig, testProvider } from './providers.mjs';
 import { BRAND_SOURCES, getReport, scheduledAnalytics } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
+import { ensureSchema } from './schema.mjs';
 
 const VERSION = '0.3.0-analytics';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
@@ -33,8 +34,9 @@ function requireAdmin(request, env) {
   if (!token || !safeEqual(token, env.ADMIN_TOKEN)) throw new HttpError(401, 'Missing or invalid admin token.');
 }
 
-function requireDb(env) {
+async function requireDb(env) {
   if (!env.DB) throw new HttpError(503, 'D1 binding DB is not configured.');
+  await ensureSchema(env.DB);
   return env.DB;
 }
 
@@ -87,7 +89,7 @@ async function route(request, env, ctx) {
     if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
     let report;
     try {
-      report = await getReport(env, requireDb(env), seg[2]);
+      report = await getReport(env, await requireDb(env), seg[2]);
     } catch (e) {
       console.error('analytics report failed', e?.stack ?? e);
       report = { brand: seg[2], connected: false, reason: `Analytics error: ${String(e?.message ?? e).slice(0, 300)}` };
@@ -97,7 +99,7 @@ async function route(request, env, ctx) {
   if (seg[1] === 'analytics' && method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(request) });
 
   requireAdmin(request, env);
-  const db = requireDb(env);
+  const db = await requireDb(env);
 
   // Owner-triggered refresh + SOMA analysis (uses the AI provider).
   if (seg[1] === 'analytics' && seg[3] === 'refresh' && method === 'POST') {
@@ -250,6 +252,7 @@ export default {
   },
   async scheduled(_event, env, ctx) {
     if (!env.DB) return;
+    await ensureSchema(env.DB);
     ctx.waitUntil(tick(env, env.DB).then((r) => console.log('tick', JSON.stringify(r))));
     ctx.waitUntil(scheduledAnalytics(env, env.DB).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },

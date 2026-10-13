@@ -283,6 +283,21 @@ test('Gemini-only setup: a Claude-only agent completes through Gemini', async ()
   assert.ok((await getTasks(db, wf.id)).every((t) => t.provider === 'gemini'));
 });
 
+test('schema: generated file is current; Worker builds every table on an empty database', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const { resetSchemaCache } = await import('../schema.mjs');
+  resetSchemaCache();
+  execFileSync('node', [new URL('../../scripts/gen-schema.mjs', import.meta.url).pathname, '--check'], { stdio: 'pipe' });
+  // Child tables before parents (foreign keys).
+  for (const t of ['analytics_snapshots', 'agent_settings', 'events', 'provider_calls', 'approvals', 'artifacts', 'tasks', 'workflows'])
+    await db.prepare(`DROP TABLE IF EXISTS ${t}`).run();
+  const h = await worker.fetch(new Request('https://g.test/api/analytics/sunverse'), { DB: db, ASSETS: assets }, ctx);
+  assert.equal(h.status, 200);
+  const { results } = await db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
+  for (const t of ['workflows', 'tasks', 'artifacts', 'approvals', 'provider_calls', 'events', 'agent_settings', 'analytics_snapshots'])
+    assert.ok(results.some((r) => r.name === t), `missing ${t}`);
+});
+
 /* ---------------- HTTP layer ---------------- */
 const assets = { fetch: async () => new Response('<html>dashboard</html>', { headers: { 'content-type': 'text/html' } }) };
 const ctx = { waitUntil: (p) => p.catch(() => {}) };

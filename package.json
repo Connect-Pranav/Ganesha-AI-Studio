@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "node scripts/validate.mjs && tsc -b && vite build",
+    "build": "node scripts/validate.mjs && node scripts/gen-schema.mjs --check && tsc -b && vite build",
     "preview": "vite preview",
     "typecheck": "tsc -b",
     "validate:data": "node scripts/validate.mjs",

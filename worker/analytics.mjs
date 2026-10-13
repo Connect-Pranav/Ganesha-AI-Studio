@@ -7,6 +7,7 @@ import { agentById } from './agents.mjs';
 import { enginesFor } from './orchestrator.mjs';
 import { callProvider } from './providers.mjs';
 import { newId, nowIso } from './util.mjs';
+import { ensureSchema } from './schema.mjs';
 
 export const BRAND_SOURCES = {
   sunverse: { platform: 'youtube', handle: '@SURVERSE_09' },
@@ -28,19 +29,6 @@ export const GAPS_YOUTUBE_PUBLIC = [
   'Reach, impressions, click-through rate, watch time, average view duration, audience retention and traffic sources need the channel owner to sign in (YouTube Analytics API). Not connected yet.',
   'Revenue and RPM need YouTube Partner Program data via the channel sign-in. Not connected yet.',
 ];
-
-// Same DDL as migrations/0002_analytics.sql; idempotent, so the table exists even if the
-// migration was not run by hand. Runs once per Worker instance.
-let schemaReady = false;
-async function ensureSchema(db) {
-  if (schemaReady) return;
-  await db.batch([
-    db.prepare(`CREATE TABLE IF NOT EXISTS analytics_snapshots (id TEXT PRIMARY KEY, brand TEXT NOT NULL, source TEXT NOT NULL,
-      account_ref TEXT NOT NULL, fetched_at TEXT NOT NULL, data_json TEXT NOT NULL, insights_json TEXT, insights_at TEXT)`),
-    db.prepare('CREATE INDEX IF NOT EXISTS idx_analytics_brand ON analytics_snapshots(brand, fetched_at)'),
-  ]);
-  schemaReady = true;
-}
 
 const num = (v) => (v === undefined || v === null || v === '' ? null : Number(v));
 
