@@ -37,7 +37,7 @@ export function deriveAiStatus(runs: Run[]): AiStatus {
   const connected = engines.filter((e) => e.state === 'connected');
   const message =
     best.state === 'not_configured'
-      ? 'No agent engine has run yet. Showing demo data.'
+      ? 'No agent engine has run yet. Sections stay empty until the first run.'
       : best.state === 'connected'
         ? `${connected.map((e) => e.label).join(' + ')} active.`
         : best.message;

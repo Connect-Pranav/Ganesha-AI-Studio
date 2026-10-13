@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Icon, type IconName } from './Icon';
-import { Card, DemoBadge, EmptyState, SourceBadge, agentNames, engineNames, formatWhen, productNames, timeAgo } from './ui';
+import { Card, EmptyState, LiveBadge, SourceBadge, agentNames, engineNames, formatWhen, productNames, timeAgo } from './ui';
 import { AGENTS_WORKFLOW_URL } from '../config';
 import type { Activity, Agent, Metric, Product, ProductId, Task, TaskStatus, Workflow } from '../types';
 
@@ -26,7 +26,7 @@ export function ProductCard({ product, onOpen }: { product: Product; onOpen: (id
         <div className="product-icon" aria-hidden="true">
           <Icon name={product.id} size={20} />
         </div>
-        <DemoBadge label="Demo" />
+        <LiveBadge label="Counts" />
       </div>
       <h3 className="product-name">{product.name}</h3>
       <p className="product-tag">{product.tagline}</p>
@@ -61,19 +61,9 @@ const statePill: Record<Agent['state'], string> = {
   never_run: 'pill-idle',
 };
 
-export function AgentPanel({
-  agents,
-  onToggle,
-  live,
-  detailed = false,
-}: {
-  agents: Agent[];
-  onToggle: (id: Agent['id']) => void;
-  live: boolean;
-  detailed?: boolean;
-}) {
+export function AgentPanel({ agents, live, detailed = false }: { agents: Agent[]; live: boolean; detailed?: boolean }) {
   return (
-    <Card title="Agent workspace" action={<SourceBadge live={live} demoLabel="Simulated" />}>
+    <Card title="Agent workspace" action={<SourceBadge live={live} />}>
       <ul className={`agents ${detailed ? 'agents-detailed' : ''}`}>
         {agents.map((a) => (
           <li key={a.id} className="agent">
@@ -91,24 +81,11 @@ export function AgentPanel({
                   Last run {formatWhen(a.lastRun.finishedAt)} via {engineNames[a.lastRun.engine]} · {a.lastRun.summary}
                 </p>
               )}
-              {!live && detailed && a.completedToday !== undefined && (
-                <p className="agent-meta">{a.completedToday} tasks completed today (demo)</p>
-              )}
             </div>
-            {live ? (
-              a.id !== 'code-shakti' && (
-                <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
-                  Run
-                </a>
-              )
-            ) : (
-              <button
-                className="btn btn-small"
-                onClick={() => onToggle(a.id)}
-                aria-label={`${a.state === 'paused' ? 'Resume' : 'Pause'} ${a.name}`}
-              >
-                {a.state === 'paused' ? 'Resume' : 'Pause'}
-              </button>
+            {a.id !== 'code-shakti' && (
+              <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
+                Run
+              </a>
             )}
           </li>
         ))}
@@ -161,22 +138,7 @@ const statusLabel: Record<TaskStatus, string> = {
   review: 'Review',
   done: 'Done',
 };
-const nextStatus: Record<TaskStatus, TaskStatus> = {
-  queued: 'in_progress',
-  in_progress: 'review',
-  review: 'done',
-  done: 'done',
-};
-
-export function TaskBoard({
-  tasks,
-  onAdvance,
-  live,
-}: {
-  tasks: Task[];
-  onAdvance: (id: string, s: TaskStatus) => void;
-  live: boolean;
-}) {
+export function TaskBoard({ tasks, live }: { tasks: Task[]; live: boolean }) {
   const [filter, setFilter] = useState<TaskStatus | 'all'>('all');
   const shown = filter === 'all' ? tasks : tasks.filter((t) => t.status === filter);
   const count = (s: TaskStatus) => tasks.filter((t) => t.status === s).length;
@@ -200,7 +162,7 @@ export function TaskBoard({
       {shown.length === 0 ? (
         <EmptyState
           title={tasks.length === 0 ? 'No tasks yet' : 'Nothing in this column'}
-          hint={tasks.length === 0 ? 'Use a quick action to create the first task.' : undefined}
+          hint={tasks.length === 0 ? 'GANESHA plans tasks from NARADA research on each agent run.' : undefined}
         />
       ) : (
         <ul className="tasks">
@@ -221,16 +183,6 @@ export function TaskBoard({
                 {t.reason && <p className="task-reason">{t.reason}</p>}
               </div>
               <span className={`status status-${t.status}`}>{statusLabel[t.status]}</span>
-              {t.status !== 'done' && (
-                <button
-                  className="icon-btn"
-                  onClick={() => onAdvance(t.id, nextStatus[t.status])}
-                  aria-label={`Move "${t.title}" to ${statusLabel[nextStatus[t.status]]}`}
-                  title={`Move to ${statusLabel[nextStatus[t.status]]}`}
-                >
-                  <Icon name="arrow" size={16} />
-                </button>
-              )}
             </li>
           ))}
         </ul>
@@ -242,9 +194,9 @@ export function TaskBoard({
 /* ---------- Workflows ---------- */
 export function WorkflowMonitor({ workflows }: { workflows: Workflow[] }) {
   return (
-    <Card title="Workflow monitoring" action={<DemoBadge />}>
+    <Card title="Workflow monitoring" action={<SourceBadge live={workflows.length > 0} />}>
       {workflows.length === 0 ? (
-        <EmptyState title="No active workflows" hint="Production pipelines will show here once started." />
+        <EmptyState title="No pipelines yet" hint="File a goal and GANESHA turns it into a pipeline on the next run." />
       ) : (
         <ul className="workflows">
           {workflows.map((w) => {

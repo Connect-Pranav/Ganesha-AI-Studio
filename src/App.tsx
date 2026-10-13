@@ -4,11 +4,12 @@ import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
 import { QuickActionModal } from './components/QuickActionModal';
 import { AgentsView, ConnectionView, OverviewView, PipelinesView, ProductView } from './components/Views';
-import { ErrorState, SkeletonDashboard, agentNames } from './components/ui';
+import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
 import { deriveAiStatus } from './services/aiStatusService';
-import type { ActivityKind, AgentId, AiStatus, DashboardData, ProductId, Task, TaskStatus, View } from './types';
+import type { AiStatus, DashboardData, ProductId, Task, View } from './types';
+import { newGoalUrl } from './data/agentsMeta';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
@@ -106,47 +107,13 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  /* ---- local mutations (demo only, not persisted) ---- */
-  const update = (fn: (d: DashboardData) => DashboardData) =>
-    setLoad((s) => (s.status === 'ready' ? { ...s, data: fn(s.data) } : s));
-
-  const advanceTask = (id: string, status: TaskStatus) =>
-    update((d) => ({ ...d, tasks: d.tasks.map((t) => (t.id === id ? { ...t, status } : t)) }));
-
-  const toggleAgent = (id: AgentId) =>
-    update((d) => ({
-      ...d,
-      agents: d.agents.map((a) =>
-        a.id !== id ? a : { ...a, state: a.state === 'paused' ? (a.currentTask ? 'running' : 'idle') : 'paused' },
-      ),
-    }));
-
-  const kindFor: Record<QuickActionKind, ActivityKind> = {
-    content: 'task',
-    research: 'research',
-    code: 'code',
-    analytics: 'task',
-  };
-
+  /* ---- quick actions: file a real goal in the private vault (no local fake tasks) ---- */
+  const LABEL: Record<QuickActionKind, string> = { content: '', research: 'research', code: 'foliocraft', analytics: 'ops' };
   const createTask = (input: Omit<Task, 'id' | 'status'>) => {
-    const id = `t${Date.now()}`;
-    update((d) => ({
-      ...d,
-      tasks: [{ ...input, id, status: 'queued' }, ...d.tasks],
-      activity: [
-        {
-          id: `a${Date.now()}`,
-          minutesAgo: 0,
-          product: input.product,
-          agent: input.agent,
-          kind: quick ? kindFor[quick] : 'task',
-          text: `Queued: ${input.title}`,
-        },
-        ...d.activity,
-      ],
-    }));
+    const label = input.product !== 'studio' ? input.product : LABEL[quick ?? 'content'] || 'research';
+    window.open(newGoalUrl(label, input.title), '_blank', 'noopener');
     setQuick(null);
-    setToast(`Task queued for ${agentNames[input.agent]} (demo, not saved)`);
+    setToast('Goal opened in your private vault. Submit it there to start the pipeline.');
   };
 
   const defaultProduct: ProductId | 'studio' = PRODUCT_VIEWS.includes(view) ? (view as ProductId) : 'studio';
@@ -160,15 +127,13 @@ export default function App() {
       ai,
       aiChecking,
       onOpenProduct: (id: ProductId) => navigate(id),
-      onAdvanceTask: advanceTask,
-      onToggleAgent: toggleAgent,
       onQuickAction: setQuick,
       onRecheckAi: () => fetchData(true),
       onConnectAi: () => setShowConnect(true),
     };
     const notice = load.agentDataError ? (
       <div className="notice" role="status">
-        Live agent data couldn’t be read ({load.agentDataError}). Showing demo data.
+        Live agent data couldn’t be read ({load.agentDataError}). Sections are empty until it loads.
       </div>
     ) : null;
     const body =
@@ -221,7 +186,7 @@ export default function App() {
             <h1>{TITLES[view]}</h1>
           </div>
           <div className="topbar-right">
-            <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'Demo Mode'}</span>
+            <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'No agent data yet'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">
               <AiStatusPill status={aiChecking ? null : ai} />
             </button>
@@ -233,8 +198,7 @@ export default function App() {
         </main>
 
         <footer className="foot">
-          Sections marked <strong>Live</strong> come from real agent runs. Sections marked <strong>Demo</strong> are
-          illustrative only. Changes you make here are kept until refresh.
+          Every number here is counted from real agent runs. Empty sections mean nothing has been recorded yet.
         </footer>
       </div>
 

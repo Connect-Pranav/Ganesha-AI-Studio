@@ -73,14 +73,14 @@ export function QuickActionModal({
           </label>
         </div>
         <p className="modal-note">
-          Queued locally for the agent. In Demo Mode no AI runs — the task is tracked on the board only.
+          Opens a pre-filled goal in your private vault. Submit it there and GANESHA picks it up on its next run.
         </p>
         <div className="modal-actions">
           <button type="button" className="btn btn-ghost" onClick={onClose}>
             Cancel
           </button>
           <button type="submit" className="btn btn-primary">
-            Add to queue
+            Open goal in vault
           </button>
         </div>
       </form>

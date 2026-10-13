@@ -77,7 +77,7 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
         <div className="sidebar-foot">
           <div className="mode-chip">
             <span className={`dot ${live ? 'dot-connected' : 'dot-demo'}`} aria-hidden="true" />
-            <span className="nav-text">{live ? 'Live agents' : 'Demo Mode'}</span>
+            <span className="nav-text">{live ? 'Live agents' : 'No agent data yet'}</span>
           </div>
           <button
             className="icon-btn desktop-only"

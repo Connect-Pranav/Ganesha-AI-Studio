@@ -22,9 +22,10 @@ export function timeAgo(minutes: number): string {
   return h < 24 ? `${h}h ago` : `${Math.floor(h / 24)}d ago`;
 }
 
-export function DemoBadge({ label = 'Demo data' }: { label?: string }) {
+/** Shown when a section has no real records yet. */
+export function DemoBadge({ label = 'No data yet' }: { label?: string }) {
   return (
-    <span className="demo-badge" title="Illustrative values — not from a live source">
+    <span className="demo-badge" title="Nothing recorded by an agent yet">
       {label}
     </span>
   );
@@ -39,7 +40,7 @@ export function LiveBadge({ label = 'Live' }: { label?: string }) {
   );
 }
 
-/** Live badge when the section shows real agent output, Demo badge otherwise. */
+/** Live badge when the section shows real agent output, "No data yet" otherwise. */
 export function SourceBadge({ live, demoLabel }: { live: boolean; demoLabel?: string }) {
   return live ? <LiveBadge /> : <DemoBadge label={demoLabel} />;
 }

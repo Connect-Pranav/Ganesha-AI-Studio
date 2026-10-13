@@ -1,5 +1,5 @@
 import { Icon } from './Icon';
-import { Card, DemoBadge } from './ui';
+import { Card } from './ui';
 import {
   ActivityFeed,
   AgentPanel,
@@ -13,12 +13,10 @@ import {
 import { ResearchPanel, RunHistory } from './AgentWidgets';
 import { AgentDirectory, PipelineBoard } from './PipelineWidgets';
 import { AiStatusCard } from './AiConnection';
-import type { AgentId, AiStatus, DashboardData, Product, ProductId, TaskStatus } from '../types';
+import type { AiStatus, DashboardData, ProductId } from '../types';
 
 export interface ViewHandlers {
   onOpenProduct: (id: ProductId) => void;
-  onAdvanceTask: (id: string, s: TaskStatus) => void;
-  onToggleAgent: (id: AgentId) => void;
   onQuickAction: (k: QuickActionKind) => void;
   onRecheckAi: () => void;
   onConnectAi: () => void;
@@ -56,9 +54,9 @@ export function OverviewView(p: Common) {
       <div className="grid-main">
         <div className="col">
           <PipelineBoard pipelines={data.pipelines} limit={3} />
-          <AgentPanel agents={data.agents} onToggle={p.onToggleAgent} live={data.live.agents} />
+          <AgentPanel agents={data.agents} live={data.live.agents} />
           <ResearchPanel findings={data.research} limit={4} title="Latest NARADA research" />
-          <TaskBoard tasks={data.tasks} onAdvance={p.onAdvanceTask} live={data.live.tasks} />
+          <TaskBoard tasks={data.tasks} live={data.live.tasks} />
           <WorkflowMonitor workflows={data.workflows} />
         </div>
         <div className="col">
@@ -72,25 +70,6 @@ export function OverviewView(p: Common) {
 }
 
 /* ---------- Product workspace ---------- */
-function Pipeline({ product }: { product: Product }) {
-  const max = Math.max(...product.pipeline.map((s) => s.count), 1);
-  return (
-    <Card title={product.id === 'foliocraft' ? 'Conversion funnel' : 'Production pipeline'} action={<DemoBadge />}>
-      <ul className="pipeline">
-        {product.pipeline.map((s) => (
-          <li key={s.name}>
-            <span className="pl-name">{s.name}</span>
-            <span className="pl-track">
-              <span className="pl-bar" style={{ width: `${Math.max((s.count / max) * 100, 3)}%` }} />
-            </span>
-            <span className="pl-count">{s.count.toLocaleString('en-IN')}</span>
-          </li>
-        ))}
-      </ul>
-    </Card>
-  );
-}
-
 export function ProductView(p: Common & { productId: ProductId }) {
   const product = p.data.products.find((x) => x.id === p.productId);
   if (!product) return null;
@@ -116,15 +95,14 @@ export function ProductView(p: Common & { productId: ProductId }) {
 
       <section className="grid-3" aria-label={`${product.name} metrics`}>
         {product.metrics.map((m) => (
-          <StatCard key={m.label} metric={{ ...m, hint: 'Demo' }} />
+          <StatCard key={m.label} metric={m} />
         ))}
       </section>
 
       <div className="grid-main">
         <div className="col">
           <ResearchPanel findings={p.data.research} brand={product.id} title={`NARADA research · ${product.name}`} />
-          <TaskBoard tasks={tasks} onAdvance={p.onAdvanceTask} live={p.data.live.tasks} />
-          <Pipeline product={product} />
+          <TaskBoard tasks={tasks} live={p.data.live.tasks} />
           <WorkflowMonitor workflows={workflows} />
         </div>
         <div className="col">
