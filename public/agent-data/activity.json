@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261013T022735Z_1_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Instagram Edits adds an AI assistant that explains Reel performance (US-only for now)."
+    },
+    {
+      "id": "e_20261013T022735Z_2_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — YouTube Ask Music discovery and the 2026 Foundry independent-artist class."
+    },
+    {
+      "id": "e_20261013T022735Z_3_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Framer shipped AI-agent Skills and a CMS List field in September."
+    },
+    {
+      "id": "e_20261013T022735Z_4_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: check Edits assistant access, draft a Reel review template."
+    },
+    {
+      "id": "e_20261013T022735Z_5_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: plan alternate track versions, research Foundry selection."
+    },
+    {
+      "id": "e_20261013T022735Z_6_claude",
+      "at": "2026-10-13T02:27:35Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: spec a saved AI style brief, prototype a process-steps block."
+    },
+    {
       "id": "e_20261012T193958Z_1_claude",
       "at": "2026-10-12T19:39:58Z",
       "brand": "foliocraft",
