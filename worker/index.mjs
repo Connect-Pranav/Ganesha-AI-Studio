@@ -237,7 +237,8 @@ export default {
     } catch (e) {
       if (e instanceof HttpError) return json({ error: e.message }, e.status);
       console.error('api error', e?.stack ?? e);
-      return json({ error: 'Internal error' }, 500);
+      // Message only (no stack): enough to diagnose without exposing internals.
+      return json({ error: `Internal error: ${String(e?.message ?? e).slice(0, 300)}` }, 500);
     }
   },
   async scheduled(_event, env, ctx) {
