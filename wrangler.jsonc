@@ -4,6 +4,8 @@
   // Secrets are set in Cloudflare (ADMIN_TOKEN, GEMINI_API_KEY, ANTHROPIC_API_KEY), never here.
   "name": "ganesha-studio",
   "main": "worker/index.mjs",
+  // Keep variables added in the Cloudflare dashboard when Git pushes deploy (prevents keys being wiped).
+  "keep_vars": true,
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
