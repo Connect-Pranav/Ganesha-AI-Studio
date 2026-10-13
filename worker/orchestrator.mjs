@@ -173,10 +173,14 @@ async function saveArtifact(db, task, kind, content) {
   return id;
 }
 
-/** Engine order: D1 override → registry. Fallback to the other provider only when explicitly allowed. */
+/**
+ * Engine order: per-agent D1 override → PRIMARY_ENGINE var (studio-wide default, then the
+ * agent's registry engines) → registry. Other providers only when ALLOW_PROVIDER_FALLBACK=true.
+ */
 export async function enginesFor(db, env, agent) {
   const o = await db.prepare('SELECT engines FROM agent_settings WHERE agent_id = ?').bind(agent.id).first();
-  const primary = o ? JSON.parse(o.engines) : agent.engines;
+  const studioPrimary = PROVIDERS.includes(env.PRIMARY_ENGINE) ? [env.PRIMARY_ENGINE] : [];
+  const primary = o ? JSON.parse(o.engines) : [...new Set([...studioPrimary, ...agent.engines])];
   const list = primary.filter((e) => PROVIDERS.includes(e));
   if (env.ALLOW_PROVIDER_FALLBACK === 'true') for (const p of PROVIDERS) if (!list.includes(p)) list.push(p);
   return list;

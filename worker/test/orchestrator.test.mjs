@@ -258,6 +258,31 @@ test('gemini adapter: sends key in header (not URL) and parses JSON + usage', as
   assert.equal(seen.init.headers['x-goog-api-key'], 'g-key-SECRET');
 });
 
+test('PRIMARY_ENGINE=gemini puts Gemini first for Claude-only agents; D1 override still wins', async () => {
+  const { enginesFor } = await import('../orchestrator.mjs');
+  const vagdevi = REGISTRY.agents.find((a) => a.id === 'sunverse_vagdevi_lyricist');
+  assert.deepEqual(vagdevi.engines, ['claude']);
+  assert.deepEqual(await enginesFor(db, { PRIMARY_ENGINE: 'gemini' }, vagdevi), ['gemini', 'claude']);
+  assert.deepEqual(await enginesFor(db, {}, vagdevi), ['claude']);
+  await db.prepare("INSERT INTO agent_settings (agent_id, engines, updated_at) VALUES (?, '[\"claude\"]', '2026-10-13T00:00:00Z')").bind(vagdevi.id).run();
+  assert.deepEqual(await enginesFor(db, { PRIMARY_ENGINE: 'gemini' }, vagdevi), ['claude']);
+});
+
+test('Gemini-only setup: a Claude-only agent completes through Gemini', async () => {
+  const fetch = async (url, init) => {
+    assert.match(url, /generativelanguage\.googleapis\.com/);
+    const body = JSON.parse(init.body);
+    const agentId = /\(([a-z0-9_]+)\)/.exec(body.systemInstruction.parts[0].text)[1];
+    const text = JSON.stringify(goodOutput(agentId));
+    return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text }] }, finishReason: 'STOP' }], usageMetadata: { promptTokenCount: 10, candidatesTokenCount: 5 } }), { status: 200 });
+  };
+  const env = { GEMINI_API_KEY: 'g', PRIMARY_ENGINE: 'gemini', MAX_CONCURRENT_TASKS: '6' };
+  const wf = await createWorkflow(db, { template: 'research_brief', title: 'Brief' });
+  await drain(env, { fetch, sleep: noSleep });
+  assert.equal((await getWorkflow(db, wf.id)).status, 'completed');
+  assert.ok((await getTasks(db, wf.id)).every((t) => t.provider === 'gemini'));
+});
+
 /* ---------------- HTTP layer ---------------- */
 const assets = { fetch: async () => new Response('<html>dashboard</html>', { headers: { 'content-type': 'text/html' } }) };
 const ctx = { waitUntil: (p) => p.catch(() => {}) };

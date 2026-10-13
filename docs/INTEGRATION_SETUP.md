@@ -7,7 +7,7 @@ Commands run from the repo root after `npm install` (Node 22+).
 
 | Integration | Code | Account setup | State |
 |---|---|---|---|
-| Worker backend + D1 | ✅ branch `feat/worker-orchestrator` | ❌ D1 not created | Pending |
+| Worker backend + D1 | ✅ branch `feat/worker-orchestrator` | ✅ D1 `ganesha` created; schema via Console | Pending deploy |
 | Admin auth | ✅ | ❌ `ADMIN_TOKEN` not set | Pending |
 | Claude (Anthropic API) | ✅ adapter + live test | ❌ `ANTHROPIC_API_KEY` | Pending |
 | Gemini API (Worker) | ✅ adapter + live test | ❌ `GEMINI_API_KEY` (Worker secret) | Pending |

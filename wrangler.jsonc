@@ -1,7 +1,7 @@
 {
   // Cloudflare Worker: static dashboard (dist/) + /api backend (worker/index.mjs).
-  // Before deploying this config: create the D1 database and replace database_id
-  // (see docs/INTEGRATION_SETUP.md). Secrets are set with `wrangler secret put`, never here.
+  // D1 database "ganesha" (id below is an identifier, not a secret).
+  // Secrets are set in Cloudflare (ADMIN_TOKEN, GEMINI_API_KEY, ANTHROPIC_API_KEY), never here.
   "name": "ganesha-studio",
   "main": "worker/index.mjs",
   "compatibility_date": "2026-10-01",
@@ -15,13 +15,15 @@
     {
       "binding": "DB",
       "database_name": "ganesha",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "7f947629-c39c-4bcd-94cd-0f7cdf01ff9a",
       "migrations_dir": "migrations"
     }
   ],
   // GANESHA orchestration pass every 5 minutes (Cron Triggers are on the Workers Free plan).
   "triggers": { "crons": ["*/5 * * * *"] },
   "vars": {
+    // Free tier first: every agent tries Gemini, then its registry engine(s).
+    "PRIMARY_ENGINE": "gemini",
     "ANTHROPIC_MODEL": "claude-sonnet-5-5",
     "GEMINI_MODEL": "gemini-3.8-flash",
     "MAX_CONCURRENT_TASKS": "3",
