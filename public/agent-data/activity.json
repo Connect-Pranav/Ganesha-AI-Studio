@@ -1,6 +1,33 @@
 {
   "events": [
     {
+      "id": "e_20261013T092542Z_1_claude",
+      "at": "2026-10-13T09:25:42Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Owner approved the release package for vault#1; pipeline completed. Upload stays manual."
+    },
+    {
+      "id": "e_20261013T092542Z_2_claude",
+      "at": "2026-10-13T09:25:42Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Owner approved the posting package for vault#2; pipeline completed. Posting stays manual."
+    },
+    {
+      "id": "e_20261013T092542Z_3_claude",
+      "at": "2026-10-13T09:25:42Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Owner approved the build for vault#3; coding task queued for KARMA (blocked: repo not connected)."
+    },
+    {
       "id": "e_20261013T073443Z_4_gemini",
       "at": "2026-10-13T07:34:43Z",
       "brand": "littleloop",

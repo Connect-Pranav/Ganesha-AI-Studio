@@ -6,10 +6,10 @@
       "brand": "foliocraft",
       "title": "One-click theme switcher with preview (test)",
       "goalRef": "vault#3",
-      "status": "approval_required",
+      "status": "completed",
       "engine": "claude",
       "createdAt": "2026-10-12T19:32:19Z",
-      "updatedAt": "2026-10-12T19:39:52Z",
+      "updatedAt": "2026-10-13T09:25:23Z",
       "steps": [
         {
           "key": "spec",
@@ -76,8 +76,9 @@
             "qa"
           ],
           "approval": true,
-          "status": "approval_required",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 0,
+          "finishedAt": "2026-10-13T09:25:23Z"
         },
         {
           "key": "handoff",
@@ -86,8 +87,9 @@
           "dependsOn": [
             "build"
           ],
-          "status": "pending",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-13T09:25:23Z"
         }
       ]
     },
@@ -97,10 +99,10 @@
       "brand": "littleloop",
       "title": "Counting to five with raindrops (test)",
       "goalRef": "vault#2",
-      "status": "approval_required",
+      "status": "completed",
       "engine": "claude",
       "createdAt": "2026-10-12T19:16:10Z",
-      "updatedAt": "2026-10-12T19:31:00Z",
+      "updatedAt": "2026-10-13T09:25:23Z",
       "steps": [
         {
           "key": "concept",
@@ -215,8 +217,9 @@
             "qa"
           ],
           "approval": true,
-          "status": "approval_required",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 0,
+          "finishedAt": "2026-10-13T09:25:23Z"
         },
         {
           "key": "handoff",
@@ -225,8 +228,9 @@
           "dependsOn": [
             "posting"
           ],
-          "status": "pending",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-13T09:25:23Z"
         }
       ]
     },
@@ -236,10 +240,10 @@
       "brand": "sunverse",
       "title": "Hindi monsoon love song (test)",
       "goalRef": "vault#1",
-      "status": "approval_required",
+      "status": "completed",
       "engine": "claude",
       "createdAt": "2026-10-12T19:16:08Z",
-      "updatedAt": "2026-10-12T19:26:58Z",
+      "updatedAt": "2026-10-13T09:25:23Z",
       "steps": [
         {
           "key": "trends",
@@ -356,8 +360,9 @@
             "qa"
           ],
           "approval": true,
-          "status": "approval_required",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 0,
+          "finishedAt": "2026-10-13T09:25:23Z"
         },
         {
           "key": "handoff",
@@ -366,8 +371,9 @@
           "dependsOn": [
             "release"
           ],
-          "status": "pending",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-13T09:25:23Z"
         }
       ]
     }
