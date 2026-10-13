@@ -70,7 +70,8 @@ async function route(request, env, ctx) {
   const seg = path.split('/').filter(Boolean); // ['api', ...]
 
   if (path === '/api/health' && method === 'GET') {
-    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), agents: REGISTRY.agents.length });
+    // Booleans only — never key values.
+    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), agents: REGISTRY.agents.length });
   }
 
   requireAdmin(request, env);
