@@ -320,10 +320,13 @@ export async function scheduledAnalytics(env, db, deps = {}) {
   for (const [brand, src] of Object.entries(BRAND_SOURCES)) {
     if (!src) continue;
     const row = await latestSnapshot(db, brand);
-    const due = !row || Date.now() - Date.parse(row.fetched_at) > CRON_REFRESH_HOURS * 3_600_000;
-    if (!due) continue;
+    const dataDue = !row || Date.now() - Date.parse(row.fetched_at) > CRON_REFRESH_HOURS * 3_600_000;
+    const last = await latestInsights(db, brand);
+    // Also run when fresh numbers exist but SOMA hasn't written today's analysis yet.
+    const insightsDue = !last || Date.now() - Date.parse(last.insights_at) > INSIGHT_EVERY_HOURS * 3_600_000;
+    if (!dataDue && !insightsDue) continue;
     try {
-      const r = await getReport(env, db, brand, { force: true, withInsights: true, deps });
+      const r = await getReport(env, db, brand, { force: dataDue, withInsights: true, deps });
       out.push(`${brand}: ${r.connected ? 'refreshed' : r.reason}${r.insightsError ? ` (insights: ${r.insightsError})` : ''}`);
     } catch (e) {
       out.push(`${brand}: ${e.message}`);

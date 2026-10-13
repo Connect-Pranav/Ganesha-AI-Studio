@@ -107,6 +107,15 @@ test('SOMA insights via Gemini are stored and returned; scheduled pass refreshes
   assert.equal((await scheduledAnalytics(ENV, db, { fetch })).length, 0, 'not due again within 6h');
 });
 
+test('cron writes SOMA analysis for fresh data that has none yet, without refetching', async () => {
+  const fetch = fakeApis();
+  await getReport(ENV, db, 'sunverse', { deps: { fetch } }); // public view: data only
+  const ytCalls = fetch.calls.filter((u) => u.includes('googleapis.com/youtube')).length;
+  assert.deepEqual(await scheduledAnalytics(ENV, db, { fetch, sleep: noSleep }), ['sunverse: refreshed']);
+  assert.equal(fetch.calls.filter((u) => u.includes('googleapis.com/youtube')).length, ytCalls, 'no extra YouTube fetch');
+  assert.ok((await getReport(ENV, db, 'sunverse', { deps: { fetch } })).insights.headline);
+});
+
 test('no key / API error / unconnected brand are reported honestly', async () => {
   const noKey = await getReport({}, db, 'sunverse');
   assert.equal(noKey.connected, false);
