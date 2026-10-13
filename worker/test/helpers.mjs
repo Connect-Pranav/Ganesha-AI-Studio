@@ -1,14 +1,16 @@
 // Test helpers: a real local D1 (Miniflare via wrangler) and a scripted fake provider.
 // These are MOCKED provider tests. They prove orchestration logic, not live connectivity.
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { getPlatformProxy } from 'wrangler';
 import { REGISTRY, agentById } from '../agents.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const MIGRATION = readFileSync(join(ROOT, 'migrations', '0001_orchestrator.sql'), 'utf8');
-const DOWN = readFileSync(join(ROOT, 'migrations', 'rollback', '0001_orchestrator.down.sql'), 'utf8');
+// Every migration in order, and every rollback in reverse order.
+const MIG_DIR = join(ROOT, 'migrations');
+const MIGRATIONS = readdirSync(MIG_DIR).filter((f) => f.endsWith('.sql')).sort().map((f) => readFileSync(join(MIG_DIR, f), 'utf8'));
+const DOWNS = readdirSync(join(MIG_DIR, 'rollback')).filter((f) => f.endsWith('.sql')).sort().reverse().map((f) => readFileSync(join(MIG_DIR, 'rollback', f), 'utf8'));
 
 const statements = (sql) =>
   sql
@@ -29,8 +31,8 @@ export async function disposeDb() {
   proxy = undefined;
 }
 export async function resetDb(db) {
-  await db.batch(statements(DOWN).map((s) => db.prepare(s)));
-  await db.batch(statements(MIGRATION).map((s) => db.prepare(s)));
+  for (const sql of DOWNS) await db.batch(statements(sql).map((s) => db.prepare(s)));
+  for (const sql of MIGRATIONS) await db.batch(statements(sql).map((s) => db.prepare(s)));
 }
 
 export const ENV = { ANTHROPIC_API_KEY: 'sk-test-anthropic-SECRET', ANTHROPIC_MODEL: 'claude-test', GEMINI_API_KEY: '', MAX_CONCURRENT_TASKS: '6' };

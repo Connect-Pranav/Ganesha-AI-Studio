@@ -11,6 +11,7 @@ const workspace: NavItem[] = [
   { id: 'universe', label: '3D Command Center', icon: 'universe' },
   { id: 'overview', label: 'Overview', icon: 'overview' },
   { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
+  { id: 'analytics', label: 'Analytics', icon: 'analytics' },
 ];
 const brands: NavItem[] = [
   { id: 'littleloop', label: 'LittleLoop', icon: 'littleloop' },

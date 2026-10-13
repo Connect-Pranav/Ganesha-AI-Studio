@@ -14,9 +14,16 @@ import {
   tick,
 } from './orchestrator.mjs';
 import { PROVIDERS, providerConfig, testProvider } from './providers.mjs';
+import { BRAND_SOURCES, getReport, scheduledAnalytics } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 
-const VERSION = '0.2.0-orchestrator';
+const VERSION = '0.3.0-analytics';
+// The GitHub Pages mirror reads the public analytics report from this Worker.
+const ALLOWED_ORIGINS = ['https://connect-pranav.github.io'];
+function corsHeaders(request) {
+  const origin = request.headers.get('origin');
+  return ALLOWED_ORIGINS.includes(origin) ? { 'access-control-allow-origin': origin, 'access-control-allow-methods': 'GET', vary: 'origin' } : {};
+}
 const MAX_BODY = 64 * 1024;
 
 function requireAdmin(request, env) {
@@ -71,11 +78,25 @@ async function route(request, env, ctx) {
 
   if (path === '/api/health' && method === 'GET') {
     // Booleans only — never key values.
-    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), agents: REGISTRY.agents.length });
+    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), youtubeKeySet: Boolean(env.YOUTUBE_API_KEY), agents: REGISTRY.agents.length });
   }
+
+  // Public read: the report holds only public channel statistics, cached so a page view
+  // triggers at most one YouTube fetch per hour and never a paid/AI call.
+  if (seg[1] === 'analytics' && seg[2] && !seg[3] && method === 'GET') {
+    if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
+    return json(await getReport(env, requireDb(env), seg[2]), 200, corsHeaders(request));
+  }
+  if (seg[1] === 'analytics' && method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(request) });
 
   requireAdmin(request, env);
   const db = requireDb(env);
+
+  // Owner-triggered refresh + SOMA analysis (uses the AI provider).
+  if (seg[1] === 'analytics' && seg[3] === 'refresh' && method === 'POST') {
+    if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
+    return json(await getReport(env, db, seg[2], { force: true, withInsights: true, forceInsights: true }));
+  }
   const kick = () => ctx.waitUntil(tick(env, db).catch((e) => console.error('tick failed', e.message)));
 
   // Providers
@@ -161,6 +182,34 @@ async function route(request, env, ctx) {
     return json({ ...a, content: JSON.parse(a.content_json), content_json: undefined });
   }
 
+  // Notifications: everything that needs the owner, in one call.
+  if (path === '/api/notifications' && method === 'GET') {
+    const since = new Date(Date.now() - 7 * 86400_000).toISOString();
+    const approvals = (
+      await db
+        .prepare(`SELECT a.id, a.action, a.summary, a.created_at, a.workflow_id, a.task_id,
+                  w.title AS workflow_title, w.brand, t.agent_id, t.deliverable, t.output_artifact
+                  FROM approvals a JOIN workflows w ON w.id = a.workflow_id JOIN tasks t ON t.id = a.task_id
+                  WHERE a.status = 'pending' ORDER BY a.created_at DESC LIMIT 50`)
+        .all()
+    ).results;
+    const external = (
+      await db
+        .prepare(`SELECT t.id AS task_id, t.step_key, t.deliverable, t.agent_id, t.updated_at, w.id AS workflow_id, w.title AS workflow_title, w.brand
+                  FROM tasks t JOIN workflows w ON w.id = t.workflow_id WHERE t.status = 'waiting_for_external_action' ORDER BY t.updated_at DESC LIMIT 50`)
+        .all()
+    ).results;
+    const failures = (
+      await db
+        .prepare(`SELECT t.id AS task_id, t.step_key, t.agent_id, t.error, t.updated_at, w.id AS workflow_id, w.title AS workflow_title, w.brand
+                  FROM tasks t JOIN workflows w ON w.id = t.workflow_id WHERE t.status = 'failed' AND t.updated_at >= ? ORDER BY t.updated_at DESC LIMIT 50`)
+        .bind(since)
+        .all()
+    ).results;
+    const events = (await db.prepare('SELECT id, workflow_id, task_id, kind, message, created_at FROM events WHERE created_at >= ? ORDER BY id DESC LIMIT 40').bind(since).all()).results;
+    return json({ approvals, external, failures, events, counts: { approvals: approvals.length, external: external.length, failures: failures.length } });
+  }
+
   // Approvals
   if (path === '/api/approvals' && method === 'GET') {
     const status = url.searchParams.get('status') ?? 'pending';
@@ -194,5 +243,6 @@ export default {
   async scheduled(_event, env, ctx) {
     if (!env.DB) return;
     ctx.waitUntil(tick(env, env.DB).then((r) => console.log('tick', JSON.stringify(r))));
+    ctx.waitUntil(scheduledAnalytics(env, env.DB).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },
 };

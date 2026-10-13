@@ -301,6 +301,27 @@ test('http: health is public; API is locked without ADMIN_TOKEN and rejects a wr
   assert.equal((await worker.fetch(req('/'), env2, ctx)).status, 200, 'dashboard still served');
 });
 
+test('http: notifications list pending approvals; approving from the bell works once', async () => {
+  const fetch = fakeAnthropic();
+  const wf = await createWorkflow(db, { template: 'foliocraft_feature', title: 'Theme preview' });
+  await drain(ENV, { fetch, sleep: noSleep });
+  const env = { DB: db, ASSETS: assets, ADMIN_TOKEN: 't' };
+  const headers = { authorization: 'Bearer t', 'content-type': 'application/json' };
+  assert.equal((await worker.fetch(req('/api/notifications'), env, ctx)).status, 401);
+  const n = await (await worker.fetch(req('/api/notifications', { headers }), env, ctx)).json();
+  assert.equal(n.counts.approvals, 1);
+  assert.equal(n.approvals[0].workflow_title, 'Theme preview');
+  assert.equal(n.approvals[0].action, 'build');
+  assert.ok(n.approvals[0].output_artifact, 'deliverable is viewable before approving');
+  const body = JSON.stringify({ decision: 'approved' });
+  assert.equal((await worker.fetch(req(`/api/approvals/${n.approvals[0].id}`, { method: 'POST', headers, body }), env, ctx)).status, 200);
+  assert.equal((await worker.fetch(req(`/api/approvals/${n.approvals[0].id}`, { method: 'POST', headers, body }), env, ctx)).status, 409);
+  const after = await (await worker.fetch(req('/api/notifications', { headers }), env, ctx)).json();
+  assert.equal(after.counts.approvals, 0);
+  assert.equal(after.counts.external, 1, 'approved step now waits for the owner to confirm it was done');
+  assert.equal((await getWorkflow(db, wf.id)).status, 'waiting_for_external_action');
+});
+
 test('http: create workflow with Idempotency-Key, read it back, provider status shows not_configured', async () => {
   const env = { DB: db, ASSETS: assets, ADMIN_TOKEN: 't0k3n' };
   const headers = { authorization: 'Bearer t0k3n', 'content-type': 'application/json', 'idempotency-key': 'abc' };

@@ -209,10 +209,10 @@
     },
     {
       "id": "ops_soma_analytics", "name": "SOMA", "team": "ops", "role": "Data & Analytics Analyst",
-      "mission": "Report weekly on pipelines, runs, tasks and costs from real agent data.",
-      "inputs": ["public/agent-data", "vault pipelines"], "outputs": ["weekly metrics report"],
+      "mission": "Analyse brand channel performance from platform APIs (Sunverse YouTube public statistics) and report weekly on pipelines, runs, tasks and costs from real agent data.",
+      "inputs": ["YouTube Data API public statistics", "public/agent-data", "vault pipelines"], "outputs": ["channel analytics report with insights", "weekly metrics report"],
       "acceptance": ["Only real recorded numbers", "Week-over-week where available", "States data gaps"],
-      "permissions": ["read:repo", "read:vault", "write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
+      "permissions": ["read:repo", "read:vault", "write:vault", "read:youtube_public_stats"], "approvalRequired": [], "engines": ["gemini", "claude"], "maxRetries": 1, "contract": "agents/teams/ops.md"
     },
     {
       "id": "ops_hanuman_recovery", "name": "HANUMAN", "team": "ops", "role": "Troubleshooting & Recovery Specialist",

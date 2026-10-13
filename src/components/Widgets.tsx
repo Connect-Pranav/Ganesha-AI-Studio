@@ -238,7 +238,7 @@ const actions: { kind: QuickActionKind; label: string; desc: string; icon: IconN
   { kind: 'content', label: 'Create content', desc: 'Script, track or theme', icon: 'content' },
   { kind: 'research', label: 'Research', desc: 'Ask NARADA', icon: 'research' },
   { kind: 'code', label: 'Coding task', desc: 'Send to CODE-SHAKTI', icon: 'code' },
-  { kind: 'analytics', label: 'Analytics', desc: 'Weekly brand report', icon: 'analytics' },
+  { kind: 'analytics', label: 'Analytics', desc: 'Real channel report (SOMA)', icon: 'analytics' },
 ];
 
 export function QuickActions({ onAction }: { onAction: (k: QuickActionKind) => void }) {

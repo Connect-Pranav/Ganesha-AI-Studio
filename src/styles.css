@@ -661,3 +661,51 @@ a.btn { text-decoration: none; color: inherit; }
   .u-kv { grid-template-columns: repeat(2, 1fr); }
 }
 @keyframes u-rise { from { opacity: 0; transform: translateY(20px); } }
+
+/* ---------- Analytics (SOMA) ---------- */
+.an { display: grid; gap: 20px; }
+.an .grid-main { margin-top: 0; }
+.an-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.an-head a { color: inherit; text-decoration: none; }
+.an-head a:hover { text-decoration: underline; }
+.an-table-wrap { overflow-x: auto; margin: 0 -4px; }
+.an-table { width: 100%; border-collapse: collapse; font-size: 13.5px; min-width: 640px; }
+.an-table th { text-align: left; font-weight: 500; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); padding: 8px; border-bottom: 1px solid var(--line); }
+.an-table td { padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.an-table tr:last-child td { border-bottom: 0; }
+.an-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.an-title { max-width: 320px; }
+.an-title a { color: var(--ink); text-decoration: none; font-weight: 500; }
+.an-title a:hover { color: var(--green-2); text-decoration: underline; }
+.an-headline { font-family: var(--serif); font-size: 19px; line-height: 1.35; margin: 0 0 12px; }
+.an-insights h3 { font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); margin: 16px 0 6px; font-weight: 600; }
+
+/* ---------- Notifications ---------- */
+.bell-btn { position: relative; }
+.bell-badge { position: absolute; top: 2px; right: 2px; min-width: 17px; height: 17px; padding: 0 4px; border-radius: 999px; background: var(--err); color: #fff; font-size: 10.5px; font-weight: 600; line-height: 17px; text-align: center; font-variant-numeric: tabular-nums; }
+.drawer-scrim { position: fixed; inset: 0; background: rgba(29, 42, 36, 0.32); z-index: 70; animation: fade 0.15s ease; }
+.drawer { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 100%); background: var(--surface); border-left: 1px solid var(--line); box-shadow: var(--shadow); overflow-y: auto; padding: calc(16px + env(safe-area-inset-top, 0px)) 20px calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; align-content: start; gap: 18px; }
+.drawer-head { display: flex; align-items: center; gap: 6px; }
+.drawer-head h2 { font-family: var(--serif); font-weight: 500; font-size: 22px; margin-right: auto; }
+.drawer-notice { font-size: 13px; background: var(--green-soft); color: var(--green); padding: 8px 12px; border-radius: 10px; }
+.drawer-notice.error { background: var(--err-soft); color: var(--err); }
+.nt-section { display: grid; gap: 10px; }
+.nt-section h3 { font-size: 11.5px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); font-weight: 600; }
+.nt-item { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; display: grid; gap: 4px; background: var(--surface-2); }
+.nt-approval { border-left: 3px solid var(--warn); }
+.nt-problem { border-left: 3px solid var(--err); }
+.nt-title { font-weight: 600; font-size: 14.5px; }
+.nt-meta { font-size: 12px; color: var(--ink-3); }
+.nt-text { font-size: 13px; color: var(--ink-2); overflow-wrap: anywhere; }
+.nt-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.nt-empty { font-size: 13px; color: var(--ink-3); }
+.nt-events { list-style: none; display: grid; gap: 8px; font-size: 13px; }
+.nt-events li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+.nt-unlock { display: grid; gap: 8px; padding: 14px; border: 1px dashed var(--line-2); border-radius: 12px; font-size: 13px; }
+.nt-unlock input { padding: 9px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); }
+.drawer-lock { justify-self: start; }
+.preview-scrim { display: grid; place-items: center; padding: 16px; z-index: 80; }
+.preview { max-width: 760px; width: 100%; max-height: 85vh; overflow: auto; }
+.preview-text { white-space: pre-wrap; font-family: var(--sans); font-size: 14px; line-height: 1.6; }
+.btn-small.btn-primary { background: var(--green); color: #f7f3ea; border-color: var(--green); }
+.btn-small.btn-primary:hover { background: var(--green-2); }

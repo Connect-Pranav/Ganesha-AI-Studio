@@ -26,11 +26,11 @@
 
 ## SOMA — `ops_soma_analytics`
 **Role:** Data & Analytics Analyst  
-**Mission:** Report weekly on pipelines, runs, tasks and costs from real agent data.
+**Mission:** Analyse brand channel performance from platform APIs (Sunverse YouTube public statistics) and report weekly on pipelines, runs, tasks and costs from real agent data.
 
-- **Inputs:** public/agent-data; vault pipelines
-- **Output:** weekly metrics report
-- **Permissions:** `read:repo`, `read:vault`, `write:vault`
+- **Inputs:** YouTube Data API public statistics; public/agent-data; vault pipelines
+- **Output:** channel analytics report with insights; weekly metrics report
+- **Permissions:** `read:repo`, `read:vault`, `write:vault`, `read:youtube_public_stats`
 - **Needs approval for:** nothing
 
 **Acceptance criteria**

@@ -4,6 +4,8 @@ import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
 import { QuickActionModal } from './components/QuickActionModal';
 import { AgentsView, ConnectionView, OverviewView, PipelinesView, ProductView } from './components/Views';
+import { AnalyticsView } from './components/AnalyticsView';
+import { NotificationCenter } from './components/NotificationCenter';
 import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
@@ -13,11 +15,12 @@ import { newGoalUrl } from './data/agentsMeta';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
-const VIEWS: View[] = ['universe', 'overview', 'pipelines', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const VIEWS: View[] = ['universe', 'overview', 'pipelines', 'analytics', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
 const TITLES: Record<View, string> = {
   universe: '3D Command Center',
   overview: 'Studio overview',
   pipelines: 'Pipelines',
+  analytics: 'Analytics (SOMA)',
   littleloop: 'LittleLoop',
   sunverse: 'Sunverse',
   foliocraft: 'Foliocraft',
@@ -46,6 +49,10 @@ type LoadState =
 
 export default function App() {
   const [view, setView] = useState<View>(viewFromHash);
+  const [lastProduct, setLastProduct] = useState<View>('sunverse');
+  useEffect(() => {
+    if (PRODUCT_VIEWS.includes(view)) setLastProduct(view);
+  }, [view]);
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [load, setLoad] = useState<LoadState>({ status: 'loading' });
@@ -127,7 +134,8 @@ export default function App() {
       ai,
       aiChecking,
       onOpenProduct: (id: ProductId) => navigate(id),
-      onQuickAction: setQuick,
+      // Analytics shows the real report; other quick actions file a goal in the vault.
+      onQuickAction: (k: QuickActionKind) => (k === 'analytics' ? navigate('analytics') : setQuick(k)),
       onRecheckAi: () => fetchData(true),
       onConnectAi: () => setShowConnect(true),
     };
@@ -143,6 +151,8 @@ export default function App() {
         </Suspense>
       ) : view === 'agents' ? (
         <AgentsView {...common} />
+      ) : view === 'analytics' ? (
+        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
       ) : view === 'connection' ? (
@@ -186,6 +196,7 @@ export default function App() {
             <h1>{TITLES[view]}</h1>
           </div>
           <div className="topbar-right">
+            <NotificationCenter data={load.status === 'ready' ? load.data : null} />
             <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'No agent data yet'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">
               <AiStatusPill status={aiChecking ? null : ai} />
