@@ -2,7 +2,7 @@ name: Agents (Gemini engine)
 
 # NARADA researches, then GANESHA plans. Runs daily and on demand.
 # Needs repo secret GEMINI_API_KEY (free key from Google AI Studio).
-# Optional repo variable GEMINI_MODEL (default gemini-2.5-flash).
+# Optional repo variable GEMINI_MODEL (default gemini-3.8-flash).
 # Without the secret the run exits cleanly and writes nothing.
 
 on:

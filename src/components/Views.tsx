@@ -222,7 +222,7 @@ export function ConnectionView(p: Common) {
             <tr>
               <td><code>GEMINI_MODEL</code></td>
               <td>GitHub repo variable (optional)</td>
-              <td>Model ID. Default <code>gemini-2.5-flash</code>.</td>
+              <td>Model ID. Default <code>gemini-3.8-flash</code>.</td>
             </tr>
             <tr>
               <td>Claude</td>
