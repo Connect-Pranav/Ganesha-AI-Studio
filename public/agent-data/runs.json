@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261013T072459Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-10-13T07:24:58Z",
+      "finishedAt": "2026-10-13T07:24:59Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 404 (model \"gemini-2.5-flash\"): {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs"
+    },
+    {
+      "id": "run_20261013T072458Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-10-13T07:24:57Z",
+      "finishedAt": "2026-10-13T07:24:58Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 404 (model \"gemini-2.5-flash\"): {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs"
+    },
+    {
       "id": "run_20261013T022735Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",
