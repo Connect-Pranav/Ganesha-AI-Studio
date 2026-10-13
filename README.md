@@ -30,6 +30,8 @@ Control-room dashboard for three brands — **LittleLoop** (kids' animated short
 `worker/` adds a Cloudflare Worker API beside the static site: D1-backed GANESHA orchestrator
 (leases, idempotency, retries, gates, approvals, pause/cancel), Claude + Gemini adapters with live
 connection tests, and a 5-minute cron. Setup: `docs/INTEGRATION_SETUP.md`. Audit and plan: `docs/`.
+Every sidebar page reads live backend state through `src/services/StudioContext.tsx` (`/api/health` + `/api/summary`);
+section-by-section status: `docs/SIDEBAR_AUDIT.md`.
 
 ## Run locally
 ```bash

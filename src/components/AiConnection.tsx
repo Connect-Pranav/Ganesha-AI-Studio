@@ -1,7 +1,6 @@
 import { useEffect, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
 import { Card, formatWhen } from './ui';
-import { AGENTS_WORKFLOW_URL, SECRETS_URL } from '../config';
 import type { AiConnectionState, AiStatus } from '../types';
 
 export const aiStateMeta: Record<AiConnectionState, { label: string; tone: string }> = {
@@ -28,18 +27,20 @@ export function AiStatusCard({
   onRecheck,
   onConnect,
   full = false,
+  embedded = false,
 }: {
   status: AiStatus | null;
   checking: boolean;
   onRecheck: () => void;
   onConnect: () => void;
   full?: boolean;
+  embedded?: boolean;
 }) {
   const allConnected = status?.engines.every((e) => e.state === 'connected');
-  return (
-    <Card title="API connection status" className={full ? 'ai-card-full' : ''}>
+  const body = (
+    <>
       <div className="ai-status">
-        <AiStatusPill status={checking ? null : status} />
+        {!embedded && <AiStatusPill status={checking ? null : status} />}
         <p className="ai-msg">{checking ? 'Reading agent run log…' : status?.message}</p>
       </div>
 
@@ -68,7 +69,7 @@ export function AiStatusCard({
       )}
 
       <div className="ai-actions">
-        {!allConnected && (
+        {!allConnected && !embedded && (
           <button className="btn btn-primary" onClick={onConnect}>
             <Icon name="connection" size={16} /> Connect AI
           </button>
@@ -77,10 +78,13 @@ export function AiStatusCard({
           <Icon name="refresh" size={16} /> Re-check
         </button>
       </div>
-      <p className="ai-note">
-        Status comes from the real agent run log. Keys stay in GitHub Secrets or Claude — never in this page. Nothing
-        retries automatically.
-      </p>
+      <p className="ai-note">Status comes from the runs these jobs recorded. Nothing retries automatically from this page.</p>
+    </>
+  );
+  if (embedded) return <div className="ai-embedded">{body}</div>;
+  return (
+    <Card title="Scheduled agent runs" className={full ? 'ai-card-full' : ''}>
+      {body}
     </Card>
   );
 }
@@ -115,46 +119,5 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
         {children}
       </div>
     </div>
-  );
-}
-
-export function ConnectAiModal({ onClose }: { onClose: () => void }) {
-  return (
-    <Modal title="Connect AI engines" onClose={onClose}>
-      <p className="modal-lead">Two free engines power the agents. Keys never go into this page or into Git.</p>
-
-      <h3 className="modal-sub">Gemini — daily backup in GitHub Actions</h3>
-      <ol className="setup-steps">
-        <li>
-          Create a free API key at <strong>aistudio.google.com</strong> → Get API key.
-        </li>
-        <li>
-          Open{' '}
-          <a href={SECRETS_URL} target="_blank" rel="noreferrer">
-            repo Settings → Secrets → Actions
-          </a>{' '}
-          → New repository secret. Name <code>GEMINI_API_KEY</code>, paste the key, save.
-        </li>
-        <li>
-          Open{' '}
-          <a href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
-            Actions → Agents
-          </a>{' '}
-          → Run workflow. Results appear here in ~3 minutes.
-        </li>
-      </ol>
-
-      <h3 className="modal-sub">Claude — research + coding</h3>
-      <p className="modal-lead">
-        Runs as Claude scheduled tasks on your Claude plan. No key needed. Its runs show up in the run history
-        automatically.
-      </p>
-
-      <div className="modal-actions">
-        <button className="btn btn-primary" onClick={onClose}>
-          Got it
-        </button>
-      </div>
-    </Modal>
   );
 }

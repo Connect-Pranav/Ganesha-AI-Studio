@@ -17,8 +17,9 @@ import { PROVIDERS, providerConfig, testProvider } from './providers.mjs';
 import { BRAND_SOURCES, getReport, scheduledAnalytics } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 import { ensureSchema } from './schema.mjs';
+import { brandArtifacts, studioSummary } from './summary.mjs';
 
-const VERSION = '0.3.0-analytics';
+const VERSION = '0.4.0-summary';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
 const ALLOWED_ORIGINS = ['https://connect-pranav.github.io'];
 function corsHeaders(request) {
@@ -80,7 +81,7 @@ async function route(request, env, ctx) {
 
   if (path === '/api/health' && method === 'GET') {
     // Booleans only — never key values.
-    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), youtubeKeySet: Boolean(env.YOUTUBE_API_KEY), agents: REGISTRY.agents.length });
+    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), youtubeKeySet: Boolean(env.YOUTUBE_API_KEY), primaryEngine: env.PRIMARY_ENGINE || null, agents: REGISTRY.agents.length }, 200, corsHeaders(request));
   }
 
   // Public read: the report holds only public channel statistics, cached so a page view
@@ -139,6 +140,14 @@ async function route(request, env, ctx) {
     return json({ agent: agent.id, engines: await enginesFor(db, env, agent) });
   }
   if (path === '/api/templates' && method === 'GET') return json({ templates: TEMPLATES });
+
+  // Read-only dashboard aggregates (counted from D1, never estimated)
+  if (path === '/api/summary' && method === 'GET') return json(await studioSummary(env, db, await providersStatus(env, db)));
+  if (path === '/api/artifacts' && method === 'GET') {
+    const brand = url.searchParams.get('brand');
+    if (!['littleloop', 'sunverse', 'foliocraft', 'studio'].includes(brand)) throw new HttpError(400, 'brand must be littleloop, sunverse, foliocraft or studio');
+    return json({ brand, artifacts: await brandArtifacts(db, brand, url.searchParams.get('limit')) });
+  }
 
   // Workflows
   if (path === '/api/workflows' && method === 'POST') {

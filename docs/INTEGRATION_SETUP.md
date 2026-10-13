@@ -73,6 +73,8 @@ All routes except `/api/health` need `Authorization: Bearer <ADMIN_TOKEN>`.
 | POST | `/api/tasks/{id}/retry` · `/complete-external` | Retry a failed task · confirm a manual action happened |
 | GET/POST | `/api/approvals[?status=]` · `/api/approvals/{id}` `{decision,note}` | Pending approvals · approve/reject |
 | POST | `/api/orchestrator/tick` | Run one orchestration pass now (cron does this every 5 min) |
+| GET | `/api/summary` | Dashboard aggregates counted from D1 (no keys) |
+| GET | `/api/artifacts?brand=` | Deliverable list per brand (metadata only) |
 
 ## 5. Deploying
 `main` is deployed to Cloudflare by the Workers build connected to this repo. Do not merge the backend branch until steps 1-2 are done; with the placeholder `database_id` the Cloudflare deploy would fail (the existing site would keep serving the previous version).

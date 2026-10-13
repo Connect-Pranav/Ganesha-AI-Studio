@@ -1,10 +1,11 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Icon } from './components/Icon';
-import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
+import { ConnectionPage, EnginePill, SetupModal, useEngineOverall } from './components/Connection';
 import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
-import { AgentsView, ConnectionView, OverviewView, PipelinesView, ProductView } from './components/Views';
+import { AgentsView, OverviewView, PipelinesView } from './components/Views';
 import { AnalyticsView } from './components/AnalyticsView';
+import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
 import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
@@ -48,7 +49,7 @@ type LoadState =
 
 export default function App() {
   const [view, setView] = useState<View>(viewFromHash);
-  const [lastProduct, setLastProduct] = useState<View>('sunverse');
+  const [lastProduct, setLastProduct] = useState<View>('overview');
   useEffect(() => {
     if (PRODUCT_VIEWS.includes(view)) setLastProduct(view);
   }, [view]);
@@ -82,6 +83,7 @@ export default function App() {
   );
   const aiChecking = load.status === 'loading' || refreshing;
   const isLive = load.status === 'ready' && Object.values(load.data.live).some(Boolean);
+  const engine = useEngineOverall();
 
   /* ---- routing ---- */
   useEffect(() => {
@@ -161,15 +163,15 @@ export default function App() {
       ) : view === 'agents' ? (
         <AgentsView {...common} />
       ) : view === 'analytics' ? (
-        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
+        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'studio'} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
       ) : view === 'connection' ? (
-        <ConnectionView {...common} />
+        <ConnectionPage data={load.data} ai={ai} aiChecking={aiChecking} onRecheck={() => fetchData(true)} />
       ) : view === 'overview' ? (
-        <OverviewView {...common} />
+        <OverviewView {...common} onNavigate={navigate} />
       ) : (
-        <ProductView {...common} productId={view as ProductId} />
+        <BrandWorkspace data={load.data} productId={view as ProductId} onNavigate={navigate} />
       );
     return (
       <>
@@ -191,7 +193,7 @@ export default function App() {
         onToggleCollapse={toggleCollapse}
         mobileOpen={mobileOpen}
         onCloseMobile={() => setMobileOpen(false)}
-        aiState={aiChecking ? 'checking' : (ai?.state ?? 'not_configured')}
+        aiState={engine.dot}
         live={isLive}
       />
 
@@ -208,7 +210,7 @@ export default function App() {
             <NotificationCenter data={load.status === 'ready' ? load.data : null} />
             <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'No agent data yet'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">
-              <AiStatusPill status={aiChecking ? null : ai} />
+              <EnginePill />
             </button>
           </div>
         </header>
@@ -222,7 +224,7 @@ export default function App() {
         </footer>
       </div>
 
-      {showConnect && <ConnectAiModal onClose={() => setShowConnect(false)} />}
+      {showConnect && <SetupModal onClose={() => setShowConnect(false)} />}
       {goalTemplate !== undefined && (
         <GoalModal initialTemplate={goalTemplate || undefined} onClose={() => setGoalTemplate(undefined)} onCreated={goalCreated} />
       )}

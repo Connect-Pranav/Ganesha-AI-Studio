@@ -1,9 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
 import { AGENTS, TEAMS, TEMPLATES, agentName } from '../data/agentsMeta';
 import { openNewGoal } from './GoalModal';
 import type { Agent, Pipeline, PipelineStatus, StepStatus } from '../types';
+import { useStudio } from '../services/StudioContext';
+import { api } from '../services/adminService';
+import type { AgentStat } from '../services/studioService';
 
 const pStatusLabel: Record<PipelineStatus, string> = {
   pending: 'Pending',
@@ -110,26 +113,77 @@ export function PipelineBoard({ pipelines, limit }: { pipelines: Pipeline[]; lim
           ))}
         </ul>
       )}
-      <div className="goal-row">
-        <span className="goal-label">New goal</span>
-        <NewGoalButtons />
-      </div>
+      <p className="ai-note">Pipelines run earlier by the scheduled goal runner. New goals now run on the studio backend (Studio goals above).</p>
     </Card>
   );
 }
 
 /* ---------- Agent directory ---------- */
+const ENGINE_OPTIONS: { value: string; label: string }[] = [
+  { value: 'gemini', label: 'Gemini only' },
+  { value: 'gemini,claude', label: 'Gemini, then Claude' },
+  { value: 'claude', label: 'Claude only' },
+  { value: 'claude,gemini', label: 'Claude, then Gemini' },
+];
+
+interface LiveAgentInfo {
+  stats: AgentStat | undefined;
+  engines: string[] | undefined;
+  usable: boolean | undefined; // at least one of its engines has a key on the Worker
+}
+
+function liveStatus(i: LiveAgentInfo): { label: string; cls: string } {
+  const st = i.stats;
+  if (st?.running) return { label: `Working (${st.running})`, cls: 'pill-running' };
+  if (st?.waiting) return { label: 'Waiting for you', cls: 'pill-warn' };
+  if (st?.queued) return { label: `Queued (${st.queued})`, cls: 'pill-idle' };
+  if (i.usable === false) return { label: 'No AI engine', cls: 'pill-error' };
+  return { label: 'Ready', cls: 'pill-idle' };
+}
+
 export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[]; liveAgents: Agent[] }) {
+  const { summary, health, locked } = useStudio();
   const [team, setTeam] = useState<string>('all');
+  const [engines, setEngines] = useState<Record<string, string[]> | null>(null);
+  const [saving, setSaving] = useState<string | null>(null);
+  const [err, setErr] = useState('');
+
+  useEffect(() => {
+    if (locked) return setEngines(null);
+    api<{ agents: { id: string; engines: string[] }[] }>('/api/agents')
+      .then((r) => setEngines(Object.fromEntries(r.agents.map((a) => [a.id, a.engines]))))
+      .catch((e: unknown) => setErr(e instanceof Error ? e.message : 'Could not load engines'));
+  }, [locked]);
+
+  const keyOk = (e: string) => {
+    const p = summary?.providers.find((x) => x.provider === e);
+    if (p) return p.state !== 'not_configured';
+    return e === 'gemini' ? Boolean(health?.geminiKeySet) : Boolean(health?.claudeKeySet);
+  };
+  const setEngine = async (id: string, value: string) => {
+    setSaving(id);
+    setErr('');
+    try {
+      const r = await api<{ engines: string[] }>(`/api/agents/${id}/engines`, { method: 'PUT', body: JSON.stringify({ engines: value.split(',') }) });
+      setEngines((m) => ({ ...(m ?? {}), [id]: r.engines }));
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Could not save');
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  // Scheduled-runner signals (older JSON pipelines + run log), used when the backend is locked.
   const active = new Map<string, string>();
   for (const p of pipelines) for (const s of p.steps) if (s.status === 'running' || s.status === 'approval_required') active.set(s.agent, s.status);
   const lastRun = new Map(liveAgents.filter((a) => a.lastRun).map((a) => [a.lastRun!.agent, a.lastRun!]));
   const techId: Record<string, string> = { ganesha: 'ganesha_orchestrator', narada: 'narada_market_intelligence', 'code-shakti': 'code_shakti' };
   const runFor = (id: string) => [...lastRun.entries()].find(([k]) => techId[k] === id)?.[1];
   const shown = team === 'all' ? AGENTS : AGENTS.filter((a) => a.team === team);
+  const live = !locked && Boolean(summary);
 
   return (
-    <Card title={`Agent directory · ${AGENTS.length} agents`}>
+    <Card title={`Agent directory · ${AGENTS.length} agents`} action={live ? <LiveBadge /> : undefined}>
       <div className="tabs" role="tablist" aria-label="Filter by team">
         {['all', ...Object.keys(TEAMS)].map((t) => (
           <button key={t} role="tab" aria-selected={team === t} className={`tab ${team === t ? 'active' : ''}`} onClick={() => setTeam(t)}>
@@ -138,10 +192,18 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
           </button>
         ))}
       </div>
+      {locked && <p className="ai-note">Unlock (🔔 or AI Connection) to see each agent’s live work and choose its AI engine.</p>}
+      {err && <p className="drawer-notice error">{err}</p>}
       <ul className="dir">
         {shown.map((a) => {
-          const st = active.get(a.id);
           const run = runFor(a.id);
+          const eng = engines?.[a.id];
+          const info: LiveAgentInfo = { stats: summary?.agents.find((x) => x.id === a.id), engines: eng, usable: eng ? eng.some(keyOk) : undefined };
+          const st = live ? liveStatus(info) : (() => {
+            const s = active.get(a.id);
+            return s === 'running' ? { label: 'Working', cls: 'pill-running' } : s ? { label: 'Awaiting approval', cls: 'pill-paused' } : { label: 'Idle', cls: 'pill-idle' };
+          })();
+          const stats = info.stats;
           return (
             <li key={a.id} className="dir-item">
               <div className="dir-top">
@@ -150,17 +212,43 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
                   <p className="dir-name">{a.name}</p>
                   <p className="dir-role">{a.role}</p>
                 </div>
-                <span className={`pill ${st === 'running' ? 'pill-running' : st ? 'pill-paused' : 'pill-idle'}`}>
-                  {st === 'running' ? 'Working' : st ? 'Awaiting approval' : 'Available'}
-                </span>
+                <span className={`pill ${st.cls}`}>{st.label}</span>
               </div>
               <p className="dir-mission">{a.mission}</p>
+              {live && stats && (
+                <p className="dir-stats">
+                  {stats.total ? (
+                    <>
+                      {stats.completed} done · {stats.failed} failed{stats.gate ? ` · reviews ${stats.gate.pass} pass / ${stats.gate.fail} fail` : ''}
+                      {stats.last_activity ? ` · active ${formatWhen(stats.last_activity)}` : ''}
+                    </>
+                  ) : a.id === 'ganesha_orchestrator' ? (
+                    'Orchestrates every goal; runs no steps of its own'
+                  ) : (
+                    'No steps run yet'
+                  )}
+                </p>
+              )}
               <p className="dir-meta">
                 <code>{a.id}</code>
                 {a.approvalRequired.length > 0 && <span className="approval">Approval: {a.approvalRequired.join(', ').replace(/_/g, ' ')}</span>}
               </p>
               {a.limits && <p className="dir-limit">{a.limits}</p>}
-              {run && <p className="dir-run">Last run {formatWhen(run.finishedAt)} · {run.summary}</p>}
+              {run && <p className="dir-run">Scheduled run {formatWhen(run.finishedAt)} · {run.summary}</p>}
+              {eng && (
+                <label className="dir-engine">
+                  <span>AI engine</span>
+                  <select value={eng.join(',')} disabled={saving === a.id} onChange={(e) => setEngine(a.id, e.target.value)}>
+                    {!ENGINE_OPTIONS.some((o) => o.value === eng.join(',')) && <option value={eng.join(',')}>{eng.join(', then ')}</option>}
+                    {ENGINE_OPTIONS.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                        {o.value.split(',').every((x) => !keyOk(x)) ? ' (no key)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
             </li>
           );
         })}
@@ -168,4 +256,3 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
     </Card>
   );
 }
-

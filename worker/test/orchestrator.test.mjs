@@ -369,3 +369,45 @@ test('http: create workflow with Idempotency-Key, read it back, provider status 
   const agents = await (await worker.fetch(req('/api/agents', { headers }), env, ctx)).json();
   assert.equal(agents.count, 31);
 });
+
+test('http: summary counts real rows only; null/zero honest on empty DB; never leaks keys', async () => {
+  const env = { DB: db, ASSETS: assets, ADMIN_TOKEN: 't', ANTHROPIC_API_KEY: 'sk-test-anthropic-SECRET', YOUTUBE_API_KEY: 'yt-SECRET' };
+  const headers = { authorization: 'Bearer t' };
+  assert.equal((await worker.fetch(req('/api/summary'), env, ctx)).status, 401);
+
+  // Empty database: zero goals, no durations (null, not 0), all 31 agents listed with zero work.
+  const empty = await (await worker.fetch(req('/api/summary', { headers }), env, ctx)).json();
+  assert.deepEqual(empty.workflows, []);
+  assert.equal(empty.taskDurationSec, null);
+  assert.equal(empty.agents.length, 31);
+  assert.ok(empty.agents.every((a) => a.total === 0 && a.gate === null));
+  assert.equal(empty.integrations.youtubeStats.configured, true);
+  assert.equal(empty.integrations.youtubeUpload.configured, false);
+  assert.equal(empty.providers.find((p) => p.provider === 'claude').state, 'key_set_untested');
+
+  // One goal driven to its approval stop.
+  const fetch = fakeAnthropic();
+  const wf = await createWorkflow(db, { template: 'foliocraft_feature', title: 'Theme preview' });
+  await drain(ENV, { fetch, sleep: noSleep });
+  const s = await (await worker.fetch(req('/api/summary', { headers }), env, ctx)).json();
+  assert.equal(s.workflows.length, 1);
+  assert.equal(s.workflows[0].id, wf.id);
+  assert.equal(s.workflows[0].steps, TEMPLATES.foliocraft_feature.steps.length);
+  assert.equal(s.counts.workflowsByStatus.waiting_for_approval, 1);
+  assert.equal(s.counts.workflowsByBrand.foliocraft.waiting_for_approval, 1);
+  assert.equal(s.counts.approvalsByStatus.pending, 1);
+  const done = s.agents.filter((a) => a.completed > 0).map((a) => a.id);
+  assert.ok(done.includes('foliocraft_brahma_product_architect'));
+  assert.ok(s.agents.find((a) => a.id === 'chitragupta_quality_audit').gate.pass >= 1);
+  assert.ok(s.usage30d.some((u) => u.provider === 'claude' && u.calls > 0));
+  assert.ok(s.events.length > 0);
+  const raw = JSON.stringify(s);
+  assert.equal(raw.includes('SECRET'), false, 'no key material in summary');
+
+  // Deliverables list for the brand: metadata only, content stays behind /api/artifacts/:id.
+  const list = await (await worker.fetch(req('/api/artifacts?brand=foliocraft', { headers }), env, ctx)).json();
+  assert.ok(list.artifacts.length >= 4);
+  assert.ok(list.artifacts.every((a) => a.workflow_id === wf.id && !('content_json' in a)));
+  assert.equal((await (await worker.fetch(req('/api/artifacts?brand=sunverse', { headers }), env, ctx)).json()).artifacts.length, 0);
+  assert.equal((await worker.fetch(req('/api/artifacts?brand=nope', { headers }), env, ctx)).status, 400);
+});

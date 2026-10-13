@@ -11,6 +11,7 @@ export function getToken(): string | null {
     return null;
   }
 }
+export const AUTH_EVENT = 'ganesha:auth';
 export function setToken(token: string | null): void {
   try {
     if (token) localStorage.setItem(KEY, token);
@@ -18,9 +19,15 @@ export function setToken(token: string | null): void {
   } catch {
     /* storage blocked: owner re-enters the token next time */
   }
+  // Every page re-reads live studio data when the owner locks or unlocks.
+  try {
+    window.dispatchEvent(new Event(AUTH_EVENT));
+  } catch {
+    /* non-browser */
+  }
 }
 
-function base(): string {
+export function base(): string {
   try {
     return window.location.hostname.endsWith('github.io') ? WORKER_ORIGIN : '';
   } catch {

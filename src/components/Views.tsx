@@ -1,20 +1,14 @@
+import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
 import { Icon } from './Icon';
-import { Card } from './ui';
-import {
-  ActivityFeed,
-  AgentPanel,
-  ProductCard,
-  QuickActions,
-  StatCard,
-  TaskBoard,
-  WorkflowMonitor,
-  type QuickActionKind,
-} from './Widgets';
+import { ActivityFeed, AgentPanel, ProductCard, QuickActions, StatCard, TaskBoard, type QuickActionKind } from './Widgets';
+import { describeProvider } from './Connection';
+import { agentName } from '../data/agentsMeta';
+import { useStudio, OPEN_STATUSES, WF_STATUS } from '../services/StudioContext';
+import type { Summary } from '../services/studioService';
 import { ResearchPanel, RunHistory } from './AgentWidgets';
 import { AgentDirectory, PipelineBoard } from './PipelineWidgets';
 import { StudioWorkflows } from './StudioWorkflows';
-import { AiStatusCard } from './AiConnection';
-import type { AiStatus, DashboardData, ProductId } from '../types';
+import type { AiStatus, DashboardData, ProductId, View } from '../types';
 
 export interface ViewHandlers {
   onOpenProduct: (id: ProductId) => void;
@@ -30,12 +24,140 @@ interface Common extends ViewHandlers {
 }
 
 /* ---------- Overview ---------- */
-export function OverviewView(p: Common) {
+const pl = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+const BRAND_IDS: ProductId[] = ['sunverse', 'littleloop', 'foliocraft'];
+
+/** Live per-brand counts from the backend replace the scheduled-runner counts when unlocked. */
+function liveProducts(data: DashboardData, s: Summary | null) {
+  if (!s) return data.products;
+  return data.products.map((prod) => {
+    const c = s.counts.workflowsByBrand[prod.id] ?? {};
+    const open = Object.entries(c).filter(([k]) => OPEN_STATUSES.includes(k)).reduce((x, [, v]) => x + v, 0);
+    return {
+      ...prod,
+      metrics: [
+        { label: 'Goals in progress', value: String(open) },
+        { label: 'Waiting for you', value: String((c.waiting_for_approval ?? 0) + (c.waiting_for_external_action ?? 0)) },
+        { label: 'Done', value: String(c.completed ?? 0) },
+      ],
+    };
+  });
+}
+
+function NeedsYou({ s, onOpen }: { s: Summary; onOpen: () => void }) {
+  const waiting = s.workflows.filter((w) => w.status === 'waiting_for_approval' || w.status === 'waiting_for_external_action');
+  const failed = s.workflows.filter((w) => w.status === 'failed').slice(0, 3);
+  return (
+    <Card title="Needs you" action={waiting.length + failed.length ? <span className="pill pill-warn">{waiting.length + failed.length}</span> : undefined}>
+      {waiting.length + failed.length === 0 ? (
+        <EmptyState title="Nothing waiting" hint="Approvals, manual steps and failures show up here and in the 🔔 bell." />
+      ) : (
+        <ul className="needs">
+          {[...waiting, ...failed].map((w) => (
+            <li key={w.id}>
+              <span className={`pill ${WF_STATUS[w.status]?.cls ?? 'pill-idle'}`}>{WF_STATUS[w.status]?.label ?? w.status}</span>
+              <span className="needs-title">{w.title}</span>
+              <span className="stat-hint">
+                {productNames[w.brand as keyof typeof productNames] ?? w.brand} · {formatWhen(w.updated_at)}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      <button className="btn btn-small" onClick={onOpen}>
+        Open pipelines <Icon name="arrow" size={14} />
+      </button>
+    </Card>
+  );
+}
+
+function AgentHealth({ s }: { s: Summary }) {
+  const working = s.agents.filter((a) => a.running > 0).length;
+  const queued = s.agents.reduce((x, a) => x + a.queued, 0);
+  const everFailed = s.agents.filter((a) => a.failed > 0);
+  const used = s.agents.filter((a) => a.total > 0).length;
+  const prov = s.providers.map((p) => describeProvider(p, p.state !== 'not_configured'));
+  return (
+    <Card title="Agent health">
+      <dl className="kv-row">
+        <div>
+          <dt>Working now</dt>
+          <dd>{working}</dd>
+        </div>
+        <div>
+          <dt>Steps queued</dt>
+          <dd>{queued}</dd>
+        </div>
+        <div>
+          <dt>Agents with work assigned</dt>
+          <dd>
+            {used} / {s.agents.length}
+          </dd>
+        </div>
+        <div>
+          <dt>Failed steps · 7 d</dt>
+          <dd>{s.counts.failedTasks7d}</dd>
+        </div>
+      </dl>
+      <ul className="integ">
+        {s.providers.map((p, i) => (
+          <li key={p.provider}>
+            <span className="integ-name">{p.provider === 'gemini' ? 'Gemini' : 'Claude'}</span>
+            <span className={`ai-pill tone-${prov[i].tone}`}>{prov[i].label}</span>
+            <span className="integ-detail">{prov[i].detail}</span>
+          </li>
+        ))}
+      </ul>
+      {everFailed.length > 0 && (
+        <p className="ai-note">Agents with failed steps: {everFailed.map((a) => agentName(a.id)).join(', ')}. Open the goal in Pipelines to see the error and retry.</p>
+      )}
+    </Card>
+  );
+}
+
+function LiveEvents({ s }: { s: Summary }) {
+  return (
+    <Card title="Live activity" action={s.events.length ? <LiveBadge /> : undefined}>
+      {s.events.length ? (
+        <ul className="activity">
+          {s.events.slice(0, 10).map((e) => (
+            <li key={e.id}>
+              <div className="act-body">
+                <p className="act-text">{e.message}</p>
+                <p className="act-meta">
+                  {e.workflow_title ?? 'Studio'} · {formatWhen(e.created_at)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <EmptyState title="No backend activity yet" />
+      )}
+    </Card>
+  );
+}
+
+export function OverviewView(p: Common & { onNavigate: (v: View) => void }) {
   const { data } = p;
+  const { summary, locked } = useStudio();
+  const s = !locked ? summary : null;
+  const wf = s?.counts.workflowsByStatus ?? {};
+  const open = Object.entries(wf).filter(([k]) => OPEN_STATUSES.includes(k)).reduce((x, [, v]) => x + v, 0);
+  const kpis = s
+    ? [
+        { label: 'Goals in progress', value: String(open), hint: `${wf.completed ?? 0} done so far` },
+        { label: 'Waiting for you', value: String((wf.waiting_for_approval ?? 0) + (wf.waiting_for_external_action ?? 0)), hint: `${pl(s.counts.approvalsByStatus.pending ?? 0, 'approval')} pending` },
+        { label: 'Agents working now', value: String(s.agents.filter((a) => a.running > 0).length), hint: `${pl(s.agents.reduce((x, a) => x + a.queued, 0), 'step')} queued` },
+        { label: 'Failed steps · 7 days', value: String(s.counts.failedTasks7d), hint: s.counts.failedTasks7d ? 'Retry from Pipelines' : 'No failures', trend: s.counts.failedTasks7d ? ('down' as const) : ('flat' as const) },
+      ]
+    : data.overview;
+
   return (
     <>
+      {locked && <p className="notice">Showing scheduled-runner data only. Unlock (🔔 bell or AI Connection) to see live goals, approvals and agent health.</p>}
       <section className="grid-4" aria-label="Key metrics">
-        {data.overview.map((m) => (
+        {kpis.map((m) => (
           <StatCard key={m.label} metric={m} />
         ))}
       </section>
@@ -46,73 +168,29 @@ export function OverviewView(p: Common) {
           <p className="section-sub">Three separate workspaces — data never mixes.</p>
         </div>
         <div className="grid-3">
-          {data.products.map((prod) => (
-            <ProductCard key={prod.id} product={prod} onOpen={p.onOpenProduct} />
-          ))}
+          {liveProducts(data, s)
+            .filter((x) => BRAND_IDS.includes(x.id))
+            .map((prod) => (
+              <ProductCard key={prod.id} product={prod} onOpen={p.onOpenProduct} />
+            ))}
         </div>
       </section>
 
       <div className="grid-main">
         <div className="col">
-          <StudioWorkflows />
-          <PipelineBoard pipelines={data.pipelines} limit={3} />
-          <AgentPanel agents={data.agents} live={data.live.agents} />
-          <ResearchPanel findings={data.research} limit={4} title="Latest NARADA research" />
-          <TaskBoard tasks={data.tasks} live={data.live.tasks} />
-          <WorkflowMonitor workflows={data.workflows} />
+          <StudioWorkflows title="Latest goals" compact />
+          {s ? <AgentHealth s={s} /> : <AgentPanel agents={data.agents} live={data.live.agents} />}
+          <ResearchPanel findings={data.research} limit={3} title="Latest NARADA research" />
+          <TaskBoard tasks={data.tasks.filter((t) => t.status !== 'done').slice(0, 8)} live={data.live.tasks} />
         </div>
         <div className="col">
+          {s && <NeedsYou s={s} onOpen={() => p.onNavigate('pipelines')} />}
           <QuickActions onAction={p.onQuickAction} />
-          <AiStatusCard status={p.ai} checking={p.aiChecking} onRecheck={p.onRecheckAi} onConnect={p.onConnectAi} />
-          <ActivityFeed items={data.activity} live={data.live.activity} />
+          {s && <LiveEvents s={s} />}
+          <ActivityFeed items={data.activity.slice(0, 10)} live={data.live.activity} />
         </div>
       </div>
     </>
-  );
-}
-
-/* ---------- Product workspace ---------- */
-export function ProductView(p: Common & { productId: ProductId }) {
-  const product = p.data.products.find((x) => x.id === p.productId);
-  if (!product) return null;
-  const tasks = p.data.tasks.filter((t) => t.product === product.id);
-  const activity = p.data.activity.filter((a) => a.product === product.id);
-  const workflows = p.data.workflows.filter((w) => w.product === product.id);
-
-  return (
-    <div className="workspace" style={{ ['--accent' as string]: product.accent }}>
-      <section className="ws-hero">
-        <div className="product-icon lg" aria-hidden="true">
-          <Icon name={product.id} size={26} />
-        </div>
-        <div className="ws-hero-text">
-          <p className="eyebrow">Brand workspace</p>
-          <h2 className="ws-title">{product.name}</h2>
-          <p className="ws-desc">{product.description}</p>
-        </div>
-        <button className="btn btn-primary" onClick={() => p.onQuickAction('content')}>
-          <Icon name="plus" size={16} /> New task
-        </button>
-      </section>
-
-      <section className="grid-3" aria-label={`${product.name} metrics`}>
-        {product.metrics.map((m) => (
-          <StatCard key={m.label} metric={m} />
-        ))}
-      </section>
-
-      <div className="grid-main">
-        <div className="col">
-          <ResearchPanel findings={p.data.research} brand={product.id} title={`NARADA research · ${product.name}`} />
-          <TaskBoard tasks={tasks} live={p.data.live.tasks} />
-          <WorkflowMonitor workflows={workflows} />
-        </div>
-        <div className="col">
-          <QuickActions onAction={p.onQuickAction} />
-          <ActivityFeed items={activity} live={p.data.live.activity} />
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -176,44 +254,6 @@ export function PipelinesView(p: Common) {
         </Card>
         <ResearchPanel findings={p.data.research} limit={3} title="Latest NARADA research" />
       </div>
-    </div>
-  );
-}
-
-/* ---------- Connection ---------- */
-export function ConnectionView(p: Common) {
-  return (
-    <div className="narrow">
-      <AiStatusCard status={p.ai} checking={p.aiChecking} onRecheck={p.onRecheckAi} onConnect={p.onConnectAi} full />
-      <Card title="Where keys live">
-        <table className="env-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Where</th>
-              <th>Purpose</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><code>GEMINI_API_KEY</code></td>
-              <td>GitHub repo secret</td>
-              <td>Free Gemini key for the Actions engine. Never in the browser or Git.</td>
-            </tr>
-            <tr>
-              <td><code>GEMINI_MODEL</code></td>
-              <td>GitHub repo variable (optional)</td>
-              <td>Model ID. Default <code>gemini-3.8-flash</code>.</td>
-            </tr>
-            <tr>
-              <td>Claude</td>
-              <td>Claude scheduled tasks</td>
-              <td>Uses your Claude plan. No key stored anywhere.</td>
-            </tr>
-          </tbody>
-        </table>
-      </Card>
-      <RunHistory runs={p.data.runs} />
     </div>
   );
 }

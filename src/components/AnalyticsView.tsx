@@ -3,8 +3,11 @@ import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
 import { Icon } from './Icon';
 import { loadAnalytics, type AnalyticsReport, type Video } from '../services/analyticsService';
 import type { ProductId } from '../types';
+import { BrandWorkCounts, StudioOps } from './StudioOps';
 
-const BRANDS: { id: ProductId; label: string }[] = [
+type Tab = ProductId | 'studio';
+const BRANDS: { id: Tab; label: string }[] = [
+  { id: 'studio', label: 'Studio operations' },
   { id: 'sunverse', label: 'Sunverse' },
   { id: 'littleloop', label: 'LittleLoop' },
   { id: 'foliocraft', label: 'Foliocraft' },
@@ -64,11 +67,12 @@ function VideoTable({ videos }: { videos: Video[] }) {
   );
 }
 
-export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: ProductId }) {
-  const [brand, setBrand] = useState<ProductId>(initialBrand);
+export function AnalyticsView({ initialBrand = 'studio' }: { initialBrand?: Tab }) {
+  const [brand, setBrand] = useState<Tab>(initialBrand);
   const [state, setState] = useState<{ status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; report: AnalyticsReport }>({ status: 'loading' });
 
-  const load = useCallback((b: ProductId) => {
+  const load = useCallback((b: Tab) => {
+    if (b === 'studio') return;
     setState({ status: 'loading' });
     loadAnalytics(b)
       .then((report) => setState({ status: 'ready', report }))
@@ -86,6 +90,14 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Pr
     </div>
   );
 
+  if (brand === 'studio') {
+    return (
+      <div className="an">
+        {tabs}
+        <StudioOps />
+      </div>
+    );
+  }
   if (state.status === 'loading') {
     return (
       <div className="an">
@@ -114,8 +126,9 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Pr
       <div className="an">
         {tabs}
         <Card title="SOMA analytics">
-          <EmptyState title="No data source connected" hint={r.reason ?? 'This brand has no analytics source yet.'} />
+          <EmptyState title="No audience data source connected" hint={r.reason ?? 'This brand has no analytics source yet.'} />
         </Card>
+        <BrandWorkCounts brand={brand} />
       </div>
     );
   }
