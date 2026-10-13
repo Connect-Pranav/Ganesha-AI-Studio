@@ -1,6 +1,156 @@
 {
-  "updatedAt": "2026-10-13T02:27:35Z",
+  "updatedAt": "2026-10-13T07:34:18Z",
   "findings": [
+    {
+      "id": "f_20261013T073306Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Bus-Themed Concepts Dominate Preschool Song Animation",
+      "insight": "Releases around 'Wheels on the Bus' and bus journeys continue to show high output among kids animators. LittleLoop can adapt vehicle and transit themes into bite-sized, looping Instagram shorts that tap into familiar preschool musical patterns.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "The Wheels on the Bus 🚌 | Fun Kids Nursery Rhyme | LittleSparkMagic - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1ST19ma3d4Q3htZ2RtSGtmeklQdkh5VzVaeHBoTHl1N01aaFJlU0VxcmdIbmRHZVdGWFRGbGxOeDljY0JiQzdjV3NFRm5lMjF0SmFmY1Mwd2JjbzZM?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        },
+        {
+          "title": "The Magic Bus Ride 🚌🌈 | Fun Nursery Rhyme for Kids | Kids Songs & Rhymes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE9SdlNnUHU1SGlGaE5mYTQ5V08wZlNJcnBTeTZ5V2JrOW5wVEk5aU5hUk1RU0xuZ3VWY25GU2RVOEwtZw?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        },
+        {
+          "title": "Wheels on the Bus 🚌 Back to School with animals! | Nursery Rhymes & Kids Songs - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1Ud1ZzcWFYeWZVdS01WG1fVVV0MTB4SE44UW1mLU9ZNmJwdGxDOF9yZy1VV0k0ZjZmdWpCM1dtNEFZalpPNFFfOEdNemVnUGZSUzBmTnE5aHhXY25q?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:33:06Z"
+    },
+    {
+      "id": "f_20261013T073306Z_littleloop_2",
+      "brand": "littleloop",
+      "title": "Animal and Dance Motifs Anchor New Toddler Animated Rhymes",
+      "insight": "Recent toddler content frequently combines animal characters with songs and movement, such as ducks, dinosaurs, and animal school trips. LittleLoop can incorporate simple animal dances into short Reels to spur physical imitation and repeat views.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Five Little Duckies - Nursery Rhymes| Toddlers| preschool Rhymes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5zMFkzTTlvRTFwdkFpT3Brc2VIZWl5V3RUM284TzhMMUNjems1X3M1MlRwdENldlZFLUNmUVpuVDByeWt6MkVDeHYyY192WlFOdXBJbThaSDlQc1Z5?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        },
+        {
+          "title": "Wheels on the Bus 🚌 Back to School with animals! | Nursery Rhymes & Kids Songs - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1Ud1ZzcWFYeWZVdS01WG1fVVV0MTB4SE44UW1mLU9ZNmJwdGxDOF9yZy1VV0k0ZjZmdWpCM1dtNEFZalpPNFFfOEdNemVnUGZSUzBmTnE5aHhXY25q?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        },
+        {
+          "title": "Dino Dance - Nursery Rhymes |Toddler |Preschool Rhymes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9JSllXb05kTEx4ZlE4Z20xYTd0azhjYjFPRVA3Vy1pZXpjT01Ya20zUnRkV3N6RUVrVG5zVENCWnZDMkxydXc1Rkw2LWFVaFNGbUttYWFrRTJzbzMt?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-13T07:32:45Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:33:06Z"
+    },
+    {
+      "id": "f_20261013T073326Z_sunverse_3",
+      "brand": "sunverse",
+      "title": "Lofi Girl Expands into Lofi House with New 24/7 Radio Format",
+      "insight": "Lofi Girl's introduction of a 24/7 Lofi House radio and character highlights genre diversification in ambient streaming. Sunverse should consider producing Lofi House tracks and launching dedicated continuous live streams to engage lifestyle and study audiences.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "What is Lofi House? Meet Lofi Girl's new 24/7 radio and Lofi Teacher. - Mashable",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5sX0lfOW5FM2Y5NFlnM0ItenRkSks4RWRJT0hsYThhMDkzbjRqWjRLbWxXRzZPUXJodEFfS21qX1RSSm9BTmIwNUZzaVI1eGFxdVFOclJtSVlmYTRVaDV6cU1Dby03aXRXUEdNRjFuNlhzUQ?oc=5",
+          "source": "Mashable",
+          "retrievedAt": "2026-10-13T07:33:07Z"
+        },
+        {
+          "title": "Lofi Girl Debuts New Livestream Radio & Character With Lofi House - Bleeding Cool News",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOU0VjUERtbDh0ajlQQWMxMTNRak0wd3FIbk14SElpbWVoMDVfaHFLYU5BUWtBV3VDM0MwQmg3N0RrTWRjUVhaMU9nYXRhanJQb0JVMGlKVndUQVJmcEtaZC1EdGh0NWdQUmhZVk1KaHNBbkpZdFRzdmNVVmhtX1RkRUcxZm1scDlqX0p3bmFEVG1HTUtXWmtBQ2ZJRkpDelNhb1Nj?oc=5",
+          "source": "Bleeding Cool News",
+          "retrievedAt": "2026-10-13T07:33:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:33:26Z"
+    },
+    {
+      "id": "f_20261013T073326Z_sunverse_4",
+      "brand": "sunverse",
+      "title": "Indian Musicians Reject Traditional Labels for Independent Releases",
+      "insight": "More Indian musicians are actively rejecting conventional record labels for releases. Sunverse can capitalize on this trend by positioning its production house as a creator-first partner, collaborating with indie artists on YouTube distribution and production support without restrictive legacy contracts.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Don’t put a label on me: Why more Indian musicians are rejecting music labels for releases - Mid-Day",
+          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNLTlhbEMxMzRNODVTTUJtSnV4elNEWjRUTGxrcV90VHRNZjNfcnpjZktJa3h2NnpoVmp0aG1lT0hCVktnTk5oT25tVVVncG5FNVpsMDhRTnJxc0tGeHZLdGUxUDFLTTlfd2dsS3c0cVFHUW4tUXZIcVRBN29YUUdqM2pSN0tkLUQwZ1NjLXM1Y3hFa1Zid2EwbC1kS2F6R20xMHE4WTZYNjhIaHZlVlVpR1pCWGlkSWd6czViMFhIaEd2VHFfMlcyX2tCX3JBUG9wMFhPd0hoN21WdDEy0gHiAUFVX3lxTE9sSDJzeUczX0Rvd28zYkxiQy00a1Atd2locFlPdDdRMXpNRW1hbjlkakdobUtPMFFTNk1ibUk1TmJqcm5jSDV5cUlCN1g2WHBLMENBclJBMHpWM1l2RjdCT1VGMy1uT1FYQWJWRHl0RmVaaW90R2RvOGhCUXMxUHJFd1hYRGhMYVRCN056ZUdVWjhjeU1rSGRuVkh5RlJnSWtMamwyc3kwUHVCYm4tTllpZ2VsZkE3ei1XMWpMaWptNl95ZmUzc0tUay1JU01CcElpd0RoT0F1OW0yb3BqcmVRclE?oc=5",
+          "source": "Mid-Day",
+          "retrievedAt": "2026-10-13T07:33:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:33:26Z"
+    },
+    {
+      "id": "f_20261013T073418Z_foliocraft_5",
+      "brand": "foliocraft",
+      "title": "AI Website Builder Comparisons Focus on Wix, Squarespace, and Design.com",
+      "insight": "Major 2026 comparisons of AI website builders spotlight Design.com, Wix, and Squarespace. Foliocraft should benchmark its own AI creation workflow against these competitors to identify differentiation opportunities for portfolio creators.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Design.com vs. Wix vs. Squarespace: Comparing AI Website Builders in 2026 - https://tech-insider.org/",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNOHlBS0ZMcW1uX2JjenZIeFFrQnkxNmUwdF9zdFNkNUg1ajN1TlFWZUF5dUUwb1JMYjlMRjhoZVpQY3RsZDFsRE9qTWtqbWNKSUlCTjlJZDc3QkFQWGVkdFNESnQ4bXI4Y1J6SW1GenI5b0taZWJybDhpQlh2ZGVSU1lRWXAtWUZlU2U5UUhCeGluUWlKVVlmbFhKVFY?oc=5",
+          "source": "https://tech-insider.org/",
+          "retrievedAt": "2026-10-13T07:33:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:34:18Z"
+    },
+    {
+      "id": "f_20261013T073418Z_foliocraft_6",
+      "brand": "foliocraft",
+      "title": "Coverage Highlights 2026 Web Design Trends and Responsive Best Practices",
+      "insight": "Industry outlets are emphasizing 2026 web design trends, inspirations, and responsive best practices. Foliocraft can update its portfolio templates to reflect these contemporary design standards, reinforcing the value of its premium design catalog.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Top Web Design Trends for 2026 - Designmodo",
+          "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE54RHFOT1NzV2JjN3Bta00wS0U4UXRlNzcxb2hZN0FJZVUxcU41Y2o0aUlWZDF6c1BkWlJmc0VjMjhDUUE5WUN4N2dTUzhremNlT3Fn?oc=5",
+          "source": "Designmodo",
+          "retrievedAt": "2026-10-13T07:33:26Z"
+        },
+        {
+          "title": "19 Best Website Design Inspirations in 2026 - Hostinger",
+          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9CS3RMV0toOW12RHIwaFZZOEVHazV6WUlLQzNKdEs4bU9XdGdINkhLUlJKWmdRUDJGbXozVE01MmJaYVBxR2VxdUxVbkJWRkJWSU02NldzSndHdU4wbkYyckFSdGRNdmpxSEFCcDhfcVRWSklT?oc=5",
+          "source": "Hostinger",
+          "retrievedAt": "2026-10-13T07:33:26Z"
+        },
+        {
+          "title": "Responsive Web Design: 50 Examples and Best Practices - Designmodo",
+          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1KRzROUlRBSVItS2lBcnE4VkhtTGp6Unc3cnc4TElBakE2WmJGZ0hBSEE4dm04VDREcGVWRHhDUXlncnV1RW15dE5CRlJWdDllZ1RvZ3czZE8zblZ1dzJF?oc=5",
+          "source": "Designmodo",
+          "retrievedAt": "2026-10-13T07:33:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-13T07:34:18Z"
+    },
     {
       "id": "f_20261013T022735Z_littleloop_1_claude",
       "brand": "littleloop",

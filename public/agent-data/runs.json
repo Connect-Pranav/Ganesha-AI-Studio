@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261013T073443Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-10-13T07:34:18Z",
+      "finishedAt": "2026-10-13T07:34:43Z",
+      "status": "success",
+      "summary": "6 new tasks planned"
+    },
+    {
+      "id": "run_20261013T073418Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-10-13T07:32:44Z",
+      "finishedAt": "2026-10-13T07:34:18Z",
+      "status": "success",
+      "summary": "6 findings across 3 brands"
+    },
+    {
       "id": "run_20261013T072459Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
