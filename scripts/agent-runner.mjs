@@ -18,7 +18,7 @@ import {
 } from './lib.mjs';
 
 const ENGINE = 'gemini';
-const MODEL = (process.env.GEMINI_MODEL || 'gemini-2.5-flash').trim();
+const MODEL = (process.env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 const KEY = (process.env.GEMINI_API_KEY || '').trim();
 const MOCK = process.env.AGENT_MOCK === '1'; // local pipeline test only — never committed
 const registry = readRegistry();

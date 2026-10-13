@@ -1,9 +1,33 @@
 {
-  // Cloudflare Worker serving the built static site (npm run build → dist).
+  // Cloudflare Worker: static dashboard (dist/) + /api backend (worker/index.mjs).
+  // D1 database "ganesha" (id below is an identifier, not a secret).
+  // Secrets are set in Cloudflare (ADMIN_TOKEN, GEMINI_API_KEY, ANTHROPIC_API_KEY), never here.
   "name": "ganesha-studio",
+  "main": "worker/index.mjs",
   "compatibility_date": "2026-10-01",
   "assets": {
     "directory": "./dist",
-    "not_found_handling": "single-page-application"
-  }
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ganesha",
+      "database_id": "7f947629-c39c-4bcd-94cd-0f7cdf01ff9a",
+      "migrations_dir": "migrations"
+    }
+  ],
+  // GANESHA orchestration pass every 5 minutes (Cron Triggers are on the Workers Free plan).
+  "triggers": { "crons": ["*/5 * * * *"] },
+  "vars": {
+    // Free tier first: every agent tries Gemini, then its registry engine(s).
+    "PRIMARY_ENGINE": "gemini",
+    "ANTHROPIC_MODEL": "claude-sonnet-5-5",
+    "GEMINI_MODEL": "gemini-3.8-flash",
+    "MAX_CONCURRENT_TASKS": "3",
+    "ALLOW_PROVIDER_FALLBACK": "false"
+  },
+  "observability": { "enabled": true }
 }

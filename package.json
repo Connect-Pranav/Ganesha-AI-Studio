@@ -10,8 +10,11 @@
     "typecheck": "tsc -b",
     "validate:data": "node scripts/validate.mjs",
     "agents:gemini": "node scripts/agent-runner.mjs --agent all",
-    "test": "node --test scripts/test.mjs",
-    "contracts:gen": "node scripts/gen-contracts.mjs"
+    "test": "node --test scripts/test.mjs worker/test/orchestrator.test.mjs",
+    "contracts:gen": "node scripts/gen-contracts.mjs",
+    "test:worker": "node --test worker/test/orchestrator.test.mjs",
+    "worker:dev": "npm run build && wrangler dev",
+    "worker:check": "wrangler deploy --dry-run --outdir .wrangler/dry-run"
   },
   "dependencies": {
     "react": "^18.3.1",
@@ -24,6 +27,10 @@
     "@types/three": "^0.186.0",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "~5.6.3",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "wrangler": "^4.149.0"
+  },
+  "engines": {
+    "node": ">=22"
   }
 }

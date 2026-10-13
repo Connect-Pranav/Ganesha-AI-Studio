@@ -26,6 +26,11 @@ Control-room dashboard for three brands — **LittleLoop** (kids' animated short
 - **Claude** — Claude scheduled tasks clone this repo, research with web search, write via
   `node scripts/record.mjs --engine claude --file out.json`, validate, and push.
 
+## Worker backend (branch `feat/worker-orchestrator`)
+`worker/` adds a Cloudflare Worker API beside the static site: D1-backed GANESHA orchestrator
+(leases, idempotency, retries, gates, approvals, pause/cancel), Claude + Gemini adapters with live
+connection tests, and a 5-minute cron. Setup: `docs/INTEGRATION_SETUP.md`. Audit and plan: `docs/`.
+
 ## Run locally
 ```bash
 npm install

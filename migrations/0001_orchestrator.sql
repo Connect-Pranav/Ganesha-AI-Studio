@@ -1,0 +1,111 @@
+-- Ganesha AI Studio — orchestrator schema v1 (additive; safe on an empty database).
+-- Rollback: migrations/rollback/0001_orchestrator.down.sql
+
+CREATE TABLE IF NOT EXISTS workflows (
+  id               TEXT PRIMARY KEY,
+  template         TEXT NOT NULL,
+  brand            TEXT NOT NULL,
+  title            TEXT NOT NULL,
+  goal             TEXT NOT NULL DEFAULT '',
+  input_json       TEXT NOT NULL DEFAULT '{}',
+  status           TEXT NOT NULL CHECK (status IN ('queued','running','paused','waiting_for_approval','waiting_for_external_action','completed','failed','cancelled')),
+  idempotency_key  TEXT UNIQUE,
+  created_by       TEXT NOT NULL DEFAULT 'owner',
+  created_at       TEXT NOT NULL,
+  updated_at       TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_workflows_status ON workflows(status, updated_at);
+
+CREATE TABLE IF NOT EXISTS tasks (
+  id               TEXT PRIMARY KEY,
+  workflow_id      TEXT NOT NULL REFERENCES workflows(id) ON DELETE CASCADE,
+  step_key         TEXT NOT NULL,
+  agent_id         TEXT NOT NULL,
+  deliverable      TEXT NOT NULL,
+  depends_on       TEXT NOT NULL DEFAULT '[]',
+  is_gate          INTEGER NOT NULL DEFAULT 0,
+  needs_approval   INTEGER NOT NULL DEFAULT 0,
+  status           TEXT NOT NULL CHECK (status IN ('queued','running','waiting_for_approval','waiting_for_external_action','completed','failed','cancelled')),
+  attempts         INTEGER NOT NULL DEFAULT 0,
+  max_attempts     INTEGER NOT NULL,
+  next_attempt_at  TEXT,
+  lease_owner      TEXT,
+  lease_expires_at TEXT,
+  feedback         TEXT,
+  qa               TEXT CHECK (qa IS NULL OR qa IN ('pass','fail')),
+  provider         TEXT,
+  model            TEXT,
+  output_artifact  TEXT,
+  error            TEXT,
+  started_at       TEXT,
+  finished_at      TEXT,
+  created_at       TEXT NOT NULL,
+  updated_at       TEXT NOT NULL,
+  UNIQUE (workflow_id, step_key)
+);
+CREATE INDEX IF NOT EXISTS idx_tasks_ready ON tasks(status, next_attempt_at);
+CREATE INDEX IF NOT EXISTS idx_tasks_workflow ON tasks(workflow_id);
+
+-- Versioned deliverables. Content stays server-side (private), never in the public repo.
+CREATE TABLE IF NOT EXISTS artifacts (
+  id           TEXT PRIMARY KEY,
+  workflow_id  TEXT NOT NULL REFERENCES workflows(id) ON DELETE CASCADE,
+  task_id      TEXT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  agent_id     TEXT NOT NULL,
+  kind         TEXT NOT NULL,
+  version      INTEGER NOT NULL,
+  content_json TEXT NOT NULL,
+  created_at   TEXT NOT NULL,
+  UNIQUE (task_id, version)
+);
+
+CREATE TABLE IF NOT EXISTS approvals (
+  id           TEXT PRIMARY KEY,
+  workflow_id  TEXT NOT NULL REFERENCES workflows(id) ON DELETE CASCADE,
+  task_id      TEXT NOT NULL REFERENCES tasks(id) ON DELETE CASCADE,
+  action       TEXT NOT NULL,
+  summary      TEXT NOT NULL,
+  status       TEXT NOT NULL CHECK (status IN ('pending','approved','rejected')),
+  decided_by   TEXT,
+  decided_at   TEXT,
+  note         TEXT,
+  created_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_approvals_status ON approvals(status);
+
+-- Every provider request: model, tokens, latency, outcome. No prompts or keys stored here.
+CREATE TABLE IF NOT EXISTS provider_calls (
+  id             TEXT PRIMARY KEY,
+  provider       TEXT NOT NULL,
+  model          TEXT NOT NULL,
+  purpose        TEXT NOT NULL,
+  task_id        TEXT,
+  status         TEXT NOT NULL CHECK (status IN ('success','error')),
+  http_status    INTEGER,
+  input_tokens   INTEGER,
+  output_tokens  INTEGER,
+  cost_usd       REAL,
+  latency_ms     INTEGER NOT NULL,
+  error          TEXT,
+  created_at     TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_provider_calls ON provider_calls(provider, created_at);
+
+-- Append-only audit trail for workflows and tasks.
+CREATE TABLE IF NOT EXISTS events (
+  id           INTEGER PRIMARY KEY AUTOINCREMENT,
+  workflow_id  TEXT,
+  task_id      TEXT,
+  kind         TEXT NOT NULL,
+  message      TEXT NOT NULL,
+  data_json    TEXT,
+  created_at   TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_events_workflow ON events(workflow_id, id);
+
+-- Per-agent engine overrides (registry stays the source of truth for defaults).
+CREATE TABLE IF NOT EXISTS agent_settings (
+  agent_id    TEXT PRIMARY KEY,
+  engines     TEXT NOT NULL,
+  updated_at  TEXT NOT NULL
+);
