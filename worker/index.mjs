@@ -85,7 +85,14 @@ async function route(request, env, ctx) {
   // triggers at most one YouTube fetch per hour and never a paid/AI call.
   if (seg[1] === 'analytics' && seg[2] && !seg[3] && method === 'GET') {
     if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
-    return json(await getReport(env, requireDb(env), seg[2]), 200, corsHeaders(request));
+    let report;
+    try {
+      report = await getReport(env, requireDb(env), seg[2]);
+    } catch (e) {
+      console.error('analytics report failed', e?.stack ?? e);
+      report = { brand: seg[2], connected: false, reason: `Analytics error: ${String(e?.message ?? e).slice(0, 300)}` };
+    }
+    return json(report, 200, corsHeaders(request));
   }
   if (seg[1] === 'analytics' && method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(request) });
 
