@@ -2,7 +2,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react
 import { Sidebar } from './components/Sidebar';
 import { Icon } from './components/Icon';
 import { AiStatusPill, ConnectAiModal } from './components/AiConnection';
-import { QuickActionModal } from './components/QuickActionModal';
+import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
 import { AgentsView, ConnectionView, OverviewView, PipelinesView, ProductView } from './components/Views';
 import { AnalyticsView } from './components/AnalyticsView';
 import { NotificationCenter } from './components/NotificationCenter';
@@ -10,8 +10,7 @@ import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
 import { deriveAiStatus } from './services/aiStatusService';
-import type { AiStatus, DashboardData, ProductId, Task, View } from './types';
-import { newGoalUrl } from './data/agentsMeta';
+import type { AiStatus, DashboardData, ProductId, View } from './types';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
@@ -58,7 +57,8 @@ export default function App() {
   const [load, setLoad] = useState<LoadState>({ status: 'loading' });
   const [refreshing, setRefreshing] = useState(false);
   const [showConnect, setShowConnect] = useState(false);
-  const [quick, setQuick] = useState<QuickActionKind | null>(null);
+  // In-panel goal form (no GitHub). undefined = closed; '' = open with default type.
+  const [goalTemplate, setGoalTemplate] = useState<string | undefined>(undefined);
   const [toast, setToast] = useState<string | null>(null);
 
   /* ---- data ---- */
@@ -114,13 +114,22 @@ export default function App() {
     return () => clearTimeout(t);
   }, [toast]);
 
-  /* ---- quick actions: file a real goal in the private vault (no local fake tasks) ---- */
-  const LABEL: Record<QuickActionKind, string> = { content: '', research: 'research', code: 'foliocraft', analytics: 'ops' };
-  const createTask = (input: Omit<Task, 'id' | 'status'>) => {
-    const label = input.product !== 'studio' ? input.product : LABEL[quick ?? 'content'] || 'research';
-    window.open(newGoalUrl(label, input.title), '_blank', 'noopener');
-    setQuick(null);
-    setToast('Goal opened in your private vault. Submit it there to start the pipeline.');
+  /* ---- goals: started inside Ganesha on the studio backend ---- */
+  useEffect(() => {
+    const open = (e: Event) => setGoalTemplate((e as CustomEvent<{ template?: string }>).detail?.template ?? '');
+    window.addEventListener(NEW_GOAL_EVENT, open);
+    return () => window.removeEventListener(NEW_GOAL_EVENT, open);
+  }, []);
+  const QUICK_TEMPLATE: Record<Exclude<QuickActionKind, 'analytics'>, (p: ProductId | 'studio') => string> = {
+    content: (p) => (p === 'littleloop' ? 'littleloop_episode' : p === 'foliocraft' ? 'foliocraft_feature' : 'sunverse_song_release'),
+    research: () => 'research_brief',
+    code: () => 'foliocraft_feature',
+  };
+  const goalCreated = (title: string) => {
+    setGoalTemplate(undefined);
+    setToast(`Started: ${title}. GANESHA is assigning the team.`);
+    window.dispatchEvent(new Event('ganesha:goal-created'));
+    if (view !== 'overview' && view !== 'pipelines') navigate('pipelines');
   };
 
   const defaultProduct: ProductId | 'studio' = PRODUCT_VIEWS.includes(view) ? (view as ProductId) : 'studio';
@@ -134,8 +143,8 @@ export default function App() {
       ai,
       aiChecking,
       onOpenProduct: (id: ProductId) => navigate(id),
-      // Analytics shows the real report; other quick actions file a goal in the vault.
-      onQuickAction: (k: QuickActionKind) => (k === 'analytics' ? navigate('analytics') : setQuick(k)),
+      // Analytics shows the real report; other quick actions open the in-panel goal form.
+      onQuickAction: (k: QuickActionKind) => (k === 'analytics' ? navigate('analytics') : setGoalTemplate(QUICK_TEMPLATE[k](defaultProduct))),
       onRecheckAi: () => fetchData(true),
       onConnectAi: () => setShowConnect(true),
     };
@@ -214,13 +223,8 @@ export default function App() {
       </div>
 
       {showConnect && <ConnectAiModal onClose={() => setShowConnect(false)} />}
-      {quick && (
-        <QuickActionModal
-          kind={quick}
-          defaultProduct={defaultProduct}
-          onClose={() => setQuick(null)}
-          onCreate={createTask}
-        />
+      {goalTemplate !== undefined && (
+        <GoalModal initialTemplate={goalTemplate || undefined} onClose={() => setGoalTemplate(undefined)} onCreated={goalCreated} />
       )}
       {toast && (
         <div className="toast" role="status">

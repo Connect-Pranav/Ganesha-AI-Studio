@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
-import { AGENTS, TEAMS, TEMPLATES, agentName, newGoalUrl, VAULT_URL } from '../data/agentsMeta';
+import { AGENTS, TEAMS, TEMPLATES, agentName } from '../data/agentsMeta';
+import { openNewGoal } from './GoalModal';
 import type { Agent, Pipeline, PipelineStatus, StepStatus } from '../types';
 
 const pStatusLabel: Record<PipelineStatus, string> = {
@@ -23,17 +24,17 @@ const stepLabel: Record<StepStatus, string> = {
 /* ---------- New goal buttons ---------- */
 export function NewGoalButtons() {
   const goals = [
-    { label: 'sunverse', text: 'Song', title: 'New Sunverse song: ' },
-    { label: 'littleloop', text: 'Episode', title: 'New LittleLoop episode: ' },
-    { label: 'foliocraft', text: 'Feature', title: 'Foliocraft feature: ' },
-    { label: 'research', text: 'Research', title: 'Research: ' },
+    { template: 'sunverse_song_release', text: 'Song' },
+    { template: 'littleloop_episode', text: 'Episode' },
+    { template: 'foliocraft_feature', text: 'Feature' },
+    { template: 'research_brief', text: 'Research' },
   ];
   return (
     <div className="goal-btns">
       {goals.map((g) => (
-        <a key={g.label} className="btn btn-small" href={newGoalUrl(g.label, g.title)} target="_blank" rel="noreferrer">
+        <button key={g.template} className="btn btn-small" onClick={() => openNewGoal(g.template)}>
           <Icon name="plus" size={14} /> {g.text}
-        </a>
+        </button>
       ))}
     </div>
   );
@@ -53,9 +54,7 @@ function PipelineCard({ p }: { p: Pipeline }) {
             {p.goalRef && (
               <>
                 {' · '}
-                <a href={`${VAULT_URL}/issues/${p.goalRef.split('#')[1]}`} target="_blank" rel="noreferrer">
-                  {p.goalRef}
-                </a>
+                {p.goalRef}
               </>
             )}
           </p>
@@ -88,7 +87,7 @@ export function PipelineBoard({ pipelines, limit }: { pipelines: Pipeline[]; lim
   const shown = (filter === 'all' ? pipelines : pipelines.filter((p) => p.status === filter)).slice(0, limit ?? 100);
 
   return (
-    <Card title="Pipelines" action={pipelines.length ? <LiveBadge /> : undefined}>
+    <Card title="Earlier pipelines" action={pipelines.length ? <LiveBadge /> : undefined}>
       {pipelines.length > 0 && (
         <div className="tabs" role="tablist" aria-label="Filter pipelines">
           {order.map((s) => (
@@ -102,7 +101,7 @@ export function PipelineBoard({ pipelines, limit }: { pipelines: Pipeline[]; lim
       {shown.length === 0 ? (
         <EmptyState
           title={pipelines.length ? 'Nothing with this status' : 'No pipelines yet'}
-          hint={pipelines.length ? undefined : 'Create a goal below — GANESHA picks it up on the next run and assigns the team.'}
+          hint={pipelines.length ? undefined : 'Start a goal below and GANESHA assigns the team.'}
         />
       ) : (
         <ul className="pipes">

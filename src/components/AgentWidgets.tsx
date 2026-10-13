@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Card, EmptyState, LiveBadge, agentNames, engineNames, formatWhen, productNames } from './ui';
-import { AGENTS_WORKFLOW_URL } from '../config';
+import { openNewGoal } from './GoalModal';
 import type { BrandId, Finding, Run } from '../types';
 
 /* ---------- NARADA research ---------- */
@@ -84,9 +84,9 @@ export function RunHistory({ runs }: { runs: Run[] }) {
     <Card
       title="Run history"
       action={
-        <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
-          Run agents now
-        </a>
+        <button className="btn btn-small" onClick={() => openNewGoal('research_brief')}>
+          New research goal
+        </button>
       }
     >
       {runs.length === 0 ? (

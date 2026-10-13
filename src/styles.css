@@ -709,3 +709,23 @@ a.btn { text-decoration: none; color: inherit; }
 .preview-text { white-space: pre-wrap; font-family: var(--sans); font-size: 14px; line-height: 1.6; }
 .btn-small.btn-primary { background: var(--green); color: #f7f3ea; border-color: var(--green); }
 .btn-small.btn-primary:hover { background: var(--green-2); }
+
+/* ---------- Studio goals (in-panel workflows) ---------- */
+.pill-warn { background: var(--warn-soft); color: var(--warn); }
+.wf-list { list-style: none; display: grid; gap: 10px; margin-top: 12px; }
+.wf-item { border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); overflow: hidden; }
+.wf-row { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; background: none; border: 0; text-align: left; cursor: pointer; }
+.wf-row:hover { background: var(--bg-2); }
+.wf-row-main { display: grid; gap: 2px; min-width: 0; }
+.wf-name { font-weight: 600; font-size: 14.5px; }
+.wf-meta { font-size: 12px; color: var(--ink-3); }
+.wf-detail { padding: 4px 14px 14px; display: grid; gap: 10px; border-top: 1px solid var(--line); }
+.wf-goal { font-size: 13px; color: var(--ink-2); white-space: pre-wrap; padding-top: 10px; }
+.wf-steps { list-style: none; display: grid; gap: 8px; }
+.wf-step { border-left: 3px solid var(--line-2); padding: 6px 0 6px 12px; display: grid; gap: 4px; }
+.wf-step.wf-completed { border-left-color: var(--ok); }
+.wf-step.wf-running { border-left-color: var(--green-2); }
+.wf-step.wf-waiting_for_approval, .wf-step.wf-waiting_for_external_action { border-left-color: var(--warn); }
+.wf-step.wf-failed { border-left-color: var(--err); }
+.wf-step-head { display: flex; justify-content: space-between; gap: 10px; align-items: center; font-size: 13.5px; flex-wrap: wrap; }
+.form textarea { padding: 9px 12px; border: 1px solid var(--line-2); border-radius: 10px; background: var(--surface); font: inherit; resize: vertical; }

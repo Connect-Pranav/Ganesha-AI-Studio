@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Icon, type IconName } from './Icon';
 import { Card, EmptyState, LiveBadge, SourceBadge, agentNames, engineNames, formatWhen, productNames, timeAgo } from './ui';
-import { AGENTS_WORKFLOW_URL } from '../config';
+import { openNewGoal } from './GoalModal';
 import type { Activity, Agent, Metric, Product, ProductId, Task, TaskStatus, Workflow } from '../types';
 
 /* ---------- Stat card ---------- */
@@ -83,9 +83,9 @@ export function AgentPanel({ agents, live, detailed = false }: { agents: Agent[]
               )}
             </div>
             {a.id !== 'code-shakti' && (
-              <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">
-                Run
-              </a>
+              <button className="btn btn-small" onClick={() => openNewGoal(a.id === 'narada' ? 'research_brief' : undefined)}>
+                Give a goal
+              </button>
             )}
           </li>
         ))}

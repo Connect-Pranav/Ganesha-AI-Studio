@@ -25,18 +25,3 @@ export const agentName = (id: string) => byId.get(id)?.name ?? id;
 
 export const VAULT_URL = 'https://github.com/Connect-Pranav/Ganesha-AI-Vault';
 
-/** Pre-filled "new goal" issue in the private vault. */
-export function newGoalUrl(label: string, title: string): string {
-  const body = [
-    '## Goal',
-    'Describe what you want in a few lines.',
-    '',
-    '## Details (optional)',
-    '- Mood / audience / length:',
-    '- Must include:',
-    '- Must avoid:',
-    '- Deadline:',
-  ].join('\n');
-  const q = new URLSearchParams({ labels: `goal,${label}`, title, body });
-  return `${VAULT_URL}/issues/new?${q.toString()}`;
-}

@@ -4,8 +4,7 @@
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Icon } from './Icon';
 import { formatWhen } from './ui';
-import { AGENTS_WORKFLOW_URL } from '../config';
-import { VAULT_URL, agentName } from '../data/agentsMeta';
+import { agentName } from '../data/agentsMeta';
 import { ApiError, api, getToken, setToken, type Notifications } from '../services/adminService';
 import type { DashboardData } from '../types';
 
@@ -141,14 +140,7 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
                   <p className="nt-meta">
                     {p.steps.filter((s) => s.status === 'approval_required').map((s) => agentName(s.agent)).join(', ')} · {p.brand} · updated {formatWhen(p.updatedAt)}
                   </p>
-                  <p className="nt-text">This goal lives in your private vault. Approve by commenting <code>approve</code> (or <code>reject</code>) on its issue.</p>
-                  {p.goalRef && (
-                    <div className="nt-actions">
-                      <a className="btn btn-small btn-primary" href={`${VAULT_URL}/issues/${p.goalRef.split('#')[1]}`} target="_blank" rel="noreferrer">
-                        Open issue to approve
-                      </a>
-                    </div>
-                  )}
+                  <p className="nt-text">Older goal from the GitHub flow. Tell Claude in chat “approve” or “reject” and it is applied for you.</p>
                 </article>
               ))}
               {!n?.approvals.length && !vaultApprovals.length && <p className="nt-empty">Nothing waiting for approval.</p>}
@@ -192,7 +184,7 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
                   <p className="nt-meta">{r.engine} · {formatWhen(r.finishedAt)}</p>
                   <p className="nt-text">{(r.error ?? r.summary).slice(0, 220)}</p>
                   <div className="nt-actions">
-                    <a className="btn btn-small" href={AGENTS_WORKFLOW_URL} target="_blank" rel="noreferrer">Open runs</a>
+                    <a className="btn btn-small" href="#/agents">See run history</a>
                   </div>
                 </article>
               ))}
@@ -239,7 +231,7 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
   );
 }
 
-function Unlock({ onUnlocked }: { onUnlocked: () => void }) {
+export function Unlock({ onUnlocked }: { onUnlocked: () => void }) {
   const [value, setValue] = useState('');
   const [error, setError] = useState('');
   const [checking, setChecking] = useState(false);

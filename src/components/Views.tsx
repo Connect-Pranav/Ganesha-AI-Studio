@@ -12,6 +12,7 @@ import {
 } from './Widgets';
 import { ResearchPanel, RunHistory } from './AgentWidgets';
 import { AgentDirectory, PipelineBoard } from './PipelineWidgets';
+import { StudioWorkflows } from './StudioWorkflows';
 import { AiStatusCard } from './AiConnection';
 import type { AiStatus, DashboardData, ProductId } from '../types';
 
@@ -53,6 +54,7 @@ export function OverviewView(p: Common) {
 
       <div className="grid-main">
         <div className="col">
+          <StudioWorkflows />
           <PipelineBoard pipelines={data.pipelines} limit={3} />
           <AgentPanel agents={data.agents} live={data.live.agents} />
           <ResearchPanel findings={data.research} limit={4} title="Latest NARADA research" />
@@ -157,19 +159,20 @@ export function PipelinesView(p: Common) {
   return (
     <div className="grid-main">
       <div className="col">
+        <StudioWorkflows />
         <PipelineBoard pipelines={p.data.pipelines} />
       </div>
       <div className="col">
         <Card title="How a goal flows">
           <ol className="flow">
-            <li><strong>You</strong> post a goal (buttons below the board) — it opens a private issue in the vault.</li>
-            <li><strong>GANESHA</strong> picks it up on the next run (every 3 hours, 8 AM–11 PM) and builds the pipeline.</li>
-            <li><strong>Specialists</strong> produce each deliverable into the private vault.</li>
+            <li><strong>You</strong> start a goal with <strong>New goal</strong> on this page.</li>
+            <li><strong>GANESHA</strong> builds the pipeline and the agents start within about 5 minutes.</li>
+            <li><strong>Specialists</strong> produce each deliverable. Open any step and click <strong>View</strong> to read it.</li>
             <li><strong>DHARMA + CHITRAGUPTA</strong> check safety and quality; failures get one fix.</li>
-            <li><strong>Approval</strong> — publishing, pricing or code merges stop here. Reply <code>approve</code> or <code>reject</code> on the issue.</li>
-            <li><strong>SAMVADA</strong> writes the handoff and closes the goal.</li>
+            <li><strong>Approval</strong>: publishing, pricing or code merges stop here and appear in the 🔔 bell with Approve / Reject.</li>
+            <li><strong>SAMVADA</strong> writes the handoff and the goal is done.</li>
           </ol>
-          <p className="ai-note">This public page shows status only. Lyrics, scripts and plans stay in the private vault.</p>
+          <p className="ai-note">Deliverables are private: they are only shown after you unlock with your admin token.</p>
         </Card>
         <ResearchPanel findings={p.data.research} limit={3} title="Latest NARADA research" />
       </div>
