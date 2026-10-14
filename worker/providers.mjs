@@ -104,7 +104,11 @@ function buildRequest(env, cfg, { system, prompt, maxTokens, json }) {
       return {
         text,
         stop: cand?.finishReason ?? body.promptFeedback?.blockReason ?? null,
-        usage: { input: body.usageMetadata?.promptTokenCount ?? null, output: body.usageMetadata?.candidatesTokenCount ?? null },
+        // Thinking tokens are billed as output (Gemini pricing page), so they are counted here.
+        usage: {
+          input: body.usageMetadata?.promptTokenCount ?? null,
+          output: body.usageMetadata?.candidatesTokenCount == null ? null : body.usageMetadata.candidatesTokenCount + (body.usageMetadata.thoughtsTokenCount ?? 0),
+        },
       };
     },
   };

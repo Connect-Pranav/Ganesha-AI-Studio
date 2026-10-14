@@ -7,6 +7,12 @@ import { AgentsView, OverviewView, PipelinesView } from './components/Views';
 import { AnalyticsView } from './components/AnalyticsView';
 import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
+import { CboView } from './components/cbo/CboView';
+import { TaskManager } from './components/cbo/TaskManager';
+import { FinanceView } from './components/cbo/FinanceView';
+import { VideoStudio } from './components/cbo/VideoStudio';
+import { VoiceLibrary } from './components/cbo/VoiceLibrary';
+import { CharactersView } from './components/cbo/CharactersView';
 import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
@@ -15,10 +21,16 @@ import type { AiStatus, DashboardData, ProductId, View } from './types';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
-const VIEWS: View[] = ['universe', 'overview', 'pipelines', 'analytics', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
 const TITLES: Record<View, string> = {
   universe: '3D Command Center',
   overview: 'Studio overview',
+  cbo: 'GANESHA CBO — Executive',
+  tasks: 'Task Manager',
+  finance: 'CFO & Cost Intelligence',
+  studio: 'AI Video & Filmmaking Studio',
+  voices: 'Signature Voice Library',
+  characters: 'Characters & Assets',
   pipelines: 'Pipelines',
   analytics: 'Analytics (SOMA)',
   littleloop: 'LittleLoop',
@@ -160,6 +172,18 @@ export default function App() {
         <Suspense fallback={<div className="u-loading">Loading 3D command center…</div>}>
           <Universe3D data={load.data} ai={ai} onNavigate={navigate} />
         </Suspense>
+      ) : view === 'cbo' ? (
+        <CboView onNavigate={navigate} />
+      ) : view === 'tasks' ? (
+        <TaskManager />
+      ) : view === 'finance' ? (
+        <FinanceView />
+      ) : view === 'studio' ? (
+        <VideoStudio />
+      ) : view === 'voices' ? (
+        <VoiceLibrary />
+      ) : view === 'characters' ? (
+        <CharactersView />
       ) : view === 'agents' ? (
         <AgentsView {...common} />
       ) : view === 'analytics' ? (

@@ -21,6 +21,12 @@ const paths = {
   universe: 'M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M3.5 9.5c3-4 14-4 17 0M3.5 14.5c3 4 14 4 17 0M19 5.5h.01M5 18.5h.01',
   bell: 'M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.94 1.94 0 0 0 3.4 0',
   pipelines: 'M5 6a2 2 0 1 0 0-.01M19 6a2 2 0 1 0 0-.01M12 18a2 2 0 1 0 0-.01M7 6h10M6.5 7.5l4.5 9M17.5 7.5l-4.5 9',
+  cbo: 'M12 3l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.9z',
+  tasks: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2',
+  finance: 'M7 4h10M7 8h10M7 4c5 0 5 8 0 8l8 8',
+  film: 'M4 5h16v14H4zM4 9h16M4 15h16M8 5v4m4-4v4m4-4v4M8 15v4m4-4v4m4-4v4',
+  mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3',
+  characters: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M17 3.5a4 4 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.6',
 } satisfies Record<string, string>;
 
 export type IconName = keyof typeof paths;

@@ -18,8 +18,14 @@ import { BRAND_SOURCES, getReport, scheduledAnalytics } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 import { ensureSchema } from './schema.mjs';
 import { brandArtifacts, studioSummary } from './summary.mjs';
+import { audit, cboReport, financeSummary, listTasks, planGoal, reassignTask, setDispatchPause, setTaskMeta, setWorkflowMeta, LIFECYCLE } from './cbo.mjs';
+import { addPricing, addSubscription, deleteBudget, deleteSubscription, getSettings, listBudgets, listPricing, listSubscriptions, saveSettings, upsertBudget } from './finance.mjs';
+import { runCommand } from './commands.mjs';
+import { listConnections, testOpenAI } from './connections.mjs';
+import { assignVoice, listAssignments, listVoices, recommendVoices, synthesize, updateVoiceSetting } from './voices.mjs';
+import * as prod from './production.mjs';
 
-const VERSION = '0.4.0-summary';
+const VERSION = '0.5.0-cbo';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
 const ALLOWED_ORIGINS = ['https://connect-pranav.github.io'];
 function corsHeaders(request) {
@@ -238,6 +244,137 @@ async function route(request, env, ctx) {
     const status = await decideApproval(db, seg[2], decision, { note: typeof note === 'string' ? note.slice(0, 500) : null });
     kick();
     return json({ approval: seg[2], decision, workflowStatus: status });
+  }
+
+  /* ---------- GANESHA_CBO: executive, operations, CFO ---------- */
+  if (path === '/api/cbo/report' && method === 'GET') return json(await cboReport(env, db, await providersStatus(env, db)));
+  if (path === '/api/cbo/plan' && method === 'POST') {
+    const b = await readBody(request);
+    return json(await planGoal(env, db, { template: b.template, title: typeof b.title === 'string' ? b.title.slice(0, 120) : '', count: b.count }));
+  }
+  if (path === '/api/cbo/command' && method === 'POST') {
+    const { text } = await readBody(request);
+    return json(await runCommand(env, db, await providersStatus(env, db), text));
+  }
+  if (path === '/api/cbo/tasks' && method === 'GET') {
+    const state = url.searchParams.get('state');
+    if (state && !LIFECYCLE.includes(state)) throw new HttpError(400, `state must be one of ${LIFECYCLE.join(', ')}`);
+    return json({ lifecycle: LIFECYCLE, tasks: await listTasks(db, { brand: url.searchParams.get('brand'), state }) });
+  }
+  if (seg[1] === 'tasks' && seg[3] === 'meta' && method === 'PUT') return json(await setTaskMeta(db, seg[2], await readBody(request)));
+  if (seg[1] === 'tasks' && seg[3] === 'agent' && method === 'PUT') {
+    const { agentId } = await readBody(request);
+    return json(await reassignTask(db, seg[2], agentId));
+  }
+  if (seg[1] === 'tasks' && seg[3] === 'estimates' && method === 'GET') {
+    const rows = (await db.prepare('SELECT * FROM cost_estimates WHERE task_id = ? ORDER BY created_at DESC LIMIT 20').bind(seg[2]).all()).results;
+    return json({ estimates: rows.map((r) => ({ ...r, assumptions: JSON.parse(r.assumptions_json), pricing: r.pricing_json ? JSON.parse(r.pricing_json) : null, assumptions_json: undefined, pricing_json: undefined })) });
+  }
+  if (seg[1] === 'workflows' && seg[3] === 'meta' && method === 'PUT') return json(await setWorkflowMeta(db, seg[2], await readBody(request)));
+
+  if (path === '/api/finance' && method === 'GET') return json(await financeSummary(env, db));
+  if (path === '/api/settings' && method === 'GET') return json(await getSettings(db));
+  if (path === '/api/settings' && method === 'PUT') {
+    const body = await readBody(request);
+    const { dispatchPaused, ...rest } = body;
+    const changed = [];
+    if (typeof dispatchPaused === 'boolean') (await setDispatchPause(db, dispatchPaused), changed.push('dispatch_paused'));
+    else if ('dispatchPaused' in body) throw new HttpError(400, 'dispatchPaused must be true or false');
+    if (Object.keys(rest).length) {
+      const keys = await saveSettings(db, rest);
+      changed.push(...keys);
+      await audit(db, 'config_change', `Settings changed: ${keys.join(', ')}`, { keys });
+    }
+    if (!changed.length) throw new HttpError(400, 'No known settings in body');
+    if (dispatchPaused === false) kick();
+    return json({ changed, settings: await getSettings(db) });
+  }
+  if (path === '/api/finance/budgets' && method === 'GET') return json({ budgets: await listBudgets(db) });
+  if (path === '/api/finance/budgets' && method === 'POST') {
+    const b = await upsertBudget(db, await readBody(request));
+    await audit(db, 'config_change', `Budget ${b.scope}${b.scope_ref ? ` ${b.scope_ref}` : ''} = ₹${b.limit_inr}`);
+    kick();
+    return json({ budget: b });
+  }
+  if (seg[1] === 'finance' && seg[2] === 'budgets' && seg[3] && method === 'DELETE') {
+    await deleteBudget(db, seg[3]);
+    await audit(db, 'config_change', `Budget ${seg[3]} removed`);
+    return json({ deleted: seg[3] });
+  }
+  if (path === '/api/finance/pricing' && method === 'GET') return json(await listPricing(db));
+  if (path === '/api/finance/pricing' && method === 'POST') {
+    const id = await addPricing(db, await readBody(request));
+    await audit(db, 'config_change', `Pricing row ${id} added`);
+    return json({ id }, 201);
+  }
+  if (path === '/api/finance/subscriptions' && method === 'GET') return json({ subscriptions: await listSubscriptions(db) });
+  if (path === '/api/finance/subscriptions' && method === 'POST') {
+    const id = await addSubscription(db, await readBody(request), (await getSettings(db)).fx_usd_inr);
+    await audit(db, 'config_change', `Subscription ${id} added`);
+    return json({ id }, 201);
+  }
+  if (seg[1] === 'finance' && seg[2] === 'subscriptions' && seg[3] && method === 'DELETE') {
+    await deleteSubscription(db, seg[3]);
+    await audit(db, 'config_change', `Subscription ${seg[3]} removed`);
+    return json({ deleted: seg[3] });
+  }
+
+  /* ---------- Provider & subscription manager ---------- */
+  if (path === '/api/connections' && method === 'GET') return json({ connections: await listConnections(env, db, await providersStatus(env, db)), subscriptions: await listSubscriptions(db) });
+  if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db));
+
+  /* ---------- Voice library + Smart Voice Director ---------- */
+  if (path === '/api/voices' && method === 'GET') return json({ profiles: await listVoices(env, db) });
+  if (path === '/api/voices/recommend' && method === 'POST') return json(await recommendVoices(env, db, await readBody(request)));
+  if (path === '/api/voices/assign' && method === 'POST') return json({ assignment: await assignVoice(db, await readBody(request)) });
+  if (path === '/api/voices/assignments' && method === 'GET') return json({ assignments: await listAssignments(db, url.searchParams.get('scope') ?? 'project', url.searchParams.get('ref') ?? '') });
+  if (seg[1] === 'voices' && seg[2] && seg[3] === 'synthesize' && method === 'POST') {
+    const { text } = await readBody(request);
+    return json(await synthesize(env, db, seg[2], text));
+  }
+  if (seg[1] === 'voices' && seg[2] && !seg[3] && method === 'PUT') {
+    await updateVoiceSetting(db, seg[2], await readBody(request));
+    await audit(db, 'config_change', `Voice profile ${seg[2]} settings changed`);
+    return json({ profiles: await listVoices(env, db) });
+  }
+
+  /* ---------- Characters, productions, scenes, assets ---------- */
+  if (path === '/api/characters' && method === 'GET') return json({ characters: await prod.listCharacters(db, url.searchParams.get('brand')) });
+  if (path === '/api/characters' && method === 'POST') return json({ id: await prod.saveCharacter(db, await readBody(request)) }, 201);
+  if (seg[1] === 'characters' && seg[2] && !seg[3] && method === 'PUT') return json({ id: await prod.saveCharacter(db, await readBody(request), seg[2]) });
+  if (path === '/api/productions' && method === 'GET') return json({ productions: await prod.listProductions(db, url.searchParams.get('brand')), pillars: prod.PILLARS });
+  if (path === '/api/productions' && method === 'POST') return json({ id: await prod.createProduction(db, await readBody(request)) }, 201);
+  if (seg[1] === 'productions' && seg[2] && !seg[3] && method === 'GET') return json(await prod.getProduction(db, seg[2]));
+  if (seg[1] === 'productions' && seg[3] === 'scenes' && method === 'POST') return json({ id: await prod.addScene(db, seg[2], await readBody(request)) }, 201);
+  if (seg[1] === 'scenes' && seg[3] === 'regenerate' && method === 'POST') return json(await prod.regenerateScene(db, seg[2], await readBody(request)));
+  if (seg[1] === 'scenes' && seg[3] === 'versions' && method === 'GET') return json({ versions: await prod.sceneVersions(db, seg[2]) });
+  if (seg[1] === 'scenes' && seg[3] === 'status' && method === 'PUT') {
+    await prod.setSceneStatus(db, seg[2], await readBody(request));
+    return json({ ok: true });
+  }
+  if (seg[1] === 'scenes' && seg[3] === 'flow-handoff' && method === 'POST') return json(await prod.prepareFlowHandoff(db, seg[2]));
+  if (seg[1] === 'jobs' && seg[3] === 'complete' && method === 'POST') return json(await prod.completeJob(db, seg[2], await readBody(request)));
+  if (path === '/api/assets' && method === 'POST') return json({ id: await prod.registerAsset(db, await readBody(request)) }, 201);
+  if (seg[1] === 'assets' && seg[3] === 'status' && method === 'PUT') {
+    const { status } = await readBody(request);
+    await prod.setAssetStatus(db, seg[2], status);
+    return json({ ok: true });
+  }
+  if (path === '/api/studio/prompt' && method === 'POST') {
+    const b = await readBody(request);
+    const ids = Array.isArray(b.characters) ? b.characters.slice(0, 10) : [];
+    const chars = [];
+    for (const id of ids) {
+      const c = await db.prepare('SELECT * FROM characters WHERE id = ?').bind(id).first();
+      if (c) chars.push(c);
+    }
+    return json({ prompt: prod.buildVideoPrompt(b.fields ?? {}, chars), fields: prod.PROMPT_FIELDS });
+  }
+  if (path === '/api/studio/learning' && method === 'GET') return json({ progress: await prod.learningProgress(db) });
+  if (path === '/api/studio/learning' && method === 'PUT') {
+    const { moduleId, status } = await readBody(request);
+    await prod.setLearning(db, moduleId, status);
+    return json({ ok: true });
   }
 
   // Manual orchestration pass (the cron does this automatically)

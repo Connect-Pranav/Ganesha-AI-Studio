@@ -1,3 +1,4 @@
+import { ProvidersPanel } from './cbo/ProvidersPanel';
 // AI Connection: the Worker's real provider state. Keys are never shown — only whether
 // they are set (public health booleans) and what the last real request returned.
 import { useState } from 'react';
@@ -302,6 +303,9 @@ export function ConnectionPage({ data, ai, aiChecking, onRecheck }: { data: Dash
         )}
       </div>
       {setup && <SetupModal onClose={() => setSetup(false)} />}
+      <div className="cx-span">
+        <ProvidersPanel />
+      </div>
     </div>
   );
 }
