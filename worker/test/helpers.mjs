@@ -78,3 +78,10 @@ export function fakeAnthropic(script = () => ({})) {
 }
 
 export { REGISTRY };
+
+// Tests never call the real FX service: answer it with "unavailable" unless a test injects a fetch.
+const realFetch = globalThis.fetch;
+globalThis.fetch = async (url, init) => {
+  if (String(url).includes('frankfurter')) return new Response('offline in tests', { status: 503 });
+  return realFetch(url, init);
+};

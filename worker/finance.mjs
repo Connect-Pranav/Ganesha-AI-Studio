@@ -15,6 +15,12 @@ export const SETTING_DEFAULTS = {
   provider_billing: { claude: 'paid', gemini: 'unknown', gemini_tts: 'unknown', openai: 'unknown' },
   // Maximum tasks with a non-zero reservation running at the same time. null = no extra limit.
   max_concurrent_paid_tasks: null,
+  // CBO Autopilot: 'auto' starts goals itself within the limits below, 'suggest' only proposes, 'off'.
+  autopilot_mode: 'auto',
+  // Most a day's auto-started goals may cost (conservative estimate, INR). 0 = only provably free work
+  // starts by itself; anything that may cost money waits for one tap from the owner.
+  autopilot_daily_inr: 0,
+  autopilot_max_goals: 2,
 };
 
 export async function getSettings(db) {
@@ -52,6 +58,20 @@ export async function saveSettings(db, patch) {
   if ('unknownCostPolicy' in patch) {
     if (!['require_approval', 'allow'].includes(patch.unknownCostPolicy)) throw new HttpError(400, 'unknownCostPolicy must be require_approval or allow');
     writes.unknown_cost_policy = patch.unknownCostPolicy;
+  }
+  if ('autopilotMode' in patch) {
+    if (!['auto', 'suggest', 'off'].includes(patch.autopilotMode)) throw new HttpError(400, 'autopilotMode must be auto, suggest or off');
+    writes.autopilot_mode = patch.autopilotMode;
+  }
+  if ('autopilotDailyInr' in patch) {
+    const v = patch.autopilotDailyInr;
+    if (!(typeof v === 'number' && v >= 0 && v < 1e7)) throw new HttpError(400, 'autopilotDailyInr must be a non-negative number (INR)');
+    writes.autopilot_daily_inr = v;
+  }
+  if ('autopilotMaxGoals' in patch) {
+    const v = patch.autopilotMaxGoals;
+    if (!(Number.isInteger(v) && v >= 1 && v <= 5)) throw new HttpError(400, 'autopilotMaxGoals must be 1-5');
+    writes.autopilot_max_goals = v;
   }
   if ('maxConcurrentPaidTasks' in patch) {
     const v = patch.maxConcurrentPaidTasks;
@@ -232,4 +252,38 @@ export async function subscriptionsMonthly(db) {
                      SUM(amount_inr IS NULL) AS unconverted, COUNT(*) AS n FROM subscriptions`)
     .first();
   return { inr: r.inr, unconverted: r.unconverted ?? 0, count: r.n };
+}
+
+/* ---------------- automatic USD→INR rate ---------------- */
+// Public ECB reference rate via Frankfurter (no key). Used only when the owner has not set a rate;
+// an owner-entered rate always wins. Stored with its source and date like any other value.
+export const FX_URL = 'https://api.frankfurter.dev/v1/latest?from=USD&to=INR';
+const FX_MAX_AGE_MS = 20 * 3600_000;
+
+export async function maybeRefreshFx(db, deps = {}) {
+  const s = await getSettings(db);
+  const cur = s.fx_usd_inr;
+  if (cur && !cur.auto) return cur; // owner-set
+  if (cur?.auto && Date.now() - Date.parse(cur.at) < FX_MAX_AGE_MS) return cur;
+  const fetchImpl = deps.fetch ?? fetch;
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 8000);
+  try {
+    const res = await fetchImpl(FX_URL, { signal: ctrl.signal, headers: { accept: 'application/json' } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const body = await res.json();
+    const rate = Number(body?.rates?.INR);
+    if (!(rate > 1 && rate < 1000)) throw new Error('no INR rate in response');
+    const fx = { rate, source: `ECB reference rate via Frankfurter (${body.date})`, at: nowIso(), auto: true };
+    await db
+      .prepare('INSERT INTO studio_settings (key, value_json, updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value_json = excluded.value_json, updated_at = excluded.updated_at')
+      .bind('fx_usd_inr', JSON.stringify(fx), fx.at)
+      .run();
+    return fx;
+  } catch (e) {
+    console.warn('FX refresh failed', e?.message);
+    return cur ?? null; // keep the last known rate (it shows its own date)
+  } finally {
+    clearTimeout(t);
+  }
 }

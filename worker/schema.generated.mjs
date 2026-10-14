@@ -50,5 +50,7 @@ export const SCHEMA_STATEMENTS = [
   "CREATE TABLE IF NOT EXISTS sync_runs ( id TEXT PRIMARY KEY, service TEXT NOT NULL, adapter TEXT NOT NULL, status TEXT NOT NULL CHECK (status IN ('ok','error','needs_authorization','unavailable')), rows INTEGER NOT NULL DEFAULT 0, error TEXT, started_at TEXT NOT NULL, finished_at TEXT )",
   "CREATE INDEX IF NOT EXISTS idx_sync_service ON sync_runs(service, started_at)",
   "CREATE TABLE IF NOT EXISTS dispatch_decisions ( id TEXT PRIMARY KEY, task_id TEXT NOT NULL, chosen_provider TEXT, candidates_json TEXT NOT NULL, reason TEXT NOT NULL, created_at TEXT NOT NULL )",
-  "CREATE INDEX IF NOT EXISTS idx_decisions_task ON dispatch_decisions(task_id, created_at)"
+  "CREATE INDEX IF NOT EXISTS idx_decisions_task ON dispatch_decisions(task_id, created_at)",
+  "CREATE TABLE IF NOT EXISTS autopilot_proposals ( id TEXT PRIMARY KEY, day TEXT NOT NULL, brand TEXT NOT NULL, template TEXT NOT NULL, title TEXT NOT NULL, goal TEXT NOT NULL, reason TEXT NOT NULL, evidence_json TEXT NOT NULL DEFAULT '[]', est_inr REAL, est_usd REAL, status TEXT NOT NULL CHECK (status IN ('proposed','started','rejected','expired')), decided_by TEXT, workflow_id TEXT, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE (day, template) )",
+  "CREATE INDEX IF NOT EXISTS idx_autopilot_day ON autopilot_proposals(day, status)"
 ];

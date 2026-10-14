@@ -3,7 +3,7 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Card, EmptyState, productNames } from '../ui';
 import { AGENTS, agentName } from '../../data/agentsMeta';
-import { cbo, dateShort, dur, LIFECYCLE, LIFECYCLE_LABEL, money, tokens, useLoad, type Lifecycle, type Plan, type TaskRow } from '../../services/cboService';
+import { cbo, dateShort, dur, inr, LIFECYCLE, LIFECYCLE_LABEL, money, tokens, useLoad, type Lifecycle, type Plan, type TaskRow } from '../../services/cboService';
 import { Gate, Honest, Pill, TEMPLATE_OPTIONS, useAction } from './common';
 import { PlanTable } from './CboView';
 
@@ -33,6 +33,7 @@ export function TaskManager() {
               </button>
             ))}
           </div>
+          <ProjectCosts tasks={tasks} />
           {shown.length === 0 ? (
             <EmptyState title="No tasks in this view." hint="Tasks appear when a goal is started (Pipelines → New goal, or Confirm a plan)." />
           ) : (
@@ -311,5 +312,39 @@ function Planner() {
       {started && <p className="cx-ok">{started}</p>}
       {plan && <PlanTable plan={plan} />}
     </Card>
+  );
+}
+
+/** Cost per project (goal): actual so far + the latest estimate for steps not yet done. */
+function ProjectCosts({ tasks }: { tasks: TaskRow[] }) {
+  const groups = new Map<string, TaskRow[]>();
+  for (const t of tasks) groups.set(t.workflowId, [...(groups.get(t.workflowId) ?? []), t]);
+  if (!groups.size) return null;
+  const rows = [...groups.values()].slice(0, 12).map((ts) => {
+    const actualKnown = ts.every((t) => !t.actual || !t.actual.unknown);
+    const actual = ts.reduce((a, t) => a + (t.actual?.inr ?? 0), 0);
+    const pending = ts.filter((t) => !['COMPLETED', 'CANCELLED', 'FAILED'].includes(t.state));
+    const estimated = pending.filter((t) => t.estimate?.direct_inr !== null && t.estimate?.direct_inr !== undefined);
+    const est = estimated.reduce((a, t) => a + (t.estimate!.direct_inr ?? 0), 0);
+    return { id: ts[0].workflowId, title: ts[0].workflowTitle, done: ts.filter((t) => t.state === 'COMPLETED').length, steps: ts.length, actual, actualKnown, est, notEstimated: pending.length - estimated.length };
+  });
+  return (
+    <div className="cx-projects">
+      <p className="cx-eyebrow">Cost per project</p>
+      <ul className="cx-list compact">
+        {rows.map((r) => (
+          <li key={r.id}>
+            <span>
+              <strong>{r.title}</strong> <span className="cx-sub">· {r.done}/{r.steps} steps done</span>
+            </span>
+            <span className="cx-project-row">
+              <strong>{r.actualKnown ? inr(r.actual) : `${inr(r.actual)} + unknown`}</strong> <span className="cx-sub">spent</span>
+              {r.est > 0 && <span className="cx-sub"> · + {inr(r.est)} estimated for remaining</span>}
+              {r.notEstimated > 0 && <span className="cx-sub"> · {r.notEstimated} step(s) estimated when they start</span>}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

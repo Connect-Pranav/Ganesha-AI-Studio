@@ -19,12 +19,13 @@ import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 import { ensureSchema } from './schema.mjs';
 import { brandArtifacts, studioSummary } from './summary.mjs';
 import { audit, cboReport, financeSummary, listTasks, planGoal, reassignTask, setDispatchPause, setTaskMeta, setWorkflowMeta, LIFECYCLE } from './cbo.mjs';
-import { addPricing, addSubscription, deleteBudget, deleteSubscription, getSettings, listBudgets, listPricing, listSubscriptions, saveSettings, upsertBudget } from './finance.mjs';
+import { maybeRefreshFx, addPricing, addSubscription, deleteBudget, deleteSubscription, getSettings, listBudgets, listPricing, listSubscriptions, saveSettings, upsertBudget } from './finance.mjs';
 import { runCommand } from './commands.mjs';
 import { listConnections, testOpenAI } from './connections.mjs';
 import { assignVoice, listAssignments, listVoices, recommendVoices, synthesize, updateVoiceSetting } from './voices.mjs';
 import * as prod from './production.mjs';
 import * as subintel from './subintel.mjs';
+import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from './autopilot.mjs';
 
 const VERSION = '0.6.0-subintel';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
@@ -108,6 +109,8 @@ async function route(request, env, ctx) {
 
   requireAdmin(request, env);
   const db = await requireDb(env);
+  // Keep a current USD→INR rate so every estimate can be shown in ₹ (owner-set rate always wins).
+  await maybeRefreshFx(db);
 
   // Owner-triggered refresh + SOMA analysis (uses the AI provider).
   if (seg[1] === 'analytics' && seg[3] === 'refresh' && method === 'POST') {
@@ -320,6 +323,22 @@ async function route(request, env, ctx) {
     return json({ deleted: seg[3] });
   }
 
+  /* ---------- CBO Autopilot ---------- */
+  if (path === '/api/autopilot' && method === 'GET') {
+    const s = await getSettings(db);
+    return json({ mode: s.autopilot_mode, dailyInr: s.autopilot_daily_inr, maxGoals: s.autopilot_max_goals, proposals: await listProposals(db) });
+  }
+  if (path === '/api/autopilot/run' && method === 'POST') {
+    const r = await runAutopilot(env, db, { force: true });
+    if (r.actions.some((a) => a.status === 'started')) kick();
+    return json(r);
+  }
+  if (seg[1] === 'autopilot' && seg[2] && ['approve', 'reject'].includes(seg[3]) && method === 'POST') {
+    const r = await decideProposal(db, seg[2], seg[3]);
+    if (r.status === 'started') kick();
+    return json(r);
+  }
+
   /* ---------- Subscription Intelligence ---------- */
   if (path === '/api/subintel' && method === 'GET') return json(await subintel.overview(env, db, await providersStatus(env, db)));
   if (path === '/api/subintel/daily' && method === 'GET') return json(await subintel.dailyLedger(db, Math.min(90, Math.max(1, Number(url.searchParams.get('days')) || 31))));
@@ -428,7 +447,14 @@ export default {
   async scheduled(_event, env, ctx) {
     if (!env.DB) return;
     await ensureSchema(env.DB);
-    ctx.waitUntil(tick(env, env.DB).then((r) => console.log('tick', JSON.stringify(r))));
+    await maybeRefreshFx(env.DB).catch(() => {});
+    // Autopilot first (once a day), then the orchestration pass picks up anything it started.
+    ctx.waitUntil(
+      scheduledAutopilot(env, env.DB)
+        .catch((e) => console.error('autopilot failed', e.message))
+        .then(() => tick(env, env.DB))
+        .then((r) => console.log('tick', JSON.stringify(r))),
+    );
     // Account usage/cost sync (Admin APIs) at most every 6 hours, only when an Admin key is set.
     if (env.ANTHROPIC_ADMIN_KEY || env.OPENAI_ADMIN_KEY)
       ctx.waitUntil(
