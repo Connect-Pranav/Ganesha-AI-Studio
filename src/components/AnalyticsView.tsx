@@ -6,9 +6,10 @@ import type { ProductId } from '../types';
 import { BrandWorkCounts, StudioOps } from './StudioOps';
 
 type Tab = ProductId | 'studio';
+// SOMA's YouTube analysis (Sunverse) comes first: it is the tab with real channel data.
 const BRANDS: { id: Tab; label: string }[] = [
+  { id: 'sunverse', label: 'Sunverse · YouTube (SOMA)' },
   { id: 'studio', label: 'Studio operations' },
-  { id: 'sunverse', label: 'Sunverse' },
   { id: 'littleloop', label: 'LittleLoop' },
   { id: 'foliocraft', label: 'Foliocraft' },
 ];
@@ -67,7 +68,7 @@ function VideoTable({ videos }: { videos: Video[] }) {
   );
 }
 
-export function AnalyticsView({ initialBrand = 'studio' }: { initialBrand?: Tab }) {
+export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Tab }) {
   const [brand, setBrand] = useState<Tab>(initialBrand);
   const [state, setState] = useState<{ status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; report: AnalyticsReport }>({ status: 'loading' });
 
@@ -197,6 +198,9 @@ export function AnalyticsView({ initialBrand = 'studio' }: { initialBrand?: Tab 
                   ))}
                 </ol>
                 {r.insights.at && <p className="ai-note">Written {formatWhen(r.insights.at)} from the fetch of {formatWhen(r.insights.basedOn ?? r.insights.at)}.</p>}
+                {r.insights.basedOn && r.fetchedAt && r.insights.basedOn < r.fetchedAt && (
+                  <p className="cx-warn-text">This analysis was written from an older fetch, so its figures can differ slightly from the live numbers above. The numbers above are the current ones; SOMA writes a fresh analysis automatically on its next scheduled run.</p>
+                )}
               </div>
             ) : (
               <EmptyState

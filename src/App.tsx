@@ -198,7 +198,7 @@ export default function App() {
       ) : view === 'agents' ? (
         <AgentsView {...common} />
       ) : view === 'analytics' ? (
-        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'studio'} />
+        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
       ) : view === 'connection' ? (
