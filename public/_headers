@@ -1,6 +1,10 @@
 # Cloudflare Pages headers
 /agent-data/*
   Cache-Control: no-store
+/sw.js
+  Cache-Control: no-cache
+/manifest.webmanifest
+  Cache-Control: no-cache
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 /*

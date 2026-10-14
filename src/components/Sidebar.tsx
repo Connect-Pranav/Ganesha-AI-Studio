@@ -1,4 +1,5 @@
 import { Icon, type IconName } from './Icon';
+import { InstallApp } from './InstallApp';
 import type { AiConnectionState, View } from '../types';
 
 interface NavItem {
@@ -88,6 +89,9 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
           {group('System', system)}
         </nav>
 
+        <div className="install-wrap">
+          <InstallApp />
+        </div>
         <div className="sidebar-foot">
           <div className="mode-chip">
             <span className={`dot ${live ? 'dot-connected' : 'dot-demo'}`} aria-hidden="true" />

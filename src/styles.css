@@ -1134,3 +1134,13 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
   .topbar-right { width: 100%; justify-content: flex-end; flex-wrap: wrap; }
 }
 @media (max-width: 700px) { .cz-planet { display: none; } }
+/* Installable app */
+.install-wrap { padding: 0 8px 10px; }
+.install-wrap:empty { display: none; }
+.install-btn { width: 100%; justify-content: center; }
+.app.is-collapsed .install-wrap { display: none; }
+/* Installed app on notched phones: keep content clear of the status bar */
+@media (display-mode: standalone) {
+  .topbar { padding-top: max(22px, env(safe-area-inset-top)); }
+  .sidebar { padding-top: max(20px, env(safe-area-inset-top)); }
+}
