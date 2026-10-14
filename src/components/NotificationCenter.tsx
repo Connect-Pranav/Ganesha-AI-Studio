@@ -2,6 +2,7 @@
 // Sources (all real): Worker approvals/failures/events (owner-only, needs the admin token),
 // vault pipelines waiting for approval and failed agent runs (public status files).
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { formatWhen } from './ui';
 import { agentName } from '../data/agentsMeta';
@@ -92,7 +93,9 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
         {count > 0 && <span className="bell-badge">{count > 99 ? '99+' : count}</span>}
       </button>
 
-      {open && (
+      {/* Overlays are portalled to <body>: the topbar's backdrop-filter makes it the containing
+          block for position:fixed children, which squashed the drawer to the topbar's height. */}
+      {open && createPortal(
         <div className="drawer-scrim" onClick={() => setOpen(false)}>
           <aside className="drawer" role="dialog" aria-modal="true" aria-label="Notifications" onClick={(e) => e.stopPropagation()}>
             <header className="drawer-head">
@@ -211,10 +214,11 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
               </button>
             )}
           </aside>
-        </div>
+        </div>,
+        document.body,
       )}
 
-      {preview && (
+      {preview && createPortal(
         <div className="drawer-scrim preview-scrim" onClick={() => setPreview(null)}>
           <div className="modal preview" role="dialog" aria-modal="true" aria-label={preview.title} onClick={(e) => e.stopPropagation()}>
             <header className="modal-head">
@@ -225,7 +229,8 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
             </header>
             <pre className="preview-text">{preview.text}</pre>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

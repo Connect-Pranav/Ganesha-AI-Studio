@@ -83,3 +83,13 @@ test('motion safety: reduced-motion block disables cosmic animations; lightning 
   assert.match(src, /visibilitychange/);
   assert.ok(!/new Audio|AudioContext/.test(src), 'no sound');
 });
+
+test('topbar overlays escape the topbar containing block (backdrop-filter traps position:fixed)', () => {
+  const topbar = css.match(/\.topbar \{[^}]*\}/g)?.join(' ') ?? '';
+  if (!/backdrop-filter|transform|filter:/.test(topbar)) return;
+  const nc = readFileSync(join(ROOT, 'src/components/NotificationCenter.tsx'), 'utf8');
+  const portals = nc.match(/createPortal\(/g)?.length ?? 0;
+  const scrims = nc.match(/className="drawer-scrim/g)?.length ?? 0;
+  assert.ok(scrims > 0, 'notification overlays not found');
+  assert.equal(portals, scrims, 'every NotificationCenter overlay must be rendered with createPortal(…, document.body)');
+});
