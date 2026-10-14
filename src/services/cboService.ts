@@ -91,6 +91,9 @@ export interface Report {
   blockers: SlimTask[];
   money: { actualMonthInr: number | null; unknownCostRows: number; reservedInr: number | null; queuedEstimateInr: number | null; subscriptionsMonthlyInr: number | null; forecastMonthInr: number | null; budgets: BudgetStatus[]; fxSet: boolean };
   recommendedActions: string[];
+  subscriptions?:
+    | { alerts: { level: string; service: string; message: string }[]; services: { service: string; name: string; plan: string | null; status: string | null; nextRenewal: string | null; daysUntilRenewal: number | null; missing: number; lastSync: string | null }[] }
+    | { error: string };
 }
 export interface SlimTask {
   id: string;
@@ -397,3 +400,106 @@ export const money = (inrV: number | null | undefined, usdV: number | null | und
 export const tokens = (v: number | null | undefined) => (v === null || v === undefined ? '—' : v.toLocaleString('en-IN'));
 export const dur = (s: number | null | undefined) => (s === null || s === undefined ? '—' : s < 60 ? `${s}s` : s < 3600 ? `${Math.round(s / 60)} min` : `${(s / 3600).toFixed(1)} h`);
 export const dateShort = (iso: string | null | undefined) => (iso ? new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '—');
+
+/* ---------- Subscription Intelligence ---------- */
+export type DataStatus = 'LIVE' | 'RECENT' | 'IMPORTED' | 'CALCULATED' | 'ESTIMATED' | 'UNAVAILABLE' | 'NEEDS_AUTHORIZATION' | 'ERROR';
+export const STATUS_PILL: Record<DataStatus, { label: string; cls: string; hint: string }> = {
+  LIVE: { label: 'Live', cls: 'pill-running', hint: 'Retrieved directly from an authorized source' },
+  RECENT: { label: 'Recent', cls: 'pill-running', hint: 'Retrieved successfully, not real-time' },
+  IMPORTED: { label: 'Imported', cls: 'pill-info', hint: 'From a receipt, invoice or export you provided' },
+  CALCULATED: { label: 'Calculated', cls: 'pill-info', hint: 'Derived from source records with a documented formula' },
+  ESTIMATED: { label: 'Estimated', cls: 'pill-warn', hint: 'Forecast from known observations' },
+  UNAVAILABLE: { label: 'Unavailable', cls: 'pill-idle', hint: 'Not exposed by the provider or integration' },
+  NEEDS_AUTHORIZATION: { label: 'Needs authorization', cls: 'pill-paused', hint: 'Requires an account connection or permission' },
+  ERROR: { label: 'Error', cls: 'pill-error', hint: 'Retrieval attempted and failed' },
+};
+export interface FieldAvail {
+  record: string;
+  field: string;
+  value: unknown;
+  status: DataStatus;
+  source: string;
+  retrievedAt?: string;
+  unit?: string;
+  window?: string | null;
+}
+export interface Fact {
+  value: unknown;
+  status: DataStatus;
+  source: string;
+  retrievedAt: string;
+  confidence: string;
+}
+export interface BillingRow {
+  id: string;
+  service: string;
+  record: string;
+  description: string | null;
+  paid_on: string | null;
+  period_start: string | null;
+  period_end: string | null;
+  amount: number;
+  tax: number | null;
+  currency: string;
+  amount_inr: number | null;
+  status: DataStatus;
+  source: string;
+  superseded?: boolean;
+}
+export interface ServiceView {
+  service: string;
+  name: string;
+  vendor: string;
+  usageUnits: string;
+  apiName: string;
+  profile: Record<string, Fact>;
+  period: { today: string; timezone: string | null; age: { days: number; from: string; basis: string } | null; nextRenewal?: string; daysUntilRenewal?: number; periodStart?: string; periodDays?: number; daysRemaining?: number; periodElapsedPct?: number; effectiveMonthly?: number };
+  spend: {
+    subscription: { inr: number | null; count: number; unconverted: number; status: DataStatus };
+    apiMonth: { inr: number | null; usd: number; rows: number; status: DataStatus };
+    ganeshaMonth: { inr: number | null; usd: number | null; rows: number; status: DataStatus; note: string } | null;
+  };
+  usage: {
+    latest: { day: string; window_start: string | null; window_end: string | null; unit: string; consumed: number | null; remaining: number | null; limit_value: number | null; reset_at: string | null; status: DataStatus; source: string; synced_at: string } | null;
+    consumedThisPeriod: { value: number; unit: string; status: DataStatus } | null;
+    limit: number | null;
+    forecast: { status: 'ESTIMATED'; ratePerDay: number; projectedTotal: number; exceedsLimit: boolean | null; formula: string } | null;
+    unusedValue: { status: 'ESTIMATED'; currency: string; value: number; formula: string } | null;
+  };
+  ganesha: { calls: number; input_tokens: number | null; output_tokens: number | null } | null;
+  external: { status: DataStatus; inputTokens?: number; formula?: string; note?: string };
+  availability: FieldAvail[];
+  missing: string[];
+  lastSync: string | null;
+  syncRuns: { id: string; adapter: string; status: string; rows: number; error: string | null; started_at: string }[];
+  billing: BillingRow[];
+  actions: string[];
+}
+export interface SubOverview {
+  generatedAt: string;
+  services: ServiceView[];
+  totals: Record<'subscriptionsMonthly' | 'apiVerifiedMonth' | 'ganeshaApiMonth' | 'aiTotalMonth', { inr: number | null; partial: boolean; status: string; note: string }>;
+  byProject: { workflow_id: string; title: string | null; brand: string | null; inr: number | null; unknown: number; calls: number }[];
+  byTask: { task_id: string; step_key: string | null; agent_id: string | null; inr: number | null; unknown: number }[];
+  alerts: { level: 'warn' | 'error'; service: string; message: string }[];
+  fx: Settings['fx_usd_inr'];
+}
+export interface Decision {
+  id: string;
+  task_id: string;
+  chosen_provider: string | null;
+  reason: string;
+  created_at: string;
+  step_key?: string;
+  agent_id?: string;
+  workflow_title?: string;
+  candidates: { provider: string; model: string; eligible: boolean; why: string[]; conservativeInr: number | null; conservativeUsd: number | null; tier: string | null; rateLimited1h: number }[];
+}
+export const subintel = {
+  overview: () => api<SubOverview>('/api/subintel'),
+  daily: (days = 31) => api<{ since: string; provider: { service: string; record: string; day: string; window_start: string | null; window_end: string | null; model: string; feature: string; unit: string; consumed: number | null; remaining: number | null; limit_value: number | null; reset_at: string | null; status: DataStatus; source: string; synced_at: string }[]; ganesha: { day: string; provider: string; model: string; purpose: string; calls: number; input_tokens: number | null; output_tokens: number | null }[]; note: string }>(`/api/subintel/daily?days=${days}`),
+  sync: () => post<{ runs: { service: string; adapter: string; status: string; rows: number; error: string | null }[] }>('/api/subintel/sync', {}),
+  saveProfile: (service: string, source: string, fields: Record<string, unknown>) => post(`/api/subintel/${service}/profile`, { source, fields }, 'PUT'),
+  importRecords: (service: string, body: Record<string, unknown>) => post<{ inserted: number; updated: number; skipped: number; rejected: { row: number; error: string }[] }>(`/api/subintel/${service}/import`, body),
+  decisions: () => api<{ decisions: Decision[] }>('/api/cbo/decisions'),
+};

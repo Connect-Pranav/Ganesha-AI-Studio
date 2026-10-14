@@ -202,7 +202,9 @@ async function executeTask(env, db, task, owner, deps) {
     upstream.push({ step_key: key, agent_id: dep.agent_id, deliverable: dep.deliverable, content: c.deliverable ?? JSON.stringify(c, null, 2) });
   }
   const { system, prompt } = buildAgentPrompt({ agent, task, workflow: wf, upstream });
-  const engines = await enginesFor(db, env, agent);
+  const allowed = await enginesFor(db, env, agent);
+  // GANESHA_CBO may have picked a specific allowed engine for this dispatch (see cbo.selectEngine).
+  const engines = task.preferred_engine && allowed.includes(task.preferred_engine) ? [task.preferred_engine, ...allowed.filter((e) => e !== task.preferred_engine)] : allowed;
 
   let result;
   const errors = [];
@@ -362,7 +364,7 @@ export async function tick(env, db, deps = {}) {
   await Promise.allSettled(
     claimed.map(async ({ t, gate }) => {
       try {
-        await runOne(env, db, t, owner, deps);
+        await runOne(env, db, { ...t, preferred_engine: gate.provider }, owner, deps);
       } finally {
         await reconcileTask(env, db, t, gate, settings).catch((e) => console.error('reconcile failed', e?.message));
       }

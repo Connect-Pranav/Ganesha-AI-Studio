@@ -24,8 +24,9 @@ import { runCommand } from './commands.mjs';
 import { listConnections, testOpenAI } from './connections.mjs';
 import { assignVoice, listAssignments, listVoices, recommendVoices, synthesize, updateVoiceSetting } from './voices.mjs';
 import * as prod from './production.mjs';
+import * as subintel from './subintel.mjs';
 
-const VERSION = '0.5.0-cbo';
+const VERSION = '0.6.0-subintel';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
 const ALLOWED_ORIGINS = ['https://connect-pranav.github.io'];
 function corsHeaders(request) {
@@ -319,6 +320,34 @@ async function route(request, env, ctx) {
     return json({ deleted: seg[3] });
   }
 
+  /* ---------- Subscription Intelligence ---------- */
+  if (path === '/api/subintel' && method === 'GET') return json(await subintel.overview(env, db, await providersStatus(env, db)));
+  if (path === '/api/subintel/daily' && method === 'GET') return json(await subintel.dailyLedger(db, Math.min(90, Math.max(1, Number(url.searchParams.get('days')) || 31))));
+  if (path === '/api/subintel/sync' && method === 'POST') return json({ runs: await subintel.syncAll(env, db) });
+  if (seg[1] === 'subintel' && seg[2] && !seg[3] && method === 'GET') return json(await subintel.serviceView(env, db, seg[2], await providersStatus(env, db)));
+  if (seg[1] === 'subintel' && seg[3] === 'profile' && method === 'PUT') {
+    const fields = await subintel.saveProfile(db, seg[2], await readBody(request));
+    await audit(db, 'config_change', `Subscription profile ${seg[2]} updated: ${fields.join(', ')}`);
+    return json({ updated: fields, view: await subintel.serviceView(env, db, seg[2], await providersStatus(env, db)) });
+  }
+  if (seg[1] === 'subintel' && seg[3] === 'import' && method === 'POST') {
+    // Imports can be larger than other bodies (CSV exports): allow up to 1 MB here.
+    const len = Number(request.headers.get('content-length') ?? 0);
+    if (len > 1024 * 1024) throw new HttpError(413, 'Import too large (max 1 MB)');
+    let b;
+    try {
+      b = JSON.parse(await request.text());
+    } catch {
+      throw new HttpError(400, 'Body must be JSON');
+    }
+    return json(await subintel.importRecords(db, seg[2], b));
+  }
+  if (path === '/api/cbo/decisions' && method === 'GET') {
+    const task = url.searchParams.get('task');
+    const stmt = task ? db.prepare('SELECT * FROM dispatch_decisions WHERE task_id = ? ORDER BY created_at DESC LIMIT 20').bind(task) : db.prepare('SELECT d.*, t.step_key, t.agent_id, w.title AS workflow_title FROM dispatch_decisions d LEFT JOIN tasks t ON t.id = d.task_id LEFT JOIN workflows w ON w.id = t.workflow_id ORDER BY d.created_at DESC LIMIT 50');
+    return json({ decisions: (await stmt.all()).results.map((d) => ({ ...d, candidates: JSON.parse(d.candidates_json), candidates_json: undefined })) });
+  }
+
   /* ---------- Provider & subscription manager ---------- */
   if (path === '/api/connections' && method === 'GET') return json({ connections: await listConnections(env, db, await providersStatus(env, db)), subscriptions: await listSubscriptions(db) });
   if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db));
@@ -400,6 +429,13 @@ export default {
     if (!env.DB) return;
     await ensureSchema(env.DB);
     ctx.waitUntil(tick(env, env.DB).then((r) => console.log('tick', JSON.stringify(r))));
+    // Account usage/cost sync (Admin APIs) at most every 6 hours, only when an Admin key is set.
+    if (env.ANTHROPIC_ADMIN_KEY || env.OPENAI_ADMIN_KEY)
+      ctx.waitUntil(
+        env.DB.prepare("SELECT MAX(started_at) AS t FROM sync_runs").first()
+          .then((r) => (!r?.t || Date.now() - Date.parse(r.t) > 6 * 3600_000 ? subintel.syncAll(env, env.DB) : null))
+          .catch((e) => console.error('subintel sync failed', e.message)),
+      );
     ctx.waitUntil(scheduledAnalytics(env, env.DB).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },
 };

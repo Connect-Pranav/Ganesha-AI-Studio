@@ -28,8 +28,8 @@ export interface SceneCallbacks {
   onHover: (id: string | null) => void;
 }
 
-const STATUS_COLOR = { working: '#3b6fd4', approval: '#d99a2b', error: '#c2402f' } as const;
-const LINK_COLOR = { running: '#3b6fd4', approval_required: '#d99a2b', failed: '#c2402f', pending: '#9aa39c', completed: '#2e7d4f' } as const;
+const STATUS_COLOR = { working: '#38bdf8', approval: '#fbbf24', error: '#f87171' } as const;
+const LINK_COLOR = { running: '#38bdf8', approval_required: '#fbbf24', failed: '#f87171', pending: '#6b74a8', completed: '#34d399' } as const;
 
 interface Body {
   node: SceneNode;
@@ -68,14 +68,15 @@ export class UniverseScene {
     this.reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
     this.mobile = container.clientWidth < 700;
 
-    this.renderer = new THREE.WebGLRenderer({ antialias: !this.mobile, alpha: false, powerPreference: 'high-performance' });
+    // Transparent canvas: the cosmic background (Milky Way, stars, meteors) shows through.
+    this.renderer = new THREE.WebGLRenderer({ antialias: !this.mobile, alpha: true, powerPreference: 'high-performance' });
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, this.mobile ? 1.5 : 2));
-    this.renderer.setClearColor('#f4efe3');
+    this.renderer.setClearColor(0x000000, 0);
     this.renderer.shadowMap.enabled = !this.mobile;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     container.appendChild(this.renderer.domElement);
 
-    this.scene.fog = new THREE.Fog('#f4efe3', 34, 70);
+    this.scene.fog = new THREE.Fog('#070b1f', 38, 80);
     this.camera = new THREE.PerspectiveCamera(45, 1, 0.1, 200);
     this.camera.position.set(0, this.mobile ? 26 : 17, this.mobile ? 34 : 27);
 
@@ -102,8 +103,8 @@ export class UniverseScene {
 
   /* ---------- static environment ---------- */
   private buildEnvironment() {
-    this.scene.add(new THREE.HemisphereLight('#fffaf0', '#c9bfa8', 1.6));
-    const sun = new THREE.DirectionalLight('#fff4e0', 2.2);
+    this.scene.add(new THREE.HemisphereLight('#c7d2ff', '#2a1850', 1.5));
+    const sun = new THREE.DirectionalLight('#e0e7ff', 2.0);
     sun.position.set(12, 22, 10);
     sun.castShadow = !this.mobile;
     sun.shadow.mapSize.set(1024, 1024);
@@ -114,7 +115,7 @@ export class UniverseScene {
     this.scene.add(sun);
 
     // Ground disc that catches soft shadows
-    const ground = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.ShadowMaterial({ opacity: 0.05 }));
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(30, 64), new THREE.ShadowMaterial({ opacity: 0.25 }));
     ground.rotation.x = -Math.PI / 2;
     ground.position.y = -3.2;
     ground.receiveShadow = true;
@@ -128,7 +129,7 @@ export class UniverseScene {
     ] as const) {
       const ring = new THREE.Mesh(
         new THREE.RingGeometry(r - 0.015, r + 0.015, 160),
-        new THREE.MeshBasicMaterial({ color: '#1f4d3a', transparent: true, opacity: o, side: THREE.DoubleSide }),
+        new THREE.MeshBasicMaterial({ color: '#8b9cff', transparent: true, opacity: o, side: THREE.DoubleSide }),
       );
       ring.rotation.x = -Math.PI / 2;
       this.scene.add(ring);
@@ -144,7 +145,7 @@ export class UniverseScene {
     }
     const g = new THREE.BufferGeometry();
     g.setAttribute('position', new THREE.BufferAttribute(pts, 3));
-    this.scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: '#b9a77c', size: 0.07, transparent: true, opacity: 0.55 })));
+    this.scene.add(new THREE.Points(g, new THREE.PointsMaterial({ color: '#c4b5fd', size: 0.08, transparent: true, opacity: 0.7 })));
   }
 
   /* ---------- data → bodies ---------- */

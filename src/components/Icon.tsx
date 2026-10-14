@@ -25,6 +25,7 @@ const paths = {
   tasks: 'M9 6h11M9 12h11M9 18h11M4 6l1 1 2-2M4 12l1 1 2-2M4 18l1 1 2-2',
   finance: 'M7 4h10M7 8h10M7 4c5 0 5 8 0 8l8 8',
   film: 'M4 5h16v14H4zM4 9h16M4 15h16M8 5v4m4-4v4m4-4v4M8 15v4m4-4v4m4-4v4',
+  subs: 'M4 7h16v10H4zM4 11h16M8 15h3M12 3v4M12 17v4',
   mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3',
   characters: 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M17 3.5a4 4 0 0 1 0 7M22 21v-1a6 6 0 0 0-4-5.6',
 } satisfies Record<string, string>;

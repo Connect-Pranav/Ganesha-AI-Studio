@@ -20,6 +20,10 @@ export function FinanceView() {
 function Body({ f, s, reload }: { f: Finance; s: Settings; reload: () => void }) {
   return (
     <>
+      <p className="cx-honest">
+        Public model prices here are used only to <strong>estimate API calls before they run</strong>. Your actual subscriptions, invoices, renewals and account usage are in{' '}
+        <a href="#/subscriptions">Subscription Intelligence</a>.
+      </p>
       {!f.fx && <div className="notice">No USD→INR rate is set, so costs show in USD and INR budgets can’t be checked. Set it below (Settings).</div>}
       <section className="grid-4 cx-tiles" aria-label="This month">
         <Tile label={`API spend · ${f.month}`} value={f.fx ? inr(f.actual.inr) : '—'} hint={f.actual.unknownRows ? `${f.actual.unknownRows} row(s) with unknown cost` : 'actual, reconciled'} tone={f.actual.unknownRows ? 'warn' : undefined} />

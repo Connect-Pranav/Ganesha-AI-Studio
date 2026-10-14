@@ -20,7 +20,7 @@ const ARC: Record<string, SceneInput['links'][number]['status']> = {
   completed: 'completed',
 };
 
-const TEAM_COLOR: Record<string, string> = { master: '#2d6a50', ops: '#8b8068' };
+const TEAM_COLOR: Record<string, string> = { master: '#a78bfa', ops: '#94a3b8' };
 const LEGACY: Record<string, string> = { ganesha: 'ganesha_orchestrator', narada: 'narada_market_intelligence', 'code-shakti': 'code_shakti' };
 const STATUS_TEXT = { idle: 'Available', working: 'Working now', approval: 'Waiting for you', error: 'A step failed recently' } as const;
 
@@ -64,7 +64,7 @@ export default function Universe3D({ data, ai, onNavigate }: Props) {
     for (const [id, r] of lastRun) if (r.status === 'failed' && !status.has(id)) status.set(id, 'error');
 
     const accent = Object.fromEntries(data.products.map((p) => [p.id, p.accent]));
-    const nodes: SceneNode[] = [{ id: 'core', kind: 'core', label: 'GANESHA', color: '#1f4d3a' }];
+    const nodes: SceneNode[] = [{ id: 'core', kind: 'core', label: 'GANESHA', color: '#7c5cff' }];
     for (const p of data.products) nodes.push({ id: p.id, kind: 'brand', label: p.name, sub: p.tagline, color: p.accent });
     for (const a of AGENTS) {
       if (a.id === 'ganesha_orchestrator') continue; // the core itself
@@ -73,7 +73,7 @@ export default function Universe3D({ data, ai, onNavigate }: Props) {
         kind: 'agent',
         label: a.name,
         team: a.team,
-        color: TEAM_COLOR[a.team] ?? accent[a.team] ?? '#2d6a50',
+        color: TEAM_COLOR[a.team] ?? accent[a.team] ?? '#a78bfa',
         status: status.get(a.id) ?? 'idle',
       });
     }

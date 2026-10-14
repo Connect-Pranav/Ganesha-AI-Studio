@@ -4,6 +4,7 @@ import { Card, EmptyState, productNames } from '../ui';
 import { agentName } from '../../data/agentsMeta';
 import { cbo, dateShort, dur, inr, LIFECYCLE_LABEL, money, useLoad, type CommandResult, type Lifecycle, type Plan, type Report } from '../../services/cboService';
 import { Gate, Honest, Pill, Tile, useAction } from './common';
+import { CommandOrbit } from '../cosmic/CommandOrbit';
 
 const SUGGESTIONS = [
   'Give me today’s complete studio status.',
@@ -40,6 +41,7 @@ function Body({ rep, reload, onNavigate }: { rep: Report; reload: () => void; on
           Global dispatch pause is <strong>ON</strong>: no new chargeable tasks start. Requests already sent to a provider finish normally.
         </div>
       )}
+      <CommandOrbit rep={rep} />
       <section className="grid-4 cx-tiles" aria-label="Studio health">
         <Tile label="Active tasks" value={s.RUNNING + s.READY + s.ASSIGNED} hint={`${s.RUNNING} running · ${s.READY} ready · ${s.ASSIGNED} assigned`} />
         <Tile label="Blocked / failed" value={`${s.BLOCKED} / ${s.FAILED}`} tone={s.FAILED ? 'err' : s.BLOCKED ? 'warn' : undefined} hint={`${s.COMPLETED} completed all-time`} />
@@ -216,7 +218,7 @@ function CommandBar({ onDone }: { onDone: () => void }) {
   };
   const plan = res?.intent === 'plan' ? (res.data as Plan) : null;
   return (
-    <Card title="Ask GANESHA CBO">
+    <Card title="Ask GANESHA CBO" className="cc-cbo-card">
       <form className="cx-cmd" onSubmit={submit}>
         <label className="sr-only" htmlFor="cbo-cmd">
           Command

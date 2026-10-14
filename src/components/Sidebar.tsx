@@ -17,6 +17,7 @@ const command: NavItem[] = [
   { id: 'cbo', label: 'CBO Executive', icon: 'cbo' },
   { id: 'tasks', label: 'Task Manager', icon: 'tasks' },
   { id: 'finance', label: 'CFO & Costs', icon: 'finance' },
+  { id: 'subscriptions', label: 'Subscription Intel', icon: 'subs' },
 ];
 const production: NavItem[] = [
   { id: 'studio', label: 'Video & Film Studio', icon: 'film' },

@@ -13,6 +13,8 @@ import { FinanceView } from './components/cbo/FinanceView';
 import { VideoStudio } from './components/cbo/VideoStudio';
 import { VoiceLibrary } from './components/cbo/VoiceLibrary';
 import { CharactersView } from './components/cbo/CharactersView';
+import { SubscriptionIntel } from './components/cbo/SubscriptionIntel';
+import { CosmicBackground, FX_EVENT, readFx, writeFx, type CosmicFx } from './components/cosmic/CosmicBackground';
 import { ErrorState, SkeletonDashboard } from './components/ui';
 import type { QuickActionKind } from './components/Widgets';
 import { loadDashboard } from './services/dashboardService';
@@ -21,13 +23,14 @@ import type { AiStatus, DashboardData, ProductId, View } from './types';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
-const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
 const TITLES: Record<View, string> = {
   universe: '3D Command Center',
   overview: 'Studio overview',
   cbo: 'GANESHA CBO — Executive',
   tasks: 'Task Manager',
   finance: 'CFO & Cost Intelligence',
+  subscriptions: 'Subscription Intelligence',
   studio: 'AI Video & Filmmaking Studio',
   voices: 'Signature Voice Library',
   characters: 'Characters & Assets',
@@ -73,6 +76,12 @@ export default function App() {
   // In-panel goal form (no GitHub). undefined = closed; '' = open with default type.
   const [goalTemplate, setGoalTemplate] = useState<string | undefined>(undefined);
   const [toast, setToast] = useState<string | null>(null);
+  const [fx, setFx] = useState<CosmicFx>(readFx);
+  useEffect(() => {
+    const on = (e: Event) => setFx((e as CustomEvent<CosmicFx>).detail);
+    window.addEventListener(FX_EVENT, on);
+    return () => window.removeEventListener(FX_EVENT, on);
+  }, []);
 
   /* ---- data ---- */
   const fetchData = useCallback((background = false) => {
@@ -178,6 +187,8 @@ export default function App() {
         <TaskManager />
       ) : view === 'finance' ? (
         <FinanceView />
+      ) : view === 'subscriptions' ? (
+        <SubscriptionIntel />
       ) : view === 'studio' ? (
         <VideoStudio />
       ) : view === 'voices' ? (
@@ -206,7 +217,8 @@ export default function App() {
   };
 
   return (
-    <div className={`app ${collapsed ? 'is-collapsed' : ''}`}>
+    <div className={`app ${collapsed ? 'is-collapsed' : ''}`} data-view={view} data-fx={fx}>
+      <CosmicBackground fx={fx} />
       <a className="skip" href="#main">
         Skip to content
       </a>
@@ -231,6 +243,15 @@ export default function App() {
             <h1>{TITLES[view]}</h1>
           </div>
           <div className="topbar-right">
+            <label className="fx-select" title="Cosmic effects: Full, Balanced or Minimal. Reduced-motion settings always win.">
+              <span className="sr-only">Cosmic effects</span>
+              <span aria-hidden="true">✦</span>
+              <select value={fx} onChange={(e) => writeFx(e.target.value as CosmicFx)} aria-label="Cosmic effects">
+                <option value="full">Full</option>
+                <option value="balanced">Balanced</option>
+                <option value="minimal">Minimal</option>
+              </select>
+            </label>
             <NotificationCenter data={load.status === 'ready' ? load.data : null} />
             <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'No agent data yet'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">

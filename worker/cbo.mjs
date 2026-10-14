@@ -7,6 +7,7 @@ import { providerConfig } from './providers.mjs';
 import { TEMPLATES, enginesFor, getTasks, getWorkflow, refreshWorkflow } from './orchestrator.mjs';
 import { chargeFor, getSettings, monthStart, priceFor, subscriptionsMonthly, toInr, tokenCostUsd, SEEDED_PRICING } from './finance.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
+import { overview as subOverview } from './subintel.mjs';
 
 export const CBO_ID = 'GANESHA_CBO';
 const DEFAULT_OUTPUT_TOKENS = 4000;
@@ -99,7 +100,7 @@ async function pickEngine(db, env, agent) {
 }
 
 /** Estimate for a real task about to run: the prompt is built from the actual upstream deliverables. */
-export async function estimateTask(env, db, task, settings) {
+export async function estimateTask(env, db, task, settings, forcedProvider = null) {
   const agent = agentById(task.agent_id);
   const wf = await getWorkflow(db, task.workflow_id);
   const siblings = await getTasks(db, task.workflow_id);
@@ -117,7 +118,9 @@ export async function estimateTask(env, db, task, settings) {
     upstream.push({ step_key: key, agent_id: dep?.agent_id ?? '', deliverable: dep?.deliverable ?? '', content });
   }
   const { system, prompt } = buildAgentPrompt({ agent, task, workflow: wf, upstream });
-  const eng = await pickEngine(db, env, agent);
+  const eng = forcedProvider
+    ? { provider: forcedProvider, model: providerConfig(env, forcedProvider).model, configured: providerConfig(env, forcedProvider).configured }
+    : await pickEngine(db, env, agent);
   const history = await agentHistory(db, agent.id);
   const price = await priceFor(db, eng.provider, eng.model);
   const est = computeEstimate({
@@ -234,9 +237,75 @@ const round = (v) => (v === null || v === undefined ? null : Math.round(v * 100)
  * Decides whether a ready task may start. Returns { ok:true, reservationId, estimateId, startedAt }
  * or { ok:false, reason } after putting the task on hold (approval) or leaving it queued (pause).
  */
+/**
+ * Subscription-aware engine choice for one task. Candidates are only the engines this agent may use
+ * (owner override → studio primary → registry), so required quality is preserved. Consumer
+ * subscriptions (Claude Pro, ChatGPT Plus, Google AI Pro) are never candidates: they cannot be
+ * called programmatically. Picks the cheapest healthy engine; when the task is urgent, an engine that
+ * was rate-limited in the last hour is avoided even if it is free. Every decision is recorded.
+ */
+export async function selectEngine(env, db, task, settings) {
+  const agent = agentById(task.agent_id);
+  const engines = await enginesFor(db, env, agent);
+  const override = await db.prepare('SELECT engines FROM agent_settings WHERE agent_id = ?').bind(agent.id).first();
+  const meta = await db.prepare('SELECT t.priority, t.deadline, wm.deadline AS wf_deadline FROM tasks x LEFT JOIN task_meta t ON t.task_id = x.id LEFT JOIN workflow_meta wm ON wm.workflow_id = x.workflow_id WHERE x.id = ?').bind(task.id).first();
+  const deadline = meta?.deadline ?? meta?.wf_deadline ?? null;
+  const urgent = meta?.priority === 'urgent' || meta?.priority === 'high' || (deadline && Date.parse(deadline) - Date.now() < 6 * 3600_000);
+  const hourAgo = new Date(Date.now() - 3600_000).toISOString();
+  const dayAgo = new Date(Date.now() - 86400_000).toISOString();
+  const cands = [];
+  for (const [i, provider] of engines.entries()) {
+    const cfg = providerConfig(env, provider);
+    const c = { provider, model: cfg.model, order: i, eligible: true, why: [] };
+    if (!cfg.configured) (c.eligible = false), c.why.push(`no API key (${cfg.secretName})`);
+    if (c.eligible) {
+      const auth = await db.prepare("SELECT created_at FROM provider_calls WHERE provider = ? AND status = 'error' AND http_status IN (401,403) AND created_at >= ? ORDER BY created_at DESC LIMIT 1").bind(provider, dayAgo).first();
+      const okAfter = auth && (await db.prepare("SELECT 1 FROM provider_calls WHERE provider = ? AND status = 'success' AND created_at > ? LIMIT 1").bind(provider, auth.created_at).first());
+      if (auth && !okAfter) (c.eligible = false), c.why.push('key rejected in the last 24 h');
+      c.rateLimited1h = (await db.prepare("SELECT COUNT(*) AS n FROM provider_calls WHERE provider = ? AND http_status = 429 AND created_at >= ?").bind(provider, hourAgo).first()).n;
+      if (c.rateLimited1h) c.why.push(`${c.rateLimited1h} rate-limit response(s) in the last hour`);
+      c.estimate = await estimateTask(env, db, task, settings, provider);
+      c.cost = c.estimate.conservativeInr ?? c.estimate.conservativeUsd ?? null; // one FX rate for all candidates, so units match
+      c.tier = settings.provider_billing[provider] ?? 'unknown';
+    }
+    cands.push(c);
+  }
+  const ok = cands.filter((c) => c.eligible);
+  let chosen;
+  let reason;
+  if (!ok.length) {
+    chosen = cands[0];
+    reason = `No eligible engine (${cands.map((c) => `${c.provider}: ${c.why.join(', ')}`).join('; ')}). The task will fail with a clear error until a key is set.`;
+  } else if (override) {
+    chosen = ok[0];
+    reason = `Owner engine override for ${agent.name}: using ${chosen.provider} first.`;
+  } else {
+    const ranked = [...ok].sort((a, b) => {
+      if (urgent && (a.rateLimited1h > 0) !== (b.rateLimited1h > 0)) return a.rateLimited1h > 0 ? 1 : -1;
+      const ac = a.cost ?? Infinity;
+      const bc = b.cost ?? Infinity;
+      if (ac !== bc) return ac - bc;
+      return a.order - b.order; // tie → the agent's preferred (quality) order
+    });
+    chosen = ranked[0];
+    reason =
+      ok.length === 1
+        ? `${chosen.provider} is the only configured engine this agent may use.`
+        : `${chosen.provider}/${chosen.model} chosen: ${chosen.cost === null ? 'cost unknown for all candidates → agent’s preferred order' : `lowest conservative cost (${chosen.estimate.conservativeInr !== null ? `₹${chosen.estimate.conservativeInr.toFixed(2)}` : `$${chosen.estimate.conservativeUsd?.toFixed(4)}`}, billing tier ${chosen.tier})`}${urgent && ranked.some((c) => c.rateLimited1h) ? '; urgent task, so rate-limited engines were avoided' : ''}.`;
+  }
+  reason += ' Consumer subscriptions are not callable by GANESHA and were not considered.';
+  await db
+    .prepare('INSERT INTO dispatch_decisions (id, task_id, chosen_provider, candidates_json, reason, created_at) VALUES (?,?,?,?,?,?)')
+    .bind(newId('dd'), task.id, chosen.provider, JSON.stringify(cands.map((c) => ({ provider: c.provider, model: c.model, eligible: c.eligible, why: c.why, conservativeInr: c.estimate?.conservativeInr ?? null, conservativeUsd: c.estimate?.conservativeUsd ?? null, tier: c.tier ?? null, rateLimited1h: c.rateLimited1h ?? 0 }))), reason.slice(0, 1000), nowIso())
+    .run();
+  return { provider: chosen.provider, estimate: chosen.estimate ?? (await estimateTask(env, db, task, settings, chosen.provider)), reason };
+}
+
 export async function gateDispatch(env, db, task, settings) {
   if (settings.dispatch_paused) return { ok: false, reason: 'dispatch_paused' };
-  const est = await estimateTask(env, db, task, settings);
+  const sel = await selectEngine(env, db, task, settings);
+  const est = sel.estimate;
+  est.assumptions = [`Engine choice: ${sel.reason}`, ...est.assumptions];
   const meta = await db.prepare('SELECT budget_override FROM task_meta WHERE task_id = ?').bind(task.id).first();
   const override = Boolean(meta?.budget_override);
   const budgeted = await anyBudget(db);
@@ -289,7 +358,7 @@ export async function gateDispatch(env, db, task, settings) {
     return { ok: false, reason: 'held_for_approval' };
   }
   await audit(db, 'budget_reserved', `Reserved ${fmtInr(amount ?? 0, est.conservativeUsd)} for ${task.step_key} (${decision})`, { reservationId, estimateId }, task.workflow_id, task.id);
-  return { ok: true, reservationId, estimateId, startedAt: nowIso() };
+  return { ok: true, reservationId, estimateId, startedAt: nowIso(), provider: sel.provider };
 }
 
 const fmtInr = (inr, usd) => (inr !== null && inr !== undefined ? `₹${inr.toFixed(2)}` : usd !== null && usd !== undefined ? `$${usd.toFixed(4)} (no INR rate)` : 'unknown');
@@ -682,9 +751,22 @@ export async function cboReport(env, db, providers) {
   if (!fin.budgets.length) actions.push('No budget is set. Add a monthly budget in CFO → Budgets.');
   for (const b of fin.budgets.filter((b) => b.warning)) actions.push(`Budget ${b.scope}${b.scopeRef && b.scopeRef !== '*' ? ` ${b.scopeRef}` : ''} is at ${Math.round((b.usedInr / b.limitInr) * 100)}%.`);
 
+  let subs = null;
+  try {
+    const o = await subOverview(env, db, providers);
+    subs = {
+      alerts: o.alerts,
+      services: o.services.map((s) => ({ service: s.service, name: s.name, plan: s.profile.plan?.value ?? null, status: s.profile.status?.value ?? null, nextRenewal: s.period.nextRenewal ?? null, daysUntilRenewal: s.period.daysUntilRenewal ?? null, missing: s.missing.length, lastSync: s.lastSync })),
+      totals: o.totals,
+    };
+    for (const a of o.alerts) actions.push(a.message);
+  } catch (e) {
+    subs = { error: String(e.message).slice(0, 200) };
+  }
   return {
     controller: CBO_ID,
     generatedAt: nowIso(),
+    subscriptions: subs,
     health: { dispatchPaused: settings.dispatch_paused, providers: providers.map((p) => ({ provider: p.provider, state: p.state, model: p.model })) },
     tasks: { byState, total: tasks.length },
     agents: { total: REGISTRY.agents.length, working: busy.size, available: REGISTRY.agents.length - busy.size, workingIds: [...busy] },
