@@ -13,6 +13,17 @@ const workspace: NavItem[] = [
   { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
   { id: 'analytics', label: 'Analytics', icon: 'analytics' },
 ];
+const command: NavItem[] = [
+  { id: 'cbo', label: 'CBO Executive', icon: 'cbo' },
+  { id: 'tasks', label: 'Task Manager', icon: 'tasks' },
+  { id: 'finance', label: 'CFO & Costs', icon: 'finance' },
+  { id: 'subscriptions', label: 'Subscription Intel', icon: 'subs' },
+];
+const production: NavItem[] = [
+  { id: 'studio', label: 'Video & Film Studio', icon: 'film' },
+  { id: 'voices', label: 'Voice Library', icon: 'mic' },
+  { id: 'characters', label: 'Characters & Assets', icon: 'characters' },
+];
 const brands: NavItem[] = [
   { id: 'littleloop', label: 'LittleLoop', icon: 'littleloop' },
   { id: 'sunverse', label: 'Sunverse', icon: 'sunverse' },
@@ -71,6 +82,8 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
 
         <nav className="nav">
           {group('Workspace', workspace)}
+          {group('Command', command)}
+          {group('Production', production)}
           {group('Brands', brands)}
           {group('System', system)}
         </nav>

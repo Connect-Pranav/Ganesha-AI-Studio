@@ -83,3 +83,8 @@ All routes except `/api/health` need `Authorization: Bearer <ADMIN_TOKEN>`.
 - **YouTube (Phase 5):** Google Cloud project → enable YouTube Data API v3 + YouTube Analytics API → OAuth consent screen → OAuth client (Web). Redirect URI will be `https://ganesha-studio.connect-pranav09.workers.dev/api/oauth/google/callback`. Secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; var `GOOGLE_OAUTH_REDIRECT_URI`; plus `TOKEN_ENCRYPTION_KEY` for encrypting refresh tokens at rest.
 - **Spotify (Phase 7):** app at developer.spotify.com in Development Mode; owner account needs Premium. Popularity fields, artist top-tracks and browse endpoints are no longer available, so trend data will come from permitted public charts.
 - **Google Flow (Phase 8):** none; prompts are generated for copy-paste and finished clips are registered back in the dashboard.
+
+## 7. CBO / CFO / production (branch feat/cbo-command-center)
+New optional Worker secrets: `OPENAI_API_KEY` (credential check only), `CANVA_CLIENT_ID` / `CANVA_CLIENT_SECRET` (OAuth not built yet), and optional var `GEMINI_TTS_MODEL` (default `gemini-3.8-flash-tts`).
+New owner endpoints (admin token): `/api/cbo/report|plan|command|tasks`, `/api/tasks/{id}/meta|agent|estimates`, `/api/workflows/{id}/meta`, `/api/finance`, `/api/finance/budgets|pricing|subscriptions`, `/api/settings`, `/api/connections`, `/api/connections/openai/test`, `/api/voices` (+ `/recommend`, `/assign`, `/assignments`, `/{id}`, `/{id}/synthesize`), `/api/characters`, `/api/productions` (+ `/{id}/scenes`), `/api/scenes/{id}/regenerate|versions|status|flow-handoff`, `/api/jobs/{id}/complete`, `/api/assets`, `/api/studio/prompt|learning`.
+Set provider-side spending limits too: a studio budget cannot stop billing at the provider instantly.

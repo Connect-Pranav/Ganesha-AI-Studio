@@ -10,9 +10,9 @@
     "typecheck": "tsc -b",
     "validate:data": "node scripts/validate.mjs",
     "agents:gemini": "node scripts/agent-runner.mjs --agent all",
-    "test": "node --test --test-concurrency=1 scripts/test.mjs worker/test/orchestrator.test.mjs worker/test/analytics.test.mjs",
+    "test": "node --test --test-concurrency=1 scripts/test.mjs scripts/ui.test.mjs worker/test/orchestrator.test.mjs worker/test/analytics.test.mjs worker/test/cbo.test.mjs worker/test/subintel.test.mjs",
     "contracts:gen": "node scripts/gen-contracts.mjs",
-    "test:worker": "node --test --test-concurrency=1 worker/test/orchestrator.test.mjs worker/test/analytics.test.mjs",
+    "test:worker": "node --test --test-concurrency=1 worker/test/orchestrator.test.mjs worker/test/analytics.test.mjs worker/test/cbo.test.mjs worker/test/subintel.test.mjs",
     "worker:dev": "npm run build && wrangler dev",
     "worker:check": "wrangler deploy --dry-run --outdir .wrangler/dry-run"
   },

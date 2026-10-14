@@ -7,6 +7,8 @@ import templatesFile from '../agents/pipelines.json' with { type: 'json' };
 import { agentById, buildAgentPrompt, validateAgentOutput } from './agents.mjs';
 import { callProvider, ProviderError, PROVIDERS } from './providers.mjs';
 import { HttpError, isoIn, newId, nowIso } from './util.mjs';
+import { gateDispatch, reconcileTask, releaseReservation } from './cbo.mjs';
+import { getSettings } from './finance.mjs';
 
 export const TEMPLATES = templatesFile.templates;
 export const TASK_STATUSES = ['queued', 'running', 'waiting_for_approval', 'waiting_for_external_action', 'completed', 'failed', 'cancelled'];
@@ -200,7 +202,9 @@ async function executeTask(env, db, task, owner, deps) {
     upstream.push({ step_key: key, agent_id: dep.agent_id, deliverable: dep.deliverable, content: c.deliverable ?? JSON.stringify(c, null, 2) });
   }
   const { system, prompt } = buildAgentPrompt({ agent, task, workflow: wf, upstream });
-  const engines = await enginesFor(db, env, agent);
+  const allowed = await enginesFor(db, env, agent);
+  // GANESHA_CBO may have picked a specific allowed engine for this dispatch (see cbo.selectEngine).
+  const engines = task.preferred_engine && allowed.includes(task.preferred_engine) ? [task.preferred_engine, ...allowed.filter((e) => e !== task.preferred_engine)] : allowed;
 
   let result;
   const errors = [];
@@ -343,10 +347,30 @@ export async function tick(env, db, deps = {}) {
   const reclaimed = await reclaimExpiredLeases(db);
   const limit = Math.max(1, Math.min(Number(env.MAX_CONCURRENT_TASKS) || 3, 6));
   const ready = await findReadyTasks(db, limit);
+  // GANESHA_CBO: every ready task gets a cost preflight, the approval policy and an atomic budget
+  // reservation before it may be claimed. Held tasks wait for the owner; nothing is charged.
+  const settings = await getSettings(db);
   const claimed = [];
-  for (const t of ready) if (await claimTask(db, t.id, owner)) claimed.push(t);
-  await Promise.allSettled(claimed.map((t) => runOne(env, db, t, owner, deps)));
-  return { reclaimed, ran: claimed.map((t) => `${t.workflow_id}:${t.step_key}`) };
+  const held = [];
+  for (const t of ready) {
+    const gate = await gateDispatch(env, db, t, settings);
+    if (!gate.ok) {
+      held.push(`${t.workflow_id}:${t.step_key}:${gate.reason}`);
+      continue;
+    }
+    if (await claimTask(db, t.id, owner)) claimed.push({ t, gate });
+    else await releaseReservation(db, gate.reservationId);
+  }
+  await Promise.allSettled(
+    claimed.map(async ({ t, gate }) => {
+      try {
+        await runOne(env, db, { ...t, preferred_engine: gate.provider }, owner, deps);
+      } finally {
+        await reconcileTask(env, db, t, gate, settings).catch((e) => console.error('reconcile failed', e?.message));
+      }
+    }),
+  );
+  return { reclaimed, ran: claimed.map(({ t }) => `${t.workflow_id}:${t.step_key}`), held };
 }
 
 /* ---------------- owner actions ---------------- */
@@ -360,6 +384,17 @@ export async function decideApproval(db, approvalId, decision, { by = 'owner', n
     .bind(decision, by, now, note, approvalId)
     .run();
   if (r.meta.changes !== 1) throw new HttpError(409, `Approval already ${ap.status}`);
+  if (ap.action.startsWith('budget:')) {
+    // GANESHA_CBO budget hold: approve = run this task once even over budget/threshold.
+    if (decision === 'approved') {
+      await db.batch([
+        db.prepare("UPDATE tasks SET status = 'queued', next_attempt_at = NULL, updated_at = ? WHERE id = ? AND status = 'waiting_for_approval'").bind(now, ap.task_id),
+        db.prepare('INSERT INTO task_meta (task_id, budget_override, updated_at) VALUES (?,1,?) ON CONFLICT(task_id) DO UPDATE SET budget_override = 1, updated_at = excluded.updated_at').bind(ap.task_id, now),
+      ]);
+      await event(db, ap.workflow_id, ap.task_id, 'budget_approved', `Owner approved spending for ${ap.action.slice(7)}`);
+      return refreshWorkflow(db, ap.workflow_id);
+    }
+  }
   if (decision === 'approved') {
     // No publishing integration is connected yet, so approval hands the action to a human
     // instead of pretending it happened. Phase 5 replaces this with the real YouTube upload.
