@@ -503,3 +503,27 @@ export const subintel = {
   importRecords: (service: string, body: Record<string, unknown>) => post<{ inserted: number; updated: number; skipped: number; rejected: { row: number; error: string }[] }>(`/api/subintel/${service}/import`, body),
   decisions: () => api<{ decisions: Decision[] }>('/api/cbo/decisions'),
 };
+
+/* ---------- CBO Autopilot ---------- */
+export interface Proposal {
+  id: string;
+  day: string;
+  brand: string;
+  template: string;
+  title: string;
+  goal: string;
+  reason: string;
+  evidence: string[];
+  est_inr: number | null;
+  est_usd: number | null;
+  status: 'proposed' | 'started' | 'rejected' | 'expired';
+  decided_by: string | null;
+  workflow_id: string | null;
+  created_at: string;
+}
+export const autopilot = {
+  get: () => api<{ mode: 'auto' | 'suggest' | 'off'; dailyInr: number; maxGoals: number; proposals: Proposal[] }>('/api/autopilot'),
+  run: () => api<{ mode: string; actions: { title: string; status: string; reason: string }[]; note?: string }>('/api/autopilot/run', { method: 'POST', body: '{}' }),
+  decide: (id: string, d: 'approve' | 'reject') => api(`/api/autopilot/${id}/${d}`, { method: 'POST', body: '{}' }),
+  save: (b: { autopilotMode?: string; autopilotDailyInr?: number; autopilotMaxGoals?: number }) => api('/api/settings', { method: 'PUT', body: JSON.stringify(b) }),
+};

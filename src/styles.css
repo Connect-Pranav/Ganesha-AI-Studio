@@ -1144,3 +1144,12 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
   .topbar { padding-top: max(22px, env(safe-area-inset-top)); }
   .sidebar { padding-top: max(20px, env(safe-area-inset-top)); }
 }
+.cx-project-total { margin: 12px 0; padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid rgba(251, 191, 36, 0.4); background: rgba(40, 28, 6, 0.45); box-shadow: var(--glow-alert); }
+.cx-project-total .cx-eyebrow { color: var(--amber); }
+.cx-project-amount { font-family: var(--serif); font-size: 28px; font-variant-numeric: tabular-nums; }
+.cx-projects { margin: 4px 0 14px; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--line); background: var(--surface-2); }
+.cx-projects .cx-eyebrow { color: var(--amber); }
+.cx-project-row { text-align: right; }
+.cx-autopilot-controls { flex-direction: row !important; gap: 14px !important; align-items: center; }
+.cx-autopilot-controls label { flex: 0 0 auto; font-size: 13px; color: var(--ink-2); }
+.cx-autopilot-controls input, .cx-autopilot-controls select { padding: 6px 10px !important; }

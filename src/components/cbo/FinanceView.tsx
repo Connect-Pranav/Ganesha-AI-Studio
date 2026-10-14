@@ -157,7 +157,7 @@ function Body({ f, s, reload }: { f: Finance; s: Settings; reload: () => void })
             <Honest>{f.limitation}</Honest>
           </Card>
           <Subscriptions reload={reload} />
-          <Pricing />
+          <Pricing fx={f.fx} />
         </div>
       </div>
     </>
@@ -390,12 +390,14 @@ function Subscriptions({ reload }: { reload: () => void }) {
   );
 }
 
-function Pricing() {
+function Pricing({ fx }: { fx: Finance['fx'] }) {
+  // Prices are published in USD; shown in ₹ with today's rate (USD kept underneath).
+  const r = (usdPerM: number) => (fx ? <>{inr(usdPerM * fx.rate)}<div className="cx-sub">${usdPerM}</div></> : `$${usdPerM}`);
   const l = useLoad(() => fin.pricing());
   const act = useAction();
   const [form, setForm] = useState({ provider: '', model: '', inputPerMtok: '', outputPerMtok: '', sourceUrl: '', effectiveFrom: '' });
   return (
-    <Card title="Pricing registry (USD per 1M tokens)">
+    <Card title="Pricing registry (₹ per 1 million tokens)">
       {!l.data ? (
         <EmptyState title="Loading…" />
       ) : (
@@ -416,8 +418,8 @@ function Pricing() {
                   <td>
                     {p.provider}/{p.model} <Pill cls="pill-warn">yours</Pill>
                   </td>
-                  <td className="num">{p.input_per_mtok}</td>
-                  <td className="num">{p.output_per_mtok}</td>
+                  <td className="num">{r(p.input_per_mtok)}</td>
+                  <td className="num">{r(p.output_per_mtok)}</td>
                   <td>
                     {p.effective_from}
                     {p.effective_to ? ` → ${p.effective_to}` : ''}
@@ -436,8 +438,8 @@ function Pricing() {
                     {p.provider}/{p.model}
                     {p.freeTier && <div className="cx-sub">free tier exists</div>}
                   </td>
-                  <td className="num">{p.input}</td>
-                  <td className="num">{p.output}</td>
+                  <td className="num">{r(p.input)}</td>
+                  <td className="num">{r(p.output)}</td>
                   <td>
                     {p.from === '1970-01-01' ? 'now' : p.from}
                     {p.to ? ` → ${p.to}` : ''}
@@ -452,7 +454,9 @@ function Pricing() {
               ))}
             </tbody>
           </table>
-          <Honest>{l.data.note}</Honest>
+          <Honest>
+            {l.data.note} {fx ? `₹ values use ₹${fx.rate} per USD (${fx.source}).` : 'No USD→INR rate yet, so prices show in USD.'}
+          </Honest>
         </div>
       )}
       <details className="cx-details">

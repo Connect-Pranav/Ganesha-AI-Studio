@@ -5,6 +5,7 @@ import { agentName } from '../../data/agentsMeta';
 import { cbo, dateShort, dur, inr, LIFECYCLE_LABEL, money, useLoad, type CommandResult, type Lifecycle, type Plan, type Report } from '../../services/cboService';
 import { Gate, Honest, Pill, Tile, useAction } from './common';
 import { CommandOrbit } from '../cosmic/CommandOrbit';
+import { AutopilotCard } from './AutopilotCard';
 
 const SUGGESTIONS = [
   'Give me today’s complete studio status.',
@@ -41,6 +42,7 @@ function Body({ rep, reload, onNavigate }: { rep: Report; reload: () => void; on
           Global dispatch pause is <strong>ON</strong>: no new chargeable tasks start. Requests already sent to a provider finish normally.
         </div>
       )}
+      <AutopilotCard onChanged={reload} />
       <CommandOrbit rep={rep} />
       <section className="grid-4 cx-tiles" aria-label="Studio health">
         <Tile label="Active tasks" value={s.RUNNING + s.READY + s.ASSIGNED} hint={`${s.RUNNING} running · ${s.READY} ready · ${s.ASSIGNED} assigned`} />
@@ -311,6 +313,7 @@ export function PlanTable({ plan }: { plan: Plan }) {
           </tr>
         </tfoot>
       </table>
+      <ProjectTotal plan={plan} />
       <p className="cx-sub">
         {plan.note} {plan.budgetCheck.ok === null ? plan.budgetCheck.note : plan.budgetCheck.ok ? 'Within budget.' : 'Would exceed a budget — dispatch will stop for your approval.'} Brand: {productNames[plan.brand as keyof typeof productNames] ?? plan.brand}.
       </p>
@@ -332,3 +335,23 @@ export function PlanTable({ plan }: { plan: Plan }) {
 }
 
 export type { Lifecycle };
+
+/** Total cost of ONE project (one goal), the number the owner decides on. */
+export function ProjectTotal({ plan }: { plan: Plan }) {
+  const per = (v: number | null) => (v === null ? null : Math.round((v / plan.count) * 100) / 100);
+  const d = per(plan.totals.directInr);
+  const c = per(plan.totals.conservativeInr);
+  return (
+    <div className="cx-project-total" role="status">
+      <p className="cx-eyebrow">Total cost · 1 project</p>
+      <p className="cx-project-amount">
+        {d !== null ? inr(d) : money(null, per(plan.totals.directUsd))}
+        <span className="cx-sub"> expected · up to {c !== null ? inr(c) : money(null, per(plan.totals.conservativeUsd))}</span>
+      </p>
+      <p className="cx-sub">
+        {plan.steps.length} agent steps · about {dur(plan.totals.durationSec)}
+        {plan.count > 1 ? ` · all ${plan.count} projects: ${money(plan.totals.directInr, plan.totals.directUsd)} (up to ${money(plan.totals.conservativeInr, plan.totals.conservativeUsd)})` : ''}. AI text work only; video in Google Flow and art in Canva use your subscriptions and are not added here.
+      </p>
+    </div>
+  );
+}
