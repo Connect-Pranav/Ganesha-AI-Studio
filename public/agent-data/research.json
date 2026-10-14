@@ -1,6 +1,114 @@
 {
-  "updatedAt": "2026-10-13T07:34:18Z",
+  "updatedAt": "2026-10-14T02:27:56Z",
   "findings": [
+    {
+      "id": "f_20261014T022756Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram swapped its 'AI creator' tag for an 'AI-generated profile' label",
+      "insight": "Profiles built around an AI-generated person should carry the new label; unlabeled ones detected by Instagram can lose Reels/Explore recommendation reach, while labelling itself does not cut reach. Coverage of animated characters is not spelled out, so LittleLoop should decide its profile disclosure deliberately rather than risk being flagged.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Instagram introduces new AI-generated profile label",
+          "url": "https://routenote.com/blog/instagram-ai-generated-profile-label/",
+          "source": "RouteNote",
+          "retrievedAt": "2026-10-14T02:24:00Z"
+        },
+        {
+          "title": "Is it AI? Instagram gets crystal clear with a reworked AI-generated profile label",
+          "url": "https://www.androidcentral.com/apps-software/meta/is-it-ai-instagram-gets-crystal-clear-with-a-reworked-ai-generated-profile-label",
+          "source": "Android Central",
+          "retrievedAt": "2026-10-14T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-14T02:27:56Z"
+    },
+    {
+      "id": "f_20261014T022756Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "YouTube will add speaking-voice matching to likeness detection later in 2026",
+      "insight": "Announced at Made on YouTube (Sept 23): voice detection joins face detection, with mobile enrolment; flagged videos still need review and India timing is unannounced. It is unclear whether singing-voice clones without a face will be caught, so Sunverse should plan to enrol once available and keep manual privacy reports as fallback.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube expands likeness detection to voices as Indian courts target AI voice clones",
+          "url": "https://www.medianama.com/2026/09/223-youtube-likeness-detection-voices-clones/",
+          "source": "MediaNama",
+          "retrievedAt": "2026-10-14T02:25:00Z"
+        },
+        {
+          "title": "Innovation for the YouTube Era: What's new for viewers and creators",
+          "url": "https://blog.youtube/news-and-events/innovation-youtube-era-made-on-viewers-creators/",
+          "source": "YouTube Official Blog",
+          "retrievedAt": "2026-10-14T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-14T02:27:56Z"
+    },
+    {
+      "id": "f_20261014T022756Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube Shorts can now be grouped into seasons and episodes, including on TV",
+      "insight": "Since Sept 23 creators can organise Shorts into series with custom thumbnails and sequential playback across web, mobile and TV. Sunverse could package recurring Shorts (e.g. behind-the-song or lyric-moment episodes) as a series so viewers binge in order instead of seeing isolated clips.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube Embraces Microdramas with Features for Episodic Shorts",
+          "url": "https://www.tvtechnology.com/platform/streaming/youtube-embraces-microdramas-with-features-for-episodic-shorts",
+          "source": "TV Technology",
+          "retrievedAt": "2026-10-14T02:26:00Z"
+        },
+        {
+          "title": "Innovation for the YouTube Era: What's new for viewers and creators",
+          "url": "https://blog.youtube/news-and-events/innovation-youtube-era-made-on-viewers-creators/",
+          "source": "YouTube Official Blog",
+          "retrievedAt": "2026-10-14T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-14T02:27:56Z"
+    },
+    {
+      "id": "f_20261014T022756Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Webflow added agent-driven translation to Localize (Sept 29)",
+      "insight": "A major builder now uses AI agents to manage site-wide translation, signalling multilingual sites are becoming a standard builder feature. Foliocraft could test a second-language portfolio version as a premium feature for job seekers applying across markets.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Latest updates and features",
+          "url": "https://webflow.com/updates",
+          "source": "Webflow",
+          "retrievedAt": "2026-10-14T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-14T02:27:56Z"
+    },
+    {
+      "id": "f_20261014T022756Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "UX hiring survey: reviewers favour portfolio websites and fast access to projects",
+      "insight": "UXfolio's 2026 survey of 100+ design hiring decision-makers found most rely on the portfolio to judge fit and prefer a website over PDFs or slides; one reviewer said they reject if projects aren't found within 30 seconds. Foliocraft templates should surface work immediately rather than behind long intros.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "State of UX Portfolios 2026 Report",
+          "url": "https://uxfol.io/state-of-ux-portfolios-2026",
+          "source": "UXfolio",
+          "retrievedAt": "2026-10-14T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-14T02:27:56Z"
+    },
     {
       "id": "f_20261013T073306Z_littleloop_1",
       "brand": "littleloop",

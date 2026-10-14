@@ -1,6 +1,86 @@
 {
-  "updatedAt": "2026-10-13T07:34:43Z",
+  "updatedAt": "2026-10-14T02:27:56Z",
   "tasks": [
+    {
+      "id": "t_20261014T022756Z_littleloop_1_claude",
+      "title": "Draft LittleLoop profile bio and AI-assisted animation disclosure wording",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Instagram's new AI-generated profile label (lit1) affects reach of undisclosed accounts; profile-level wording is needed before any change goes live.",
+      "sourceFindings": [
+        "f_20261014T022756Z_littleloop_1_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-14T02:27:56Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261014T022756Z_sunverse_2_claude",
+      "title": "Track when YouTube voice likeness detection reaches India and covers singing",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Voice matching is announced for later in 2026 but India timing and singing-voice coverage are unconfirmed (sun1).",
+      "sourceFindings": [
+        "f_20261014T022756Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-14T02:27:56Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261014T022756Z_sunverse_3_claude",
+      "title": "Plan a 4-episode Shorts series around the making of one Sunverse track",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Shorts series with seasons/episodes are now live on web, mobile and TV (sun2). Plan only; publishing needs separate approval.",
+      "sourceFindings": [
+        "f_20261014T022756Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-14T02:27:56Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261014T022756Z_foliocraft_4_claude",
+      "title": "Prototype a second-language version toggle for Foliocraft portfolios",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Webflow's agentic translation (fol1) suggests multilingual sites are becoming standard; prototype as a PR with no paid translation API.",
+      "sourceFindings": [
+        "f_20261014T022756Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-14T02:27:56Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261014T022756Z_foliocraft_5_claude",
+      "title": "Add a projects-first default layout that shows work above the fold",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Hiring reviewers want to reach projects within seconds and prefer portfolio websites (fol2).",
+      "sourceFindings": [
+        "f_20261014T022756Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-14T02:27:56Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261013T073443Z_littleloop_1",
       "title": "Develop a bus-themed looping animation concept for an Instagram Reel",

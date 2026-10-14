@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261014T022756Z_1_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Instagram replaced the AI creator tag with an AI-generated profile label; unlabeled AI profiles can lose reach."
+    },
+    {
+      "id": "e_20261014T022756Z_2_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 LittleLoop task: draft profile AI-disclosure wording (approval required)."
+    },
+    {
+      "id": "e_20261014T022756Z_3_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: YouTube adds voice likeness detection later in 2026; Shorts can now be grouped into seasons and episodes."
+    },
+    {
+      "id": "e_20261014T022756Z_4_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: track voice-detection rollout, plan a 4-episode making-of Shorts series."
+    },
+    {
+      "id": "e_20261014T022756Z_5_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Webflow added agentic translation; UX hiring survey favours portfolio sites with projects found fast."
+    },
+    {
+      "id": "e_20261014T022756Z_6_claude",
+      "at": "2026-10-14T02:27:56Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft code tasks: second-language toggle prototype, projects-first default layout."
+    },
+    {
       "id": "e_20261013T092542Z_1_claude",
       "at": "2026-10-13T09:25:42Z",
       "brand": "sunverse",
