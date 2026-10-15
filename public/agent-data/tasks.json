@@ -1,6 +1,118 @@
 {
-  "updatedAt": "2026-10-14T02:27:56Z",
+  "updatedAt": "2026-10-15T02:29:57Z",
   "tasks": [
+    {
+      "id": "t_20261015T022957Z_littleloop_1_claude",
+      "title": "Write parent-directed caption and CTA guidelines for LittleLoop Reels",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit1: tightening under-15 rules mean the Instagram audience is parents; captions should address them and never solicit children.",
+      "sourceFindings": [
+        "f_20261015T022957Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_littleloop_2_claude",
+      "title": "Track under-13/under-15 social media age laws in LittleLoop's target markets",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit1: Greece's under-15 ban starts 2027; other markets may follow and affect who can view or follow LittleLoop.",
+      "sourceFindings": [
+        "f_20261015T022957Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_sunverse_3_claude",
+      "title": "Add an AI-use disclosure check to the Sunverse release checklist",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "high",
+      "reason": "sun1: YouTube's GenAI disclosure list now names AI music that is a video's main focus; applies to every new upload.",
+      "sourceFindings": [
+        "f_20261015T022957Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_sunverse_4_claude",
+      "title": "List recent Sunverse uploads whose AI-use setting may need updating",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun1: reviewing past uploads is a tracker suggestion, not a confirmed YouTube requirement; any change to live videos needs approval.",
+      "sourceFindings": [
+        "f_20261015T022957Z_sunverse_2_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_sunverse_5_claude",
+      "title": "Verify on YouTube Help whether AI background tracks fall under 'main focus'",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun1 relies on a secondary tracker; the primary YouTube Help page could not be retrieved this run and 'main focus' is undefined.",
+      "sourceFindings": [
+        "f_20261015T022957Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_foliocraft_6_claude",
+      "title": "Prototype a draft mode to stage portfolio edits and publish them together",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol1: Webflow's announced Releases shows demand for safe staged redesigns of live sites.",
+      "sourceFindings": [
+        "f_20261015T022957Z_foliocraft_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261015T022957Z_foliocraft_7_claude",
+      "title": "Spec an artist template with multi-photo artwork pages and an enquiry button",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol2: artist site guidance lists multi-photo pieces, artwork details and a clear enquire/buy path as essentials (low confidence).",
+      "sourceFindings": [
+        "f_20261015T022957Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-15T02:29:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261014T022756Z_littleloop_1_claude",
       "title": "Draft LittleLoop profile bio and AI-assisted animation disclosure wording",

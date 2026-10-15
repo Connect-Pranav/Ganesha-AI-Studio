@@ -1,6 +1,78 @@
 {
-  "updatedAt": "2026-10-14T02:27:56Z",
+  "updatedAt": "2026-10-15T02:29:57Z",
   "findings": [
+    {
+      "id": "f_20261015T022957Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Greece will bar under-15s from Instagram from 1 Jan 2027, no parental override",
+      "insight": "Greece's bill (vote expected Oct 22) bans under-15 social accounts with real age checks. Age limits are tightening, so LittleLoop's Instagram viewers are parents, not kids: write captions, hooks and CTAs for parents and never invite children to comment or follow.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "How Greece's under-15 social media ban will work on Facebook, Instagram and TikTok",
+          "url": "https://en.protothema.gr/2026/10/12/how-greeces-under-15-social-media-ban-will-work-on-facebook-instagram-and-tiktok",
+          "source": "ProtoThema English",
+          "retrievedAt": "2026-10-15T02:27:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-15T02:29:57Z"
+    },
+    {
+      "id": "f_20261015T022957Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "YouTube now lists AI music that is a video's main focus as required GenAI disclosure",
+      "insight": "A policy tracker saw YouTube's GenAI disclosure page add music that is the main focus of a video (first seen Oct 3). Sunverse should set 'AI use' at upload for any AI-made track or lyric video; disclosure reportedly does not limit reach or monetisation, but repeated non-disclosure risks penalties.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube Adds AI-Generated Music to Its Core GenAI Disclosure Rules: October 2026",
+          "url": "https://www.auditsocials.com/blog/youtube-ai-generated-music-disclosure-rule-october-2026",
+          "source": "AuditSocials",
+          "retrievedAt": "2026-10-15T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-15T02:29:57Z"
+    },
+    {
+      "id": "f_20261015T022957Z_foliocraft_3_claude",
+      "brand": "foliocraft",
+      "title": "Webflow announced 'Releases' to stage whole-site changes and publish when ready",
+      "insight": "At Webflow Conf (Sept 2-3) Webflow announced Releases (beta later this year) to branch a site and publish staged updates together, plus agent context files. A draft/staged redesign mode would let Foliocraft users rework a live portfolio safely; worth considering as a premium feature.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Webflow Conf 2026: 8 Announcements That Quietly Change Who Builds Your Website",
+          "url": "https://weblumbaai.com/blog/webflow-conf-2026-announcements",
+          "source": "Weblumba AI",
+          "retrievedAt": "2026-10-15T02:29:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-15T02:29:57Z"
+    },
+    {
+      "id": "f_20261015T022957Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Artist site guide stresses multiple photos per piece and a clear enquire/buy path",
+      "insight": "An Oct 8 guide ranks artist site builders on presentation, selling, upkeep and cost, listing multi-photo artwork pages, artwork details and a clear way to enquire or buy as essentials. The publisher sells its own builder, so treat as a signal for a Foliocraft artist template, not proof.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "10 Best Website Builders for Artists in 2026",
+          "url": "https://www.singulart.com/blog/en/2026/10/08/10-best-website-builders-for-artists-in-2026/",
+          "source": "Singulart",
+          "retrievedAt": "2026-10-15T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-15T02:29:57Z"
+    },
     {
       "id": "f_20261014T022756Z_littleloop_1_claude",
       "brand": "littleloop",
