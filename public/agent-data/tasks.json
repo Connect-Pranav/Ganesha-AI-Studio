@@ -1,6 +1,54 @@
 {
-  "updatedAt": "2026-10-15T02:29:57Z",
+  "updatedAt": "2026-10-17T04:36:25Z",
   "tasks": [
+    {
+      "id": "t_20261017T043625Z_littleloop_1",
+      "title": "Storyboard a color and shape recognition animated short for toddlers",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Preschool releases show strong interest in basic foundational educational concepts. A visual-first short centered on shape and color recognition appeals directly to parents seeking skill-building content.",
+      "sourceFindings": [
+        "f_20261017T043537Z_littleloop_1"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-17T04:36:25Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261017T043625Z_sunverse_2",
+      "title": "Compile a 1-hour Hindi slowed and reverb focus mix for YouTube",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Slowed, reverb, and lofi focus mashups continue to drive strong passive streaming hours on YouTube. Curating catalog tracks into a longform mix captures study and concentration audiences.",
+      "sourceFindings": [
+        "f_20261017T043554Z_sunverse_3"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-17T04:36:25Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261017T043625Z_foliocraft_3",
+      "title": "Spec and build a dedicated CV and resume template for job seekers",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Active job hunters sustain steady demand for personal resume and CV websites. Adding a dedicated template provides a clear acquisition funnel to upsell custom domains and analytics.",
+      "sourceFindings": [
+        "f_20261017T043606Z_foliocraft_4"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-17T04:36:25Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
     {
       "id": "t_20261015T022957Z_littleloop_1_claude",
       "title": "Write parent-directed caption and CTA guidelines for LittleLoop Reels",

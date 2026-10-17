@@ -1,6 +1,96 @@
 {
-  "updatedAt": "2026-10-15T02:29:57Z",
+  "updatedAt": "2026-10-17T04:36:06Z",
   "findings": [
+    {
+      "id": "f_20261017T043537Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Foundational Concepts Like Colors and Shapes Remain Core Preschool Themes",
+      "insight": "Recent preschool releases highlight fundamental educational building blocks such as colors and shapes. LittleLoop can design quick, visual-first Instagram shorts centered on simple shape and color recognition to appeal directly to parents seeking basic skill-building content for toddlers.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Wheels on the Bus Rainbow Edition! | Learn Colors | Toddler Song | Kids Songs & Nursery Rhymes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5ubW1LLWlQd2JZTXZmVWc3OFRrSjRHSTdmbU5LVzdOZk5aa3BCVl9ncWc2bmNOdHFVcVhhOG5PMWplZTZpLWozZENCQVlEdlE0em0ycmhhdkpmZFhy?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-17T04:35:23Z"
+        },
+        {
+          "title": "The Shapes Song | Nursery Rhymes With Lyrics | Kids Music Video | Kidzoo Nursery Rhymes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9hREdULUVxbE1xZmVqUkxfbnJTZkJpcHF2aEFiVEthTVBsVDhkVklrVERnS3AwczB6MlFyOGE1Z0hQTXcyOW5vTWJxc0FCTHNaMHFkOE9kVG1USXN3?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-17T04:35:23Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-17T04:35:37Z"
+    },
+    {
+      "id": "f_20261017T043554Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "Non-Bollywood and Regional Music Gain Ground in India",
+      "insight": "Luminate reports other genres are gaining in India while Bollywood expands globally, reinforced by Warner Music India expanding its South India presence through catalogue acquisitions. Sunverse can diversify its production pipeline beyond mainstream film styles toward independent and regional music releases.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "As Bollywood Expands Global Reach, Other Genres Gain in India - Luminate",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQM0dPZENOQ2Q1eUpCdGFvWlE1dDI1WmFKVGRDcDBJc1Bfd3dmWnJPU0ZualhkM1ZiU09GYWo5TFJLR0tOX0M1ZnpiMFd1OXVGX1FSRFlndHB1ckVsV1JyQ2hwYm90aGZTNmsyT2dvT1hkSGZwYlZYM29mTVluQkR0ekd0enFJX085cmdVRjJ0eENQMmgwa2c?oc=5",
+          "source": "Luminate",
+          "retrievedAt": "2026-10-17T04:35:38Z"
+        },
+        {
+          "title": "Warner Music India expands South India presence with catalogue acquisitions and strategic partnerships - MediaNews4U",
+          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNNmhNeVdZcWlyUjd0ZHBMWDVRa3l3Z1o0S090S0dmbmhzOS1UelJJa2xzOEdXQkx6VXBZQnpsNVRrS0xacXkzR1p1SjU4LVNaT19CUUFxeHhOS015VDBmZFZfZ2IyaDExbzNJVjFYelJUUkxjUUdQU00zclJqS1N4bWJibU9YRmt6cWFHZnJhbWQwc3l0dUplTjFGSGlVaUtBWklEOW9Rc3NaNHhxT2lYREFvdkM2TkNCVVBBbFhPVW9VTUJSeFBIb0hJNA?oc=5",
+          "source": "MediaNews4U",
+          "retrievedAt": "2026-10-17T04:35:38Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-17T04:35:54Z"
+    },
+    {
+      "id": "f_20261017T043554Z_sunverse_3",
+      "brand": "sunverse",
+      "title": "Slowed + Reverb and Focus Lofi Mashups Maintain YouTube Traction",
+      "insight": "Trending uploads highlight sustained engagement for slowed and reverb Hindi tracks and hour-long lofi mashups targeted at study, focus, and late-night listening. Sunverse should curate its music catalogue into extended mood-based compilations and concentration mixes to capture passive streaming hours.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Meri Gali Ki Ladki || Slowed and Reverbn || #lofimusic #lofi #trending #trendingvideo #trendingsong - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9Mamh6MENoMUplcnhacWk5OWUxeDI1NEw2RFdvaDZGWGg1V1RsY1Z6cTA2WGFfLTc3WlBCUExaLTJBWVJOcHlIaEpmd3JTbE5rc25tU3BqZXpoQy1O?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-17T04:35:39Z"
+        },
+        {
+          "title": "Heartbreaking 💔 Lofi Mashup 🎧 | 1 Hour Slowed + Reverb Songs | Study, Focus & Late Night Vibes - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE5hOHNkZkEzVzNzOG8yX05NTGNzZmhFWEV4NG1TTktRWmdxRWhJSEVMSV83Vy1lRnJXdUlZWkx2YWVCdw?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-17T04:35:39Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-17T04:35:54Z"
+    },
+    {
+      "id": "f_20261017T043606Z_foliocraft_4",
+      "brand": "foliocraft",
+      "title": "Demand Persists for Dedicated Resume and CV Site Templates",
+      "insight": "ThemeGrill highlighting 17 free WordPress resume and CV themes shows job seekers remain an active audience for personal web builders. Foliocraft can introduce modern CV and resume portfolio templates to attract job hunters, converting them to paid tiers with features like custom domains and analytics.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "17 Best Free WordPress Resume & CV Themes (2026) - ThemeGrill",
+          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE94MXNsLWw4dTlXYUZVVDVkTG1kYm1JNHU1Q2NCZ0R5RUp3Vng5SVZmVGhZVHVoNXBGQVAxLUdIZHhSUTY3dGtLTlZLZmxLejI3eXpVWGJGdlpPOWxUcTgxWUVJdnlHQ3lw?oc=5",
+          "source": "ThemeGrill",
+          "retrievedAt": "2026-10-17T04:35:55Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-17T04:36:06Z"
+    },
     {
       "id": "f_20261015T022957Z_littleloop_1_claude",
       "brand": "littleloop",
