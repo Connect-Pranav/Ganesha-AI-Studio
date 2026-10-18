@@ -445,8 +445,7 @@ async function route(request, env, ctx) {
       return json({ ok: true });
     }
     if (seg[3] && seg[4] === 'script' && method === 'PUT') {
-      await reels.saveScript(db, seg[3], (await readBody(request)).script);
-      return json({ ok: true });
+      return json(await reels.saveScript(db, seg[3], (await readBody(request)).script));
     }
     if (seg[3] && seg[4] === 'video' && method === 'PUT') {
       let meta = {};
@@ -454,11 +453,12 @@ async function route(request, env, ctx) {
       await reels.saveVideo(env, db, seg[3], { body: request.body, length: Number(request.headers.get('content-length') ?? 0), meta });
       return json({ ok: true });
     }
-    if (seg[3] && seg[4] === 'fail' && method === 'POST') return json(await reels.failJob(db, seg[3], (await readBody(request)).error));
+    if (seg[3] && seg[4] === 'fail' && method === 'POST') return json(await reels.failJob(db, seg[3], (await readBody(request)).error, env));
+    if (seg[3] && seg[4] === 'clips' && seg[5] && method === 'GET') return reels.clipFile(env, db, seg[3], seg[5]);
   }
   if (seg[1] === 'reels' && seg[2] && ['approve', 'reject', 'redo'].includes(seg[3]) && method === 'POST') {
     const b = await readBody(request);
-    const reel = await reels.decide(db, seg[2], seg[3], b.reason ?? '');
+    const reel = await reels.decide(db, seg[2], seg[3], b.reason ?? '', env);
     if (seg[3] === 'approve') ctx.waitUntil(reels.publishPass(env, db).catch((e) => console.error('reel publish failed', e.message)));
     return json({ reel });
   }
@@ -477,6 +477,22 @@ export default {
       if (!env.DB) return new Response('Not found', { status: 404 });
       await ensureSchema(env.DB);
       return reels.serveMedia(env, env.DB, pathname.slice(3));
+    }
+    // Google Flow clip upload links (the per-reel ticket is the credential; CORS-open so the
+    // Flow tab can send clips straight here). GET → what to make, PUT /t/<ticket>/<n> → clip n.
+    if (pathname.startsWith('/t/')) {
+      const cors = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, PUT, OPTIONS', 'access-control-allow-headers': 'content-type', 'access-control-max-age': '86400' };
+      if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
+      try {
+        if (!env.DB) throw new HttpError(503, 'Database not configured');
+        await ensureSchema(env.DB);
+        const [, , ticket, n] = pathname.split('/');
+        if (request.method === 'GET' && !n) return json(await reels.flowTicketInfo(env.DB, ticket), 200, cors);
+        if (request.method === 'PUT' && n) return json(await reels.uploadClip(env, env.DB, ticket, n, { body: request.body, length: Number(request.headers.get('content-length') ?? 0), mime: request.headers.get('content-type') }), 200, cors);
+        throw new HttpError(405, 'Use GET /t/<ticket> or PUT /t/<ticket>/<clip number>');
+      } catch (e) {
+        return json({ error: e instanceof HttpError ? e.message : `Internal error: ${String(e?.message ?? e).slice(0, 200)}` }, e instanceof HttpError ? e.status : 500, cors);
+      }
     }
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     try {

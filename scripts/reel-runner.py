@@ -193,6 +193,68 @@ Return JSON exactly in this shape:
 }}"""
 
 
+FLOW_ADDON = """
+
+RENDERING IN GOOGLE FLOW: the video is made in Google Flow (Veo 3.1), whose clips are 4/6/8 seconds.
+Also return "flow_clips": exactly 3 prompts, durations 8, 6 and 6 seconds, that together play the two
+scenes as one continuous 20-second take: clip 1 = scene 1 0-8s; clip 2 = scene 1 8-10s then scene 2 0-4s;
+clip 3 = scene 2 4-10s ending on the final frame. Clip 1 starts "Vertical 9:16 animated shot, 8 seconds."
+and uses the character from the reference image (Flow ingredient). Clips 2 and 3 start "Continue seamlessly
+from the previous clip's last frame:" and say their duration. Each clip prompt 100-200 words: restate the
+DO-NOT-CHANGE details, setting, lighting, camera framing/movement, time-coded action, exact dialogue in quotes
+with the speaker, SFX, music mood; no on-screen text, captions or logos.
+Add to the JSON: "flow_clips": [{"n": 1, "duration_s": 8, "prompt": "..."}, {"n": 2, "duration_s": 6, "prompt": "..."}, {"n": 3, "duration_s": 6, "prompt": "..."}]"""
+
+
+# ---------------- joining Google Flow clips ----------------
+def normalize(src, out):
+    """Same size/fps/audio layout for every clip so they join cleanly (silent track if a clip has none)."""
+    meta = probe(src)
+    vf = "scale=1080:1920:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:(oh-ih)/2,fps=24,format=yuv420p"
+    if meta["audio"]:
+        cmd = ["ffmpeg", "-y", "-v", "error", "-i", src, "-vf", vf, "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-c:a", "aac", "-ar", "48000", "-ac", "2", out]
+    else:
+        cmd = ["ffmpeg", "-y", "-v", "error", "-i", src, "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-shortest", "-vf", vf,
+               "-c:v", "libx264", "-preset", "veryfast", "-crf", "18", "-c:a", "aac", out]
+    subprocess.run(cmd, check=True)
+    return meta
+
+
+def join_flow(job):
+    rid = job["reel"]["id"]
+    with tempfile.TemporaryDirectory() as work:
+        parts, metas = [], []
+        for n in job["clips"]:
+            raw = os.path.join(work, f"raw{n}")
+            with open(raw, "wb") as f:
+                f.write(ganesha("GET", f"/api/reels/runner/{rid}/clips/{n}", raw=True, timeout=300))
+            norm = os.path.join(work, f"clip{n}.mp4")
+            m = normalize(raw, norm)
+            if not m["width"] or not m["height"] or m["height"] <= m["width"]:
+                raise Fail(f"clip {n} is {m['width']}x{m['height']}, not vertical 9:16 — set 9:16 in Flow")
+            metas.append(m)
+            parts.append(norm)
+        lst = os.path.join(work, "list.txt")
+        with open(lst, "w") as f:
+            f.write("".join(f"file '{p}'\n" for p in parts))
+        joined = os.path.join(work, "joined.mp4")
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "concat", "-safe", "0", "-i", lst, "-c", "copy", joined], check=True)
+        final = os.path.join(work, "final.mp4")
+        finalize(joined, final)
+        meta = probe(final)
+        expected = job.get("expectedSeconds") or 20
+        if not (expected - 2.5 <= meta["duration"] <= expected + 2):
+            raise Fail(f"joined video is {meta['duration']}s, expected ~{expected}s — check the clip lengths in Flow (8 + 6 + 6 s)")
+        meta["source"] = "Google Flow clips"
+        meta["clipSeconds"] = [m["duration"] for m in metas]
+        meta["qc"] = f"passed: {meta['duration']} s, 9:16{'' if all(m['audio'] for m in metas) else ', some clips had no sound (silent track added)'} (identity/story still need your eyes)"
+        with open(final, "rb") as f:
+            data = f.read()
+        q = urllib.parse.urlencode({"meta": json.dumps(meta)})
+        ganesha("PUT", f"/api/reels/runner/{rid}/video?{q}", data, {"content-type": "video/mp4"}, timeout=300)
+        log(f"[{rid}] Flow clips joined and uploaded for approval: {meta}")
+
+
 # ---------------- Gemini Omni Flash (video) ----------------
 def find_videos(obj, out):
     if isinstance(obj, dict):
@@ -351,19 +413,26 @@ def run():
         log("No reel to render." if claim.get("enabled") else "Reel factory is switched off.")
         return 0
     rid = job["reel"]["id"]
+    flow = job.get("mode") == "flow"
     try:
+        if job.get("type") == "join":
+            join_flow(job)
+            return 0
         sheet = job.get("sheet") or {}
         if not sheet.get("details"):
             raise Fail("Character sheet has no character bible yet")
         img = (ganesha("GET", f"/api/reels/sheets/{sheet['id']}/image", raw=True), sheet["mime"])
         if not job["reel"].get("script"):
             log(f"[{rid}] writing script with {sheet['name']} ...")
-            script = gemini_json(SCRIPT_PROMPT.format(bible=sheet["details"], language=job.get("language") or "simple English",
-                                                      brief=job.get("brief") or "none", avoid=", ".join(job.get("avoidTitles") or []) or "none"),
-                                 image=img, purpose="script", reel_id=rid)
+            prompt = SCRIPT_PROMPT.format(bible=sheet["details"], language=job.get("language") or "simple English",
+                                          brief=job.get("brief") or "none", avoid=", ".join(job.get("avoidTitles") or []) or "none")
+            script = gemini_json(prompt + (FLOW_ADDON if flow else ""), image=img, purpose="script", reel_id=rid, max_tokens=12288)
             ganesha("PUT", f"/api/reels/runner/{rid}/script", {"script": script})
             job["reel"]["script"] = script
             log(f"[{rid}] script: {script.get('title')}")
+        if flow:
+            log(f"[{rid}] Flow mode: script ready; clips are made in Google Flow and uploaded with the reel's link.")
+            return 0
         with tempfile.TemporaryDirectory() as work:
             final, meta = render(job, img, work)
             with open(final, "rb") as f:

@@ -18,6 +18,10 @@ const LEASE_MS = 45 * 60_000;
 const MAX_ATTEMPTS = 3;
 const VIDEO_TTL_S = 21 * 86400; // finished videos expire from KV after 3 weeks
 const SERVABLE = ['review', 'approved', 'publishing', 'published'];
+const FLOW_TICKET_MS = 3 * 86400_000; // Flow clips must arrive within 3 days
+const MAX_CLIP_BYTES = 20 * 1024 * 1024;
+export const FLOW_CLIPS = [8, 6, 6]; // Flow (Veo 3.1) clips are 4/6/8 s: 8 + 6 + 6 = 20 s
+export const FLOW_MODELS = { 'Veo 3.1 Lite': 10, 'Veo 3.1 Fast': 20, 'Veo 3.1 Quality': 100 }; // Flow credits per clip (AI Pro)
 
 /** Calendar day in India (the owner's timezone), YYYY-MM-DD. */
 export const istDay = (ms = Date.now()) => new Date(ms + 5.5 * 3600_000).toISOString().slice(0, 10);
@@ -38,7 +42,13 @@ export async function getConfig(db) {
     await db.prepare('INSERT OR IGNORE INTO reel_config (id, updated_at) VALUES (1, ?)').bind(nowIso()).run();
     c = await db.prepare('SELECT * FROM reel_config WHERE id = 1').first();
   }
-  return { enabled: Boolean(c.enabled), perDay: c.per_day, dailyCapUsd: c.daily_cap_usd, estReelUsd: c.est_reel_usd, language: c.language, brief: c.brief, updatedAt: c.updated_at };
+  let p = await db.prepare('SELECT * FROM reel_prefs WHERE id = 1').first();
+  if (!p) {
+    await db.prepare('INSERT OR IGNORE INTO reel_prefs (id, updated_at) VALUES (1, ?)').bind(nowIso()).run();
+    p = await db.prepare('SELECT * FROM reel_prefs WHERE id = 1').first();
+  }
+  const flowCreditsPerReel = (FLOW_MODELS[p.flow_model] ?? 10) * FLOW_CLIPS.length;
+  return { enabled: Boolean(c.enabled), perDay: c.per_day, dailyCapUsd: c.daily_cap_usd, estReelUsd: c.est_reel_usd, language: c.language, brief: c.brief, renderMode: p.render_mode, flowModel: p.flow_model, flowCreditsPerReel, updatedAt: c.updated_at };
 }
 
 export async function saveConfig(db, b) {
@@ -62,6 +72,15 @@ export async function saveConfig(db, b) {
       if (typeof b[k] !== 'string' || b[k].length > max || (k === 'language' && !b[k].trim())) throw new HttpError(400, `${k} must be text (max ${max} chars)`);
       next[k] = b[k].trim();
     }
+  if (b.renderMode !== undefined) {
+    if (!['flow', 'api'].includes(b.renderMode)) throw new HttpError(400, 'renderMode must be flow or api');
+    next.renderMode = b.renderMode;
+  }
+  if (b.flowModel !== undefined) {
+    if (!(b.flowModel in FLOW_MODELS)) throw new HttpError(400, `flowModel must be one of ${Object.keys(FLOW_MODELS).join(', ')}`);
+    next.flowModel = b.flowModel;
+  }
+  await db.prepare('UPDATE reel_prefs SET render_mode = ?, flow_model = ?, updated_at = ? WHERE id = 1').bind(next.renderMode, next.flowModel, nowIso()).run();
   await db.prepare('UPDATE reel_config SET enabled = ?, per_day = ?, daily_cap_usd = ?, est_reel_usd = ?, language = ?, brief = ?, updated_at = ? WHERE id = 1').bind(next.enabled ? 1 : 0, next.perDay, next.dailyCapUsd, next.estReelUsd, next.language, next.brief, nowIso()).run();
   if (next.enabled !== cur.enabled) await audit(db, 'reels_config', `Reel factory ${next.enabled ? 'switched ON' : 'switched OFF'} (${next.perDay}/day, cap $${next.dailyCapUsd}/day)`);
   return getConfig(db);
@@ -137,22 +156,23 @@ export async function planToday(db, now = Date.now()) {
   if (!cfg.enabled) return { day, created: [], reason: 'Reel factory is switched off.' };
   const existing = (await db.prepare('SELECT slot, status, cost_usd FROM reels WHERE day = ?').bind(day).all()).results;
   const slots = new Set(existing.map((r) => r.slot));
-  const committed = existing.reduce((sum, r) => sum + (r.status === 'rejected' || r.status === 'failed' ? r.cost_usd : Math.max(r.cost_usd, ['queued', 'rendering'].includes(r.status) ? cfg.estReelUsd : 0)), 0);
+  const committed = existing.reduce((sum, r) => sum + (r.status === 'rejected' || r.status === 'failed' ? r.cost_usd : Math.max(r.cost_usd, ['queued', 'rendering'].includes(r.status) && cfg.renderMode !== 'flow' ? cfg.estReelUsd : 0)), 0);
   const sheets = (await db.prepare("SELECT * FROM reel_sheets WHERE brand = ? AND active = 1 AND details_status = 'ready' ORDER BY (last_used_at IS NOT NULL), last_used_at, use_count, created_at").bind(BRAND).all()).results;
   const created = [];
+  const est = cfg.renderMode === 'flow' ? 0 : cfg.estReelUsd;
   let budget = cfg.dailyCapUsd - committed;
   let i = 0;
   for (let slot = 1; slot <= cfg.perDay; slot++) {
     if (slots.has(slot)) continue;
     if (!sheets.length) return { day, created, reason: 'No active character sheet is ready yet (upload one; the runner reads it first).' };
-    if (budget < cfg.estReelUsd) return { day, created, reason: `Daily cap reached: $${cfg.dailyCapUsd} cap, $${(cfg.dailyCapUsd - budget).toFixed(2)} already committed today.` };
+    if (est > 0 && budget < est) return { day, created, reason: `Daily cap reached: $${cfg.dailyCapUsd} cap, $${(cfg.dailyCapUsd - budget).toFixed(2)} already committed today.` };
     const sheet = sheets[i++ % sheets.length];
     const id = newId('reel');
     const ts = nowIso();
     const ins = await db.prepare("INSERT OR IGNORE INTO reels (id, day, slot, sheet_id, status, created_at, updated_at) VALUES (?,?,?,?,'queued',?,?)").bind(id, day, slot, sheet.id, ts, ts).run();
     if (!ins.meta?.changes) continue; // another pass created this slot
     await db.prepare('UPDATE reel_sheets SET last_used_at = ?, use_count = use_count + 1 WHERE id = ?').bind(ts, sheet.id).run();
-    budget -= cfg.estReelUsd;
+    budget -= est;
     created.push({ id, slot, sheet: sheet.name });
     await audit(db, 'reel_planned', `LittleLoop reel ${day} #${slot} with character sheet "${sheet.name}"`);
   }
@@ -164,6 +184,14 @@ async function releaseExpired(db) {
   const now = nowIso();
   const stale = (await db.prepare("SELECT id, attempts FROM reels WHERE status = 'rendering' AND lease_until < ?").bind(now).all()).results;
   for (const r of stale) {
+    const flow = await db.prepare('SELECT stage FROM reel_flow WHERE reel_id = ?').bind(r.id).first();
+    if (flow) {
+      await db.prepare('DELETE FROM reel_flow WHERE reel_id = ?').bind(r.id).run();
+      if (flow.stage === 'awaiting_clips') {
+        await db.prepare("UPDATE reels SET status = 'failed', lease_until = NULL, error = ?, updated_at = ? WHERE id = ? AND status = 'rendering'").bind('No Google Flow clips arrived within 3 days. Tap Try again for a fresh script.', now, r.id).run();
+        continue;
+      }
+    }
     const failed = r.attempts >= MAX_ATTEMPTS;
     await db.prepare("UPDATE reels SET status = ?, lease_until = NULL, error = ?, updated_at = ? WHERE id = ? AND status = 'rendering'").bind(failed ? 'failed' : 'queued', 'Runner did not finish in time (lease expired).', now, r.id).run();
   }
@@ -175,6 +203,15 @@ export async function claim(env, db) {
   const pendingSheets = (await db.prepare("SELECT * FROM reel_sheets WHERE brand = ? AND active = 1 AND details_status = 'pending' ORDER BY created_at LIMIT 5").bind(BRAND).all()).results.map(sheetOut);
   const cfg = await getConfig(db);
   let job = null;
+  // Flow clips that arrived: the runner joins + checks them (no AI spend).
+  const ready = await db.prepare("SELECT f.reel_id, f.clips_json FROM reel_flow f JOIN reels r ON r.id = f.reel_id WHERE f.stage = 'clips_uploaded' AND r.status = 'rendering' ORDER BY f.updated_at LIMIT 1").first();
+  if (ready) {
+    const ok = await db.prepare("UPDATE reel_flow SET stage = 'joining', updated_at = ? WHERE reel_id = ? AND stage = 'clips_uploaded'").bind(nowIso(), ready.reel_id).run();
+    if (ok.meta?.changes) {
+      await db.prepare('UPDATE reels SET lease_until = ?, updated_at = ? WHERE id = ?').bind(isoIn(LEASE_MS), nowIso(), ready.reel_id).run();
+      return { enabled: cfg.enabled, plan, pendingSheets, job: { type: 'join', reel: { id: ready.reel_id }, clips: JSON.parse(ready.clips_json).map((c) => c.n), expectedSeconds: FLOW_CLIPS.reduce((a, b) => a + b, 0) } };
+    }
+  }
   if (cfg.enabled) {
     const next = await db.prepare("SELECT * FROM reels WHERE status = 'queued' AND attempts < ? ORDER BY day, slot LIMIT 1").bind(MAX_ATTEMPTS).first();
     if (next) {
@@ -183,7 +220,7 @@ export async function claim(env, db) {
         const sheet = await db.prepare('SELECT * FROM reel_sheets WHERE id = ?').bind(next.sheet_id).first();
         const recent = (await db.prepare("SELECT script_json FROM reels WHERE script_json IS NOT NULL AND id != ? ORDER BY created_at DESC LIMIT 6").bind(next.id).all()).results
           .map((r) => { try { return JSON.parse(r.script_json).title; } catch { return null; } }).filter(Boolean);
-        job = { language: cfg.language, brief: cfg.brief, reel: { id: next.id, day: next.day, slot: next.slot, attempt: next.attempts + 1, script: next.script_json ? JSON.parse(next.script_json) : null }, sheet: sheet ? sheetOut(sheet) : null, avoidTitles: recent };
+        job = { type: 'script', mode: cfg.renderMode, flowClips: FLOW_CLIPS, language: cfg.language, brief: cfg.brief, reel: { id: next.id, day: next.day, slot: next.slot, attempt: next.attempts + 1, script: next.script_json ? JSON.parse(next.script_json) : null }, sheet: sheet ? sheetOut(sheet) : null, avoidTitles: recent };
       }
     }
   }
@@ -208,7 +245,7 @@ export async function setSheetDetails(db, id, { details, error }) {
 }
 
 /** Validates the script the runner wrote before it is stored and rendered. */
-export function validateScript(s) {
+export function validateScript(s, mode = 'api') {
   const errs = [];
   if (!s || typeof s !== 'object') return ['script must be an object'];
   if (typeof s.title !== 'string' || !s.title.trim()) errs.push('title missing');
@@ -217,19 +254,81 @@ export function validateScript(s) {
   else
     s.scenes.forEach((sc, i) => {
       if (sc?.duration_s !== 10) errs.push(`scene ${i + 1}: duration_s must be 10`);
-      if (typeof sc?.video_prompt !== 'string' || sc.video_prompt.length < 80) errs.push(`scene ${i + 1}: video_prompt too short`);
+      if (mode !== 'flow' && (typeof sc?.video_prompt !== 'string' || sc.video_prompt.length < 80)) errs.push(`scene ${i + 1}: video_prompt too short`);
       if (!Array.isArray(sc?.beats) || !sc.beats.length) errs.push(`scene ${i + 1}: beats missing`);
     });
+  if (mode === 'flow') {
+    if (!Array.isArray(s?.flow_clips) || s.flow_clips.length !== FLOW_CLIPS.length) errs.push(`exactly ${FLOW_CLIPS.length} flow_clips required`);
+    else
+      s.flow_clips.forEach((c, i) => {
+        if (c?.duration_s !== FLOW_CLIPS[i]) errs.push(`flow clip ${i + 1}: duration_s must be ${FLOW_CLIPS[i]}`);
+        if (typeof c?.prompt !== 'string' || c.prompt.length < 80) errs.push(`flow clip ${i + 1}: prompt too short`);
+      });
+  }
   return errs;
 }
 
 export async function saveScript(db, id, script) {
   const r = await reelOf(db, id);
   if (r.status !== 'rendering') throw new HttpError(409, `Reel is ${r.status}, not rendering`);
-  const errs = validateScript(script);
+  const cfg = await getConfig(db);
+  const errs = validateScript(script, cfg.renderMode);
   if (errs.length) throw new HttpError(400, `Script rejected: ${errs.join('; ')}`);
   const caption = [script.caption.trim(), (script.hashtags ?? []).filter((h) => /^#\w{1,40}$/.test(h)).slice(0, 12).join(' ')].filter(Boolean).join('\n\n');
-  await db.prepare('UPDATE reels SET script_json = ?, caption = ?, lease_until = ?, updated_at = ? WHERE id = ?').bind(JSON.stringify(script), caption.slice(0, 2200), isoIn(LEASE_MS), nowIso(), id).run();
+  const flow = cfg.renderMode === 'flow';
+  await db.prepare('UPDATE reels SET script_json = ?, caption = ?, lease_until = ?, updated_at = ? WHERE id = ?').bind(JSON.stringify(script), caption.slice(0, 2200), isoIn(flow ? FLOW_TICKET_MS : LEASE_MS), nowIso(), id).run();
+  if (flow) {
+    const ts = nowIso();
+    await db.prepare("INSERT OR REPLACE INTO reel_flow (reel_id, stage, ticket, ticket_expires, clips_json, created_at, updated_at) VALUES (?, 'awaiting_clips', ?, ?, '[]', ?, ?)").bind(id, hex(16), isoIn(FLOW_TICKET_MS), ts, ts).run();
+    await audit(db, 'reel_flow_ready', `LittleLoop reel ${r.day} #${r.slot}: script ready, waiting for Google Flow clips`, { reel: id });
+  }
+  return { mode: cfg.renderMode };
+}
+
+/* ---------------- Google Flow handoff (upload ticket, no admin token needed) ---------------- */
+async function flowByTicket(db, ticket) {
+  if (!/^[0-9a-f]{32}$/.test(ticket ?? '')) throw new HttpError(404, 'Unknown upload link');
+  const f = await db.prepare('SELECT * FROM reel_flow WHERE ticket = ?').bind(ticket).first();
+  if (!f || Date.parse(f.ticket_expires) < Date.now()) throw new HttpError(404, 'Upload link expired or unknown');
+  return f;
+}
+
+export async function flowTicketInfo(db, ticket) {
+  const f = await flowByTicket(db, ticket);
+  const r = await reelOf(db, f.reel_id);
+  const script = r.script_json ? JSON.parse(r.script_json) : {};
+  return { reel: r.id, day: r.day, slot: r.slot, stage: f.stage, title: script.title ?? null, clips: FLOW_CLIPS.map((d, i) => ({ n: i + 1, duration_s: d, prompt: script.flow_clips?.[i]?.prompt ?? null })), uploaded: JSON.parse(f.clips_json).map((c) => c.n) };
+}
+
+/** Stores clip n (1..3) for the reel. When all clips are in, the runner joins them. */
+export async function uploadClip(env, db, ticket, n, { body, length, mime }) {
+  const f = await flowByTicket(db, ticket);
+  if (f.stage !== 'awaiting_clips') throw new HttpError(409, 'Clips for this reel are already being processed.');
+  n = Number(n);
+  if (!Number.isInteger(n) || n < 1 || n > FLOW_CLIPS.length) throw new HttpError(400, `clip number must be 1-${FLOW_CLIPS.length}`);
+  mime = String(mime ?? '').split(';')[0].trim().toLowerCase();
+  if (!/^video\/(mp4|quicktime|webm)$/.test(mime)) throw new HttpError(415, 'Clip must be an MP4, MOV or WebM video');
+  if (!(length > 0)) throw new HttpError(411, 'content-length is required');
+  if (length > MAX_CLIP_BYTES) throw new HttpError(413, 'Clip must be 20 MB or smaller');
+  await media(env).put(`flowclip/${f.reel_id}/${n}`, body, { expirationTtl: 7 * 86400, metadata: { mime } });
+  const clips = JSON.parse(f.clips_json).filter((c) => c.n !== n);
+  clips.push({ n, bytes: length, mime, at: nowIso() });
+  clips.sort((a, b) => a.n - b.n);
+  const done = clips.length === FLOW_CLIPS.length;
+  await db.prepare('UPDATE reel_flow SET clips_json = ?, stage = ?, updated_at = ? WHERE reel_id = ?').bind(JSON.stringify(clips), done ? 'clips_uploaded' : 'awaiting_clips', nowIso(), f.reel_id).run();
+  if (done) await audit(db, 'reel_flow_clips', `All ${clips.length} Google Flow clips received for reel ${f.reel_id}; joining next`, { reel: f.reel_id });
+  return { uploaded: clips.map((c) => c.n), complete: done };
+}
+
+export async function clipFile(env, db, reelId, n) {
+  const obj = await media(env).getWithMetadata(`flowclip/${reelId}/${Number(n)}`, 'stream');
+  if (!obj?.value) throw new HttpError(404, 'Clip not found');
+  return new Response(obj.value, { headers: { 'content-type': obj.metadata?.mime ?? 'video/mp4' } });
+}
+
+async function dropFlow(env, db, reelId) {
+  if (env.MEDIA) for (let n = 1; n <= FLOW_CLIPS.length; n++) await env.MEDIA.delete(`flowclip/${reelId}/${n}`);
+  await db.prepare('DELETE FROM reel_flow WHERE reel_id = ?').bind(reelId).run();
 }
 
 /** Stores the finished, QC-passed video (streamed into KV) and puts the reel up for approval. */
@@ -242,12 +341,20 @@ export async function saveVideo(env, db, id, { body, length, meta }) {
   const key = `reel/${hex(16)}.mp4`;
   await media(env).put(key, body, { expirationTtl: VIDEO_TTL_S, metadata: { mime: 'video/mp4' } });
   await db.prepare("UPDATE reels SET status = 'review', video_key = ?, video_bytes = ?, video_meta_json = ?, lease_until = NULL, updated_at = ? WHERE id = ?").bind(key, length, JSON.stringify(meta ?? {}), nowIso(), id).run();
+  await dropFlow(env, db, id);
   await audit(db, 'reel_ready', `LittleLoop reel ${r.day} #${r.slot} is ready for your approval`, { reel: id });
 }
 
-export async function failJob(db, id, error) {
+export async function failJob(db, id, error, env = {}) {
   const r = await reelOf(db, id);
   if (r.status !== 'rendering') return { status: r.status };
+  const flow = await db.prepare('SELECT stage FROM reel_flow WHERE reel_id = ?').bind(id).first();
+  if (flow?.stage === 'joining') {
+    if (env.MEDIA) for (let n = 1; n <= FLOW_CLIPS.length; n++) await env.MEDIA.delete(`flowclip/${id}/${n}`);
+    await db.prepare("UPDATE reel_flow SET stage = 'awaiting_clips', clips_json = '[]', ticket_expires = ?, updated_at = ? WHERE reel_id = ?").bind(isoIn(FLOW_TICKET_MS), nowIso(), id).run();
+    await db.prepare('UPDATE reels SET lease_until = ?, error = ?, updated_at = ? WHERE id = ?').bind(isoIn(FLOW_TICKET_MS), `Flow clips rejected: ${String(error ?? '').slice(0, 800)} — upload new clips.`, nowIso(), id).run();
+    return { status: 'rendering', flow: 'awaiting_clips' };
+  }
   const status = r.attempts >= MAX_ATTEMPTS ? 'failed' : 'queued';
   await db.prepare('UPDATE reels SET status = ?, lease_until = NULL, error = ?, updated_at = ? WHERE id = ?').bind(status, String(error ?? 'unknown error').slice(0, 1000), nowIso(), id).run();
   if (status === 'failed') await audit(db, 'reel_failed', `LittleLoop reel ${r.day} #${r.slot} failed after ${r.attempts} attempts: ${String(error).slice(0, 300)}`);
@@ -274,19 +381,21 @@ export async function recordUsage(db, { reelId = null, calls }) {
 }
 
 /* ---------------- owner decisions ---------------- */
-export async function decide(db, id, decision, reason = '') {
+export async function decide(db, id, decision, reason = '', env = {}) {
   const r = await reelOf(db, id);
   if (decision === 'approve') {
     if (r.status !== 'review') throw new HttpError(409, `Only a reel waiting for review can be approved (this one is ${r.status}).`);
     await db.prepare("UPDATE reels SET status = 'approved', decided_at = ?, error = NULL, updated_at = ? WHERE id = ?").bind(nowIso(), nowIso(), id).run();
     await audit(db, 'reel_approved', `Owner approved LittleLoop reel ${r.day} #${r.slot} for Instagram`);
   } else if (decision === 'reject') {
-    if (!['review', 'failed', 'queued'].includes(r.status)) throw new HttpError(409, `This reel is ${r.status} and cannot be rejected.`);
+    if (!['review', 'failed', 'queued', 'rendering'].includes(r.status)) throw new HttpError(409, `This reel is ${r.status} and cannot be rejected.`);
+    await dropFlow(env, db, id);
     await db.prepare("UPDATE reels SET status = 'rejected', decided_at = ?, error = ?, updated_at = ? WHERE id = ?").bind(nowIso(), String(reason).slice(0, 500) || null, nowIso(), id).run();
     await audit(db, 'reel_rejected', `Owner rejected LittleLoop reel ${r.day} #${r.slot}${reason ? `: ${reason}` : ''}`);
   } else if (decision === 'redo') {
     // Re-render the same slot with a fresh script (owner asked for another take).
     if (!['review', 'failed', 'rejected'].includes(r.status)) throw new HttpError(409, `This reel is ${r.status} and cannot be redone.`);
+    await dropFlow(env, db, id);
     await db.prepare("UPDATE reels SET status = 'queued', attempts = 0, script_json = NULL, caption = NULL, video_key = NULL, error = ?, updated_at = ? WHERE id = ?").bind(reason ? `Redo requested: ${String(reason).slice(0, 400)}` : null, nowIso(), id).run();
     await audit(db, 'reel_redo', `Owner asked for a new take of LittleLoop reel ${r.day} #${r.slot}`);
   } else throw new HttpError(400, 'decision must be approve, reject or redo');
@@ -392,7 +501,13 @@ function reelView(r, env = {}) {
 export async function overview(env, db) {
   const cfg = await getConfig(db);
   const day = istDay();
-  const reels = (await db.prepare('SELECT * FROM reels ORDER BY day DESC, slot LIMIT 40').all()).results.map((r) => reelView(r, env));
+  const flows = new Map((await db.prepare('SELECT * FROM reel_flow').all()).results.map((f) => [f.reel_id, f]));
+  const reels = (await db.prepare('SELECT * FROM reels ORDER BY day DESC, slot LIMIT 40').all()).results.map((r) => {
+    const v = reelView(r, env);
+    const f = flows.get(r.id);
+    if (f) v.flow = { stage: f.stage, uploadUrl: `${publicBase(env)}/t/${f.ticket}`, expires: f.ticket_expires, uploaded: JSON.parse(f.clips_json).map((c) => c.n), clips: FLOW_CLIPS.map((d, i) => ({ n: i + 1, duration_s: d, prompt: v.script?.flow_clips?.[i]?.prompt ?? null })) };
+    return v;
+  });
   const today = await spentToday(db, day);
   const month = await db.prepare("SELECT COUNT(*) AS n, COALESCE(SUM(cost_usd),0) AS cost FROM reels WHERE day >= ? AND status != 'rejected'").bind(`${day.slice(0, 8)}01`).first();
   return {
@@ -407,6 +522,7 @@ export async function overview(env, db) {
       runnerLastSeen: (await db.prepare("SELECT MAX(created_at) AS t FROM events WHERE kind = 'reel_runner_seen'").first())?.t ?? null,
     },
     pendingApproval: reels.filter((r) => r.status === 'review').length,
+    waitingForFlow: reels.filter((r) => r.flow?.stage === 'awaiting_clips').length,
   };
 }
 

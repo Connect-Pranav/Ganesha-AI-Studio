@@ -1181,3 +1181,9 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
   .rf-review { flex-direction: column; }
   .rf-video { width: 100%; max-width: 260px; }
 }
+.rf-flow { display: block; }
+.rf-clip { border-top: 1px dashed var(--line); padding-top: 8px; margin-top: 4px; display: flex; flex-direction: column; gap: 6px; }
+.rf-clip-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13.5px; }
+.rf-prompt { font-size: 12.5px; color: var(--ink-2); background: var(--muted-soft); border-radius: 8px; padding: 8px 10px; white-space: pre-wrap; max-height: 140px; overflow-y: auto; }
+.rf-file { align-self: flex-start; font-size: 12.5px; font-weight: 600; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line-2); cursor: pointer; }
+.rf-file input { display: none; }

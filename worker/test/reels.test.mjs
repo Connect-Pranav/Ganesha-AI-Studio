@@ -44,7 +44,7 @@ test('nothing is planned or rendered while the factory is off (switch = standing
 });
 
 test('2 reels/day, sheets rotate (least recently used first), idempotent, daily cap respected', async () => {
-  await reels.saveConfig(db, { enabled: true, perDay: 2, dailyCapUsd: 5, estReelUsd: 2.2 });
+  await reels.saveConfig(db, { enabled: true, perDay: 2, dailyCapUsd: 5, estReelUsd: 2.2, renderMode: 'api' });
   const none = await reels.planToday(db);
   assert.match(none.reason, /No active character sheet/);
   await addReadySheets(['Chiku', 'Mumu', 'Papa Bear']);
@@ -62,7 +62,7 @@ test('2 reels/day, sheets rotate (least recently used first), idempotent, daily 
 });
 
 test('runner flow: claim → script (validated) → video → review; media is public only while servable', async () => {
-  await reels.saveConfig(db, { enabled: true, perDay: 1 });
+  await reels.saveConfig(db, { enabled: true, perDay: 1, renderMode: 'api' });
   await addReadySheets(['Chiku']);
   const c = await reels.claim(env, db);
   assert.equal(c.job.sheet.name, 'Chiku');
@@ -89,7 +89,7 @@ test('runner flow: claim → script (validated) → video → review; media is p
 });
 
 test('failures requeue up to 3 attempts, then fail; redo starts a fresh take', async () => {
-  await reels.saveConfig(db, { enabled: true, perDay: 1 });
+  await reels.saveConfig(db, { enabled: true, perDay: 1, renderMode: 'api' });
   await addReadySheets(['Chiku']);
   let id;
   for (let i = 1; i <= 3; i++) {
@@ -105,7 +105,7 @@ test('failures requeue up to 3 attempts, then fail; redo starts a fresh take', a
 });
 
 test('Instagram: never posts without approval; approved → container → processing → published', async () => {
-  await reels.saveConfig(db, { enabled: true, perDay: 1 });
+  await reels.saveConfig(db, { enabled: true, perDay: 1, renderMode: 'api' });
   await addReadySheets(['Chiku']);
   const id = (await reels.claim(env, db)).job.reel.id;
   await reels.saveScript(db, id, script());
@@ -145,7 +145,7 @@ test('Instagram: never posts without approval; approved → container → proces
 });
 
 test('runner usage lands in provider_calls (GANESHA ledger) and on the reel cost', async () => {
-  await reels.saveConfig(db, { enabled: true, perDay: 1 });
+  await reels.saveConfig(db, { enabled: true, perDay: 1, renderMode: 'api' });
   await addReadySheets(['Chiku']);
   const id = (await reels.claim(env, db)).job.reel.id;
   await reels.recordUsage(db, { reelId: id, calls: [{ model: 'gemini-omni-1.1-flash', purpose: 'video_scene1', input_tokens: 2000, output_tokens: 57920, cost_usd: 1.016 }, { model: 'gemini-3.8-flash', purpose: 'script', input_tokens: 1500, output_tokens: 900, cost_usd: null }] });
@@ -153,4 +153,48 @@ test('runner usage lands in provider_calls (GANESHA ledger) and on the reel cost
   assert.equal(rows.length, 2);
   assert.ok(rows.every((x) => x.provider === 'gemini' && x.purpose.startsWith('littleloop_reel_factory:')));
   assert.equal((await db.prepare('SELECT cost_usd FROM reels WHERE id = ?').bind(id).first()).cost_usd, 1.016);
+});
+
+const flowScript = () => ({ ...script('Flow Puddle'), flow_clips: [8, 6, 6].map((d, i) => ({ n: i + 1, duration_s: d, prompt: `Clip ${i + 1} prompt `.padEnd(100, 'y') })) });
+
+test('Flow mode (default): free credits, no USD cap; script → upload ticket → clips → join job → review', async () => {
+  const cfg = await reels.saveConfig(db, { enabled: true, perDay: 2, dailyCapUsd: 0 });
+  assert.equal(cfg.renderMode, 'flow');
+  assert.equal(cfg.flowModel, 'Veo 3.1 Lite');
+  assert.equal(cfg.flowCreditsPerReel, 30);
+  await addReadySheets(['Chiku', 'Mumu']);
+  const c = await reels.claim(env, db);
+  assert.equal(c.plan.created.length, 2, '$0 cap does not block Flow reels');
+  assert.equal(c.job.mode, 'flow');
+  assert.deepEqual(c.job.flowClips, [8, 6, 6]);
+  const id = c.job.reel.id;
+  await assert.rejects(reels.saveScript(db, id, script()), /exactly 3 flow_clips/);
+  await reels.saveScript(db, id, flowScript());
+  const r = (await reels.overview(env, db)).reels.find((x) => x.id === id);
+  assert.equal(r.flow.stage, 'awaiting_clips');
+  const ticket = r.flow.uploadUrl.split('/t/')[1];
+  assert.match(ticket, /^[0-9a-f]{32}$/);
+  const info = await reels.flowTicketInfo(db, ticket);
+  assert.equal(info.clips[1].duration_s, 6);
+  assert.match(info.clips[0].prompt, /^Clip 1/);
+  await assert.rejects(reels.flowTicketInfo(db, '0'.repeat(32)), /expired or unknown/);
+  await assert.rejects(reels.uploadClip(env, db, ticket, 1, { body: new Uint8Array(10), length: 10, mime: 'image/png' }), /MP4/);
+  for (const n of [1, 2]) assert.equal((await reels.uploadClip(env, db, ticket, n, { body: new Uint8Array(5000), length: 5000, mime: 'video/mp4' })).complete, false);
+  assert.equal((await reels.claim(env, db)).job.type, 'script', 'other reel scripted while clips are pending');
+  assert.equal((await reels.uploadClip(env, db, ticket, 3, { body: new Uint8Array(5000), length: 5000, mime: 'video/mp4' })).complete, true);
+  const j = await reels.claim(env, db);
+  assert.equal(j.job.type, 'join');
+  assert.deepEqual(j.job.clips, [1, 2, 3]);
+  assert.equal((await reels.clipFile(env, db, id, 2)).status, 200);
+  // A bad join asks for new clips instead of burning a new script.
+  const f = await reels.failJob(db, id, 'clip 2 is 1280x720', env);
+  assert.equal(f.flow, 'awaiting_clips');
+  await assert.rejects(reels.clipFile(env, db, id, 2), /Clip not found/);
+  for (const n of [1, 2, 3]) await reels.uploadClip(env, db, ticket, n, { body: new Uint8Array(5000), length: 5000, mime: 'video/mp4' });
+  assert.equal((await reels.claim(env, db)).job.type, 'join');
+  await reels.saveVideo(env, db, id, { body: new Uint8Array(20_000), length: 20_000, meta: {} });
+  const done = (await reels.overview(env, db)).reels.find((x) => x.id === id);
+  assert.equal(done.status, 'review');
+  assert.equal(done.flow, undefined, 'handoff cleaned up');
+  await assert.rejects(reels.flowTicketInfo(db, ticket), /expired or unknown/);
 });

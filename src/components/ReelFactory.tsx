@@ -32,6 +32,7 @@ interface Reel {
   igPermalink: string | null;
   publishedAt: string | null;
   updatedAt: string;
+  flow?: { stage: 'awaiting_clips' | 'clips_uploaded' | 'joining'; uploadUrl: string; expires: string; uploaded: number[]; clips: { n: number; duration_s: number; prompt: string | null }[] };
 }
 interface Sheet {
   id: string;
@@ -44,13 +45,14 @@ interface Sheet {
   lastUsedAt: string | null;
 }
 interface Overview {
-  config: { enabled: boolean; perDay: number; dailyCapUsd: number; estReelUsd: number; language: string; brief: string };
+  config: { enabled: boolean; perDay: number; dailyCapUsd: number; estReelUsd: number; language: string; brief: string; renderMode: 'flow' | 'api'; flowModel: string; flowCreditsPerReel: number };
   day: string;
   sheets: Sheet[];
   reels: Reel[];
   spend: { todayUsd: number; monthUsd: number; monthReels: number };
   connections: { media: boolean; instagram: boolean; runnerLastSeen: string | null };
   pendingApproval: number;
+  waitingForFlow: number;
 }
 
 const STATUS: Record<ReelStatus, [string, string]> = {
@@ -186,7 +188,11 @@ export function ReelFactory() {
 
       <div className="rf-stats">
         <div><span className="rf-k">Plan</span><span className="rf-v">{cfg.perDay}/day · 2 × 10 s</span></div>
-        <div><span className="rf-k">Today</span><span className="rf-v">{usd(data.spend.todayUsd)} of {usd(cfg.dailyCapUsd)}</span></div>
+        {cfg.renderMode === 'flow' ? (
+          <div><span className="rf-k">Google Flow</span><span className="rf-v">{cfg.flowModel} · ~{cfg.flowCreditsPerReel * cfg.perDay} credits/day</span></div>
+        ) : (
+          <div><span className="rf-k">Today</span><span className="rf-v">{usd(data.spend.todayUsd)} of {usd(cfg.dailyCapUsd)}</span></div>
+        )}
         <div><span className="rf-k">This month</span><span className="rf-v">{usd(data.spend.monthUsd)} · {data.spend.monthReels} reels</span></div>
         <div><span className="rf-k">Waiting for you</span><span className="rf-v">{data.pendingApproval}</span></div>
       </div>
@@ -196,7 +202,12 @@ export function ReelFactory() {
         <span className={`pill ${con.media ? 'pill-running' : 'pill-error'}`}>Video storage {con.media ? 'ready' : 'missing'}</span>{' '}
         <button className="btn btn-small" onClick={() => setSettings((s) => !s)}>{settings ? 'Close settings' : 'Settings'}</button>
       </p>
-      <p className="cx-sub">Costs are real token usage from the Gemini API (Omni Flash $1.50 in / $17.50 video out per 1M tokens), not guesses. Nothing is posted until you approve it here.</p>
+      <p className="cx-sub">
+        {cfg.renderMode === 'flow'
+          ? `Videos are made in Google Flow with your AI Pro credits (${cfg.flowModel}: 3 clips of 8 + 6 + 6 s ≈ ${cfg.flowCreditsPerReel} credits per reel), so no API money is spent. Scripts use the free Gemini key.`
+          : 'Costs are real token usage from the Gemini API (Omni Flash $1.50 in / $17.50 video out per 1M tokens), not guesses.'}{' '}
+        Nothing is posted until you approve it here.
+      </p>
 
       {settings && (
         <form
@@ -204,17 +215,30 @@ export function ReelFactory() {
           onSubmit={(e) => {
             e.preventDefault();
             const f = new FormData(e.currentTarget);
-            saveConfig({ perDay: Number(f.get('perDay')), dailyCapUsd: Number(f.get('cap')), language: String(f.get('language')), brief: String(f.get('brief')) }, 'Settings saved.');
+            saveConfig({ perDay: Number(f.get('perDay')), dailyCapUsd: Number(f.get('cap')), language: String(f.get('language')), brief: String(f.get('brief')), renderMode: f.get('renderMode') as 'flow' | 'api', flowModel: String(f.get('flowModel')) }, 'Settings saved.');
           }}
         >
           <div className="form-row">
             <label>Reels per day<input name="perDay" type="number" min={1} max={4} defaultValue={cfg.perDay} /></label>
             <label>Daily spend cap (USD)<input name="cap" type="number" min={0} max={100} step={0.5} defaultValue={cfg.dailyCapUsd} /></label>
           </div>
+          <div className="form-row">
+            <label>Make videos with<select name="renderMode" defaultValue={cfg.renderMode}><option value="flow">Google Flow (free AI Pro credits)</option><option value="api">Gemini API · Omni Flash (paid)</option></select></label>
+            <label>Flow model<select name="flowModel" defaultValue={cfg.flowModel}><option>Veo 3.1 Lite</option><option>Veo 3.1 Fast</option><option>Veo 3.1 Quality</option></select></label>
+          </div>
           <label>Dialogue language<input name="language" maxLength={120} defaultValue={cfg.language} /></label>
           <label>Standing brief for the writer (optional)<textarea name="brief" maxLength={1500} rows={3} defaultValue={cfg.brief} placeholder="e.g. Every story ends with a small good habit. Keep Dadi in the background." /></label>
           <div className="modal-actions"><button className="btn btn-primary" disabled={busy === 'config'}>Save</button></div>
         </form>
+      )}
+
+      {data.reels.some((r) => r.flow) && (
+        <>
+          <h3 className="rf-h">Make in Google Flow</h3>
+          {data.reels.filter((r) => r.flow).map((r) => (
+            <FlowJob key={r.id} reel={r} sheetName={sheetName_(r.sheetId)} flowModel={cfg.flowModel} onChange={load} setNotice={setNotice} />
+          ))}
+        </>
       )}
 
       <h3 className="rf-h">Needs your approval</h3>
@@ -286,6 +310,58 @@ export function ReelFactory() {
         </div>
       </div>
     </Card>
+  );
+}
+
+function FlowJob({ reel, sheetName, flowModel, onChange, setNotice }: { reel: Reel; sheetName: string; flowModel: string; onChange: () => void; setNotice: (s: string) => void }) {
+  const f = reel.flow!;
+  const [busy, setBusy] = useState<number | null>(null);
+  const copy = (text: string, what: string) => {
+    navigator.clipboard?.writeText(text).then(() => setNotice(`${what} copied.`), () => setNotice('Copy failed — select the text instead.'));
+  };
+  const send = async (n: number, file: File | undefined) => {
+    if (!file) return;
+    setBusy(n);
+    try {
+      const res = await fetch(`${f.uploadUrl}/${n}`, { method: 'PUT', headers: { 'content-type': file.type || 'video/mp4' }, body: file });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(body?.error ?? `HTTP ${res.status}`);
+      setNotice(body.complete ? 'All clips in — joining and checking now (next renderer run, ≤30 min).' : `Clip ${n} uploaded.`);
+      onChange();
+    } catch (e) {
+      setNotice(e instanceof Error ? `Upload failed: ${e.message}` : 'Upload failed');
+    } finally {
+      setBusy(null);
+    }
+  };
+  return (
+    <article className="rf-review rf-flow">
+      <div className="rf-review-body">
+        <p className="nt-title">{reel.script?.title ?? 'Untitled'} <span className="cx-sub">· {sheetName} · {reel.day} #{reel.slot}</span></p>
+        {f.stage === 'awaiting_clips' ? (
+          <p className="cx-sub">In Flow: new project → 9:16 → {flowModel} → add the {sheetName} sheet as an ingredient → make clip 1, then extend for clips 2 and 3 → upload each clip here. Link valid until {formatWhen(f.expires)}.</p>
+        ) : (
+          <p className="cx-sub">{f.stage === 'joining' ? 'Joining and checking the clips now…' : 'All clips received — the renderer joins them on its next run.'}</p>
+        )}
+        {reel.error && <p className="rf-err">{reel.error}</p>}
+        {f.clips.map((c) => (
+          <div key={c.n} className="rf-clip">
+            <p className="rf-clip-head">
+              <strong>Clip {c.n} · {c.duration_s} s</strong>
+              {f.uploaded.includes(c.n) ? <span className="pill pill-running">Uploaded</span> : <span className="pill pill-idle">Waiting</span>}
+              {c.prompt && <button className="btn btn-small" onClick={() => copy(c.prompt!, `Clip ${c.n} prompt`)}>Copy prompt</button>}
+            </p>
+            {c.prompt && <p className="rf-prompt">{c.prompt}</p>}
+            {f.stage === 'awaiting_clips' && (
+              <label className="rf-file">
+                {busy === c.n ? 'Uploading…' : f.uploaded.includes(c.n) ? 'Replace clip' : 'Upload clip'}
+                <input type="file" accept="video/mp4,video/quicktime,video/webm" disabled={busy !== null} onChange={(e) => send(c.n, e.target.files?.[0])} />
+              </label>
+            )}
+          </div>
+        ))}
+      </div>
+    </article>
   );
 }
 
