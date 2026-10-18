@@ -49,7 +49,7 @@ For local dev, put the same names in `.dev.vars` (git-ignored).
 
 ## 3. Verify (after deploy)
 ```bash
-BASE=https://ganesha-studio.connect-pranav09.workers.dev
+BASE=https://ganesha-studio.pravanigroup.workers.dev
 curl $BASE/api/health
 curl -X POST -H "authorization: Bearer $ADMIN_TOKEN" $BASE/api/providers/claude/test
 curl -X POST -H "authorization: Bearer $ADMIN_TOKEN" $BASE/api/providers/gemini/test
@@ -80,7 +80,7 @@ All routes except `/api/health` need `Authorization: Bearer <ADMIN_TOKEN>`.
 `main` is deployed to Cloudflare by the Workers build connected to this repo. Do not merge the backend branch until steps 1-2 are done; with the placeholder `database_id` the Cloudflare deploy would fail (the existing site would keep serving the previous version).
 
 ## 6. Later phases (what you will need)
-- **YouTube (Phase 5):** Google Cloud project → enable YouTube Data API v3 + YouTube Analytics API → OAuth consent screen → OAuth client (Web). Redirect URI will be `https://ganesha-studio.connect-pranav09.workers.dev/api/oauth/google/callback`. Secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; var `GOOGLE_OAUTH_REDIRECT_URI`; plus `TOKEN_ENCRYPTION_KEY` for encrypting refresh tokens at rest.
+- **YouTube (Phase 5):** Google Cloud project → enable YouTube Data API v3 + YouTube Analytics API → OAuth consent screen → OAuth client (Web). Redirect URI will be `https://ganesha-studio.pravanigroup.workers.dev/api/oauth/google/callback`. Secrets: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`; var `GOOGLE_OAUTH_REDIRECT_URI`; plus `TOKEN_ENCRYPTION_KEY` for encrypting refresh tokens at rest.
 - **Spotify (Phase 7):** app at developer.spotify.com in Development Mode; owner account needs Premium. Popularity fields, artist top-tracks and browse endpoints are no longer available, so trend data will come from permitted public charts.
 - **Google Flow (Phase 8):** none; prompts are generated for copy-paste and finished clips are registered back in the dashboard.
 

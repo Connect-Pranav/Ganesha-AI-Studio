@@ -2,7 +2,7 @@
 // Numbers come from the YouTube Data API; the browser never holds any key.
 import type { ProductId } from '../types';
 
-const WORKER_ORIGIN = 'https://ganesha-studio.connect-pranav09.workers.dev';
+const WORKER_ORIGIN = 'https://ganesha-studio.pravanigroup.workers.dev';
 
 export interface Video {
   id: string;

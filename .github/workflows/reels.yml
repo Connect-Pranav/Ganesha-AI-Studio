@@ -42,7 +42,7 @@ jobs:
       - name: Render next reel
         if: steps.cfg.outputs.ready == 'true'
         env:
-          GANESHA_URL: ${{ vars.GANESHA_URL || 'https://ganesha-studio.connect-pranav09.workers.dev' }}
+          GANESHA_URL: ${{ vars.GANESHA_URL || 'https://ganesha-studio.pravanigroup.workers.dev' }}
           GANESHA_ADMIN_TOKEN: ${{ secrets.GANESHA_ADMIN_TOKEN }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}

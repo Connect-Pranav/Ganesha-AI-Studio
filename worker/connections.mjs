@@ -98,7 +98,7 @@ export async function listConnections(env, db, llmProviders) {
       quotaVisibility: 'n/a',
       billingVisibility: 'Covered by your Canva plan',
       missing: ['Canva integration (client ID + secret)', 'OAuth flow in this Worker (not built yet)', 'TOKEN_ENCRYPTION_KEY for storing the refresh token'],
-      nextAction: 'Create an integration at canva.com/developers with redirect URL https://ganesha-studio.connect-pranav09.workers.dev/api/oauth/canva/callback and scopes design:content:write, design:content:read, asset:write, asset:read; then set CANVA_CLIENT_ID / CANVA_CLIENT_SECRET. Until then NATA’s artwork briefs are used in Canva by hand and the exported files are registered as assets.',
+      nextAction: 'Create an integration at canva.com/developers with redirect URL https://ganesha-studio.pravanigroup.workers.dev/api/oauth/canva/callback and scopes design:content:write, design:content:read, asset:write, asset:read; then set CANVA_CLIENT_ID / CANVA_CLIENT_SECRET. Until then NATA’s artwork briefs are used in Canva by hand and the exported files are registered as assets.',
       testable: false,
     },
     {

@@ -17,7 +17,7 @@ Audit date: 2026-10-13. Audited commit: `217d8a3` on `main`. No secrets are reco
 | Build | `npm run build` (validate data → `tsc -b` → `vite build`): **passes.** |
 
 ## 2. Deployment target
-- The production URL `ganesha-studio.connect-pranav09.workers.dev` serves a page titled "Ganesha AI Studio" (checked via web fetch).
+- The production URL `ganesha-studio.pravanigroup.workers.dev` serves a page titled "Ganesha AI Studio" (checked via web fetch).
 - The repo's Worker name (`ganesha-studio`) matches the URL. Deployment is most likely Cloudflare Workers Builds connected to this repo (nothing in the repo deploys to Cloudflare). **Unverified:** this sandbox's network policy blocks direct requests to workers.dev, so the deployed asset hash could not be compared with a local build.
 - Consequence: any change to `wrangler.jsonc` on `main` will be picked up by the Cloudflare build. Backend work therefore stays on branch `feat/worker-orchestrator` until the D1 database exists and deployment is authorized.
 

@@ -2,7 +2,7 @@
 // The admin token is typed in by the owner and kept only in this browser's storage.
 // It is sent as a Bearer header to this studio's own Worker and nowhere else.
 const KEY = 'gas.adminToken';
-const WORKER_ORIGIN = 'https://ganesha-studio.connect-pranav09.workers.dev';
+const WORKER_ORIGIN = 'https://ganesha-studio.pravanigroup.workers.dev';
 
 export function getToken(): string | null {
   try {

@@ -404,7 +404,7 @@ export async function decide(db, id, decision, reason = '', env = {}) {
 
 /* ---------------- Instagram publishing (after approval only) ---------------- */
 const igBase = (env) => `https://${env.IG_GRAPH_HOST || 'graph.instagram.com'}/${env.IG_GRAPH_VERSION || 'v24.0'}`;
-const publicBase = (env) => String(env.PUBLIC_BASE_URL || 'https://ganesha-studio.connect-pranav09.workers.dev').replace(/\/$/, '');
+const publicBase = (env) => String(env.PUBLIC_BASE_URL || 'https://ganesha-studio.pravanigroup.workers.dev').replace(/\/$/, '');
 export const mediaUrl = (env, key) => `${publicBase(env)}/m/${key.replace(/^reel\//, '')}`;
 
 async function ig(env, fetchImpl, method, path, params) {
