@@ -589,7 +589,7 @@ export function InstagramConnect({ compact = false }: { compact?: boolean }) {
           <li>developers.facebook.com → My Apps → Create app → use case <strong>“Manage messaging & content on Instagram”</strong> (Instagram API with Instagram login).</li>
           <li>In the app: Instagram → API setup with Instagram login → <strong>Business login settings</strong> → add redirect URL: <code>{data.redirectUri}</code></li>
           <li>Same page: copy <strong>Instagram app ID</strong> and <strong>Instagram app secret</strong>. App roles → add @little_loop09 as an Instagram tester and accept it in the Instagram app.</li>
-          <li>Cloudflare → ganesha-studio → Settings → Variables and Secrets → add <code>IG_APP_ID</code> and <code>IG_APP_SECRET</code> (type Secret) → Deploy.</li>
+          <li>Ganesha → ⚙️ Settings → <strong>Instagram</strong> keys → paste <code>IG_APP_ID</code> and <code>IG_APP_SECRET</code> → Save. (Stored encrypted; no Cloudflare step needed.)</li>
           <li>Come back here and tap <strong>Connect Instagram</strong>. Token renews itself every ~50 days.</li>
         </ol>
       )}
