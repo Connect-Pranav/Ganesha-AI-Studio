@@ -1,5 +1,6 @@
 // Owner's desk: ChatGPT-style CBO chat, decisions grouped by agent (Approve / Decline with the
 // agent's output one tap away) and finished work. All data is live from the Worker.
+import { BatchUpload, InlineRename, nameFromFile } from '../BatchUpload';
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, base, getToken, AUTH_EVENT } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
@@ -208,7 +209,7 @@ export function CboChat({ compact = false, title = 'Chat with GANESHA CBO' }: { 
 
   const attachSheet = async (file: File | undefined) => {
     if (!file) return;
-    const name = window.prompt('Character ka naam? (e.g. Chiku)')?.trim();
+    const name = window.prompt('Sheet ka naam? (file ke naam se bhara hai — badal sakte ho)', nameFromFile(file.name))?.trim();
     if (!name) return;
     setNotice(null);
     try {
@@ -486,50 +487,30 @@ interface SheetRow { id: string; name: string; detailsStatus: 'pending' | 'ready
 
 export function SheetUploader() {
   const { data, error, load } = useLive<{ sheets: SheetRow[] }>('/api/reels', 60_000);
-  const [name, setName] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [busy, setBusy] = useState(false);
-  const [notice, setNotice] = useState<string | null>(null);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const upload = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!file || !name.trim()) return setNotice('Sheet ka naam aur image dono chahiye.');
-    setBusy(true);
-    setNotice(null);
-    try {
-      const res = await fetch(`${base()}/api/reels/sheets?${new URLSearchParams({ name: name.trim() })}`, { method: 'POST', headers: { authorization: `Bearer ${getToken()}`, 'content-type': file.type }, body: file });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? `HTTP ${res.status}`);
-      setNotice(`✅ "${name.trim()}" upload ho gayi. Ganesha ~30 min mein har character ko padh kar unki details khud likh lega.`);
-      setName('');
-      setFile(null);
-      if (fileRef.current) fileRef.current.value = '';
-      load();
-    } catch (err) {
-      setNotice(`Upload failed: ${err instanceof Error ? err.message : 'error'}`);
-    } finally {
-      setBusy(false);
-    }
-  };
-  const title = 'Upload character sheet · LittleLoop';
+  const title = 'Upload character sheets · LittleLoop';
   if (error === 'locked') return <Card title={title}><EmptyState title="Unlock the studio to upload" /></Card>;
+  const sheets = data?.sheets ?? [];
   return (
     <Card title={title}>
-      <p className="cx-sub">Bas naam aur sheet image. Ek sheet mein ek ya kai characters ho sakte hain — Ganesha khud padh kar har character ki details (look, outfit, expressions) likh leta hai, aur roz rotation mein sheets use karta hai.</p>
-      <form className="form sd-upload" onSubmit={upload}>
-        <div className="form-row">
-          <label>Sheet name<input value={name} onChange={(e) => setName(e.target.value)} maxLength={60} placeholder="e.g. Jungle Expedition cast" /></label>
-          <label>Sheet image (PNG/JPG/WebP, max 8 MB)<input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></label>
-        </div>
-        <div className="modal-actions"><button className="btn btn-primary" disabled={busy}>{busy ? 'Uploading…' : 'Upload sheet'}</button></div>
-      </form>
-      {notice && <p className="drawer-notice" role="status">{notice}</p>}
+      <p className="cx-sub">Ek ya kai sheets ek saath chuno. Naam file ke naam se apne aap aa jaata hai — upload se pehle ya baad mein ✏️ se badal sakte ho. Ganesha har sheet padh kar characters ki details khud likh leta hai aur roz rotation mein use karta hai.</p>
+      <BatchUpload
+        accept="image/png,image/jpeg,image/webp"
+        allowed={(f) => ['image/png', 'image/jpeg', 'image/webp'].includes(f.type)}
+        maxBytes={8 * 1024 * 1024}
+        maxLabel="8 MB"
+        takenNames={sheets.map((s) => s.name)}
+        endpoint={(name) => `/api/reels/sheets?${new URLSearchParams({ name })}`}
+        label="🖼 Choose sheet images"
+        button="Upload sheets"
+        onUploaded={load}
+      />
       {error && <p className="form-error">{error}</p>}
-      {data && data.sheets.length > 0 && (
+      {sheets.length > 0 && (
         <div className="rf-sheets">
-          {data.sheets.map((s) => (
+          {sheets.map((s) => (
             <div key={s.id} className={`rf-sheet ${s.active ? '' : 'rf-off'}`}>
               <SheetThumb id={s.id} name={s.name} />
-              <p className="nt-title">{s.name}</p>
+              <InlineRename name={s.name} path={`/api/reels/sheets/${s.id}`} onSaved={() => load()} />
               <p className="cx-sub">{s.detailsStatus === 'ready' ? `Ready · used ${s.useCount}×` : s.detailsStatus === 'pending' ? 'Reading the sheet…' : 'Could not read'}</p>
               {s.detailsStatus === 'error' && <p className="rf-err">{s.details}</p>}
             </div>

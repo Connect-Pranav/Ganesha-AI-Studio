@@ -30,6 +30,7 @@ import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from 
 import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
+import * as voiceSamples from './voicesamples.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -422,6 +423,15 @@ async function route(request, env, ctx, rawEnv = env) {
   if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db, {}, { live: (await readBody(request)).live === true }));
 
   /* ---------- Voice library + Smart Voice Director ---------- */
+  /* Uploaded voice recordings (many at once from the UI; one request per file). */
+  if (path === '/api/voices/samples' && method === 'GET') return json({ samples: await voiceSamples.listSamples(db, url.searchParams.get('brand')) });
+  if (path === '/api/voices/samples' && method === 'POST') {
+    const sample = await voiceSamples.addSample(env, db, { name: url.searchParams.get('name'), brand: url.searchParams.get('brand') ?? 'studio', mime: request.headers.get('content-type'), body: request.arrayBuffer() });
+    return json({ sample }, 201);
+  }
+  if (seg[1] === 'voices' && seg[2] === 'samples' && seg[3] && !seg[4] && method === 'PUT') return json({ sample: await voiceSamples.renameSample(db, seg[3], await readBody(request)) });
+  if (seg[1] === 'voices' && seg[2] === 'samples' && seg[3] && !seg[4] && method === 'DELETE') return json(await voiceSamples.deleteSample(env, db, seg[3]));
+  if (seg[1] === 'voices' && seg[2] === 'samples' && seg[3] && seg[4] === 'audio' && method === 'GET') return voiceSamples.sampleAudio(env, db, seg[3]);
   if (path === '/api/voices' && method === 'GET') return json({ profiles: await listVoices(env, db) });
   if (path === '/api/voices/recommend' && method === 'POST') return json(await recommendVoices(env, db, await readBody(request)));
   if (path === '/api/voices/assign' && method === 'POST') return json({ assignment: await assignVoice(db, await readBody(request)) });

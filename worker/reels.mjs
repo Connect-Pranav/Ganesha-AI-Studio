@@ -139,7 +139,12 @@ export async function updateSheet(db, id, b) {
   const active = b.active !== undefined ? (b.active ? 1 : 0) : s.active;
   // Changing notes means the runner re-reads the sheet so scripts use the corrected details.
   const reread = b.notes !== undefined && notes !== s.notes;
-  await db.prepare(`UPDATE reel_sheets SET name = ?, notes = ?, active = ?, details_status = ?, updated_at = ? WHERE id = ?`).bind(name, notes, active, reread ? 'pending' : s.details_status, nowIso(), id).run();
+  try {
+    await db.prepare(`UPDATE reel_sheets SET name = ?, notes = ?, active = ?, details_status = ?, updated_at = ? WHERE id = ?`).bind(name, notes, active, reread ? 'pending' : s.details_status, nowIso(), id).run();
+  } catch (e) {
+    if (/UNIQUE/i.test(e.message)) throw new HttpError(409, `A character sheet named "${name}" already exists.`);
+    throw e;
+  }
   return sheetOut(await db.prepare('SELECT * FROM reel_sheets WHERE id = ?').bind(id).first());
 }
 

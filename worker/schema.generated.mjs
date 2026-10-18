@@ -68,5 +68,6 @@ export const SCHEMA_STATEMENTS = [
   "CREATE TABLE IF NOT EXISTS app_secrets ( name TEXT PRIMARY KEY, enc TEXT NOT NULL, iv TEXT NOT NULL, last4 TEXT, updated_at TEXT NOT NULL )",
   "CREATE TABLE IF NOT EXISTS provider_call_details ( call_id TEXT PRIMARY KEY, cached_input_tokens INTEGER, reasoning_tokens INTEGER, request_id TEXT, agent_id TEXT, workflow_id TEXT, created_at TEXT NOT NULL )",
   "CREATE INDEX IF NOT EXISTS idx_pcd_agent ON provider_call_details(agent_id, created_at)",
-  "CREATE TABLE IF NOT EXISTS studio_prefs ( key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL )"
+  "CREATE TABLE IF NOT EXISTS studio_prefs ( key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS voice_samples ( id TEXT PRIMARY KEY, brand TEXT NOT NULL DEFAULT 'studio' CHECK (brand IN ('studio','littleloop','sunverse','foliocraft')), name TEXT NOT NULL, media_key TEXT NOT NULL, mime TEXT NOT NULL, bytes INTEGER NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE (brand, name) )"
 ];

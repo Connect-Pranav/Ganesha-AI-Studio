@@ -1,12 +1,12 @@
 // LittleLoop Reel Factory panel: factory switch + daily cap, character sheets (rotation),
 // reels waiting for approval (watch the video, then Approve & post / New take / Reject),
 // and recent reels with their Instagram links. Every value comes from /api/reels.
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { BatchUpload, InlineRename } from './BatchUpload';
+import { useCallback, useEffect, useState } from 'react';
 import { InstagramConnect } from './cbo/StudioDesk';
 import { SheetThumb } from './SheetThumb';
-import { api, base, getToken, AUTH_EVENT } from '../services/adminService';
+import { api, getToken, AUTH_EVENT } from '../services/adminService';
 import { Card, EmptyState, formatWhen } from './ui';
-import { Icon } from './Icon';
 
 type ReelStatus = 'queued' | 'rendering' | 'review' | 'approved' | 'publishing' | 'published' | 'rejected' | 'failed';
 interface Scene {
@@ -76,9 +76,6 @@ export function ReelFactory() {
   const [notice, setNotice] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
   const [settings, setSettings] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-  const [sheetName, setSheetName] = useState('');
-  const [sheetNotes, setSheetNotes] = useState('');
 
   const load = useCallback(async () => {
     if (!getToken()) {
@@ -122,24 +119,6 @@ export function ReelFactory() {
     const reason = decision === 'approve' ? '' : window.prompt(decision === 'redo' ? 'What should change in the new take? (optional)' : 'Why reject? (optional)') ?? null;
     if (reason === null) return;
     act(r.id, () => api(`/api/reels/${r.id}/${decision}`, { method: 'POST', body: JSON.stringify({ reason }) }), decision === 'approve' ? 'Approved — posting to Instagram now.' : decision === 'redo' ? 'A new take is queued.' : 'Rejected.');
-  };
-
-  const upload = async () => {
-    const file = fileRef.current?.files?.[0];
-    if (!file || !sheetName.trim()) return setNotice('Pick an image and give the character a name.');
-    const token = getToken();
-    await act(
-      'upload',
-      async () => {
-        const q = new URLSearchParams({ name: sheetName.trim(), notes: sheetNotes.trim() });
-        const res = await fetch(`${base()}/api/reels/sheets?${q}`, { method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': file.type }, body: file });
-        if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? `HTTP ${res.status}`);
-      },
-      `Uploaded ${sheetName.trim()}. The runner reads it on its next run (about 30 min).`,
-    );
-    setSheetName('');
-    setSheetNotes('');
-    if (fileRef.current) fileRef.current.value = '';
   };
 
   if (error === 'locked') return <Card title="LittleLoop Reel Factory"><EmptyState title="Unlock the studio to manage reels" hint="Use the bell → Unlock with your admin token." /></Card>;
@@ -266,7 +245,7 @@ export function ReelFactory() {
         {data.sheets.map((s) => (
           <div key={s.id} className={`rf-sheet ${s.active ? '' : 'rf-off'}`}>
             <SheetThumb id={s.id} name={s.name} />
-            <p className="nt-title">{s.name}</p>
+            <InlineRename name={s.name} path={`/api/reels/sheets/${s.id}`} onSaved={(n) => (setNotice(`Renamed to ${n}.`), load())} />
             <p className="cx-sub">
               {s.detailsStatus === 'ready' ? 'Ready' : s.detailsStatus === 'pending' ? 'Waiting to be read' : 'Could not read'} · used {s.useCount}×{s.lastUsedAt ? ` · last ${formatWhen(s.lastUsedAt)}` : ''}
             </p>
@@ -277,17 +256,18 @@ export function ReelFactory() {
           </div>
         ))}
       </div>
-      <div className="form rf-upload">
-        <div className="form-row">
-          <label>Character name<input value={sheetName} onChange={(e) => setSheetName(e.target.value)} maxLength={60} placeholder="e.g. Chiku" /></label>
-          <label>Sheet image (PNG/JPG/WebP, max 8 MB)<input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" /></label>
-        </div>
-        <label>Notes the image can’t show (optional)<input value={sheetNotes} onChange={(e) => setSheetNotes(e.target.value)} maxLength={1000} placeholder="e.g. 3 years old, speaks in short giggly sentences" /></label>
-        <div className="modal-actions">
-          <button className="btn btn-primary" disabled={busy === 'upload'} onClick={upload}>
-            <Icon name="plus" size={16} /> Add character sheet
-          </button>
-        </div>
+      <div className="rf-upload">
+        <BatchUpload
+          accept="image/png,image/jpeg,image/webp"
+          allowed={(f) => ['image/png', 'image/jpeg', 'image/webp'].includes(f.type)}
+          maxBytes={8 * 1024 * 1024}
+          maxLabel="8 MB"
+          takenNames={data.sheets.map((s) => s.name)}
+          endpoint={(name) => `/api/reels/sheets?${new URLSearchParams({ name })}`}
+          label="🖼 Add character sheets"
+          button="Upload sheets"
+          onUploaded={() => (setNotice('Uploaded. The runner reads new sheets on its next run (about 30 min).'), load())}
+        />
       </div>
     </Card>
   );

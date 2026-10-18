@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Card, EmptyState } from '../ui';
 import { studio, voices, money, useLoad, type VoiceProfile, type VoiceRec } from '../../services/cboService';
 import { Gate, Honest, Pill, useAction } from './common';
+import { VoiceUploads } from './VoiceUploads';
 
 type Filter = 'all' | 'male' | 'female' | 'child' | 'speech' | 'singing' | 'favorite';
 
@@ -14,6 +15,7 @@ export function VoiceLibrary() {
   const shown = profiles.filter((p) => (filter === 'all' ? true : filter === 'favorite' ? p.favorite : filter === 'speech' || filter === 'singing' ? p.modes.includes(filter) : p.gender === filter));
   return (
     <Gate title="Voice Library" locked={l.locked} ready={Boolean(l.data)} error={l.error} onRetry={l.reload}>
+      <VoiceUploads />
       <Director profiles={profiles} />
       <Card title={`Signature voices (${profiles.length})`}>
         <div className="tabs" role="tablist" aria-label="Filter voices">
