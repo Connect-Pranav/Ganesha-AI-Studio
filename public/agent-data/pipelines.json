@@ -1,6 +1,83 @@
 {
   "pipelines": [
     {
+      "id": "p_20261018T141816Z_ops",
+      "template": "ops_weekly_review",
+      "brand": "studio",
+      "title": "Weekly ops review 2026-W42",
+      "goalRef": "vault#4",
+      "status": "approval_required",
+      "engine": "claude",
+      "createdAt": "2026-10-18T14:18:16Z",
+      "updatedAt": "2026-10-18T14:21:14Z",
+      "steps": [
+        {
+          "key": "metrics",
+          "agent": "ops_soma_analytics",
+          "deliverable": "Weekly metrics report",
+          "dependsOn": [],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-18T14:20:29Z"
+        },
+        {
+          "key": "incidents",
+          "agent": "ops_hanuman_recovery",
+          "deliverable": "Failure diagnosis & recovery notes",
+          "dependsOn": [],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-18T14:20:29Z"
+        },
+        {
+          "key": "growth",
+          "agent": "ops_lakshmi_growth",
+          "deliverable": "Growth experiment review",
+          "dependsOn": [
+            "metrics"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-18T14:21:14Z"
+        },
+        {
+          "key": "docs",
+          "agent": "ops_maya_docs",
+          "deliverable": "SOP / changelog update",
+          "dependsOn": [
+            "metrics",
+            "incidents"
+          ],
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-18T14:21:14Z"
+        },
+        {
+          "key": "automation",
+          "agent": "ops_agni_automation",
+          "deliverable": "Automation proposals (PR only if approved)",
+          "dependsOn": [
+            "incidents"
+          ],
+          "approval": true,
+          "status": "approval_required",
+          "attempts": 1
+        },
+        {
+          "key": "handoff",
+          "agent": "samvada_handoffs",
+          "deliverable": "Weekly status note",
+          "dependsOn": [
+            "growth",
+            "docs",
+            "automation"
+          ],
+          "status": "pending",
+          "attempts": 0
+        }
+      ]
+    },
+    {
       "id": "p_20261012T193219Z_foliocraft",
       "template": "foliocraft_feature",
       "brand": "foliocraft",

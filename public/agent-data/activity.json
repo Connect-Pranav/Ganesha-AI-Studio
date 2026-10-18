@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261018T142135Z_1_claude",
+      "at": "2026-10-18T14:21:35Z",
+      "brand": "studio",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Weekly ops review 2026-W42 (vault#4): 4 of 6 steps done; automation proposals await owner approval."
+    },
+    {
       "id": "e_20261018T044153Z_4_gemini",
       "at": "2026-10-18T04:41:53Z",
       "brand": "littleloop",
