@@ -1345,7 +1345,46 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 /* Chat bubbles slide in */
 .app:not([data-fx='minimal']) .sd-msg { animation: rise-in 0.35s cubic-bezier(.2, .8, .2, 1) both; }
 
+/* SAARTHI — floating CBO chat dock (bottom-right, minimised by default) */
+.dock-fab {
+  position: fixed; right: 18px; bottom: 18px; z-index: 55; display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 16px 8px 8px; border-radius: 999px; border: 1px solid rgba(167, 139, 250, 0.55); cursor: pointer;
+  background: linear-gradient(135deg, rgba(109, 77, 255, 0.92), rgba(162, 28, 175, 0.88)); color: #fff; font: inherit; font-weight: 700; letter-spacing: 0.08em;
+  box-shadow: var(--glow-strong); animation: dock-pop 0.3s cubic-bezier(.2, .8, .2, 1) both;
+}
+.dock-fab:hover { transform: translateY(-2px); }
+.dock-fab:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+.dock-avatar {
+  display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; font-size: 15px; color: #fff;
+  background: radial-gradient(circle at 30% 30%, #c4b5fd, #6d4dff 55%, #3b1f9e); box-shadow: 0 0 14px rgba(167, 139, 250, 0.7);
+}
+.dock-panel {
+  position: fixed; right: 18px; bottom: 18px; z-index: 55; width: min(420px, calc(100vw - 36px)); height: min(640px, calc(100dvh - 110px));
+  display: flex; flex-direction: column; border-radius: 20px; border: 1px solid var(--line-2); background: #0a0f26; box-shadow: var(--glow-strong);
+  overflow: hidden; opacity: 0; visibility: hidden; transform: translateY(16px) scale(0.98); pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0s linear 0.2s;
+}
+.dock-panel.is-open { opacity: 1; visibility: visible; transform: none; pointer-events: auto; transition: opacity 0.2s ease, transform 0.2s ease; }
+.dock-head { display: flex; align-items: center; gap: 10px; padding: 12px 12px 10px 14px; border-bottom: 1px solid var(--line); background: linear-gradient(135deg, rgba(109, 77, 255, 0.25), rgba(162, 28, 175, 0.15)); }
+.dock-head strong { display: block; letter-spacing: 0.1em; }
+.dock-sub { display: block; font-size: 11.5px; color: var(--ink-3); }
+.dock-min { margin-left: auto; font-weight: 700; }
+.dock-body { flex: 1; min-height: 0; overflow: auto; }
+.dock-body .card.sd-compact { border: 0; border-radius: 0; background: transparent; box-shadow: none; margin: 0; display: flex; flex-direction: column; min-height: 100%; }
+.dock-body .card.sd-compact .card-head { margin-bottom: 6px; justify-content: flex-end; }
+.dock-body .card.sd-compact .card-title { display: none; }
+.dock-body .card.sd-compact .card-head::after { display: none; }
+.dock-body .sd-compact .sd-thread { max-height: none; flex: 1; }
+@keyframes dock-pop { from { opacity: 0; transform: translateY(10px) scale(0.9); } to { opacity: 1; transform: none; } }
+@media (max-width: 640px) {
+  .dock-fab { right: 12px; bottom: 12px; }
+  .dock-fab-label { display: none; }
+  .dock-fab { padding: 6px; }
+  .dock-panel { right: 0; bottom: 0; width: 100vw; height: 100dvh; border-radius: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .cz-root *, .view-enter, .view-enter *, .sd-msg, .topnav-item.active, .nav-item.active, .card-head::after { animation: none !important; }
+  .cz-root *, .view-enter, .view-enter *, .sd-msg, .dock-fab, .dock-panel, .topnav-item.active, .nav-item.active, .card-head::after { animation: none !important; }
   :is(.card, .stat) { transform: none !important; }
+  .dock-panel { transition: none !important; }
 }

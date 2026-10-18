@@ -10,6 +10,7 @@ import { AgentsView, OverviewView, PipelinesView } from './components/Views';
 import { AnalyticsView } from './components/AnalyticsView';
 import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
+import { ChatDock } from './components/ChatDock';
 import { CboView } from './components/cbo/CboView';
 import { TaskManager } from './components/cbo/TaskManager';
 import { FinanceView } from './components/cbo/FinanceView';
@@ -296,6 +297,7 @@ export default function App() {
         </footer>
       </div>
 
+      <ChatDock hidden={view === 'cbo'} />
       {showConnect && <SetupModal onClose={() => setShowConnect(false)} />}
       {goalTemplate !== undefined && (
         <GoalModal initialTemplate={goalTemplate || undefined} onClose={() => setGoalTemplate(undefined)} onCreated={goalCreated} />

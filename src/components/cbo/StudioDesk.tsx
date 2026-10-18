@@ -110,7 +110,7 @@ const writePref = (k: string, v: boolean) => {
 };
 const CHAT_IDEAS = ['Aaj mujhe kya karna chahiye?', 'Kaun se approvals pending hain?', 'Is mahine ka kharcha kitna hua?', 'LittleLoop ke liye 3 reel ideas do'];
 
-export function CboChat() {
+export function CboChat({ compact = false, title = 'Chat with GANESHA CBO' }: { compact?: boolean; title?: string } = {}) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
   const [engine, setEngine] = useState<'gemini' | 'openai'>('gemini');
@@ -223,12 +223,12 @@ export function CboChat() {
     }
   };
 
-  if (locked) return <Card title="Chat with GANESHA CBO"><EmptyState title="Unlock the studio to chat" hint="Bell → Unlock with your admin token." /></Card>;
+  if (locked) return <Card title={title} className={compact ? 'sd-chat sd-compact' : ''}><EmptyState title="Unlock the studio to chat" hint="Bell → Unlock with your admin token." /></Card>;
 
   return (
     <Card
-      title="Chat with GANESHA CBO"
-      className="sd-chat"
+      title={title}
+      className={compact ? 'sd-chat sd-compact' : 'sd-chat'}
       action={
         <div className="sd-chat-tools">
           <select value={engine} onChange={(e) => setEngine(e.target.value as 'gemini' | 'openai')} aria-label="AI engine">
@@ -249,9 +249,9 @@ export function CboChat() {
         <button type="button" className={`sd-toggle ${research ? 'on' : ''}`} disabled={!current?.research} aria-pressed={research} onClick={() => (setResearch(!research), writePref('gas.chat.research', !research))}>
           🔎 Research {research ? 'ON' : 'OFF'}
         </button>
-        {current && <span className="cx-sub">{current.name}: {current.note}</span>}
+        {current && !compact && <span className="cx-sub">{current.name}: {current.note}</span>}
       </div>
-      <p className="cx-sub">Think = deeper reasoning (slower). Research = live web search with sources ({engine === 'openai' ? 'OpenAI web search, billed per search' : 'Google, first 5,000 searches/month free'}). Ask it to do work and it proposes a goal for the agents — you confirm.</p>
+      {!compact && <p className="cx-sub">Think = deeper reasoning (slower). Research = live web search with sources ({engine === 'openai' ? 'OpenAI web search, billed per search' : 'Google, first 5,000 searches/month free'}). Ask it to do work and it proposes a goal for the agents — you confirm.</p>}
       <div className="sd-thread" aria-live="polite">
         {msgs.length === 0 && !busy && (
           <div className="sd-ideas">
@@ -327,7 +327,7 @@ export function CboChat() {
               send();
             }
           }}
-          placeholder="Message GANESHA CBO…"
+          placeholder={compact ? `Message ${title.replace(/^Chat with /, "")}…` : "Message GANESHA CBO…"}
           rows={1}
           maxLength={4000}
         />
@@ -338,7 +338,7 @@ export function CboChat() {
           🖼 {image.name} <button type="button" className="btn btn-small" onClick={() => setImage(null)} aria-label="Remove image">✕</button>
         </p>
       )}
-      <p className="cx-sub">📎 = LittleLoop character sheet upload.{current?.images ? ' 🖼 = ask ChatGPT about a picture.' : ''} The CBO only advises — approvals and actions stay on their buttons.</p>
+      {!compact && <p className="cx-sub">📎 = LittleLoop character sheet upload.{current?.images ? ' 🖼 = ask ChatGPT about a picture.' : ''} The CBO only advises — approvals and actions stay on their buttons.</p>}
     </Card>
   );
 }
