@@ -1,5 +1,6 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
-import { Sidebar } from './components/Sidebar';
+import { Sidebar, TopNav } from './components/Sidebar';
+import { ViewBoundary } from './components/ViewBoundary';
 import { Icon } from './components/Icon';
 import { ConnectionPage, EnginePill, SetupModal, useEngineOverall } from './components/Connection';
 import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
@@ -259,9 +260,10 @@ export default function App() {
             </button>
           </div>
         </header>
+        <TopNav view={view} onNavigate={navigate} />
 
         <main id="main" className="content">
-          {renderBody()}
+          <ViewBoundary key={view}>{renderBody()}</ViewBoundary>
         </main>
 
         <footer className="foot">

@@ -1233,3 +1233,12 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .cx-quick-row select, .cx-quick-row input { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(6, 10, 28, 0.75); color: var(--ink); font: inherit; min-width: 0; }
 @media (max-width: 720px) { .cx-quick-row { grid-template-columns: 1fr 1fr; } .cx-quick-row strong { grid-column: 1 / -1; } }
 .sd-upload { margin: 8px 0; }
+
+/* Top navigation: main sections */
+.topnav { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 28px 10px; position: relative; z-index: 2; }
+.topnav::-webkit-scrollbar { display: none; }
+.topnav-item { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(10, 14, 36, 0.55); color: var(--ink-2); font-weight: 500; font-size: 13.5px; white-space: nowrap; cursor: pointer; }
+.topnav-item:hover { color: var(--ink); background: rgba(255, 255, 255, 0.06); }
+.topnav-item.active { background: var(--green); color: var(--primary-ink); border-color: transparent; }
+.mobile-only-block { display: none; }
+@media (max-width: 860px) { .topnav { padding: 0 16px 10px; } .mobile-only-block { display: contents; } }

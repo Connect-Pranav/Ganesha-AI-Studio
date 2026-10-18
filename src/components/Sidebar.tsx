@@ -8,32 +8,44 @@ interface NavItem {
   icon: IconName;
 }
 
-const workspace: NavItem[] = [
-  { id: 'universe', label: '3D Command Center', icon: 'universe' },
+/** Main sections live in the top navigation bar; the sidebar keeps the tools. */
+export const TOP_NAV: NavItem[] = [
+  { id: 'universe', label: 'Command Center', icon: 'universe' },
   { id: 'overview', label: 'Overview', icon: 'overview' },
-  { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
+  { id: 'cbo', label: 'CBO', icon: 'cbo' },
+  { id: 'agents', label: 'Agents', icon: 'agents' },
+  { id: 'littleloop', label: 'LittleLoop', icon: 'littleloop' },
+  { id: 'sunverse', label: 'Sunverse', icon: 'sunverse' },
+  { id: 'foliocraft', label: 'Foliocraft', icon: 'foliocraft' },
   { id: 'analytics', label: 'Analytics', icon: 'analytics' },
 ];
-const command: NavItem[] = [
-  { id: 'cbo', label: 'CBO Executive', icon: 'cbo' },
+const work: NavItem[] = [
+  { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
   { id: 'tasks', label: 'Task Manager', icon: 'tasks' },
+];
+const money: NavItem[] = [
   { id: 'finance', label: 'CFO & Costs', icon: 'finance' },
-  { id: 'subscriptions', label: 'Subscription Intel', icon: 'subs' },
+  { id: 'subscriptions', label: 'Subscriptions', icon: 'subs' },
 ];
 const production: NavItem[] = [
   { id: 'studio', label: 'Video & Film Studio', icon: 'film' },
   { id: 'voices', label: 'Voice Library', icon: 'mic' },
-  { id: 'characters', label: 'Characters & Assets', icon: 'characters' },
+  { id: 'characters', label: 'Characters', icon: 'characters' },
 ];
-const brands: NavItem[] = [
-  { id: 'littleloop', label: 'LittleLoop', icon: 'littleloop' },
-  { id: 'sunverse', label: 'Sunverse', icon: 'sunverse' },
-  { id: 'foliocraft', label: 'Foliocraft', icon: 'foliocraft' },
-];
-const system: NavItem[] = [
-  { id: 'agents', label: 'Agents', icon: 'agents' },
-  { id: 'connection', label: 'AI Connection', icon: 'connection' },
-];
+const system: NavItem[] = [{ id: 'connection', label: 'AI Connection', icon: 'connection' }];
+
+export function TopNav({ view, onNavigate }: { view: View; onNavigate: (v: View) => void }) {
+  return (
+    <nav className="topnav" aria-label="Main sections">
+      {TOP_NAV.map((item) => (
+        <button key={item.id} className={`topnav-item ${view === item.id ? 'active' : ''}`} onClick={() => onNavigate(item.id)} aria-current={view === item.id ? 'page' : undefined}>
+          <Icon name={item.icon} size={16} />
+          <span>{item.label}</span>
+        </button>
+      ))}
+    </nav>
+  );
+}
 
 interface Props {
   view: View;
@@ -82,10 +94,10 @@ export function Sidebar({ view, onNavigate, collapsed, onToggleCollapse, mobileO
         </div>
 
         <nav className="nav">
-          {group('Workspace', workspace)}
-          {group('Command', command)}
+          <div className="mobile-only-block">{group('Main', TOP_NAV)}</div>
+          {group('Work', work)}
+          {group('Money', money)}
           {group('Production', production)}
-          {group('Brands', brands)}
           {group('System', system)}
         </nav>
 
