@@ -2,6 +2,8 @@
 // reels waiting for approval (watch the video, then Approve & post / New take / Reject),
 // and recent reels with their Instagram links. Every value comes from /api/reels.
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { InstagramConnect } from './cbo/StudioDesk';
+import { SheetThumb } from './SheetThumb';
 import { api, base, getToken, AUTH_EVENT } from '../services/adminService';
 import { Card, EmptyState, formatWhen } from './ui';
 import { Icon } from './Icon';
@@ -66,30 +68,6 @@ const STATUS: Record<ReelStatus, [string, string]> = {
   failed: ['Failed', 'pill-error'],
 };
 const usd = (n: number) => `$${n.toFixed(2)}`;
-
-export function SheetThumb({ id, name }: { id: string; name: string }) {
-  const [src, setSrc] = useState<string | null>(null);
-  useEffect(() => {
-    let url: string | null = null;
-    let alive = true;
-    const token = getToken();
-    if (!token) return;
-    fetch(`${base()}/api/reels/sheets/${id}/image`, { headers: { authorization: `Bearer ${token}` } })
-      .then((r) => (r.ok ? r.blob() : null))
-      .then((b) => {
-        if (b && alive) {
-          url = URL.createObjectURL(b);
-          setSrc(url);
-        }
-      })
-      .catch(() => {});
-    return () => {
-      alive = false;
-      if (url) URL.revokeObjectURL(url);
-    };
-  }, [id]);
-  return src ? <img className="rf-thumb" src={src} alt={`${name} character sheet`} /> : <div className="rf-thumb rf-thumb-empty" aria-hidden="true" />;
-}
 
 export function ReelFactory() {
   const [data, setData] = useState<Overview | null>(null);
@@ -185,6 +163,7 @@ export function ReelFactory() {
       }
     >
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
+      <InstagramConnect />
 
       <div className="rf-stats">
         <div><span className="rf-k">Plan</span><span className="rf-v">{cfg.perDay}/day · 2 × 10 s</span></div>

@@ -61,5 +61,8 @@ export const SCHEMA_STATEMENTS = [
   "CREATE TABLE IF NOT EXISTS reel_flow ( reel_id TEXT PRIMARY KEY, stage TEXT NOT NULL CHECK (stage IN ('awaiting_clips','clips_uploaded','joining')), ticket TEXT NOT NULL UNIQUE, ticket_expires TEXT NOT NULL, clips_json TEXT NOT NULL DEFAULT '[]', created_at TEXT NOT NULL, updated_at TEXT NOT NULL )",
   "CREATE INDEX IF NOT EXISTS idx_reel_flow_stage ON reel_flow(stage)",
   "CREATE TABLE IF NOT EXISTS cbo_chat ( id TEXT PRIMARY KEY, role TEXT NOT NULL CHECK (role IN ('user','assistant')), content TEXT NOT NULL, engine TEXT, model TEXT, created_at TEXT NOT NULL )",
-  "CREATE INDEX IF NOT EXISTS idx_cbo_chat_time ON cbo_chat(created_at)"
+  "CREATE INDEX IF NOT EXISTS idx_cbo_chat_time ON cbo_chat(created_at)",
+  "CREATE TABLE IF NOT EXISTS cbo_chat_meta ( msg_id TEXT PRIMARY KEY, interaction_id TEXT, thoughts TEXT, sources_json TEXT, action_json TEXT, mode_json TEXT )",
+  "CREATE TABLE IF NOT EXISTS ig_auth ( id INTEGER PRIMARY KEY CHECK (id = 1), token_enc TEXT NOT NULL, iv TEXT NOT NULL, ig_user_id TEXT, username TEXT, expires_at TEXT, refreshed_at TEXT, created_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS ig_oauth_state ( state TEXT PRIMARY KEY, created_at TEXT NOT NULL )"
 ];

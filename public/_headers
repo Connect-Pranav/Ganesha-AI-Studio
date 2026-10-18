@@ -1,6 +1,8 @@
 # Cloudflare Pages headers
 /agent-data/*
   Cache-Control: no-store
+/version.json
+  Cache-Control: no-store
 /sw.js
   Cache-Control: no-cache
 /manifest.webmanifest

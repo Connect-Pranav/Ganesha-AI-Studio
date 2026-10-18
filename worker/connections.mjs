@@ -138,7 +138,7 @@ export async function listConnections(env, db, llmProviders) {
       name: 'Instagram (LittleLoop @little_loop09)',
       kind: 'api',
       state: env.IG_ACCESS_TOKEN ? 'credentials_set_untested' : 'not_configured',
-      authMethod: 'Instagram API with Instagram Login · Worker secret IG_ACCESS_TOKEN',
+      authMethod: 'Instagram API with Instagram Login · Connect button (LittleLoop) or Worker secret IG_ACCESS_TOKEN',
       model: null,
       capabilities: ['Post approved reels (Reel Factory)', 'LittleLoop analytics: followers, per-post views/reach/likes/comments/saves'],
       lastSuccessAt: null,
@@ -146,7 +146,7 @@ export async function listConnections(env, db, llmProviders) {
       quotaVisibility: 'Meta app dashboard',
       billingVisibility: 'Free',
       missing: env.IG_ACCESS_TOKEN ? [] : ['IG_ACCESS_TOKEN'],
-      nextAction: env.IG_ACCESS_TOKEN ? null : 'Make @little_loop09 a Professional account, create a token in a Meta app (Instagram API with Instagram Login), set it as IG_ACCESS_TOKEN.',
+      nextAction: env.IG_ACCESS_TOKEN ? null : 'LittleLoop → Reel Factory → Connect Instagram (needs IG_APP_ID + IG_APP_SECRET from a Meta app once).',
       testable: false,
     },
     {

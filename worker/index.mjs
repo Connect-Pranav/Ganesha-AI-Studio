@@ -28,6 +28,7 @@ import * as subintel from './subintel.mjs';
 import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from './autopilot.mjs';
 import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
+import * as ig from './instagram.mjs';
 import { finishedWork } from './finished.mjs';
 
 const VERSION = '0.6.0-subintel';
@@ -101,7 +102,8 @@ async function route(request, env, ctx) {
     if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
     let report;
     try {
-      report = await getReport(env, await requireDb(env), seg[2]);
+      const adb = await requireDb(env);
+      report = await getReport(await ig.withIg(env, adb), adb, seg[2]);
     } catch (e) {
       console.error('analytics report failed', e?.stack ?? e);
       report = { brand: seg[2], connected: false, reason: `Analytics error: ${String(e?.message ?? e).slice(0, 300)}` };
@@ -125,6 +127,7 @@ async function route(request, env, ctx) {
 
   requireAdmin(request, env);
   const db = await requireDb(env);
+  const envIg = await ig.withIg(env, db); // Instagram token from the Connect button, if used
   // Keep a current USD→INR rate so every estimate can be shown in ₹ (owner-set rate always wins).
   await maybeRefreshFx(db);
 
@@ -251,7 +254,7 @@ async function route(request, env, ctx) {
         .all()
     ).results;
     const events = (await db.prepare('SELECT id, workflow_id, task_id, kind, message, created_at FROM events WHERE created_at >= ? ORDER BY id DESC LIMIT 40').bind(since).all()).results;
-    const reelsWaiting = (await reels.overview(env, db)).reels.filter((r) => r.status === 'review').map((r) => ({ id: r.id, day: r.day, slot: r.slot, title: r.script?.title ?? 'LittleLoop reel', caption: r.caption, videoUrl: r.videoUrl, costUsd: r.costUsd }));
+    const reelsWaiting = (await reels.overview(envIg, db)).reels.filter((r) => r.status === 'review').map((r) => ({ id: r.id, day: r.day, slot: r.slot, title: r.script?.title ?? 'LittleLoop reel', caption: r.caption, videoUrl: r.videoUrl, costUsd: r.costUsd }));
     return json({ approvals, external, failures, events, reels: reelsWaiting, counts: { approvals: approvals.length + reelsWaiting.length, external: external.length, failures: failures.length } });
   }
 
@@ -385,7 +388,7 @@ async function route(request, env, ctx) {
   }
 
   /* ---------- Provider & subscription manager ---------- */
-  if (path === '/api/connections' && method === 'GET') return json({ connections: await listConnections(env, db, await providersStatus(env, db)), subscriptions: await listSubscriptions(db) });
+  if (path === '/api/connections' && method === 'GET') return json({ connections: await listConnections(envIg, db, await providersStatus(env, db)), subscriptions: await listSubscriptions(db) });
   if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db));
 
   /* ---------- Voice library + Smart Voice Director ---------- */
@@ -442,17 +445,25 @@ async function route(request, env, ctx) {
     return json({ ok: true });
   }
 
+  /* ---------- Instagram connection ---------- */
+  if (path === '/api/instagram' && method === 'GET') return json(await ig.status(env, db));
+  if (path === '/api/instagram/connect' && method === 'POST') return json(await ig.startConnect(env, db));
+  if (path === '/api/instagram' && method === 'DELETE') {
+    await ig.disconnect(db);
+    return json({ ok: true });
+  }
+
   /* ---------- CBO chat + finished work ---------- */
   if (path === '/api/cbo/chat' && method === 'GET') return json({ engines: cbochat.engines(env), messages: await cbochat.history(db) });
-  if (path === '/api/cbo/chat' && method === 'POST') return json({ reply: await cbochat.send(env, db, await providersStatus(env, db), await readBody(request)) });
+  if (path === '/api/cbo/chat' && method === 'POST') return json({ reply: await cbochat.send(envIg, db, await providersStatus(env, db), await readBody(request)) });
   if (path === '/api/cbo/chat' && method === 'DELETE') {
     await cbochat.clear(db);
     return json({ ok: true });
   }
-  if (path === '/api/finished' && method === 'GET') return json(await finishedWork(env, db, url.searchParams.get('limit')));
+  if (path === '/api/finished' && method === 'GET') return json(await finishedWork(envIg, db, url.searchParams.get('limit')));
 
   /* ---------- LittleLoop Reel Factory ---------- */
-  if (path === '/api/reels' && method === 'GET') return json(await reels.overview(env, db));
+  if (path === '/api/reels' && method === 'GET') return json(await reels.overview(envIg, db));
   if (path === '/api/reels/config' && method === 'PUT') return json({ config: await reels.saveConfig(db, await readBody(request)) });
   if (path === '/api/reels/sheets' && method === 'POST') {
     const id = await reels.addSheet(env, db, { name: url.searchParams.get('name'), notes: url.searchParams.get('notes') ?? '', mime: request.headers.get('content-type'), body: request.arrayBuffer() });
@@ -483,7 +494,7 @@ async function route(request, env, ctx) {
   if (seg[1] === 'reels' && seg[2] && ['approve', 'reject', 'redo'].includes(seg[3]) && method === 'POST') {
     const b = await readBody(request);
     const reel = await reels.decide(db, seg[2], seg[3], b.reason ?? '', env);
-    if (seg[3] === 'approve') ctx.waitUntil(reels.publishPass(env, db).catch((e) => console.error('reel publish failed', e.message)));
+    if (seg[3] === 'approve') ctx.waitUntil(reels.publishPass(envIg, db).catch((e) => console.error('reel publish failed', e.message)));
     return json({ reel });
   }
 
@@ -504,6 +515,16 @@ export default {
     }
     // Google Flow clip upload links (the per-reel ticket is the credential; CORS-open so the
     // Flow tab can send clips straight here). GET → what to make, PUT /t/<ticket>/<n> → clip n.
+    if (pathname === '/ig/callback') {
+      try {
+        if (!env.DB) throw new HttpError(503, 'Database not configured');
+        await ensureSchema(env.DB);
+        const r = await ig.finishConnect(env, env.DB, new URL(request.url));
+        return ig.callbackPage(true, `@${r.username ?? 'account'} is connected. Approved reels will post here and LittleLoop analytics will fill in.`);
+      } catch (e) {
+        return ig.callbackPage(false, e.message);
+      }
+    }
     if (pathname.startsWith('/t/')) {
       const cors = { 'access-control-allow-origin': '*', 'access-control-allow-methods': 'GET, PUT, OPTIONS', 'access-control-allow-headers': 'content-type', 'access-control-max-age': '86400' };
       if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: cors });
@@ -549,10 +570,12 @@ export default {
     // Reel factory: queue today's reels (rotation, daily cap) and move approved reels to Instagram.
     ctx.waitUntil(
       reels.planToday(env.DB)
-        .then(() => reels.publishPass(env, env.DB))
+        .then(() => ig.refreshIfDue(env, env.DB).catch((e) => console.error('ig refresh failed', e.message)))
+        .then(() => ig.withIg(env, env.DB))
+        .then((e2) => reels.publishPass(e2, env.DB))
         .then((r) => r.length && console.log('reels', JSON.stringify(r)))
         .catch((e) => console.error('reels failed', e.message)),
     );
-    ctx.waitUntil(scheduledAnalytics(env, env.DB).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
+    ctx.waitUntil(ig.withIg(env, env.DB).then((e2) => scheduledAnalytics(e2, env.DB)).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },
 };

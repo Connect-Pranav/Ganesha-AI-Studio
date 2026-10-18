@@ -2,7 +2,7 @@
 // Safety rules: never caches /api/* (live, owner data) or /agent-data/* (live JSON); never stores
 // the admin token (that stays in the page's localStorage). Pages are network-first so a new
 // deploy shows up on the next open; hashed build assets are cache-first.
-const CACHE = 'ganesha-shell-v1';
+const CACHE = 'ganesha-shell-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './brand/icon-192.png', './brand/mark-512.png'];
 
 self.addEventListener('install', (e) => {
@@ -18,7 +18,7 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // fonts etc. go straight to the network
-  if (url.pathname.startsWith('/api/') || url.pathname.includes('/agent-data/')) return; // always live
+  if (url.pathname.startsWith('/api/') || url.pathname.includes('/agent-data/') || url.pathname.endsWith('/version.json')) return; // always live
   if (req.mode === 'navigate') {
     e.respondWith(
       fetch(req)

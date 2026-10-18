@@ -4,6 +4,7 @@ import { Icon } from './Icon';
 import { loadAnalytics, type AnalyticsReport, type Video } from '../services/analyticsService';
 import type { ProductId } from '../types';
 import { BrandWorkCounts, StudioOps } from './StudioOps';
+import { InstagramConnect } from './cbo/StudioDesk';
 
 type Tab = ProductId | 'studio';
 // SOMA's YouTube analysis (Sunverse) comes first: it is the tab with real channel data.
@@ -127,7 +128,8 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
       <div className="an">
         {tabs}
         <Card title="SOMA analytics">
-          <EmptyState title={r.platform === 'instagram' ? 'Instagram not connected yet' : 'No audience data source connected'} hint={r.reason ?? 'This brand has no analytics source yet.'} />
+          <EmptyState title={r.platform === 'instagram' ? 'Instagram not connected yet' : 'No audience data source connected'} hint={r.platform === 'instagram' ? 'Connect Instagram below — the same connection posts approved reels.' : r.reason ?? 'This brand has no analytics source yet.'} />
+          {r.platform === 'instagram' && <InstagramConnect />}
         </Card>
         {r.studio && <StudioReels s={r.studio} />}
         <BrandWorkCounts brand={brand} />

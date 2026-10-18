@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { StudioProvider } from './services/StudioContext';
 import './styles.css';
+import { startAutoUpdate } from './services/autoUpdate';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -18,3 +19,5 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
     navigator.serviceWorker.register('./sw.js').catch((e) => console.warn('Service worker not registered:', e));
   });
 }
+
+startAutoUpdate();

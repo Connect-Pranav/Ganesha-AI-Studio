@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { api, base, getToken, AUTH_EVENT } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
 import { agentName } from '../../data/agentsMeta';
-import { SheetThumb } from '../ReelFactory';
+import { SheetThumb } from '../SheetThumb';
 
 /* ---------------- shared ---------------- */
 function useLive<T>(path: string, every = 60_000) {
@@ -51,14 +51,43 @@ function OutputViewer({ artifactId, onClose }: { artifactId: string; onClose: ()
 }
 
 /* ---------------- CBO chat ---------------- */
-interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?: string | null; model?: string | null; created_at: string }
-interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string }
+interface ChatAction { type: 'start_goal'; template: string; title: string; goal: string }
+interface Msg {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  engine?: string | null;
+  model?: string | null;
+  created_at: string;
+  thoughts?: string | null;
+  sources?: { url: string; title: string }[];
+  action?: ChatAction | null;
+  mode?: { think?: boolean; research?: boolean; fallback?: string | null } | null;
+}
+interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean }
+const readPref = (k: string) => {
+  try {
+    return localStorage.getItem(k) === '1';
+  } catch {
+    return false;
+  }
+};
+const writePref = (k: string, v: boolean) => {
+  try {
+    localStorage.setItem(k, v ? '1' : '0');
+  } catch {
+    /* ignore */
+  }
+};
 const CHAT_IDEAS = ['Aaj mujhe kya karna chahiye?', 'Kaun se approvals pending hain?', 'Is mahine ka kharcha kitna hua?', 'LittleLoop ke liye 3 reel ideas do'];
 
 export function CboChat() {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
   const [engine, setEngine] = useState<'gemini' | 'openai'>('gemini');
+  const [think, setThink] = useState(() => readPref('gas.chat.think'));
+  const [research, setResearch] = useState(() => readPref('gas.chat.research'));
+  const [started, setStarted] = useState<Record<string, string>>({});
   const [text, setText] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -94,12 +123,24 @@ export function CboChat() {
     setText('');
     setMsgs((x) => [...x, { id: `tmp-${Date.now()}`, role: 'user', content: m, created_at: new Date().toISOString() }]);
     try {
-      const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify({ message: m, engine }) });
+      const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify({ message: m, engine, think, research }) });
       setMsgs((x) => [...x, r.reply]);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed');
     } finally {
       setBusy(false);
+    }
+  };
+
+  const startGoal = async (m: Msg) => {
+    const a = m.action!;
+    setStarted((x) => ({ ...x, [m.id]: 'starting' }));
+    try {
+      await api('/api/workflows', { method: 'POST', headers: { 'idempotency-key': `chat-${m.id}` }, body: JSON.stringify({ template: a.template, title: a.title, goal: a.goal }) });
+      setStarted((x) => ({ ...x, [m.id]: 'started' }));
+      window.dispatchEvent(new Event('ganesha:goal-created'));
+    } catch (e) {
+      setStarted((x) => ({ ...x, [m.id]: `failed: ${e instanceof Error ? e.message : 'error'}` }));
     }
   };
 
@@ -146,7 +187,16 @@ export function CboChat() {
         </div>
       }
     >
-      {current && <p className="cx-sub">{current.name}: {current.note}. Answers use your live studio data.</p>}
+      <div className="sd-modes">
+        <button type="button" className={`sd-toggle ${think ? 'on' : ''}`} disabled={!current?.think} aria-pressed={think} onClick={() => (setThink(!think), writePref('gas.chat.think', !think))}>
+          🧠 Think {think ? 'ON' : 'OFF'}
+        </button>
+        <button type="button" className={`sd-toggle ${research ? 'on' : ''}`} disabled={!current?.research} aria-pressed={research} onClick={() => (setResearch(!research), writePref('gas.chat.research', !research))}>
+          🔎 Research {research ? 'ON' : 'OFF'}
+        </button>
+        {current && <span className="cx-sub">{current.name}: {current.note}</span>}
+      </div>
+      <p className="cx-sub">Think = deeper reasoning (slower). Research = live Google search with sources (first 5,000 searches/month free). Ask it to do work and it proposes a goal for the agents — you confirm.</p>
       <div className="sd-thread" aria-live="polite">
         {msgs.length === 0 && !busy && (
           <div className="sd-ideas">
@@ -157,11 +207,44 @@ export function CboChat() {
         )}
         {msgs.map((m) => (
           <div key={m.id} className={`sd-msg sd-${m.role}`}>
+            {m.thoughts && (
+              <details className="sd-thoughts">
+                <summary>🧠 Thought process</summary>
+                <p>{m.thoughts}</p>
+              </details>
+            )}
             <div className="sd-bubble">{m.content}</div>
-            {m.role === 'assistant' && m.model && <span className="sd-meta">{m.engine === 'openai' ? 'ChatGPT' : 'Gemini'} · {m.model}</span>}
+            {m.sources && m.sources.length > 0 && (
+              <div className="sd-sources">
+                {m.sources.map((x, i) => (
+                  <a key={x.url} href={x.url} target="_blank" rel="noreferrer" title={x.url}>[{i + 1}] {x.title}</a>
+                ))}
+              </div>
+            )}
+            {m.action && (
+              <div className="sd-action">
+                <p><strong>Proposed goal:</strong> {m.action.title}</p>
+                <p className="cx-sub">{m.action.goal}</p>
+                {started[m.id] === 'started' ? (
+                  <p className="cx-ok">Started — agents are on it (see Pipelines / Agents).</p>
+                ) : (
+                  <button className="btn btn-small btn-primary" disabled={started[m.id] === 'starting'} onClick={() => startGoal(m)}>
+                    {started[m.id] === 'starting' ? 'Starting…' : 'Start this goal'}
+                  </button>
+                )}
+                {started[m.id]?.startsWith('failed') && <p className="form-error">{started[m.id]}</p>}
+              </div>
+            )}
+            {m.role === 'assistant' && m.model && (
+              <span className="sd-meta">
+                {m.engine === 'openai' ? 'ChatGPT' : 'Gemini'} · {m.model}
+                {m.mode?.think ? ' · thinking' : ''}
+                {m.mode?.research ? ' · research' : ''}
+              </span>
+            )}
           </div>
         ))}
-        {busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">CBO soch raha hai…</div></div>}
+        {busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'CBO search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
         <div ref={endRef} />
       </div>
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
@@ -384,5 +467,62 @@ export function SheetUploader() {
         </div>
       )}
     </Card>
+  );
+}
+
+/* ---------------- Instagram connect ---------------- */
+interface IgStatus { connected: boolean; via: 'worker_secret' | 'connect_button' | null; username: string | null; expiresAt: string | null; appConfigured: boolean; redirectUri: string }
+
+export function InstagramConnect({ compact = false }: { compact?: boolean }) {
+  const { data, error, load } = useLive<IgStatus>('/api/instagram', 120_000);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [showSetup, setShowSetup] = useState(false);
+  const connect = async () => {
+    setBusy(true);
+    setMsg(null);
+    try {
+      const r = await api<{ url: string }>('/api/instagram/connect', { method: 'POST', body: '{}' });
+      window.location.href = r.url;
+    } catch (e) {
+      setMsg(e instanceof Error ? e.message : 'Failed');
+      setBusy(false);
+    }
+  };
+  const disconnect = async () => {
+    if (!window.confirm('Disconnect Instagram? Approved reels will stop posting until you connect again.')) return;
+    await api('/api/instagram', { method: 'DELETE' }).catch(() => {});
+    load();
+  };
+  if (error === 'locked') return null;
+  if (error) return <p className="form-error">Instagram: {error}</p>;
+  if (!data) return null;
+  if (data.connected)
+    return (
+      <div className="sd-ig ok">
+        <span>📸 Instagram connected{data.username ? ` · @${data.username}` : ''}{data.via === 'worker_secret' ? ' (Worker secret)' : ''}</span>
+        {data.expiresAt && <span className="cx-sub">auto-renews · valid till {formatWhen(data.expiresAt)}</span>}
+        {data.via === 'connect_button' && !compact && <button className="btn btn-small" onClick={disconnect}>Disconnect</button>}
+      </div>
+    );
+  return (
+    <div className="sd-ig">
+      <div className="sd-ig-row">
+        <span>📸 <strong>Instagram not connected</strong> — needed to post approved reels and for LittleLoop analytics.</span>
+        <button className="btn btn-small btn-primary" disabled={busy || !data.appConfigured} onClick={connect}>{busy ? 'Opening Instagram…' : 'Connect Instagram'}</button>
+        {!data.appConfigured && <button className="btn btn-small" onClick={() => setShowSetup(!showSetup)}>{showSetup ? 'Hide setup' : 'One-time setup'}</button>}
+      </div>
+      {msg && <p className="form-error">{msg}</p>}
+      {!data.appConfigured && showSetup && (
+        <ol className="flow sd-ig-steps">
+          <li>Instagram app → Settings → Account type → switch <strong>@little_loop09</strong> to <strong>Creator</strong> (free).</li>
+          <li>developers.facebook.com → My Apps → Create app → use case <strong>“Manage messaging & content on Instagram”</strong> (Instagram API with Instagram login).</li>
+          <li>In the app: Instagram → API setup with Instagram login → <strong>Business login settings</strong> → add redirect URL: <code>{data.redirectUri}</code></li>
+          <li>Same page: copy <strong>Instagram app ID</strong> and <strong>Instagram app secret</strong>. App roles → add @little_loop09 as an Instagram tester and accept it in the Instagram app.</li>
+          <li>Cloudflare → ganesha-studio → Settings → Variables and Secrets → add <code>IG_APP_ID</code> and <code>IG_APP_SECRET</code> (type Secret) → Deploy.</li>
+          <li>Come back here and tap <strong>Connect Instagram</strong>. Token renews itself every ~50 days.</li>
+        </ol>
+      )}
+    </div>
   );
 }
