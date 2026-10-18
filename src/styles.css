@@ -1200,6 +1200,11 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .sd-user .sd-bubble { background: var(--green); color: var(--primary-ink); border-bottom-right-radius: 4px; }
 .sd-assistant .sd-bubble { background: var(--muted-soft); border-bottom-left-radius: 4px; }
 .sd-typing { opacity: .7; font-style: italic; }
+.sd-live::after { content: "▍"; animation: sd-blink 1s steps(2) infinite; opacity: .7; }
+@keyframes sd-blink { 50% { opacity: 0; } }
+.sd-imgchip { display: flex; align-items: center; gap: 8px; margin: 6px 0 0; font-size: .85rem; }
+.oa-kv { margin-bottom: 8px; }
+.oa-usage { list-style: none; padding: 0; margin: 6px 0; display: grid; gap: 4px; font-size: .82rem; }
 .sd-meta { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
 .sd-compose { display: flex; gap: 8px; align-items: flex-end; }
 .sd-compose textarea { flex: 1; resize: none; min-height: 42px; max-height: 160px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface-2, var(--surface)); color: var(--ink); font: inherit; }

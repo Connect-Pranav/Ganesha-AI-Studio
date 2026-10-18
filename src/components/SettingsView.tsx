@@ -9,7 +9,7 @@ import { FX_EVENT, readFx, writeFx, type CosmicFx } from './cosmic/CosmicBackgro
 
 interface SettingRow { name: string; purpose: string; secret: boolean; source: 'worker' | 'app' | null; hint: string | null; updatedAt: string | null }
 const GROUPS: { title: string; names: string[]; note?: string }[] = [
-  { title: 'AI engines', names: ['GEMINI_API_KEY', 'OPENAI_API_KEY', 'OPENAI_MODEL', 'ANTHROPIC_API_KEY'], note: 'Gemini is free (aistudio.google.com → Get API key). ChatGPT in the CBO chat needs an OpenAI API key from platform.openai.com (paid per use — ChatGPT Go/Plus app plans do not include API access).' },
+  { title: 'AI engines', names: ['GEMINI_API_KEY', 'OPENAI_API_KEY', 'OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'ANTHROPIC_API_KEY'], note: 'Gemini is free (aistudio.google.com → Get API key). ChatGPT needs an OpenAI API key from platform.openai.com/api-keys (paid per use — ChatGPT Go/Plus app plans do not include API access).' },
   { title: 'Platforms', names: ['YOUTUBE_API_KEY', 'IG_APP_ID', 'IG_APP_SECRET', 'IG_ACCESS_TOKEN'], note: 'For Instagram, add the app ID + secret once, then use Connect Instagram below (no token copying needed).' },
 ];
 const pref = (k: string, d = false) => {
@@ -74,11 +74,11 @@ export function SettingsView() {
       setBusy(null);
     }
   };
-  const test = async (what: 'gemini' | 'claude' | 'openai') => {
+  const test = async (what: 'gemini' | 'claude') => {
     setBusy(`test-${what}`);
     setNotice(null);
     try {
-      const r = await api<{ state?: string; message?: string; ok?: boolean }>(what === 'openai' ? '/api/settings/test-openai' : `/api/providers/${what}/test`, { method: 'POST', body: '{}' });
+      const r = await api<{ state?: string; message?: string; ok?: boolean }>(`/api/providers/${what}/test`, { method: 'POST', body: '{}' });
       setNotice(`${what}: ${r.state ?? (r.ok ? 'connected' : 'checked')}${r.message ? ` — ${r.message}` : ''}`);
     } catch (e) {
       setNotice(`${what}: ${e instanceof Error ? e.message : 'failed'}`);
@@ -109,6 +109,8 @@ export function SettingsView() {
   return (
     <div className="settings">
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
+
+      <OpenAICard key={rows?.filter((r) => r.name.startsWith('OPENAI')).map((r) => `${r.source}${r.updatedAt}`).join('|')} />
 
       <Card title="Instagram (LittleLoop)">
         <InstagramConnect />
@@ -152,7 +154,6 @@ export function SettingsView() {
             {g.title === 'AI engines' && (
               <div className="nt-actions">
                 <button className="btn btn-small" disabled={busy === 'test-gemini'} onClick={() => test('gemini')}>Test Gemini</button>
-                <button className="btn btn-small" disabled={busy === 'test-openai'} onClick={() => test('openai')}>Test ChatGPT (OpenAI)</button>
                 <button className="btn btn-small" disabled={busy === 'test-claude'} onClick={() => test('claude')}>Test Claude</button>
               </div>
             )}
@@ -181,5 +182,103 @@ export function SettingsView() {
         </div>
       </Card>
     </div>
+  );
+}
+
+interface OpenAIStatus {
+  configured: boolean;
+  keySource: 'worker' | 'app' | null;
+  model: string;
+  modelSource: 'worker' | 'app' | 'default';
+  defaultModel: string;
+  modelValid: boolean;
+  maxOutputTokens: number;
+  dailyRequestLimit: number;
+  requestsToday: number;
+  pricing: { input: number; output: number; cachedInput: number | null; origin: string; source: string | null; verifiedAt: string | null } | null;
+  month: { requests: number; successful: number; inputTokens: number; cachedInputTokens: number; outputTokens: number; reasoningTokens: number; estimatedCostUsd: number; unpricedRequests: number };
+  byPurpose: { purpose: string; agent: string | null; requests: number; input: number | null; output: number | null; cost: number | null }[];
+  lastCall: { status: string; purpose: string; httpStatus: number | null; error: string | null; at: string; requestId: string | null } | null;
+  lastTest: { status: string; error: string | null; at: string; requestId: string | null } | null;
+}
+interface TestResult { state: string; message?: string; requestId?: string | null; live?: boolean; model?: string }
+const num = (v: number | null | undefined) => (v == null ? '0' : Math.round(v).toLocaleString('en-IN'));
+const SRC = { worker: 'Cloudflare secret (takes priority)', app: 'Saved in Settings (encrypted)' } as const;
+
+/** Effective server-side OpenAI configuration + this month's usage. The key itself never reaches the browser. */
+function OpenAICard() {
+  const [s, setS] = useState<OpenAIStatus | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const [busy, setBusy] = useState<'key' | 'live' | null>(null);
+  const [res, setRes] = useState<TestResult | null>(null);
+  const load = useCallback(async () => {
+    try {
+      setS(await api<OpenAIStatus>('/api/settings/openai'));
+      setErr(null);
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Failed');
+    }
+  }, []);
+  useEffect(() => {
+    load();
+  }, [load]);
+  const run = async (live: boolean) => {
+    if (live && !window.confirm('Live test sends one tiny paid request to OpenAI (about 20 tokens). Continue?')) return;
+    setBusy(live ? 'live' : 'key');
+    setRes(null);
+    try {
+      setRes(await api<TestResult>('/api/settings/test-openai', { method: 'POST', body: JSON.stringify({ live }) }));
+    } catch (e) {
+      setRes({ state: 'error', message: e instanceof Error ? e.message : 'failed' });
+    } finally {
+      setBusy(null);
+      load();
+    }
+  };
+  const lastOk = s?.lastTest?.status === 'success';
+  const pill = !s ? null : !s.configured ? ['pill-idle', 'Not configured'] : !s.lastTest ? ['pill-warn', 'Key set · not tested'] : lastOk ? ['pill-running', 'Connected'] : ['pill-error', 'Last test failed'];
+  return (
+    <Card title="ChatGPT · OpenAI API" action={pill ? <span className={`pill ${pill[0]}`}>{pill[1]}</span> : undefined}>
+      {err && <p className="form-error">{err}</p>}
+      {!s && !err && <EmptyState title="Loading…" />}
+      {s && (
+        <>
+          <dl className="kv-row oa-kv">
+            <div><dt>API key</dt><dd>{s.keySource ? SRC[s.keySource] : 'Not set — add OPENAI_API_KEY below'}</dd></div>
+            <div><dt>Model</dt><dd><code>{s.model}</code> {s.modelSource === 'default' ? '(default)' : s.modelSource === 'worker' ? '(Cloudflare)' : '(Settings)'}{!s.modelValid && <span className="form-error"> invalid ID</span>}</dd></div>
+            <div><dt>Max output / request</dt><dd>{num(s.maxOutputTokens)} tokens</dd></div>
+            <div><dt>Requests today</dt><dd>{num(s.requestsToday)} / {num(s.dailyRequestLimit)}</dd></div>
+          </dl>
+          <p className="cx-sub">This month (requests through Ganesha): {num(s.month.requests)} requests · {num(s.month.inputTokens)} in ({num(s.month.cachedInputTokens)} cached) · {num(s.month.outputTokens)} out ({num(s.month.reasoningTokens)} reasoning) · <strong>≈ ${s.month.estimatedCostUsd.toFixed(4)}</strong>{s.month.unpricedRequests ? ` + ${s.month.unpricedRequests} requests with no price on file` : ''}</p>
+          <p className="cx-sub">
+            {s.pricing
+              ? <>Price used: ${s.pricing.input} in / ${s.pricing.output} out per 1M tokens{s.pricing.cachedInput != null ? `, cached $${s.pricing.cachedInput}` : ' (no cached price listed → full input rate)'} · {s.pricing.origin === 'owner' ? 'your CFO & Costs entry' : s.pricing.origin === 'env' ? 'OPENAI_PRICE_PER_MTOK' : `official page, checked ${s.pricing.verifiedAt}`}. Rates change — add a newer price in CFO & Costs to override.</>
+              : <>No price on file for {s.model}: tokens are counted but cost is not estimated. Add its price in CFO & Costs.</>}
+          </p>
+          {s.byPurpose.length > 0 && (
+            <ul className="oa-usage">
+              {s.byPurpose.map((r) => (
+                <li key={`${r.purpose}-${r.agent}`}><code>{r.agent ?? r.purpose}</code> {num(r.requests)} req · {num(r.input)}/{num(r.output)} tok · {r.cost != null ? `$${r.cost.toFixed(4)}` : 'cost n/a'}</li>
+              ))}
+            </ul>
+          )}
+          {s.lastCall?.status === 'error' && (
+            <p className="drawer-notice error">Last request failed {formatWhen(s.lastCall.at)}{s.lastCall.httpStatus ? ` (HTTP ${s.lastCall.httpStatus})` : ''}: {s.lastCall.error}{s.lastCall.requestId ? ` · request ${s.lastCall.requestId}` : ''}</p>
+          )}
+          <div className="nt-actions">
+            <button className="btn btn-small btn-primary" disabled={!s.configured || busy !== null} onClick={() => run(false)}>{busy === 'key' ? 'Checking…' : 'Test key & model (free)'}</button>
+            <button className="btn btn-small" disabled={!s.configured || busy !== null} onClick={() => run(true)}>{busy === 'live' ? 'Sending…' : 'Live test (tiny paid request)'}</button>
+          </div>
+          {res && (
+            <p className={`drawer-notice ${res.state === 'connected' ? '' : 'error'}`} role="status">
+              {res.state === 'connected' ? '✅ ' : res.state === 'not_configured' ? '' : '⚠️ '}
+              {res.message ?? res.state}
+              {res.requestId ? ` · request ${res.requestId}` : ''}
+            </p>
+          )}
+          <p className="cx-sub">Used by: CBO chat (pick ChatGPT), any agent you switch to ChatGPT in Agents, and LittleLoop scripts if you choose OpenAI in the Reel Factory. Nothing switches to OpenAI by itself.</p>
+        </>
+      )}
+    </Card>
   );
 }

@@ -48,8 +48,13 @@ export async function getConfig(db) {
     p = await db.prepare('SELECT * FROM reel_prefs WHERE id = 1').first();
   }
   const flowCreditsPerReel = (FLOW_MODELS[p.flow_model] ?? 10) * FLOW_CLIPS.length;
-  return { enabled: Boolean(c.enabled), perDay: c.per_day, dailyCapUsd: c.daily_cap_usd, estReelUsd: c.est_reel_usd, language: c.language, brief: c.brief, renderMode: p.render_mode, flowModel: p.flow_model, flowCreditsPerReel, updatedAt: c.updated_at };
+  const se = await db.prepare("SELECT value FROM studio_prefs WHERE key = 'reels.script_engine'").first();
+  const scriptEngine = SCRIPT_ENGINES.includes(se?.value) ? se.value : 'gemini';
+  return { enabled: Boolean(c.enabled), perDay: c.per_day, dailyCapUsd: c.daily_cap_usd, estReelUsd: c.est_reel_usd, language: c.language, brief: c.brief, renderMode: p.render_mode, flowModel: p.flow_model, flowCreditsPerReel, scriptEngine, updatedAt: c.updated_at };
 }
+
+// Who writes the reel script: Gemini in the GitHub runner (free key, default) or OpenAI via the Worker (paid per request).
+export const SCRIPT_ENGINES = ['gemini', 'openai'];
 
 export async function saveConfig(db, b) {
   const cur = await getConfig(db);
@@ -75,6 +80,13 @@ export async function saveConfig(db, b) {
   if (b.renderMode !== undefined) {
     if (!['flow', 'api'].includes(b.renderMode)) throw new HttpError(400, 'renderMode must be flow or api');
     next.renderMode = b.renderMode;
+  }
+  if (b.scriptEngine !== undefined) {
+    if (!SCRIPT_ENGINES.includes(b.scriptEngine)) throw new HttpError(400, `scriptEngine must be ${SCRIPT_ENGINES.join(' or ')}`);
+    if (b.scriptEngine !== cur.scriptEngine) {
+      await db.prepare("INSERT INTO studio_prefs (key, value, updated_at) VALUES ('reels.script_engine', ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at").bind(b.scriptEngine, nowIso()).run();
+      await audit(db, 'reels_config', `LittleLoop script engine set to ${b.scriptEngine}`);
+    }
   }
   if (b.flowModel !== undefined) {
     if (!(b.flowModel in FLOW_MODELS)) throw new HttpError(400, `flowModel must be one of ${Object.keys(FLOW_MODELS).join(', ')}`);
@@ -220,7 +232,7 @@ export async function claim(env, db) {
         const sheet = await db.prepare('SELECT * FROM reel_sheets WHERE id = ?').bind(next.sheet_id).first();
         const recent = (await db.prepare("SELECT script_json FROM reels WHERE script_json IS NOT NULL AND id != ? ORDER BY created_at DESC LIMIT 6").bind(next.id).all()).results
           .map((r) => { try { return JSON.parse(r.script_json).title; } catch { return null; } }).filter(Boolean);
-        job = { type: 'script', mode: cfg.renderMode, flowClips: FLOW_CLIPS, language: cfg.language, brief: cfg.brief, reel: { id: next.id, day: next.day, slot: next.slot, attempt: next.attempts + 1, script: next.script_json ? JSON.parse(next.script_json) : null }, sheet: sheet ? sheetOut(sheet) : null, avoidTitles: recent };
+        job = { type: 'script', mode: cfg.renderMode, scriptEngine: cfg.scriptEngine, flowClips: FLOW_CLIPS, language: cfg.language, brief: cfg.brief, reel: { id: next.id, day: next.day, slot: next.slot, attempt: next.attempts + 1, script: next.script_json ? JSON.parse(next.script_json) : null }, sheet: sheet ? sheetOut(sheet) : null, avoidTitles: recent };
       }
     }
   }
@@ -266,6 +278,29 @@ export function validateScript(s, mode = 'api') {
       });
   }
   return errs;
+}
+
+/**
+ * OpenAI script writer (only when the owner picked scriptEngine=openai). The runner sends the same prompt
+ * it would give Gemini; the Worker attaches the character sheet image, calls the OpenAI provider and
+ * stores the validated script. Returns { script, usage, requestId }.
+ */
+export async function writeScriptWithOpenAI(env, db, id, prompt, call) {
+  const r = await reelOf(db, id);
+  if (r.status !== 'rendering') throw new HttpError(409, `Reel is ${r.status}, not rendering`);
+  const cfg = await getConfig(db);
+  if (cfg.scriptEngine !== 'openai') throw new HttpError(409, 'Script engine is Gemini — switch it to OpenAI in the Reel Factory settings first');
+  if (typeof prompt !== 'string' || prompt.trim().length < 200 || prompt.length > 40_000) throw new HttpError(400, 'prompt must be 200–40000 chars');
+  const s = await db.prepare('SELECT media_key, mime FROM reel_sheets WHERE id = ?').bind(r.sheet_id).first();
+  const buf = s ? await media(env).get(s.media_key, 'arrayBuffer') : null;
+  if (!buf) throw new HttpError(404, 'Character sheet image is missing from storage');
+  if (buf.byteLength > 5 * 1024 * 1024) throw new HttpError(413, 'Character sheet image is over 5 MB; upload a smaller one for OpenAI');
+  const bytes = new Uint8Array(buf);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  const out = await call({ system: 'You write scripts for LittleLoop, an original, safe kids (2-8) animated Instagram Reels series. Follow the brief exactly.', prompt, images: [`data:${s.mime};base64,${btoa(bin)}`], json: true, maxTokens: 12_000, reasoning: 'low', purpose: 'littleloop_script', workflowId: `reel:${id}` });
+  await saveScript(db, id, out.json);
+  return { script: out.json, model: out.model, usage: out.usage, requestId: out.requestId ?? null };
 }
 
 export async function saveScript(db, id, script) {

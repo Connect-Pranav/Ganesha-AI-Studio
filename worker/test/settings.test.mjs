@@ -16,12 +16,12 @@ beforeEach(async () => {
 test('keys saved in the app are encrypted, fill missing env, never override Cloudflare secrets', async () => {
   const env = { ADMIN_TOKEN: 'admin-1' };
   await assert.rejects(secrets.save(env, db, { name: 'NOPE', value: 'x' }), /Unknown setting/);
-  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: 'sk-test-ABCD' });
+  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: 'sk-test-0123456789abcdefghijABCD' });
   await secrets.save(env, db, { name: 'GEMINI_API_KEY', value: 'g-from-app' });
   const row = await db.prepare("SELECT * FROM app_secrets WHERE name = 'OPENAI_API_KEY'").first();
   assert.ok(!row.enc.includes('sk-test'), 'stored encrypted');
   const merged = await secrets.withSecrets({ ...env, GEMINI_API_KEY: 'g-cloudflare' }, db);
-  assert.equal(merged.OPENAI_API_KEY, 'sk-test-ABCD');
+  assert.equal(merged.OPENAI_API_KEY, 'sk-test-0123456789abcdefghijABCD');
   assert.equal(merged.GEMINI_API_KEY, 'g-cloudflare', 'Cloudflare secret wins');
   const list = await secrets.list({ ...env, GEMINI_API_KEY: 'g-cloudflare' }, db);
   const o = list.find((x) => x.name === 'OPENAI_API_KEY');
@@ -31,7 +31,7 @@ test('keys saved in the app are encrypted, fill missing env, never override Clou
   assert.equal(list.find((x) => x.name === 'GEMINI_API_KEY').source, 'worker');
   secrets.resetSecretsCache();
   assert.equal((await secrets.withSecrets({ ADMIN_TOKEN: 'other' }, db)).OPENAI_API_KEY, undefined, 'unreadable with another admin token');
-  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: '' });
+  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: null });
   secrets.resetSecretsCache();
   assert.equal((await secrets.withSecrets(env, db)).OPENAI_API_KEY, undefined);
 });

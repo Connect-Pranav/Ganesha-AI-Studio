@@ -5,15 +5,26 @@ import { HttpError, nowIso } from './util.mjs';
 
 export const SECRET_NAMES = {
   GEMINI_API_KEY: 'Gemini (Google AI Studio) — chat, agents, scripts',
-  OPENAI_API_KEY: 'ChatGPT (OpenAI API, paid per use) — enables ChatGPT in CBO chat',
-  OPENAI_MODEL: 'ChatGPT model (optional, default gpt-5-mini)',
+  OPENAI_API_KEY: 'OpenAI API key (paid per use) — ChatGPT in CBO chat, optional agent / LittleLoop script engine',
+  OPENAI_MODEL: 'OpenAI model ID (optional, default gpt-6-luna — checked by Test)',
+  OPENAI_MAX_OUTPUT_TOKENS: 'OpenAI max output tokens per request, reasoning included (optional, default 8192)',
+  OPENAI_DAILY_REQUEST_LIMIT: 'OpenAI requests allowed per day (optional, default 200)',
   ANTHROPIC_API_KEY: 'Claude API (paid per use) — optional agent engine',
   YOUTUBE_API_KEY: 'YouTube Data API — Sunverse analytics',
   IG_APP_ID: 'Instagram app ID (Meta app) — for Connect Instagram',
   IG_APP_SECRET: 'Instagram app secret (Meta app) — for Connect Instagram',
   IG_ACCESS_TOKEN: 'Instagram access token (only if you are not using Connect Instagram)',
 };
-const NOT_SECRET = new Set(['OPENAI_MODEL', 'IG_APP_ID']);
+const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID']);
+// Obvious placeholders are refused so a working key is never replaced by "YOUR_KEY_HERE" or "sk-...".
+const PLACEHOLDER = /^(your|xxx+|placeholder|example|changeme|null|undefined)\b|<[^>]*>|\.{3}|\*{3}|YOUR_|_HERE$/i;
+const intIn = (min, max) => (v) => (/^\d+$/.test(v) && Number(v) >= min && Number(v) <= max ? null : `must be a whole number ${min}–${max}`);
+const VALIDATE = {
+  OPENAI_API_KEY: (v) => (/^sk-[A-Za-z0-9_-]{20,}$/.test(v) ? null : 'does not look like an OpenAI API key (starts with "sk-", no spaces)'),
+  OPENAI_MODEL: (v) => (/^[A-Za-z0-9][A-Za-z0-9._:-]{1,79}$/.test(v) ? null : 'must be a model ID such as gpt-6-luna'),
+  OPENAI_MAX_OUTPUT_TOKENS: intIn(256, 64000),
+  OPENAI_DAILY_REQUEST_LIMIT: intIn(1, 10000),
+};
 const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
 
@@ -75,13 +86,20 @@ export async function list(env, db) {
 
 export async function save(env, db, { name, value }) {
   if (!(name in SECRET_NAMES)) throw new HttpError(400, 'Unknown setting');
-  if (value === null || value === '') {
+  // A Worker secret always wins; saving here would silently do nothing, so refuse clearly.
+  if (env[name]) throw new HttpError(409, `${name} is set as a Cloudflare Worker secret, which takes priority. Change it in Cloudflare.`);
+  // Removing needs an explicit null (the Remove button); an empty box never wipes a saved key.
+  if (value === '' || (typeof value === 'string' && !value.trim())) throw new HttpError(400, 'Empty value — nothing saved. Use Remove to delete a setting.');
+  if (value === null) {
     await db.prepare('DELETE FROM app_secrets WHERE name = ?').bind(name).run();
     resetSecretsCache();
     return { removed: true };
   }
   if (typeof value !== 'string' || value.trim().length < 2 || value.length > 4000) throw new HttpError(400, 'Value must be text (2–4000 chars)');
   const v = value.trim();
+  if (PLACEHOLDER.test(v)) throw new HttpError(400, `${name}: that looks like a placeholder, not a real value. Nothing saved.`);
+  const bad = VALIDATE[name]?.(v);
+  if (bad) throw new HttpError(400, `${name} ${bad}. Nothing saved.`);
   const iv = crypto.getRandomValues(new Uint8Array(12));
   const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, await key(env), new TextEncoder().encode(v));
   const last4 = NOT_SECRET.has(name) ? v.slice(0, 40) : v.slice(-4);

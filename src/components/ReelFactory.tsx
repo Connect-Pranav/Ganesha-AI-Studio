@@ -47,7 +47,7 @@ interface Sheet {
   lastUsedAt: string | null;
 }
 interface Overview {
-  config: { enabled: boolean; perDay: number; dailyCapUsd: number; estReelUsd: number; language: string; brief: string; renderMode: 'flow' | 'api'; flowModel: string; flowCreditsPerReel: number };
+  config: { enabled: boolean; perDay: number; dailyCapUsd: number; estReelUsd: number; language: string; brief: string; renderMode: 'flow' | 'api'; flowModel: string; flowCreditsPerReel: number; scriptEngine?: 'gemini' | 'openai' };
   day: string;
   sheets: Sheet[];
   reels: Reel[];
@@ -183,7 +183,7 @@ export function ReelFactory() {
       </p>
       <p className="cx-sub">
         {cfg.renderMode === 'flow'
-          ? `Videos are made in Google Flow with your AI Pro credits (${cfg.flowModel}: 3 clips of 8 + 6 + 6 s ≈ ${cfg.flowCreditsPerReel} credits per reel), so no API money is spent. Scripts use the free Gemini key.`
+          ? `Videos are made in Google Flow with your AI Pro credits (${cfg.flowModel}: 3 clips of 8 + 6 + 6 s ≈ ${cfg.flowCreditsPerReel} credits per reel), so no API money is spent. ${cfg.scriptEngine === 'openai' ? 'Scripts are written by OpenAI (paid per request, see Settings).' : 'Scripts use the free Gemini key.'}`
           : 'Costs are real token usage from the Gemini API (Omni Flash $1.50 in / $17.50 video out per 1M tokens), not guesses.'}{' '}
         Nothing is posted until you approve it here.
       </p>
@@ -194,7 +194,7 @@ export function ReelFactory() {
           onSubmit={(e) => {
             e.preventDefault();
             const f = new FormData(e.currentTarget);
-            saveConfig({ perDay: Number(f.get('perDay')), dailyCapUsd: Number(f.get('cap')), language: String(f.get('language')), brief: String(f.get('brief')), renderMode: f.get('renderMode') as 'flow' | 'api', flowModel: String(f.get('flowModel')) }, 'Settings saved.');
+            saveConfig({ perDay: Number(f.get('perDay')), dailyCapUsd: Number(f.get('cap')), language: String(f.get('language')), brief: String(f.get('brief')), renderMode: f.get('renderMode') as 'flow' | 'api', flowModel: String(f.get('flowModel')), scriptEngine: f.get('scriptEngine') as 'gemini' | 'openai' }, 'Settings saved.');
           }}
         >
           <div className="form-row">
@@ -204,6 +204,7 @@ export function ReelFactory() {
           <div className="form-row">
             <label>Make videos with<select name="renderMode" defaultValue={cfg.renderMode}><option value="flow">Google Flow (free AI Pro credits)</option><option value="api">Gemini API · Omni Flash (paid)</option></select></label>
             <label>Flow model<select name="flowModel" defaultValue={cfg.flowModel}><option>Veo 3.1 Lite</option><option>Veo 3.1 Fast</option><option>Veo 3.1 Quality</option></select></label>
+            <label>Scripts written by<select name="scriptEngine" defaultValue={cfg.scriptEngine ?? 'gemini'}><option value="gemini">Gemini (free key)</option><option value="openai">ChatGPT · OpenAI API (paid)</option></select></label>
           </div>
           <label>Dialogue language<input name="language" maxLength={120} defaultValue={cfg.language} /></label>
           <label>Standing brief for the writer (optional)<textarea name="brief" maxLength={1500} rows={3} defaultValue={cfg.brief} placeholder="e.g. Every story ends with a small good habit. Keep Dadi in the background." /></label>

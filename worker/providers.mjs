@@ -1,9 +1,13 @@
-// Provider registry: Anthropic Messages API + Gemini generateContent.
+// Provider registry: Anthropic Messages API + Gemini generateContent + OpenAI Responses API (worker/openai.mjs).
 // Server-side only. Keys come from Worker secrets and are never logged or returned.
 // Every call is recorded in provider_calls (model, tokens, latency, outcome) — never prompt text.
 import { newId, nowIso } from './util.mjs';
+import { generate as openaiGenerate, openaiConfig, testConnection as openaiTest } from './openai.mjs';
 
-export const PROVIDERS = ['claude', 'gemini'];
+export const PROVIDERS = ['claude', 'gemini', 'openai'];
+// Providers that may be added automatically when ALLOW_PROVIDER_FALLBACK=true. OpenAI is paid per
+// request, so it is only used where the owner (or an agent's registry entry) names it explicitly.
+export const AUTO_FALLBACK_PROVIDERS = ['claude', 'gemini'];
 
 const DEFAULTS = {
   claude: { model: 'claude-sonnet-5-5', timeoutMs: 120_000 },
@@ -32,6 +36,7 @@ export function providerConfig(env, provider) {
       price: parsePrice(env.GEMINI_PRICE_PER_MTOK),
     };
   }
+  if (provider === 'openai') return openaiConfig(env);
   throw new Error(`Unknown provider "${provider}"`);
 }
 
@@ -52,7 +57,7 @@ export class ProviderError extends Error {
 
 const redact = (text, env) => {
   let t = String(text ?? '');
-  for (const k of [env.ANTHROPIC_API_KEY, env.GEMINI_API_KEY]) if (k) t = t.split(k).join('[redacted]');
+  for (const k of [env.ANTHROPIC_API_KEY, env.GEMINI_API_KEY, env.OPENAI_API_KEY]) if (k) t = t.split(k).join('[redacted]');
   return t.slice(0, 500);
 };
 
@@ -147,6 +152,8 @@ const FALLBACK_KINDS = new Set(['server', 'rate_limited', 'timeout']);
 export async function callProvider(env, db, provider, opts, deps = {}) {
   const cfg = providerConfig(env, provider);
   if (!cfg.configured) throw new ProviderError(`${provider} is not configured: secret ${cfg.secretName} is not set`, { kind: 'not_configured' });
+  // OpenAI has its own module (Responses API, budgets, request IDs). One model only: never switched silently.
+  if (provider === 'openai') return openaiGenerate(env, db, opts, deps);
   const models = provider === 'gemini' ? geminiModels(env) : [cfg.model];
   const errors = [];
   for (const model of models) {
@@ -231,6 +238,7 @@ async function logCall(db, { provider, cfg, opts, status, httpStatus, usage, sta
 
 /** Live connectivity test: a tiny real request. Never reports "connected" just because a key exists. */
 export async function testProvider(env, db, provider, deps) {
+  if (provider === 'openai') return openaiTest(env, db, {}, deps);
   const cfg = providerConfig(env, provider);
   if (!cfg.configured) return { provider, model: cfg.model, state: 'not_configured', message: `Set secret ${cfg.secretName}.` };
   try {

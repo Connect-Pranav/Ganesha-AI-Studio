@@ -45,7 +45,7 @@ export function SourceBadge({ live, demoLabel }: { live: boolean; demoLabel?: st
   return live ? <LiveBadge /> : <DemoBadge label={demoLabel} />;
 }
 
-export const engineNames = { claude: 'Claude', gemini: 'Gemini' } as const;
+export const engineNames: Record<string, string> = { claude: 'Claude', gemini: 'Gemini', openai: 'ChatGPT (OpenAI)' };
 
 export function formatWhen(iso: string): string {
   const t = Date.parse(iso);

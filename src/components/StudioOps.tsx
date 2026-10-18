@@ -1,6 +1,6 @@
 // Studio operations analytics, counted from execution records in D1 (via /api/summary).
 // "—" / "Not available" = no source or not enough data; "0" = counted and none happened.
-import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
+import { Card, EmptyState, LiveBadge, engineNames, formatWhen, productNames } from './ui';
 import { Unlock } from './NotificationCenter';
 import { agentName } from '../data/agentsMeta';
 import { useStudio, WF_STATUS } from '../services/StudioContext';
@@ -180,7 +180,7 @@ function StudioOpsBody({ s }: { s: Summary }) {
               return (
                 <div key={p.provider} className="usage">
                   <p className="usage-head">
-                    <strong>{p.provider === 'gemini' ? 'Gemini' : 'Claude'}</strong> <span className="stat-hint">{p.model}</span>
+                    <strong>{engineNames[p.provider] ?? p.provider}</strong> <span className="stat-hint">{p.model}</span>
                   </p>
                   {p.state === 'not_configured' && !u ? (
                     <p className="ai-note">Not configured — no key on the Worker.</p>

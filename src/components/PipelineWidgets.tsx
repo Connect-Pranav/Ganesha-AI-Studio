@@ -124,6 +124,9 @@ const ENGINE_OPTIONS: { value: string; label: string }[] = [
   { value: 'gemini,claude', label: 'Gemini, then Claude' },
   { value: 'claude', label: 'Claude only' },
   { value: 'claude,gemini', label: 'Claude, then Gemini' },
+  { value: 'openai', label: 'ChatGPT (OpenAI) only — paid' },
+  { value: 'openai,gemini', label: 'ChatGPT, then Gemini' },
+  { value: 'gemini,openai', label: 'Gemini, then ChatGPT' },
 ];
 
 interface LiveAgentInfo {
@@ -158,7 +161,7 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   const keyOk = (e: string) => {
     const p = summary?.providers.find((x) => x.provider === e);
     if (p) return p.state !== 'not_configured';
-    return e === 'gemini' ? Boolean(health?.geminiKeySet) : Boolean(health?.claudeKeySet);
+    return e === 'gemini' ? Boolean(health?.geminiKeySet) : e === 'claude' ? Boolean(health?.claudeKeySet) : false;
   };
   const setEngine = async (id: string, value: string) => {
     setSaving(id);

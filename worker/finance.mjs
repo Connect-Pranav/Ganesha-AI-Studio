@@ -12,7 +12,7 @@ export const SETTING_DEFAULTS = {
   // { rate, source, at } set by the owner. Never fetched or guessed.
   fx_usd_inr: null,
   // 'free' | 'paid' | 'unknown' per provider. Claude's API has no free tier.
-  provider_billing: { claude: 'paid', gemini: 'unknown', gemini_tts: 'unknown', openai: 'unknown' },
+  provider_billing: { claude: 'paid', gemini: 'unknown', gemini_tts: 'unknown', openai: 'paid' },
   // Maximum tasks with a non-zero reservation running at the same time. null = no extra limit.
   max_concurrent_paid_tasks: null,
   // CBO Autopilot: 'auto' starts goals itself within the limits below, 'suggest' only proposes, 'off'.
@@ -110,6 +110,7 @@ export async function saveSettings(db, patch) {
 const ANTHROPIC_SRC = 'https://platform.claude.com/docs/en/about-claude/pricing';
 const GEMINI_SRC = 'https://ai.google.dev/gemini-api/docs/pricing';
 const VERIFIED = '2026-10-14';
+const OPENAI_SRC = 'https://developers.openai.com/api/docs/models';
 
 /** Prices read from the providers' official pricing pages on VERIFIED. USD per 1M tokens. */
 export const SEEDED_PRICING = [
@@ -123,7 +124,11 @@ export const SEEDED_PRICING = [
   { provider: 'gemini', model: 'gemini-3.5-flash-lite', input: 0.3, output: 2.5, from: '1970-01-01', to: null, freeTier: true, source: GEMINI_SRC },
   { provider: 'gemini_tts', model: 'gemini-3.8-flash-tts', input: 0.5, output: 9, from: '1970-01-01', to: '2026-12-31', freeTier: true, source: GEMINI_SRC, notes: 'Output is audio tokens: 25 tokens per second of audio.' },
   { provider: 'gemini_tts', model: 'gemini-3.8-flash-tts', input: 1, output: 18, from: '2027-01-01', to: null, freeTier: true, source: GEMINI_SRC },
-].map((p) => ({ ...p, verifiedAt: VERIFIED, origin: 'seed' }));
+  // Read 2026-10-18. The models page lists no cached-input price, so cacheRead stays null (full input rate is charged).
+  { provider: 'openai', model: 'gpt-6-luna', input: 0.1, output: 0.5, from: '1970-01-01', to: null, freeTier: false, source: OPENAI_SRC, verifiedAt: '2026-10-18', notes: 'Output includes reasoning tokens.' },
+  { provider: 'openai', model: 'gpt-6.1-sol', input: 2, output: 10, from: '1970-01-01', to: null, freeTier: false, source: OPENAI_SRC, verifiedAt: '2026-10-18', notes: 'Output includes reasoning tokens.' },
+  { provider: 'openai', model: 'gpt-6-astra', input: 10, output: 50, from: '1970-01-01', to: null, freeTier: false, source: OPENAI_SRC, verifiedAt: '2026-10-18', notes: 'Output includes reasoning tokens.' },
+].map((p) => ({ verifiedAt: VERIFIED, ...p, origin: 'seed' }));
 
 const inRange = (p, day) => p.from <= day && (!p.to || day <= p.to);
 

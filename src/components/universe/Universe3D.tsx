@@ -3,7 +3,7 @@ import { UniverseScene, webglAvailable, type SceneInput, type SceneNode } from '
 import { AGENTS, TEAMS, TEMPLATES, agentById, agentName } from '../../data/agentsMeta';
 import { NewGoalButtons } from '../PipelineWidgets';
 import { Icon } from '../Icon';
-import { formatWhen, productNames } from '../ui';
+import { engineNames, formatWhen, productNames } from '../ui';
 import type { AiStatus, DashboardData, ProductId, Run, View } from '../../types';
 import { useStudio, OPEN_STATUSES, WF_STATUS } from '../../services/StudioContext';
 import type { Summary } from '../../services/studioService';
@@ -248,7 +248,7 @@ function CorePanel({ data, ai, live, onNavigate }: { data: DashboardData; ai: Ai
             const v = describeProvider(p, p.state !== 'not_configured');
             return (
               <li key={p.provider}>
-                <strong>{p.provider === 'gemini' ? 'Gemini' : 'Claude'}</strong> — {v.label}. {v.detail}
+                <strong>{engineNames[p.provider] ?? p.provider}</strong> — {v.label}. {v.detail}
               </li>
             );
           })}

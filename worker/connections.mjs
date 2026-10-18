@@ -1,10 +1,8 @@
 // Provider & Subscription Manager. Keeps seven different things apart:
 // consumer subscription · signed-in account · API credentials · API billing · included allowance ·
 // remaining quota · capabilities. A state is "connected" only after a real request succeeded.
-import { newId, nowIso } from './util.mjs';
 import { ttsModel } from './voices.mjs';
-
-const OPENAI_TIMEOUT = 20_000;
+import { openaiConfig, testConnection } from './openai.mjs';
 
 export async function listConnections(env, db, llmProviders) {
   const lastCall = async (provider) => db.prepare("SELECT status, error, created_at FROM provider_calls WHERE provider = ? ORDER BY created_at DESC LIMIT 1").bind(provider).first();
@@ -73,16 +71,16 @@ export async function listConnections(env, db, llmProviders) {
       name: 'OpenAI API',
       kind: 'api',
       state: !env.OPENAI_API_KEY ? 'not_configured' : oai ? (oai.status === 'success' ? 'connected' : 'error') : 'credentials_set_untested',
-      authMethod: 'API key (Worker secret OPENAI_API_KEY)',
-      model: null,
-      capabilities: ['Credential check only (lists models; no tokens used)', 'No agent adapter yet — add one when you decide to pay for the API'],
+      authMethod: 'API key (Worker secret or Settings → OPENAI_API_KEY)',
+      model: openaiConfig(env).model,
+      capabilities: ['Responses API: CBO chat (Think, Research/web search, images, streaming)', 'Optional engine for agents (choose per agent) and LittleLoop scripts', 'Test checks key + model availability (no tokens used)'],
       lastSuccessAt: oai?.status === 'success' ? oai.created_at : null,
       lastError: oai?.status === 'error' ? { at: oai.created_at, message: oai.error } : null,
       quotaVisibility: 'Not exposed',
-      billingVisibility: 'platform.openai.com → Usage',
+      billingVisibility: 'Tokens + estimated cost per request in CFO & Costs; invoices at platform.openai.com → Usage',
       subscriptionNote: 'A ChatGPT subscription does not include API access. Never enter your ChatGPT password here.',
       missing: env.OPENAI_API_KEY ? [] : ['OPENAI_API_KEY (optional)'],
-      nextAction: env.OPENAI_API_KEY ? 'Run Test connection.' : 'Optional: platform.openai.com → API keys → `npx wrangler secret put OPENAI_API_KEY`.',
+      nextAction: env.OPENAI_API_KEY ? 'Run Test connection.' : 'Optional: platform.openai.com/api-keys → create a key → Settings → OPENAI_API_KEY.',
       testable: true,
     },
     {
@@ -168,33 +166,7 @@ export async function listConnections(env, db, llmProviders) {
   ];
 }
 
-/** Live OpenAI credential check: GET /v1/models (no tokens billed). */
-export async function testOpenAI(env, db, deps = {}) {
-  if (!env.OPENAI_API_KEY) return { provider: 'openai', state: 'not_configured', message: 'Set secret OPENAI_API_KEY.' };
-  const fetchImpl = deps.fetch ?? fetch;
-  const started = Date.now();
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), OPENAI_TIMEOUT);
-  let ok = false;
-  let message;
-  let status = null;
-  try {
-    const res = await fetchImpl('https://api.openai.com/v1/models', { headers: { authorization: `Bearer ${env.OPENAI_API_KEY}` }, signal: ctrl.signal });
-    status = res.status;
-    const raw = await res.text();
-    if (res.ok) {
-      const n = JSON.parse(raw).data?.length ?? 0;
-      ok = true;
-      message = `Key accepted; ${n} models visible to this key.`;
-    } else message = `HTTP ${res.status}: ${raw.split(env.OPENAI_API_KEY).join('[redacted]').slice(0, 300)}`;
-  } catch (e) {
-    message = e.name === 'AbortError' ? 'Timed out' : `Network error: ${String(e.message).slice(0, 200)}`;
-  } finally {
-    clearTimeout(timer);
-  }
-  await db
-    .prepare(`INSERT INTO provider_calls (id, provider, model, purpose, task_id, status, http_status, input_tokens, output_tokens, cost_usd, latency_ms, error, created_at) VALUES (?,?,?,?,NULL,?,?,NULL,NULL,NULL,?,?,?)`)
-    .bind(newId('pc'), 'openai', 'models.list', 'connection_test', ok ? 'success' : 'error', status, Date.now() - started, ok ? null : message, nowIso())
-    .run();
-  return { provider: 'openai', state: ok ? 'connected' : 'error', message };
+/** Live OpenAI check: key + configured model availability (GET /v1/models/{model}, no tokens billed). */
+export async function testOpenAI(env, db, deps = {}, opts = {}) {
+  return testConnection(env, db, opts, deps);
 }

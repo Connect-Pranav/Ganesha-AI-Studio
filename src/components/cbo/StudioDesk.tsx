@@ -63,9 +63,37 @@ interface Msg {
   thoughts?: string | null;
   sources?: { url: string; title: string }[];
   action?: ChatAction | null;
-  mode?: { think?: boolean; research?: boolean; fallback?: string | null } | null;
+  mode?: { think?: boolean; research?: boolean; image?: boolean; fallback?: string | null; requestId?: string | null; incomplete?: string | null } | null;
 }
-interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean }
+interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean; images?: boolean; stream?: boolean }
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/** Reads the Worker's server-sent events: `delta` while ChatGPT writes, then `done` or `error`. */
+async function streamChat(body: object, onDelta: (t: string) => void): Promise<Msg> {
+  const res = await fetch(`${base()}/api/cbo/chat`, { method: 'POST', cache: 'no-store', headers: { authorization: `Bearer ${getToken()}`, 'content-type': 'application/json' }, body: JSON.stringify({ ...body, stream: true }) });
+  if (!res.ok || !res.body) throw new Error((await res.json().catch(() => null))?.error ?? `HTTP ${res.status}`);
+  const reader = res.body.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf('\n\n')) >= 0) {
+      const block = buf.slice(0, i);
+      buf = buf.slice(i + 2);
+      const ev = /^event: (\w+)/m.exec(block)?.[1];
+      const data = /^data: (.*)$/m.exec(block)?.[1];
+      if (!ev || !data) continue;
+      const d = JSON.parse(data);
+      if (ev === 'delta') onDelta(d.t);
+      else if (ev === 'done') return d.reply as Msg;
+      else if (ev === 'error') throw new Error(d.error ?? 'Chat failed');
+    }
+  }
+  throw new Error('Connection closed before the reply finished');
+}
 const readPref = (k: string) => {
   try {
     return localStorage.getItem(k) === '1';
@@ -90,12 +118,15 @@ export function CboChat() {
   const [research, setResearch] = useState(() => readPref('gas.chat.research'));
   const [started, setStarted] = useState<Record<string, string>>({});
   const [text, setText] = useState('');
+  const [image, setImage] = useState<{ url: string; name: string } | null>(null);
+  const [live, setLive] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [locked, setLocked] = useState(!getToken());
   const endRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
+  const imgRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     if (!getToken()) return setLocked(true);
@@ -115,8 +146,9 @@ export function CboChat() {
   }, [load]);
   useEffect(() => {
     endRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [msgs, busy]);
+  }, [msgs, busy, live]);
 
+  const current = engines.find((x) => x.id === engine);
   const send = async (e?: FormEvent, t = text) => {
     e?.preventDefault();
     const m = t.trim();
@@ -124,15 +156,36 @@ export function CboChat() {
     setBusy(true);
     setError(null);
     setText('');
-    setMsgs((x) => [...x, { id: `tmp-${Date.now()}`, role: 'user', content: m, created_at: new Date().toISOString() }]);
+    const img = current?.images ? image : null;
+    setImage(null);
+    setMsgs((x) => [...x, { id: `tmp-${Date.now()}`, role: 'user', content: img ? `${m}\n\n_(image attached)_` : m, created_at: new Date().toISOString() }]);
+    const payload = { message: m, engine, think: think && Boolean(current?.think), research: research && Boolean(current?.research), image: img?.url ?? null };
     try {
-      const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify({ message: m, engine, think, research }) });
-      setMsgs((x) => [...x, r.reply]);
+      if (current?.stream) {
+        setLive('');
+        const reply = await streamChat(payload, (t) => setLive((x) => (x ?? '') + t));
+        setMsgs((x) => [...x, reply]);
+      } else {
+        const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify(payload) });
+        setMsgs((x) => [...x, r.reply]);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed');
     } finally {
+      setLive(null);
       setBusy(false);
     }
+  };
+
+  const pickImage = (file: File | undefined) => {
+    if (imgRef.current) imgRef.current.value = '';
+    if (!file) return;
+    if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type)) return setError('Image must be PNG, JPEG, WebP or GIF.');
+    if (file.size > MAX_IMAGE_BYTES) return setError('Image must be under 5 MB.');
+    const r = new FileReader();
+    r.onload = () => setImage({ url: String(r.result), name: file.name });
+    r.onerror = () => setError('Could not read that image.');
+    r.readAsDataURL(file);
   };
 
   const startGoal = async (m: Msg) => {
@@ -171,7 +224,6 @@ export function CboChat() {
   };
 
   if (locked) return <Card title="Chat with GANESHA CBO"><EmptyState title="Unlock the studio to chat" hint="Bell → Unlock with your admin token." /></Card>;
-  const current = engines.find((x) => x.id === engine);
 
   return (
     <Card
@@ -199,7 +251,7 @@ export function CboChat() {
         </button>
         {current && <span className="cx-sub">{current.name}: {current.note}</span>}
       </div>
-      <p className="cx-sub">Think = deeper reasoning (slower). Research = live Google search with sources (first 5,000 searches/month free). Ask it to do work and it proposes a goal for the agents — you confirm.</p>
+      <p className="cx-sub">Think = deeper reasoning (slower). Research = live web search with sources ({engine === 'openai' ? 'OpenAI web search, billed per search' : 'Google, first 5,000 searches/month free'}). Ask it to do work and it proposes a goal for the agents — you confirm.</p>
       <div className="sd-thread" aria-live="polite">
         {msgs.length === 0 && !busy && (
           <div className="sd-ideas">
@@ -243,11 +295,16 @@ export function CboChat() {
                 {m.engine === 'openai' ? 'ChatGPT' : 'Gemini'} · {m.model}
                 {m.mode?.think ? ' · thinking' : ''}
                 {m.mode?.research ? ' · research' : ''}
+                {m.mode?.image ? ' · image' : ''}
+                {m.mode?.incomplete ? ` · cut off (${m.mode.incomplete})` : ''}
+                {m.mode?.requestId ? <span title="OpenAI request ID (for support)"> · {m.mode.requestId}</span> : null}
               </span>
             )}
           </div>
         ))}
-        {busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'CBO search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
+        {busy && live ? (
+          <div className="sd-msg sd-assistant"><div className="sd-bubble sd-live"><Markdown text={live} /></div></div>
+        ) : busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'CBO search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
         <div ref={endRef} />
       </div>
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
@@ -256,6 +313,11 @@ export function CboChat() {
         <label className="sd-attach" title="Upload a LittleLoop character sheet">
           📎<input ref={fileRef} type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => attachSheet(e.target.files?.[0])} />
         </label>
+        {current?.images && (
+          <label className="sd-attach" title="Ask ChatGPT about an image">
+            🖼<input ref={imgRef} type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(e) => pickImage(e.target.files?.[0])} />
+          </label>
+        )}
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
@@ -271,7 +333,12 @@ export function CboChat() {
         />
         <button className="btn btn-primary" disabled={busy || !text.trim()}>Send</button>
       </form>
-      <p className="cx-sub">📎 = LittleLoop character sheet upload. The CBO only advises — approvals and actions stay on their buttons.</p>
+      {image && current?.images && (
+        <p className="sd-imgchip">
+          🖼 {image.name} <button type="button" className="btn btn-small" onClick={() => setImage(null)} aria-label="Remove image">✕</button>
+        </p>
+      )}
+      <p className="cx-sub">📎 = LittleLoop character sheet upload.{current?.images ? ' 🖼 = ask ChatGPT about a picture.' : ''} The CBO only advises — approvals and actions stay on their buttons.</p>
     </Card>
   );
 }

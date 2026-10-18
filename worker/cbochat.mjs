@@ -4,8 +4,12 @@
 //   • Think   — deeper reasoning (thinking_level high) with a short thought summary shown in the UI
 //   • Research — Google Search grounding with cited sources
 // The CBO can PROPOSE work ("start a goal" for the agents); nothing starts until the owner confirms.
-// ChatGPT needs an OpenAI API key (ChatGPT app plans include no API access).
-import { callProvider } from './providers.mjs';
+// ChatGPT runs on the OpenAI Responses API (worker/openai.mjs): Think = reasoning effort high,
+// Research = OpenAI web search with citations, image questions, live streaming, and goal proposals
+// via a start_goal function tool (a proposal only — the owner still confirms with a button).
+// It needs an OpenAI API key (ChatGPT app plans include no API access).
+import { callProvider, ProviderError } from './providers.mjs';
+import * as openai from './openai.mjs';
 import { cboReport } from './cbo.mjs';
 import { TEMPLATES } from './orchestrator.mjs';
 import * as reels from './reels.mjs';
@@ -13,17 +17,15 @@ import { HttpError, newId, nowIso } from './util.mjs';
 
 const MAX_MSG = 4000;
 const HISTORY = 16;
-const OPENAI_TIMEOUT = 60_000;
 const GEMINI_TIMEOUT = 120_000;
 const API = 'https://generativelanguage.googleapis.com/v1beta';
 
 export function engines(env) {
   return [
-    { id: 'gemini', name: 'Gemini', available: Boolean(env.GEMINI_API_KEY), note: env.GEMINI_API_KEY ? `Free key · ${geminiModel(env)}` : 'Set GEMINI_API_KEY', think: true, research: true },
-    { id: 'openai', name: 'ChatGPT', available: Boolean(env.OPENAI_API_KEY), note: env.OPENAI_API_KEY ? `OpenAI API · ${openaiModel(env)} (paid per message)` : 'Needs an OpenAI API key — ChatGPT Go/Plus app plans have no API access', think: false, research: false },
+    { id: 'gemini', name: 'Gemini', available: Boolean(env.GEMINI_API_KEY), note: env.GEMINI_API_KEY ? `Free key · ${geminiModel(env)}` : 'Set GEMINI_API_KEY', think: true, research: true, images: false, stream: false },
+    { id: 'openai', name: 'ChatGPT', available: Boolean(env.OPENAI_API_KEY), note: env.OPENAI_API_KEY ? `OpenAI API · ${openai.openaiConfig(env).model} (paid per message)` : 'Needs an OpenAI API key — ChatGPT Go/Plus app plans have no API access', think: true, research: true, images: true, stream: true },
   ];
 }
-const openaiModel = (env) => (env.OPENAI_MODEL || 'gpt-5-mini').trim();
 const geminiModel = (env) => (env.GEMINI_MODEL || 'gemini-3.8-flash').trim();
 
 export async function history(db, limit = 60) {
@@ -91,45 +93,41 @@ export function extractAction(text) {
   if (!m) return { text: text.trim(), action: null };
   let action = null;
   try {
-    const a = JSON.parse(m[1]);
-    if (a?.type === 'start_goal' && a.template in TEMPLATES && typeof a.title === 'string' && typeof a.goal === 'string' && a.title.trim() && a.goal.trim())
-      action = { type: 'start_goal', template: a.template, title: a.title.trim().slice(0, 140), goal: a.goal.trim().slice(0, 2000) };
+    action = validAction(JSON.parse(m[1]));
   } catch {
     action = null;
   }
   return { text: text.slice(0, m.index).trim(), action };
 }
 
-async function callOpenAI(env, db, messages, deps = {}) {
-  const fetchImpl = deps.fetch ?? fetch;
-  const model = openaiModel(env);
-  const started = Date.now();
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), OPENAI_TIMEOUT);
-  let status = null;
-  try {
-    const res = await fetchImpl('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', authorization: `Bearer ${env.OPENAI_API_KEY}` },
-      body: JSON.stringify({ model, messages }),
-      signal: ctrl.signal,
-    });
-    status = res.status;
-    const raw = await res.text();
-    if (!res.ok) throw new Error(`OpenAI HTTP ${res.status}: ${raw.split(env.OPENAI_API_KEY).join('[redacted]').slice(0, 300)}`);
-    const body = JSON.parse(raw);
-    const text = body.choices?.[0]?.message?.content?.trim();
-    if (!text) throw new Error('OpenAI returned no text');
-    await logCall(db, 'openai', model, 'success', status, body.usage?.prompt_tokens, body.usage?.completion_tokens, started, null);
-    return { text, model };
-  } catch (e) {
-    const msg = e.name === 'AbortError' ? 'OpenAI timed out' : String(e.message);
-    await logCall(db, 'openai', model, 'error', status, null, null, started, msg);
-    throw new HttpError(502, msg);
-  } finally {
-    clearTimeout(timer);
-  }
+/** A goal proposal is accepted only for a known template with a non-empty title and goal. */
+export function validAction(a) {
+  if (a?.type !== undefined && a.type !== 'start_goal') return null;
+  if (!(typeof a?.template === 'string' && Object.hasOwn(TEMPLATES, a.template) && typeof a.title === 'string' && typeof a.goal === 'string' && a.title.trim() && a.goal.trim())) return null;
+  return { type: 'start_goal', template: a.template, title: a.title.trim().slice(0, 140), goal: a.goal.trim().slice(0, 2000) };
 }
+
+/** Function tool for the OpenAI engine. It only PROPOSES; the owner's button click starts the goal. */
+const START_GOAL_TOOL = () => ({
+  name: 'start_goal',
+  description: 'Propose a goal for the agent team when the owner wants work done. This only shows a proposal; the owner must confirm before anything starts.',
+  parameters: {
+    type: 'object',
+    properties: {
+      template: { type: 'string', enum: Object.keys(TEMPLATES), description: 'Goal template id' },
+      title: { type: 'string', description: 'Short title (max 140 chars)' },
+      goal: { type: 'string', description: 'Clear goal for the agents' },
+    },
+    required: ['template', 'title', 'goal'],
+    additionalProperties: false,
+  },
+});
+
+const MAX_IMAGE = 7_000_000;
+const httpForProvider = (e) => {
+  const code = { not_configured: 409, budget: 429, rate_limited: 429, quota: 402, bad_request: 400, unsupported: 400 }[e.kind] ?? 502;
+  return new HttpError(code, `ChatGPT: ${String(e.message).slice(0, 400)}`);
+};
 
 async function logCall(db, provider, model, status, http, inTok, outTok, started, error, purpose = 'cbo_chat') {
   try {
@@ -191,21 +189,49 @@ export async function callGeminiInteraction(env, db, { system, message, previous
   }
 }
 
-export async function send(env, db, providers, { message, engine = 'gemini', think = false, research = false }, deps = {}) {
+export async function send(env, db, providers, { message, engine = 'gemini', think = false, research = false, image = null }, deps = {}, { onDelta } = {}) {
   if (typeof message !== 'string' || !message.trim()) throw new HttpError(400, 'message is required');
   if (message.length > MAX_MSG) throw new HttpError(400, `message max ${MAX_MSG} chars`);
   if (!['gemini', 'openai'].includes(engine)) throw new HttpError(400, 'engine must be gemini or openai');
   const eng = engines(env).find((e) => e.id === engine);
   if (!eng.available) throw new HttpError(409, `${eng.name} is not available: ${eng.note}`);
+  if (image !== null && image !== undefined) {
+    if (!eng.images) throw new HttpError(400, `${eng.name} chat does not take images here — switch to ChatGPT`);
+    if (typeof image !== 'string' || image.length > MAX_IMAGE || !/^data:image\/(png|jpeg|webp|gif);base64,/.test(image)) throw new HttpError(400, 'image must be a PNG/JPEG/WebP/GIF under ~5 MB');
+  }
 
   const past = await history(db, HISTORY);
-  await db.prepare("INSERT INTO cbo_chat (id, role, content, created_at) VALUES (?, 'user', ?, ?)").bind(newId('msg'), message.trim(), nowIso()).run();
+  await db.prepare("INSERT INTO cbo_chat (id, role, content, created_at) VALUES (?, 'user', ?, ?)").bind(newId('msg'), image ? `${message.trim()}\n\n_(image attached)_` : message.trim(), nowIso()).run();
   const system = `${SYSTEM()}\n\nLIVE STUDIO SNAPSHOT (read just now):\n${await snapshot(env, db, providers)}`;
 
   let out;
+  let toolAction = null;
   if (engine === 'openai') {
-    const msgs = [{ role: 'system', content: system }, ...past.map((m) => ({ role: m.role, content: m.content })), { role: 'user', content: message.trim() }];
-    out = await callOpenAI(env, db, msgs, deps);
+    try {
+      const r = await openai.generate(
+        env,
+        db,
+        {
+          system,
+          prompt: message.trim(),
+          messages: past.map((m) => ({ role: m.role, content: m.content })),
+          images: image ? [image] : [],
+          reasoning: think ? 'high' : 'low',
+          webSearch: Boolean(research),
+          tools: [START_GOAL_TOOL()],
+          purpose: 'cbo_chat',
+          stream: Boolean(onDelta),
+          onDelta,
+        },
+        deps,
+      );
+      const call = r.toolCalls.find((c) => c.name === 'start_goal');
+      toolAction = call ? validAction(call.arguments) : null;
+      out = { text: r.text || (toolAction ? `Proposed goal: **${toolAction.title}**` : ''), model: r.model, thoughts: r.thoughts, sources: r.sources, requestId: r.requestId, incomplete: r.incomplete };
+    } catch (e) {
+      if (e instanceof ProviderError) throw httpForProvider(e);
+      throw e;
+    }
   } else {
     const lastGemini = [...past].reverse().find((m) => m.role === 'assistant' && m.engine === 'gemini');
     const previous = lastGemini ? (await db.prepare('SELECT interaction_id FROM cbo_chat_meta WHERE msg_id = ?').bind(lastGemini.id).first())?.interaction_id : null;
@@ -222,9 +248,11 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
       }
     }
   }
-  const { text, action } = extractAction(out.text);
+  const extracted = extractAction(out.text);
+  const text = extracted.text;
+  const action = toolAction ?? extracted.action;
   const reply = { id: newId('msg'), role: 'assistant', content: (text || '…').slice(0, 20000), engine, model: out.model, created_at: nowIso() };
-  const mode = { think: Boolean(think && engine === 'gemini'), research: Boolean(research && engine === 'gemini'), fallback: out.fallback ?? null };
+  const mode = { think: Boolean(think), research: Boolean(research), image: Boolean(image), fallback: out.fallback ?? null, requestId: out.requestId ?? null, incomplete: out.incomplete ?? null };
   await db.batch([
     db.prepare('INSERT INTO cbo_chat (id, role, content, engine, model, created_at) VALUES (?,?,?,?,?,?)').bind(reply.id, reply.role, reply.content, reply.engine, reply.model, reply.created_at),
     db.prepare('INSERT INTO cbo_chat_meta (msg_id, interaction_id, thoughts, sources_json, action_json, mode_json) VALUES (?,?,?,?,?,?)').bind(reply.id, out.interactionId ?? null, out.thoughts ?? null, JSON.stringify(out.sources ?? []), action ? JSON.stringify(action) : null, JSON.stringify(mode)),

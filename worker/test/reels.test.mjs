@@ -198,3 +198,32 @@ test('Flow mode (default): free credits, no USD cap; script â†’ upload ticket â†
   assert.equal(done.flow, undefined, 'handoff cleaned up');
   await assert.rejects(reels.flowTicketInfo(db, ticket), /expired or unknown/);
 });
+
+test('OpenAI script engine is opt-in: the Worker attaches the sheet, calls the provider and stores the validated script (mocked)', async () => {
+  await addReadySheets(['Chiku']);
+  await reels.saveConfig(db, { enabled: true, renderMode: 'api' });
+  const c = await reels.claim(env, db);
+  assert.equal(c.job.scriptEngine, 'gemini', 'Gemini stays the default');
+  const id = c.job.reel.id;
+  const prompt = 'Write the LittleLoop script as JSON. '.padEnd(400, '.');
+  const calls = [];
+  const fakeCall = async (o) => {
+    calls.push(o);
+    return { json: script('Rainy Day'), model: 'gpt-6-luna', usage: { input: 1, output: 1 }, requestId: 'req_1' };
+  };
+  await assert.rejects(reels.writeScriptWithOpenAI(env, db, id, prompt, fakeCall), /Script engine is Gemini/);
+  assert.equal(calls.length, 0, 'no paid call while the engine is Gemini');
+  await assert.rejects(reels.saveConfig(db, { scriptEngine: 'grok' }), /scriptEngine must be/);
+  await reels.saveConfig(db, { scriptEngine: 'openai' });
+  assert.equal((await reels.getConfig(db)).scriptEngine, 'openai');
+  await assert.rejects(reels.writeScriptWithOpenAI(env, db, id, 'too short', fakeCall), /prompt must be/);
+  const r = await reels.writeScriptWithOpenAI(env, db, id, prompt, fakeCall);
+  assert.equal(r.script.title, 'Rainy Day');
+  assert.equal(r.requestId, 'req_1');
+  assert.match(calls[0].images[0], /^data:image\/png;base64,/);
+  assert.equal(calls[0].json, true);
+  assert.equal(calls[0].purpose, 'littleloop_script');
+  assert.equal(JSON.parse((await db.prepare('SELECT script_json FROM reels WHERE id = ?').bind(id).first()).script_json).title, 'Rainy Day');
+  const bad = async () => ({ json: { title: 'x' }, model: 'm', usage: {} });
+  await assert.rejects(reels.writeScriptWithOpenAI(env, db, id, prompt, bad), /Script rejected/);
+});

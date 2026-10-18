@@ -5,7 +5,7 @@
 // approval steps stop until a human decides.
 import templatesFile from '../agents/pipelines.json' with { type: 'json' };
 import { agentById, buildAgentPrompt, validateAgentOutput } from './agents.mjs';
-import { callProvider, ProviderError, PROVIDERS } from './providers.mjs';
+import { callProvider, ProviderError, PROVIDERS, AUTO_FALLBACK_PROVIDERS } from './providers.mjs';
 import { HttpError, isoIn, newId, nowIso } from './util.mjs';
 import { gateDispatch, reconcileTask, releaseReservation } from './cbo.mjs';
 import { getSettings } from './finance.mjs';
@@ -184,7 +184,7 @@ export async function enginesFor(db, env, agent) {
   const studioPrimary = PROVIDERS.includes(env.PRIMARY_ENGINE) ? [env.PRIMARY_ENGINE] : [];
   const primary = o ? JSON.parse(o.engines) : [...new Set([...studioPrimary, ...agent.engines])];
   const list = primary.filter((e) => PROVIDERS.includes(e));
-  if (env.ALLOW_PROVIDER_FALLBACK === 'true') for (const p of PROVIDERS) if (!list.includes(p)) list.push(p);
+  if (env.ALLOW_PROVIDER_FALLBACK === 'true') for (const p of AUTO_FALLBACK_PROVIDERS) if (!list.includes(p)) list.push(p);
   return list;
 }
 
@@ -210,7 +210,7 @@ async function executeTask(env, db, task, owner, deps) {
   const errors = [];
   for (const provider of engines) {
     try {
-      result = await callProvider(env, db, provider, { system, prompt, json: true, maxTokens: 8000, purpose: 'task', taskId: task.id }, deps);
+      result = await callProvider(env, db, provider, { system, prompt, json: true, maxTokens: 8000, purpose: 'task', taskId: task.id, agentId: task.agent_id, workflowId: task.workflow_id }, deps);
       break;
     } catch (e) {
       errors.push(e);

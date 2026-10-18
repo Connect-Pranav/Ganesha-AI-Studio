@@ -13,7 +13,7 @@ export const CBO_ID = 'GANESHA_CBO';
 const DEFAULT_OUTPUT_TOKENS = 4000;
 const DEFAULT_INPUT_TOKENS = 3000;
 const DEFAULT_DURATION_SEC = 90;
-const CHARS_PER_TOKEN = { claude: 3.0, gemini: 3.5 }; // Claude 4.7+ tokenizer yields ~30% more tokens per text
+const CHARS_PER_TOKEN = { claude: 3.0, gemini: 3.5, openai: 4.0 }; // Claude 4.7+ tokenizer yields ~30% more tokens per text
 
 export async function audit(db, kind, message, data = null, workflowId = null, taskId = null) {
   await db
@@ -133,7 +133,7 @@ export async function estimateTask(env, db, task, settings, forcedProvider = nul
     price,
     tier: settings.provider_billing[eng.provider] ?? 'unknown',
     fx: settings.fx_usd_inr,
-    maxOutputCap: eng.provider === 'claude' ? 8000 : null,
+    maxOutputCap: eng.provider === 'claude' ? 8000 : eng.provider === 'openai' ? providerConfig(env, 'openai').maxOutputTokens : null,
   });
   if (!eng.configured) est.assumptions.unshift(`No configured engine for ${agent.id}; the task will fail until ${providerConfig(env, eng.provider).secretName} is set.`);
   return { ...est, durationSec: Math.round(history.avgSec ?? DEFAULT_DURATION_SEC), engineConfigured: eng.configured };
@@ -155,7 +155,7 @@ export async function estimatePlannedStep(env, db, step, settings) {
     price,
     tier: settings.provider_billing[eng.provider] ?? 'unknown',
     fx: settings.fx_usd_inr,
-    maxOutputCap: eng.provider === 'claude' ? 8000 : null,
+    maxOutputCap: eng.provider === 'claude' ? 8000 : eng.provider === 'openai' ? providerConfig(env, 'openai').maxOutputTokens : null,
   });
   if (!history.avgIn) est.assumptions.push('Input size not measured yet for this agent: rough default used.');
   return { ...est, durationSec: Math.round(history.avgSec ?? DEFAULT_DURATION_SEC), engineConfigured: eng.configured };

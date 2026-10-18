@@ -17,7 +17,7 @@ export interface Health {
 
 export type ProviderState = 'not_configured' | 'key_set_untested' | 'last_request_ok' | 'last_request_failed';
 export interface ProviderStatus {
-  provider: 'claude' | 'gemini';
+  provider: 'claude' | 'gemini' | 'openai';
   model: string;
   state: ProviderState;
   lastSuccessAt: string | null;
@@ -132,7 +132,7 @@ export async function loadHealth(): Promise<Health> {
 
 export const loadSummary = () => api<Summary>('/api/summary');
 export const loadBrandArtifacts = (brand: string) => api<{ brand: string; artifacts: ArtifactRow[] }>(`/api/artifacts?brand=${encodeURIComponent(brand)}`);
-export const testProvider = (p: 'claude' | 'gemini') =>
+export const testProvider = (p: 'claude' | 'gemini' | 'openai') =>
   api<{ provider: string; state: string; model?: string; message?: string; latencyMs?: number; error?: string }>(`/api/providers/${p}/test`, { method: 'POST', body: '{}' });
 
 /** Output of an agent step: always a written document, never a media file. */

@@ -13,15 +13,16 @@ import {
   setWorkflowState,
   tick,
 } from './orchestrator.mjs';
-import { PROVIDERS, providerConfig, testProvider } from './providers.mjs';
+import { PROVIDERS, callProvider, providerConfig, testProvider } from './providers.mjs';
 import { BRAND_SOURCES, getReport, scheduledAnalytics, history as analyticsHistory } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 import { ensureSchema } from './schema.mjs';
 import { brandArtifacts, studioSummary } from './summary.mjs';
 import { audit, cboReport, financeSummary, listTasks, planGoal, reassignTask, setDispatchPause, setTaskMeta, setWorkflowMeta, LIFECYCLE } from './cbo.mjs';
-import { maybeRefreshFx, addPricing, addSubscription, deleteBudget, deleteSubscription, getSettings, listBudgets, listPricing, listSubscriptions, saveSettings, upsertBudget } from './finance.mjs';
+import { priceFor, maybeRefreshFx, addPricing, addSubscription, deleteBudget, deleteSubscription, getSettings, listBudgets, listPricing, listSubscriptions, saveSettings, upsertBudget } from './finance.mjs';
 import { runCommand } from './commands.mjs';
 import { listConnections, testOpenAI } from './connections.mjs';
+import * as openaiProvider from './openai.mjs';
 import { assignVoice, listAssignments, listVoices, recommendVoices, synthesize, updateVoiceSetting } from './voices.mjs';
 import * as prod from './production.mjs';
 import * as subintel from './subintel.mjs';
@@ -54,11 +55,11 @@ async function requireDb(env) {
   return env.DB;
 }
 
-async function readBody(request) {
+async function readBody(request, max = MAX_BODY) {
   const len = Number(request.headers.get('content-length') ?? 0);
-  if (len > MAX_BODY) throw new HttpError(413, 'Request body too large');
+  if (len > max) throw new HttpError(413, 'Request body too large');
   const text = await request.text();
-  if (text.length > MAX_BODY) throw new HttpError(413, 'Request body too large');
+  if (text.length > max) throw new HttpError(413, 'Request body too large');
   if (!text) return {};
   try {
     return JSON.parse(text);
@@ -80,10 +81,31 @@ async function providersStatus(env, db) {
       state: !cfg.configured ? 'not_configured' : lastOk && (!lastErr || lastOk.created_at > lastErr.created_at) ? 'last_request_ok' : lastErr ? 'last_request_failed' : 'key_set_untested',
       lastSuccessAt: lastOk?.created_at ?? null,
       lastError: lastErr ? { at: lastErr.created_at, httpStatus: lastErr.http_status, message: lastErr.error } : null,
-      costTracking: cfg.price ? 'configured' : 'tokens_only',
+      // OpenAI cost comes from the sourced/owner pricing table (CFO & Costs) when the model is listed there.
+      costTracking: cfg.price || (p === 'openai' && (await priceFor(db, 'openai', cfg.model))) ? 'configured' : 'tokens_only',
     });
   }
   return out;
+}
+
+/** Server-sent events: `delta` chunks while ChatGPT writes, then one `done` (saved reply) or `error`. */
+function chatStream(env, db, providers, body, ctx) {
+  const { readable, writable } = new TransformStream();
+  const w = writable.getWriter();
+  const enc = new TextEncoder();
+  const emit = (event, data) => w.write(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)).catch(() => {});
+  const run = (async () => {
+    try {
+      const reply = await cbochat.send(env, db, providers, body, {}, { onDelta: (t) => emit('delta', { t }) });
+      await emit('done', { reply });
+    } catch (e) {
+      await emit('error', { error: e instanceof HttpError ? e.message : 'Chat failed', status: e.status ?? 500 });
+    } finally {
+      await w.close().catch(() => {});
+    }
+  })();
+  ctx?.waitUntil?.(run);
+  return new Response(readable, { headers: { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-store', 'x-accel-buffering': 'no' } });
 }
 
 async function route(request, env, ctx, rawEnv = env) {
@@ -397,7 +419,7 @@ async function route(request, env, ctx, rawEnv = env) {
 
   /* ---------- Provider & subscription manager ---------- */
   if (path === '/api/connections' && method === 'GET') return json({ connections: await listConnections(envIg, db, await providersStatus(env, db)), subscriptions: await listSubscriptions(db) });
-  if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db));
+  if (path === '/api/connections/openai/test' && method === 'POST') return json(await testOpenAI(env, db, {}, { live: (await readBody(request)).live === true }));
 
   /* ---------- Voice library + Smart Voice Director ---------- */
   if (path === '/api/voices' && method === 'GET') return json({ profiles: await listVoices(env, db) });
@@ -456,7 +478,8 @@ async function route(request, env, ctx, rawEnv = env) {
   /* ---------- Settings: keys entered in the app ---------- */
   if (path === '/api/settings/secrets' && method === 'GET') return json({ settings: await appSecrets.list(rawEnv, db) });
   if (path === '/api/settings/secrets' && method === 'PUT') return json(await appSecrets.save(rawEnv, db, await readBody(request)));
-  if (path === '/api/settings/test-openai' && method === 'POST') return json(await testOpenAI(env, db));
+  if (path === '/api/settings/test-openai' && method === 'POST') return json(await testOpenAI(env, db, {}, { live: (await readBody(request)).live === true }));
+  if (path === '/api/settings/openai' && method === 'GET') return json(await openaiProvider.status(rawEnv, env, db));
 
   /* ---------- Instagram connection ---------- */
   if (path === '/api/instagram' && method === 'GET') return json(await ig.status(env, db));
@@ -468,7 +491,12 @@ async function route(request, env, ctx, rawEnv = env) {
 
   /* ---------- CBO chat + finished work ---------- */
   if (path === '/api/cbo/chat' && method === 'GET') return json({ engines: cbochat.engines(env), messages: await cbochat.history(db) });
-  if (path === '/api/cbo/chat' && method === 'POST') return json({ reply: await cbochat.send(envIg, db, await providersStatus(env, db), await readBody(request)) });
+  if (path === '/api/cbo/chat' && method === 'POST') {
+    const b = await readBody(request, 8 * 1024 * 1024); // room for one attached image
+    const body = { message: b.message, engine: b.engine, think: b.think === true, research: b.research === true, image: b.image ?? null };
+    if (b.stream === true && body.engine === 'openai') return chatStream(envIg, db, await providersStatus(env, db), body, ctx);
+    return json({ reply: await cbochat.send(envIg, db, await providersStatus(env, db), body) });
+  }
   if (path === '/api/cbo/chat' && method === 'DELETE') {
     await cbochat.clear(db);
     return json({ ok: true });
@@ -491,6 +519,15 @@ async function route(request, env, ctx, rawEnv = env) {
     if (seg[3] === 'sheets' && seg[4] && seg[5] === 'details' && method === 'PUT') {
       await reels.setSheetDetails(db, seg[4], await readBody(request));
       return json({ ok: true });
+    }
+    if (seg[3] && seg[4] === 'script' && seg[5] === 'openai' && method === 'POST') {
+      const b = await readBody(request);
+      try {
+        return json(await reels.writeScriptWithOpenAI(env, db, seg[3], b.prompt, (o) => callProvider(env, db, 'openai', o)));
+      } catch (e) {
+        if (e instanceof HttpError) throw e;
+        throw new HttpError(e.kind === 'budget' || e.kind === 'rate_limited' ? 429 : 502, `OpenAI script: ${String(e.message).slice(0, 400)}`);
+      }
     }
     if (seg[3] && seg[4] === 'script' && method === 'PUT') {
       return json(await reels.saveScript(db, seg[3], (await readBody(request)).script));

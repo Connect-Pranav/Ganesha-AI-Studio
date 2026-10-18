@@ -14,6 +14,7 @@ import type { AiStatus, DashboardData } from '../types';
 const PROVIDER = {
   gemini: { label: 'Gemini', secret: 'GEMINI_API_KEY', where: 'Google AI Studio → Get API key (free tier available)' },
   claude: { label: 'Claude (Anthropic API)', secret: 'ANTHROPIC_API_KEY', where: 'console.anthropic.com → API keys (billed per token, separate from a Claude subscription)' },
+  openai: { label: 'ChatGPT (OpenAI API)', secret: 'OPENAI_API_KEY', where: 'platform.openai.com/api-keys → save it in Settings (billed per token; ChatGPT Go/Plus plans include no API)' },
 } as const;
 
 type Tone = 'ok' | 'warn' | 'error' | 'muted';
@@ -62,10 +63,10 @@ function usageFor(rows: UsageRow[] | undefined, provider: string) {
 
 const n = (v: number | null | undefined) => (v === null || v === undefined ? '—' : Math.round(v).toLocaleString('en-IN'));
 
-function ProviderCard({ id }: { id: 'gemini' | 'claude' }) {
+function ProviderCard({ id }: { id: 'gemini' | 'claude' | 'openai' }) {
   const { health, summary, locked, refresh } = useStudio();
   const p = summary?.providers.find((x) => x.provider === id);
-  const keySet = id === 'gemini' ? health?.geminiKeySet : health?.claudeKeySet;
+  const keySet = id === 'gemini' ? health?.geminiKeySet : id === 'claude' ? health?.claudeKeySet : p ? p.state !== 'not_configured' : undefined;
   const v = describeProvider(p, keySet);
   const u = usageFor(summary?.usage30d, id);
   const [testing, setTesting] = useState(false);
@@ -77,7 +78,7 @@ function ProviderCard({ id }: { id: 'gemini' | 'claude' }) {
     setResult(null);
     try {
       const r = await testProvider(id);
-      setResult({ ok: r.state === 'connected', text: r.state === 'connected' ? `Live request succeeded (${r.model}).` : r.message ?? r.state });
+      setResult({ ok: r.state === 'connected', text: r.state === 'connected' ? (id === 'openai' ? r.message ?? 'Connected.' : `Live request succeeded (${r.model}).`) : r.message ?? r.state });
       await refresh();
     } catch (e) {
       setResult({ ok: false, text: e instanceof Error ? e.message : 'Test failed' });
@@ -188,6 +189,7 @@ export function ConnectionPage({ data, ai, aiChecking, onRecheck }: { data: Dash
               <ul className="engines">
                 <ProviderCard id="gemini" />
                 <ProviderCard id="claude" />
+                <ProviderCard id="openai" />
               </ul>
               {summaryError && <p className="drawer-notice error">{summaryError}</p>}
               {locked ? (

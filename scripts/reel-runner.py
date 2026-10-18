@@ -429,8 +429,14 @@ def run():
             log(f"[{rid}] writing script with {sheet['name']} ...")
             prompt = SCRIPT_PROMPT.format(bible=sheet["details"], language=job.get("language") or "simple English",
                                           brief=job.get("brief") or "none", avoid=", ".join(job.get("avoidTitles") or []) or "none")
-            script = gemini_json(prompt + (FLOW_ADDON if flow else ""), image=img, purpose="script", reel_id=rid, max_tokens=12288)
-            ganesha("PUT", f"/api/reels/runner/{rid}/script", {"script": script})
+            if job.get("scriptEngine") == "openai":
+                # Owner picked OpenAI: the Worker attaches the sheet, calls the Responses API, validates + saves.
+                res = ganesha("POST", f"/api/reels/runner/{rid}/script/openai", {"prompt": prompt + (FLOW_ADDON if flow else "")}, timeout=300)
+                script = res["script"]
+                log(f"[{rid}] script written by OpenAI {res.get('model')} (request {res.get('requestId')})")
+            else:
+                script = gemini_json(prompt + (FLOW_ADDON if flow else ""), image=img, purpose="script", reel_id=rid, max_tokens=12288)
+                ganesha("PUT", f"/api/reels/runner/{rid}/script", {"script": script})
             job["reel"]["script"] = script
             log(f"[{rid}] script: {script.get('title')}")
         if flow:
