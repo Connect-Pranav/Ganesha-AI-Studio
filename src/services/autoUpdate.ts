@@ -19,6 +19,16 @@ async function latestBuild(): Promise<string | null> {
   }
 }
 
+function showUpdating() {
+  if (document.getElementById('gas-updating')) return;
+  const el = document.createElement('div');
+  el.id = 'gas-updating';
+  el.textContent = 'Updating Ganesha to the latest version…';
+  el.setAttribute('role', 'status');
+  el.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:9999;padding:10px 16px;border-radius:999px;background:#7c5cff;color:#fff;font:600 14px system-ui;box-shadow:0 10px 30px rgba(0,0,0,.4)';
+  document.body.appendChild(el);
+}
+
 export function startAutoUpdate() {
   if (typeof window === 'undefined' || !/^https:/.test(window.location.protocol)) return;
   let pending = false;
@@ -31,11 +41,13 @@ export function startAutoUpdate() {
   const tryReload = () => {
     if (!pending) return;
     if (busyTyping()) return; // retry on the next check / blur
+    showUpdating();
     navigator.serviceWorker?.getRegistration().then((r) => r?.update()).catch(() => {});
-    window.location.reload();
+    setTimeout(() => window.location.reload(), 600);
   };
   setInterval(check, CHECK_MS);
   document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && check());
   window.addEventListener('focusout', () => setTimeout(tryReload, 500));
-  setTimeout(check, 15_000);
+  window.addEventListener('pageshow', () => check());
+  check(); // on every open
 }

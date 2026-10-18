@@ -39,5 +39,8 @@
     "IG_GRAPH_HOST": "graph.instagram.com",
     "IG_GRAPH_VERSION": "v24.0"
   },
-  "observability": { "enabled": true }
+  "observability": { "enabled": true },
+  // Run the Worker in a Google-supported region: from some Cloudflare locations the Gemini API
+  // answers "User location is not supported for the API use" (HTTP 400 FAILED_PRECONDITION).
+  "placement": { "mode": "targeted", "region": "gcp:us-central1" }
 }
