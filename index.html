@@ -21,6 +21,34 @@
   </head>
   <body>
     <div id="root"></div>
+      <div id="gas-splash" role="status" aria-label="Loading Ganesha AI Studio">
+        <style>
+          #gas-splash { position: fixed; inset: 0; transition: opacity .35s ease; display: grid; place-items: center; background: #0b0b0d; z-index: 9999; }
+          #gas-splash .ring { position: absolute; inset: 0; border-radius: 50%; border: 2px solid transparent; background: linear-gradient(#0b0b0d, #0b0b0d) padding-box, conic-gradient(from 0deg, #ff5a6e, #ff5a6e 55%, #7c5cff 75%, #ff5a6e) border-box; }
+          #gas-splash .wrap { position: relative; width: 120px; height: 120px; filter: drop-shadow(0 0 22px rgba(255, 90, 110, 0.35)); }
+          #gas-splash .r1 { animation: gas-spin 1.6s linear infinite; }
+          #gas-splash .r2 { inset: 5px; animation: gas-spin 2.2s linear infinite reverse; opacity: 0.9; }
+          #gas-splash .r3 { inset: 10px; animation: gas-spin 3s linear infinite; opacity: 0.8; }
+          #gas-splash .num { position: absolute; inset: 0; display: grid; place-items: center; color: #ff5a6e; font: 600 18px Inter, system-ui, sans-serif; }
+          #gas-splash .cap { position: absolute; top: calc(50% + 84px); width: 100%; text-align: center; color: #8b8fa8; font: 500 12px Inter, system-ui, sans-serif; letter-spacing: 0.18em; text-transform: uppercase; }
+          @keyframes gas-spin { to { transform: rotate(360deg); } }
+          @media (prefers-reduced-motion: reduce) { #gas-splash .ring { animation: none; } }
+        </style>
+        <div class="wrap"><div class="ring r1"></div><div class="ring r2"></div><div class="ring r3"></div><div class="num" id="gas-splash-num">0</div></div>
+        <div class="cap">Ganesha AI Studio</div>
+        <script>
+          (function () {
+            var n = 0, el = document.getElementById('gas-splash-num');
+            var t = setInterval(function () {
+              if (!document.getElementById('gas-splash')) return clearInterval(t);
+              if (window.__gasReady) { el.textContent = '100'; return clearInterval(t); }
+              n = Math.min(99, n + Math.max(1, Math.round((99 - n) / 9)));
+              el.textContent = String(n);
+            }, 60);
+          })();
+          setTimeout(function () { var s = document.getElementById('gas-splash'); if (s) s.remove(); }, 12000);
+        </script>
+      </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -5,6 +5,7 @@ import { loadAnalytics, type AnalyticsReport, type Video } from '../services/ana
 import type { ProductId } from '../types';
 import { BrandWorkCounts, StudioOps } from './StudioOps';
 import { InstagramConnect } from './cbo/StudioDesk';
+import { AnalyticsRange } from './AnalyticsRange';
 
 type Tab = ProductId | 'studio';
 // SOMA's YouTube analysis (Sunverse) comes first: it is the tab with real channel data.
@@ -169,6 +170,8 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
         <Stat label={ig ? 'Posts' : 'Videos'} value={n(r.channel.videoCount)} hint={s.latestUpload ? `Latest ${day(s.latestUpload)}` : undefined} />
         <Stat label={ig ? 'Average views / post' : 'Average views / video'} value={n(s.avgViewsPerVideo)} hint={`Median ${n(s.medianViewsPerVideo)}`} />
       </section>
+
+      <AnalyticsRange brand={brand} labels={ig ? { followers: 'followers', views: 'views', posts: 'posts' } : { followers: 'subscribers', views: 'channel views', posts: 'videos' }} />
 
       <section className="grid-4" aria-label="Engagement">
         <Stat label="Last 30 days" value={`${n(s.last30Days.views)} views`} hint={`${s.last30Days.uploads} upload(s) in 30 days`} />

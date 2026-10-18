@@ -1,6 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react';
 import { Sidebar, TopNav } from './components/Sidebar';
 import { ViewBoundary } from './components/ViewBoundary';
+import { SettingsView } from './components/SettingsView';
 import { Icon } from './components/Icon';
 import { ConnectionPage, EnginePill, SetupModal, useEngineOverall } from './components/Connection';
 import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
@@ -24,7 +25,7 @@ import type { AiStatus, DashboardData, ProductId, View } from './types';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
-const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection'];
+const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection', 'settings'];
 const TITLES: Record<View, string> = {
   universe: '3D Command Center',
   overview: 'Studio overview',
@@ -42,6 +43,7 @@ const TITLES: Record<View, string> = {
   foliocraft: 'Foliocraft',
   agents: 'Agents',
   connection: 'AI Connection',
+  settings: 'Settings',
 };
 const PRODUCT_VIEWS: View[] = ['littleloop', 'sunverse', 'foliocraft'];
 
@@ -158,6 +160,19 @@ export default function App() {
 
   const defaultProduct: ProductId | 'studio' = PRODUCT_VIEWS.includes(view) ? (view as ProductId) : 'studio';
 
+  // Hide the loading screen once the first data load finishes (ok or error).
+  useEffect(() => {
+    if (load.status === 'loading') return;
+    (window as unknown as { __gasReady?: boolean }).__gasReady = true;
+    const el = document.getElementById('gas-splash');
+    if (!el) return;
+    const t = setTimeout(() => {
+      el.style.opacity = '0';
+      setTimeout(() => el.remove(), 380);
+    }, 250);
+    return () => clearTimeout(t);
+  }, [load.status]);
+
   /* ---- render ---- */
   const renderBody = () => {
     if (load.status === 'loading') return <SkeletonDashboard />;
@@ -202,6 +217,8 @@ export default function App() {
         <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
+      ) : view === 'settings' ? (
+        <SettingsView />
       ) : view === 'connection' ? (
         <ConnectionPage data={load.data} ai={ai} aiChecking={aiChecking} onRecheck={() => fetchData(true)} />
       ) : view === 'overview' ? (
@@ -254,6 +271,9 @@ export default function App() {
               </select>
             </label>
             <NotificationCenter data={load.status === 'ready' ? load.data : null} />
+            <button className="icon-btn" onClick={() => navigate('settings')} aria-label="Settings" title="Settings">
+              <Icon name="settings" />
+            </button>
             <span className={isLive ? 'mode-banner live' : 'mode-banner'}>{isLive ? 'Live agents' : 'No agent data yet'}</span>
             <button className="ai-pill-btn" onClick={() => navigate('connection')} aria-label="Open AI connection">
               <EnginePill />

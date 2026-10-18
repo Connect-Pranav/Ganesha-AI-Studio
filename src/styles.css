@@ -1263,3 +1263,31 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .sd-ig-row > span { flex: 1 1 260px; }
 .sd-ig-steps { font-size: 13px; margin: 0; }
 .sd-ig-steps code { font-size: 12px; overflow-wrap: anywhere; }
+/* Chat markdown */
+.sd-assistant .sd-bubble { white-space: normal; }
+.md { display: flex; flex-direction: column; gap: 8px; }
+.md-p { margin: 0; }
+.md-h { margin: 4px 0 0; font-weight: 700; }
+.md-h1, .md-h2 { font-size: 16px; }
+.md-h3, .md-h4 { font-size: 14.5px; }
+.md-list { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 4px; }
+.md code { font-size: 12.5px; background: rgba(255, 255, 255, 0.08); padding: 1px 5px; border-radius: 6px; }
+.md-code { margin: 0; padding: 10px 12px; background: rgba(0, 0, 0, 0.35); border-radius: 10px; overflow-x: auto; font-size: 12.5px; }
+.md-code code { background: none; padding: 0; }
+.md a { color: #b8a4ff; text-decoration: underline; }
+.an-range { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(10, 14, 36, 0.7); color: var(--ink); font: inherit; font-size: 13px; }
+.an-range-stats { display: flex; flex-wrap: wrap; gap: 18px; font-size: 14px; margin-bottom: 8px; }
+.an-chart { width: 100%; height: 160px; background: rgba(255, 255, 255, 0.02); border-radius: 12px; }
+.an-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; vertical-align: middle; }
+/* Settings */
+.settings { display: flex; flex-direction: column; gap: 18px; max-width: 980px; }
+.st-rows { display: flex; flex-direction: column; gap: 10px; margin: 8px 0; }
+.st-row { display: grid; grid-template-columns: minmax(200px, 1.2fr) auto minmax(240px, 1.6fr); gap: 10px; align-items: center; padding: 10px 0; border-top: 1px solid var(--line); }
+.st-row > .cx-sub:last-child { grid-column: 1 / -1; }
+.st-name { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.st-name code { font-size: 12.5px; }
+.st-form { display: flex; gap: 6px; }
+.st-form input, .st-inline select { flex: 1; min-width: 0; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(6, 10, 28, 0.75); color: var(--ink); font: inherit; }
+.st-check { display: flex; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; }
+.st-inline { display: flex; gap: 10px; align-items: center; font-size: 14px; max-width: 420px; }
+@media (max-width: 760px) { .st-row { grid-template-columns: 1fr; } }

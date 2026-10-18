@@ -14,7 +14,7 @@ import {
   tick,
 } from './orchestrator.mjs';
 import { PROVIDERS, providerConfig, testProvider } from './providers.mjs';
-import { BRAND_SOURCES, getReport, scheduledAnalytics } from './analytics.mjs';
+import { BRAND_SOURCES, getReport, scheduledAnalytics, history as analyticsHistory } from './analytics.mjs';
 import { HttpError, json, nowIso, safeEqual } from './util.mjs';
 import { ensureSchema } from './schema.mjs';
 import { brandArtifacts, studioSummary } from './summary.mjs';
@@ -29,6 +29,7 @@ import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from 
 import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
+import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
 const VERSION = '0.6.0-subintel';
@@ -85,7 +86,7 @@ async function providersStatus(env, db) {
   return out;
 }
 
-async function route(request, env, ctx) {
+async function route(request, env, ctx, rawEnv = env) {
   const url = new URL(request.url);
   const path = url.pathname.replace(/\/+$/, '');
   const method = request.method;
@@ -98,6 +99,13 @@ async function route(request, env, ctx) {
 
   // Public read: the report holds only public channel statistics, cached so a page view
   // triggers at most one YouTube fetch per hour and never a paid/AI call.
+  if (seg[1] === 'analytics' && seg[2] && seg[3] === 'history' && method === 'GET') {
+    try {
+      return json(await analyticsHistory(await requireDb(env), seg[2], url.searchParams.get('range') ?? '7d'), 200, corsHeaders(request));
+    } catch (e) {
+      throw new HttpError(e.status ?? 500, e.message);
+    }
+  }
   if (seg[1] === 'analytics' && seg[2] && !seg[3] && method === 'GET') {
     if (!(seg[2] in BRAND_SOURCES)) throw new HttpError(404, 'Unknown brand');
     let report;
@@ -445,6 +453,11 @@ async function route(request, env, ctx) {
     return json({ ok: true });
   }
 
+  /* ---------- Settings: keys entered in the app ---------- */
+  if (path === '/api/settings/secrets' && method === 'GET') return json({ settings: await appSecrets.list(rawEnv, db) });
+  if (path === '/api/settings/secrets' && method === 'PUT') return json(await appSecrets.save(rawEnv, db, await readBody(request)));
+  if (path === '/api/settings/test-openai' && method === 'POST') return json(await testOpenAI(env, db));
+
   /* ---------- Instagram connection ---------- */
   if (path === '/api/instagram' && method === 'GET') return json(await ig.status(env, db));
   if (path === '/api/instagram/connect' && method === 'POST') return json(await ig.startConnect(env, db));
@@ -505,7 +518,9 @@ async function route(request, env, ctx) {
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, rawEnv, ctx) {
+    // Keys saved in the app's Settings fill in where the Worker has no secret.
+    const env = rawEnv.DB ? await ensureSchema(rawEnv.DB).then(() => appSecrets.withSecrets(rawEnv, rawEnv.DB)).catch(() => rawEnv) : rawEnv;
     const { pathname } = new URL(request.url);
     // Public, unguessable media links for approved reels (Instagram downloads the video from here).
     if (pathname.startsWith('/m/')) {
@@ -541,7 +556,7 @@ export default {
     }
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     try {
-      return await route(request, env, ctx);
+      return await route(request, env, ctx, rawEnv);
     } catch (e) {
       if (e instanceof HttpError) return json({ error: e.message }, e.status);
       console.error('api error', e?.stack ?? e);
@@ -549,9 +564,10 @@ export default {
       return json({ error: `Internal error: ${String(e?.message ?? e).slice(0, 300)}` }, 500);
     }
   },
-  async scheduled(_event, env, ctx) {
-    if (!env.DB) return;
-    await ensureSchema(env.DB);
+  async scheduled(_event, rawEnv, ctx) {
+    if (!rawEnv.DB) return;
+    await ensureSchema(rawEnv.DB);
+    const env = await appSecrets.withSecrets(rawEnv, rawEnv.DB);
     await maybeRefreshFx(env.DB).catch(() => {});
     // Autopilot first (once a day), then the orchestration pass picks up anything it started.
     ctx.waitUntil(

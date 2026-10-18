@@ -64,5 +64,6 @@ export const SCHEMA_STATEMENTS = [
   "CREATE INDEX IF NOT EXISTS idx_cbo_chat_time ON cbo_chat(created_at)",
   "CREATE TABLE IF NOT EXISTS cbo_chat_meta ( msg_id TEXT PRIMARY KEY, interaction_id TEXT, thoughts TEXT, sources_json TEXT, action_json TEXT, mode_json TEXT )",
   "CREATE TABLE IF NOT EXISTS ig_auth ( id INTEGER PRIMARY KEY CHECK (id = 1), token_enc TEXT NOT NULL, iv TEXT NOT NULL, ig_user_id TEXT, username TEXT, expires_at TEXT, refreshed_at TEXT, created_at TEXT NOT NULL )",
-  "CREATE TABLE IF NOT EXISTS ig_oauth_state ( state TEXT PRIMARY KEY, created_at TEXT NOT NULL )"
+  "CREATE TABLE IF NOT EXISTS ig_oauth_state ( state TEXT PRIMARY KEY, created_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS app_secrets ( name TEXT PRIMARY KEY, enc TEXT NOT NULL, iv TEXT NOT NULL, last4 TEXT, updated_at TEXT NOT NULL )"
 ];

@@ -20,7 +20,7 @@ const NOT_CONNECTED = {
 
 const API = 'https://www.googleapis.com/youtube/v3';
 const CACHE_MINUTES = 60; // a page view never triggers more than one fetch per hour
-const CRON_REFRESH_HOURS = 6;
+const CRON_REFRESH_HOURS = 1; // hourly history for the Analytics range dropdown
 const INSIGHT_EVERY_HOURS = 20;
 const MAX_VIDEOS = 200;
 
@@ -410,4 +410,37 @@ export async function scheduledAnalytics(env, db, deps = {}) {
     }
   }
   return out;
+}
+
+export const RANGES = { '24h': 24, '7d': 24 * 7, '30d': 24 * 30, '90d': 24 * 90, all: null };
+
+/** Time series for the range dropdown, straight from stored fetches (json_extract in D1, no parsing here). */
+export async function history(db, brand, range = '7d') {
+  if (!(brand in BRAND_SOURCES)) throw Object.assign(new Error('Unknown brand'), { status: 404 });
+  const hours = range in RANGES ? RANGES[range] : RANGES['7d'];
+  const since = hours ? new Date(Date.now() - hours * 3_600_000).toISOString() : '1970-01-01T00:00:00Z';
+  const rows = (
+    await db
+      .prepare(`SELECT fetched_at AS at,
+                       json_extract(data_json, '$.channel.subscribers') AS followers,
+                       json_extract(data_json, '$.channel.totalViews') AS views,
+                       json_extract(data_json, '$.channel.videoCount') AS posts
+                FROM analytics_snapshots WHERE brand = ? AND fetched_at >= ? ORDER BY fetched_at`)
+      .bind(brand, since)
+      .all()
+  ).results;
+  // Keep at most ~120 points: the last fetch in each bucket.
+  const max = 120;
+  let points = rows;
+  if (rows.length > max) {
+    const span = Date.parse(rows.at(-1).at) - Date.parse(rows[0].at);
+    const step = span / max;
+    const buckets = new Map();
+    for (const r of rows) buckets.set(Math.floor((Date.parse(r.at) - Date.parse(rows[0].at)) / step), r);
+    points = [...buckets.values()];
+  }
+  const first = rows[0];
+  const last = rows.at(-1);
+  const d = (k) => (first && last && first[k] !== null && last[k] !== null ? last[k] - first[k] : null);
+  return { brand, range: range in RANGES ? range : '7d', points, change: { followers: d('followers'), views: d('views'), posts: d('posts') }, from: first?.at ?? null, to: last?.at ?? null, fetches: rows.length };
 }

@@ -96,3 +96,19 @@ export async function loadAnalytics(brand: ProductId): Promise<AnalyticsReport> 
   if (!res.ok) throw new Error(body?.error ?? `HTTP ${res.status}`);
   return body as AnalyticsReport;
 }
+
+export type Range = '24h' | '7d' | '30d' | '90d' | 'all';
+export interface History {
+  range: Range;
+  points: { at: string; followers: number | null; views: number | null; posts: number | null }[];
+  change: { followers: number | null; views: number | null; posts: number | null };
+  from: string | null;
+  to: string | null;
+  fetches: number;
+}
+export async function loadHistory(brand: ProductId, range: Range): Promise<History> {
+  const res = await fetch(`${apiBase()}/api/analytics/${brand}/history?range=${range}`, { cache: 'no-store' });
+  const body = await res.json().catch(() => null);
+  if (!res.ok) throw new Error(body?.error ?? `HTTP ${res.status}`);
+  return body as History;
+}

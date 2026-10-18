@@ -1,7 +1,7 @@
 export type ProductId = 'littleloop' | 'sunverse' | 'foliocraft';
 export type BrandId = ProductId | 'studio';
 export type AgentId = 'ganesha' | 'narada' | 'code-shakti';
-export type View = 'universe' | 'overview' | 'cbo' | 'tasks' | 'finance' | 'subscriptions' | 'pipelines' | 'analytics' | 'studio' | 'voices' | 'characters' | ProductId | 'agents' | 'connection';
+export type View = 'universe' | 'overview' | 'cbo' | 'tasks' | 'finance' | 'subscriptions' | 'pipelines' | 'analytics' | 'studio' | 'voices' | 'characters' | ProductId | 'agents' | 'connection' | 'settings';
 export type EngineId = 'claude' | 'gemini';
 
 export interface Metric {

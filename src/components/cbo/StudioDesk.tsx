@@ -5,6 +5,7 @@ import { api, base, getToken, AUTH_EVENT } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
 import { agentName } from '../../data/agentsMeta';
 import { SheetThumb } from '../SheetThumb';
+import { Markdown } from '../Markdown';
 
 /* ---------------- shared ---------------- */
 function useLive<T>(path: string, every = 60_000) {
@@ -215,7 +216,7 @@ export function CboChat() {
                 <p>{m.thoughts}</p>
               </details>
             )}
-            <div className="sd-bubble">{m.content}</div>
+            <div className="sd-bubble">{m.role === 'assistant' ? <Markdown text={m.content} /> : m.content}</div>
             {m.sources && m.sources.length > 0 && (
               <div className="sd-sources">
                 {m.sources.map((x, i) => (

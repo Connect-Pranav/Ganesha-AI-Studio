@@ -79,7 +79,11 @@ For general questions (strategy, ideas, scripts, captions, growth, research) ans
 You can hand work to the 31-agent team. When the owner asks the studio to DO something that a goal template covers, propose it by ending your reply with ONE line exactly like:
 ACTION: {"type":"start_goal","template":"<template id>","title":"<short title>","goal":"<clear goal for the agents>"}
 Template ids: ${TEMPLATE_LIST()}. Only propose when the owner wants work done; the owner confirms with a button. Never claim you already started, posted, published, spent or deployed anything.
-For approvals, uploads, settings or connections, point to the panel place (e.g. Agents → decisions, LittleLoop → Reel Factory, Characters → upload sheet, AI Connection).`;
+For approvals, uploads, settings or connections, point to the exact panel place. Panel map (use only these):
+- Top bar: Command Center, Overview, CBO (this chat), Agents (decisions by agent + finished work), LittleLoop (Reel Factory: switch, Flow clips, approvals), Sunverse, Foliocraft, Analytics (range dropdown, Instagram/YouTube stats).
+- Gear icon / sidebar → Settings: API keys (Gemini, OpenAI/ChatGPT, Claude, YouTube, Instagram app ID/secret) saved encrypted from the app, Connect Instagram, chat defaults, updates.
+- Sidebar: Pipelines, Task Manager, CFO & Costs, Subscriptions (Quick setup for plan/price/renewal), Video & Film Studio, Voice Library, Characters (upload character sheet: name + image), AI Connection (test providers).
+ChatGPT app plans (Go/Plus) have no API; ChatGPT here needs an OpenAI API key in Settings. Consumer plans (Google AI Pro, ChatGPT, Claude, Canva) expose no usage API — their plan details go in Subscriptions → Quick setup.`;
 
 /** Pulls a trailing ACTION: {...} line out of the reply and validates it. */
 export function extractAction(text) {

@@ -32,7 +32,10 @@ const production: NavItem[] = [
   { id: 'voices', label: 'Voice Library', icon: 'mic' },
   { id: 'characters', label: 'Characters', icon: 'characters' },
 ];
-const system: NavItem[] = [{ id: 'connection', label: 'AI Connection', icon: 'connection' }];
+const system: NavItem[] = [
+  { id: 'connection', label: 'AI Connection', icon: 'connection' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
+];
 
 export function TopNav({ view, onNavigate }: { view: View; onNavigate: (v: View) => void }) {
   return (

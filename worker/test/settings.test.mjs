@@ -1,0 +1,54 @@
+// App Settings keys (encrypted in D1) and analytics history ranges, on a real local D1.
+import { test, before, after, beforeEach } from 'node:test';
+import assert from 'node:assert/strict';
+import { getBindings, disposeDb, resetDb } from './helpers.mjs';
+import * as secrets from '../secrets.mjs';
+import { history } from '../analytics.mjs';
+
+let db;
+before(async () => ({ DB: db } = await getBindings()));
+after(disposeDb);
+beforeEach(async () => {
+  await resetDb(db);
+  secrets.resetSecretsCache();
+});
+
+test('keys saved in the app are encrypted, fill missing env, never override Cloudflare secrets', async () => {
+  const env = { ADMIN_TOKEN: 'admin-1' };
+  await assert.rejects(secrets.save(env, db, { name: 'NOPE', value: 'x' }), /Unknown setting/);
+  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: 'sk-test-ABCD' });
+  await secrets.save(env, db, { name: 'GEMINI_API_KEY', value: 'g-from-app' });
+  const row = await db.prepare("SELECT * FROM app_secrets WHERE name = 'OPENAI_API_KEY'").first();
+  assert.ok(!row.enc.includes('sk-test'), 'stored encrypted');
+  const merged = await secrets.withSecrets({ ...env, GEMINI_API_KEY: 'g-cloudflare' }, db);
+  assert.equal(merged.OPENAI_API_KEY, 'sk-test-ABCD');
+  assert.equal(merged.GEMINI_API_KEY, 'g-cloudflare', 'Cloudflare secret wins');
+  const list = await secrets.list({ ...env, GEMINI_API_KEY: 'g-cloudflare' }, db);
+  const o = list.find((x) => x.name === 'OPENAI_API_KEY');
+  assert.equal(o.source, 'app');
+  assert.equal(o.hint, '••••ABCD');
+  assert.ok(!JSON.stringify(list).includes('sk-test'), 'values never listed');
+  assert.equal(list.find((x) => x.name === 'GEMINI_API_KEY').source, 'worker');
+  secrets.resetSecretsCache();
+  assert.equal((await secrets.withSecrets({ ADMIN_TOKEN: 'other' }, db)).OPENAI_API_KEY, undefined, 'unreadable with another admin token');
+  await secrets.save(env, db, { name: 'OPENAI_API_KEY', value: '' });
+  secrets.resetSecretsCache();
+  assert.equal((await secrets.withSecrets(env, db)).OPENAI_API_KEY, undefined);
+});
+
+test('analytics history: range filter and change from stored hourly fetches', async () => {
+  const ins = (at, subs, views) =>
+    db.prepare("INSERT INTO analytics_snapshots (id, brand, source, account_ref, fetched_at, data_json) VALUES (?, 'sunverse', 'youtube_data_api', '@x', ?, ?)").bind(`s${at}`, at, JSON.stringify({ channel: { subscribers: subs, totalViews: views, videoCount: 4 }, videos: [] })).run();
+  const h = (n) => new Date(Date.now() - n * 3600_000).toISOString();
+  await ins(h(200), 5, 100);
+  await ins(h(20), 10, 400);
+  await ins(h(2), 12, 520);
+  const day = await history(db, 'sunverse', '24h');
+  assert.equal(day.fetches, 2);
+  assert.equal(day.change.views, 120);
+  assert.equal(day.change.followers, 2);
+  const all = await history(db, 'sunverse', 'all');
+  assert.equal(all.fetches, 3);
+  assert.equal(all.change.views, 420);
+  assert.equal((await history(db, 'sunverse', 'bogus')).range, '7d');
+});
