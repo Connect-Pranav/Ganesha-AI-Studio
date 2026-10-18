@@ -26,6 +26,7 @@ import { assignVoice, listAssignments, listVoices, recommendVoices, synthesize, 
 import * as prod from './production.mjs';
 import * as subintel from './subintel.mjs';
 import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from './autopilot.mjs';
+import * as reels from './reels.mjs';
 
 const VERSION = '0.6.0-subintel';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
@@ -235,7 +236,8 @@ async function route(request, env, ctx) {
         .all()
     ).results;
     const events = (await db.prepare('SELECT id, workflow_id, task_id, kind, message, created_at FROM events WHERE created_at >= ? ORDER BY id DESC LIMIT 40').bind(since).all()).results;
-    return json({ approvals, external, failures, events, counts: { approvals: approvals.length, external: external.length, failures: failures.length } });
+    const reelsWaiting = (await reels.overview(env, db)).reels.filter((r) => r.status === 'review').map((r) => ({ id: r.id, day: r.day, slot: r.slot, title: r.script?.title ?? 'LittleLoop reel', caption: r.caption, videoUrl: r.videoUrl, costUsd: r.costUsd }));
+    return json({ approvals, external, failures, events, reels: reelsWaiting, counts: { approvals: approvals.length + reelsWaiting.length, external: external.length, failures: failures.length } });
   }
 
   // Approvals
@@ -425,6 +427,42 @@ async function route(request, env, ctx) {
     return json({ ok: true });
   }
 
+  /* ---------- LittleLoop Reel Factory ---------- */
+  if (path === '/api/reels' && method === 'GET') return json(await reels.overview(env, db));
+  if (path === '/api/reels/config' && method === 'PUT') return json({ config: await reels.saveConfig(db, await readBody(request)) });
+  if (path === '/api/reels/sheets' && method === 'POST') {
+    const id = await reels.addSheet(env, db, { name: url.searchParams.get('name'), notes: url.searchParams.get('notes') ?? '', mime: request.headers.get('content-type'), body: request.arrayBuffer() });
+    return json({ id }, 201);
+  }
+  if (seg[1] === 'reels' && seg[2] === 'sheets' && seg[3] && !seg[4] && method === 'PUT') return json({ sheet: await reels.updateSheet(db, seg[3], await readBody(request)) });
+  if (seg[1] === 'reels' && seg[2] === 'sheets' && seg[3] && seg[4] === 'image' && method === 'GET') return reels.sheetImage(env, db, seg[3]);
+  if (seg[1] === 'reels' && seg[2] === 'runner') {
+    await reels.runnerSeen(db);
+    if (seg[3] === 'claim' && method === 'POST') return json(await reels.claim(env, db));
+    if (seg[3] === 'usage' && method === 'POST') return json(await reels.recordUsage(db, await readBody(request)));
+    if (seg[3] === 'sheets' && seg[4] && seg[5] === 'details' && method === 'PUT') {
+      await reels.setSheetDetails(db, seg[4], await readBody(request));
+      return json({ ok: true });
+    }
+    if (seg[3] && seg[4] === 'script' && method === 'PUT') {
+      await reels.saveScript(db, seg[3], (await readBody(request)).script);
+      return json({ ok: true });
+    }
+    if (seg[3] && seg[4] === 'video' && method === 'PUT') {
+      let meta = {};
+      try { meta = JSON.parse(url.searchParams.get('meta') ?? '{}'); } catch { throw new HttpError(400, 'meta must be JSON'); }
+      await reels.saveVideo(env, db, seg[3], { body: request.body, length: Number(request.headers.get('content-length') ?? 0), meta });
+      return json({ ok: true });
+    }
+    if (seg[3] && seg[4] === 'fail' && method === 'POST') return json(await reels.failJob(db, seg[3], (await readBody(request)).error));
+  }
+  if (seg[1] === 'reels' && seg[2] && ['approve', 'reject', 'redo'].includes(seg[3]) && method === 'POST') {
+    const b = await readBody(request);
+    const reel = await reels.decide(db, seg[2], seg[3], b.reason ?? '');
+    if (seg[3] === 'approve') ctx.waitUntil(reels.publishPass(env, db).catch((e) => console.error('reel publish failed', e.message)));
+    return json({ reel });
+  }
+
   // Manual orchestration pass (the cron does this automatically)
   if (path === '/api/orchestrator/tick' && method === 'POST') return json(await tick(env, db));
 
@@ -434,6 +472,12 @@ async function route(request, env, ctx) {
 export default {
   async fetch(request, env, ctx) {
     const { pathname } = new URL(request.url);
+    // Public, unguessable media links for approved reels (Instagram downloads the video from here).
+    if (pathname.startsWith('/m/')) {
+      if (!env.DB) return new Response('Not found', { status: 404 });
+      await ensureSchema(env.DB);
+      return reels.serveMedia(env, env.DB, pathname.slice(3));
+    }
     if (!pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
     try {
       return await route(request, env, ctx);
@@ -462,6 +506,13 @@ export default {
           .then((r) => (!r?.t || Date.now() - Date.parse(r.t) > 6 * 3600_000 ? subintel.syncAll(env, env.DB) : null))
           .catch((e) => console.error('subintel sync failed', e.message)),
       );
+    // Reel factory: queue today's reels (rotation, daily cap) and move approved reels to Instagram.
+    ctx.waitUntil(
+      reels.planToday(env.DB)
+        .then(() => reels.publishPass(env, env.DB))
+        .then((r) => r.length && console.log('reels', JSON.stringify(r)))
+        .catch((e) => console.error('reels failed', e.message)),
+    );
     ctx.waitUntil(scheduledAnalytics(env, env.DB).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },
 };

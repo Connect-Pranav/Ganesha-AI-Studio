@@ -26,6 +26,11 @@ export async function getDb() {
   proxy ??= await getPlatformProxy({ configPath: join(ROOT, 'wrangler.jsonc'), persist: false });
   return proxy.env.DB;
 }
+/** All local bindings (DB, MEDIA KV, ...) from the same Miniflare instance. */
+export async function getBindings() {
+  await getDb();
+  return proxy.env;
+}
 export async function disposeDb() {
   await proxy?.dispose();
   proxy = undefined;

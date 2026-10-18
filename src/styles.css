@@ -1153,3 +1153,31 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .cx-autopilot-controls { flex-direction: row !important; gap: 14px !important; align-items: center; }
 .cx-autopilot-controls label { flex: 0 0 auto; font-size: 13px; color: var(--ink-2); }
 .cx-autopilot-controls input, .cx-autopilot-controls select { padding: 6px 10px !important; }
+
+/* LittleLoop Reel Factory */
+.rf-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 10px; }
+.rf-stats > div { background: var(--muted-soft); border-radius: 12px; padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; }
+.rf-k { font-size: 11.5px; color: var(--ink-3); text-transform: uppercase; letter-spacing: .04em; }
+.rf-v { font-weight: 600; font-size: 15px; }
+.rf-conn { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 4px 0 8px; }
+.rf-h { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); margin: 18px 0 8px; }
+.rf-settings { margin: 10px 0; padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
+.rf-review { display: flex; gap: 14px; padding: 12px; border: 1px solid var(--line-2); border-radius: 14px; margin-bottom: 10px; }
+.rf-video { width: 150px; aspect-ratio: 9 / 16; border-radius: 10px; background: #000; flex: none; object-fit: cover; }
+.rf-review-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.rf-caption { font-size: 13px; white-space: pre-wrap; color: var(--ink-2); }
+.rf-script { font-size: 13px; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: var(--muted-soft); border-radius: 10px; }
+.rf-script ul { margin: 4px 0 0 18px; }
+.rf-list { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; margin: 0; }
+.rf-list li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13.5px; }
+.rf-li-title { font-weight: 600; }
+.rf-err { color: var(--err); font-size: 12.5px; flex-basis: 100%; overflow-wrap: anywhere; }
+.rf-sheets { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin: 8px 0 12px; }
+.rf-sheet { border: 1px solid var(--line); border-radius: 12px; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
+.rf-off { opacity: .55; }
+.rf-thumb { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; border-radius: 8px; background: var(--muted-soft); }
+.rf-upload { border-top: 1px solid var(--line); padding-top: 12px; }
+@media (max-width: 560px) {
+  .rf-review { flex-direction: column; }
+  .rf-video { width: 100%; max-width: 260px; }
+}

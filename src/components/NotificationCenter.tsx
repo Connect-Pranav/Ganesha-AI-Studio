@@ -134,6 +134,25 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
                   </div>
                 </article>
               ))}
+              {n?.reels?.map((r) => (
+                <article key={r.id} className="nt-item nt-approval">
+                  <p className="nt-title">LittleLoop reel · {r.title}</p>
+                  <p className="nt-meta">{r.day} #{r.slot} · cost ${r.costUsd.toFixed(2)} · posts to Instagram after you approve</p>
+                  {r.videoUrl && <video className="rf-video" src={r.videoUrl} controls playsInline preload="metadata" />}
+                  {r.caption && <p className="nt-text">{r.caption}</p>}
+                  <div className="nt-actions">
+                    <button className="btn btn-small btn-primary" disabled={busy === r.id} onClick={() => act(r.id, () => api(`/api/reels/${r.id}/approve`, { method: 'POST', body: '{}' }), `Approved: ${r.title} — posting now`)}>
+                      Approve & post
+                    </button>
+                    <button className="btn btn-small" disabled={busy === r.id} onClick={() => act(r.id, () => api(`/api/reels/${r.id}/redo`, { method: 'POST', body: '{}' }), `New take queued: ${r.title}`)}>
+                      New take
+                    </button>
+                    <button className="btn btn-small" disabled={busy === r.id} onClick={() => act(r.id, () => api(`/api/reels/${r.id}/reject`, { method: 'POST', body: '{}' }), `Rejected: ${r.title}`)}>
+                      Reject
+                    </button>
+                  </div>
+                </article>
+              ))}
               {vaultApprovals.map((p) => (
                 <article key={p.id} className="nt-item nt-approval">
                   <p className="nt-title">{p.title}</p>
@@ -143,7 +162,7 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
                   <p className="nt-text">Older goal from the GitHub flow. Tell Claude in chat “approve” or “reject” and it is applied for you.</p>
                 </article>
               ))}
-              {!n?.approvals.length && !vaultApprovals.length && <p className="nt-empty">Nothing waiting for approval.</p>}
+              {!n?.approvals.length && !n?.reels?.length && !vaultApprovals.length && <p className="nt-empty">Nothing waiting for approval.</p>}
             </section>
 
             {n && n.external.length > 0 && (

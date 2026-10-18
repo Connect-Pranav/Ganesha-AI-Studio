@@ -1,5 +1,6 @@
 // Brand workspace: live goals, the deliverables library, integrations and production handoffs.
 import { useCallback, useEffect, useState } from 'react';
+import { ReelFactory } from './ReelFactory';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
 import { StudioWorkflows } from './StudioWorkflows';
@@ -258,6 +259,7 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
 
       <div className="grid-main">
         <div className="col">
+          {productId === 'littleloop' && <ReelFactory />}
           <StudioWorkflows brand={productId} title={`${product.name} goals`} />
           <Deliverables brand={productId} />
           <ResearchPanel findings={data.research} brand={product.id} title={`NARADA research · ${product.name}`} />

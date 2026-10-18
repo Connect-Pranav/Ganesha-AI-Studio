@@ -1,0 +1,51 @@
+name: LittleLoop Reel Factory
+
+# Renders LittleLoop reels for owner approval (scripts/reel-runner.py). The Ganesha Worker decides
+# what to render (factory switch, sheet rotation, daily cap); this job only does the heavy work.
+# Needs repo secrets: GEMINI_API_KEY (billing-enabled key for Omni Flash video) and
+# GANESHA_ADMIN_TOKEN (same value as the Worker's ADMIN_TOKEN). Without them it exits cleanly.
+# Nothing is posted from here — Instagram posting happens only after the owner approves.
+
+on:
+  schedule:
+    - cron: '7,37 * * * *' # every 30 minutes; exits in seconds when there is no work
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reels
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check configuration
+        id: cfg
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GANESHA_ADMIN_TOKEN: ${{ secrets.GANESHA_ADMIN_TOKEN }}
+        run: |
+          if [ -z "$GEMINI_API_KEY" ] || [ -z "$GANESHA_ADMIN_TOKEN" ]; then
+            echo "GEMINI_API_KEY or GANESHA_ADMIN_TOKEN secret missing — nothing to do."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Install ffmpeg
+        if: steps.cfg.outputs.ready == 'true'
+        run: command -v ffprobe >/dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+      - name: Render next reel
+        if: steps.cfg.outputs.ready == 'true'
+        env:
+          GANESHA_URL: ${{ vars.GANESHA_URL || 'https://ganesha-studio.connect-pranav09.workers.dev' }}
+          GANESHA_ADMIN_TOKEN: ${{ secrets.GANESHA_ADMIN_TOKEN }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
+          OMNI_MODEL: ${{ vars.OMNI_MODEL }}
+          GEMINI_PRICE_PER_MTOK: ${{ vars.GEMINI_PRICE_PER_MTOK }}
+        run: python3 scripts/reel-runner.py

@@ -71,5 +71,6 @@ export interface Notifications {
   external: { task_id: string; step_key: string; deliverable: string; agent_id: string; updated_at: string; workflow_id: string; workflow_title: string; brand: string }[];
   failures: { task_id: string; step_key: string; agent_id: string; error: string | null; updated_at: string; workflow_id: string; workflow_title: string; brand: string }[];
   events: { id: number; workflow_id: string | null; task_id: string | null; kind: string; message: string; created_at: string }[];
+  reels?: { id: string; day: string; slot: number; title: string; caption: string | null; videoUrl: string | null; costUsd: number }[];
   counts: { approvals: number; external: number; failures: number };
 }
