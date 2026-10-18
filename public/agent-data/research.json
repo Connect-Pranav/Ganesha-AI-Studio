@@ -1,6 +1,126 @@
 {
-  "updatedAt": "2026-10-17T04:36:06Z",
+  "updatedAt": "2026-10-18T04:41:27Z",
   "findings": [
+    {
+      "id": "f_20261018T044046Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Daily Hygiene and Healthy Habits Offer Fresh Narrative Angles for Toddlers",
+      "insight": "The release of 'Wash Your Hands Song' shows continued demand for healthy habit nursery rhymes. LittleLoop can produce short-form animations focusing on toddler daily routines like handwashing, giving parents practical, habit-reinforcing content to share on Instagram.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Wash Your Hands Song | Healthy Habits Nursery Rhyme for Kids | Fun Kids Rhyme to Stay Healthy - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9DRThOa05td0lKQm4yMU9VVDJ2SWR6Yk5LX1V1WDV3NUxiZDJGUE1nUkJFNGpTdUhjVTJLRUoxRk9wbEk1REl4dGJ2XzNfYXRLQTNtT2tvZTBkaHVu?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-18T04:40:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:40:46Z"
+    },
+    {
+      "id": "f_20261018T044046Z_littleloop_2",
+      "brand": "littleloop",
+      "title": "Father-Child Bonding Themes Offer Relatable Resonance for Caregivers",
+      "insight": "Themes centered on parental love, such as 'Daddy, You’re My Superhero,' tap into emotional family connections. LittleLoop can feature sweet caregiver-child interactions in upcoming shorts, strengthening emotional appeal for parents navigating Instagram with young children.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Daddy, You’re My Superhero 💙 | Sweet Dad & Baby Song for Kids | Leo with Daddy | Nursery Rhyme - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLMUhsejJiYkktblBHOUZKN2NNcmZDVi1md1RDX3VLSlotck1iRC1RLW5Bb1lidVUtd0dZVFBNSXFyVG9mQV8tNWF6LWE0OHVlb3hFY3pVRDQzU20y?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-18T04:40:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:40:46Z"
+    },
+    {
+      "id": "f_20261018T044100Z_sunverse_3",
+      "brand": "sunverse",
+      "title": "Punjabi Rap and Indian Hip-Hop Expand Regional and Global Footprint",
+      "insight": "With Chandigarh hip-hop talent Lehar reaching global stages and new Punjabi rap releases from artists like VEKAAFFII, Indian hip-hop is seeing steady movement. Sunverse can produce or collaborate on Punjabi and regional rap tracks to capture strong youth and diaspora streaming demand.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "From Chandigarh’s Streets to the Global Stage: How Lehar is Redefining India’s Hip-Hop Culture - Khalsa Vox",
+          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQYzJGYjdLWXhkaDk0TXlXM2M4cE5mN1IxSTBBdzNFc1VMeWkzUXZaZGNBTF9uSk9PVHprdXBvZFU1MlVtQ2R3TWFHZFc4XzFkRUZuUklDLVVoQXNGbkZmSFpucEl0S3k5MFh6OE1VVHRaNGlrOGVwcUF0WHVQZTV3eHA5bVoycF81LUp1WDdFTzJqSzJpaFdvSkhsUFVSQ0dTVEhrZk03YVBUbTVHMkhuNkFRUUtHSHUtQ09wcGdMODI?oc=5",
+          "source": "Khalsa Vox",
+          "retrievedAt": "2026-10-18T04:40:47Z"
+        },
+        {
+          "title": "Punjabi Rap Artist VEKAAFFII Releases Powerful New Single - openPR.com",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTVN4UzFfRHlTMTlCVzFoNDZYclFzOEFKWU54X1BjRFhtMWV2R2pXS2pFVGo2SU04YmF1UDQwalFEeV9RcTZLanhVRVJQVWdXR0lSNkxFWkZfbWJBalQxczBCZ2JIMXEtMVJwWHpPNkt1Z0syaU00NnVnRFM2QU1hc09PQXpLdU5aTXk2bHY5Z2dSRzRxQTQwTQ?oc=5",
+          "source": "openPR.com",
+          "retrievedAt": "2026-10-18T04:40:47Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:41:00Z"
+    },
+    {
+      "id": "f_20261018T044100Z_sunverse_4",
+      "brand": "sunverse",
+      "title": "Warner Music India Expands in South India via Catalogue Acquisitions",
+      "insight": "Warner Music India is expanding its South Indian footprint through catalogue acquisitions and strategic partnerships. Sunverse should assess regional music collaborations or strategic catalog development in South Indian markets as major labels deepen investment in the territory.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Warner Music India expands South India presence with catalogue acquisitions and strategic partnerships - MediaNews4U",
+          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNNmhNeVdZcWlyUjd0ZHBMWDVRa3l3Z1o0S090S0dmbmhzOS1UelJJa2xzOEdXQkx6VXBZQnpsNVRrS0xacXkzR1p1SjU4LVNaT19CUUFxeHhOS015VDBmZFZfZ2IyaDExbzNJVjFYelJUUkxjUUdQU00zclJqS1N4bWJibU9YRmt6cWFHZnJhbWQwc3l0dUplTjFGSGlVaUtBWklEOW9Rc3NaNHhxT2lYREFvdkM2TkNCVVBBbFhPVW9VTUJSeFBIb0hJNA?oc=5",
+          "source": "MediaNews4U",
+          "retrievedAt": "2026-10-18T04:40:47Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:41:00Z"
+    },
+    {
+      "id": "f_20261018T044127Z_foliocraft_5",
+      "brand": "foliocraft",
+      "title": "2026 Website Builder Roundups Emphasize No-Code Accessibility and Ease of Use",
+      "insight": "TechRadar tested 80+ platforms to find the easiest ways to build a site, while Cybernews ranked the top no-code website builders for 2026. Foliocraft should emphasize its frictionless portfolio creation flow to compete for inclusion in major roundup evaluations.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "The best website builders of 2026: 80+ platforms tested to find the easiest ways to build a site - TechRadar",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE16VzdoUlYxWVdUR0g4ZHpjYUJ1S2N2N2VkemFBb3RncnlIZ2ZoMjFLV2dRZ3VHaGI0dzhVOGNSQVFfTll2bEZkTVJMcUJPeFRKM2ZMeVBZaHZObWwxcWlaNlZwZzNzZw?oc=5",
+          "source": "TechRadar",
+          "retrievedAt": "2026-10-18T04:41:01Z"
+        },
+        {
+          "title": "6 Best No-Code Website Builders in 2026 - Cybernews",
+          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1DLVBDQVl5TFR2T2Fra0hEcFdaVXBXYW9yb3pfLW45QkMyeWhabVl4SThOSkhDejNKdFVPVjFkaXBXQm1uRlRJc0FVMGZCVEU1THZYWmpaenZqOEpDa0pCeG1mR09taUk0bURrT1Q2X1V4Zw?oc=5",
+          "source": "Cybernews",
+          "retrievedAt": "2026-10-18T04:41:01Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:41:27Z"
+    },
+    {
+      "id": "f_20261018T044127Z_foliocraft_6",
+      "brand": "foliocraft",
+      "title": "Forbes Features High-Design Websites Created on User-Friendly Platforms",
+      "insight": "Forbes showcased 10 best-designed websites built on platforms anyone can use. Foliocraft can attract design-conscious creators by curating an inspirational showcase of premium portfolio sites built by non-technical users on its builder.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "10 Best-Designed Websites Built On Platforms Anyone Can Use - Forbes",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE9BN09qWHgwQkgtc1lnbWZkZVhOTDhXb1lPOHB1ZXFVR1hRdHJnS29YUlAtX1BNUXZIZklBb3lkMGZaTzdBeVBYalhsVDEydFhYRDBXV3FjbDVzUWhINnJOdnZxZUNVd1JoWGVsNGpnY3g?oc=5",
+          "source": "Forbes",
+          "retrievedAt": "2026-10-18T04:41:01Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-18T04:41:27Z"
+    },
     {
       "id": "f_20261017T043537Z_littleloop_1",
       "brand": "littleloop",
