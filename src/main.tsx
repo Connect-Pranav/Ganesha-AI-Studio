@@ -4,6 +4,7 @@ import App from './App';
 import { StudioProvider } from './services/StudioContext';
 import './styles.css';
 import { startAutoUpdate } from './services/autoUpdate';
+import { startPremiumFx } from './services/premiumFx';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -21,3 +22,4 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
 }
 
 startAutoUpdate();
+startPremiumFx();

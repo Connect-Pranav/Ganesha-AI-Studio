@@ -1291,3 +1291,56 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .st-check { display: flex; gap: 8px; align-items: center; font-size: 14px; padding: 4px 0; }
 .st-inline { display: flex; gap: 10px; align-items: center; font-size: 14px; max-width: 420px; }
 @media (max-width: 760px) { .st-row { grid-template-columns: 1fr; } }
+
+/* ===== Premium layer: 3D tilt, light sheen, page transitions, staggered entrance ===== */
+.app:not([data-fx='minimal']) :is(.card, .stat, .rf-sheet, .sd-item, .cx-sub-card) {
+  transition: transform 0.35s cubic-bezier(.2, .8, .2, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  position: relative;
+}
+/* Transform only while hovered: a transformed card would trap fixed-position dialogs inside it. */
+.app:not([data-fx='minimal']) .fx-tilting { transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform 0.08s linear, box-shadow 0.35s ease, border-color 0.35s ease; box-shadow: 0 24px 60px -28px rgba(124, 92, 255, 0.55), 0 0 0 1px rgba(167, 139, 250, 0.18); border-color: rgba(167, 139, 250, 0.35); }
+.app:not([data-fx='minimal']) .fx-tilting::before {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 0;
+  background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(167, 139, 250, 0.13), transparent 45%);
+}
+.app:not([data-fx='minimal']) .fx-tilting > * { position: relative; z-index: 1; }
+
+/* Page enter: lift + fade + de-blur, children cascade in */
+@keyframes view-in { from { opacity: 0; transform: translateY(14px) scale(0.995); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes rise-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.app:not([data-fx='minimal']) .view-enter { animation: view-in 0.45s cubic-bezier(.2, .8, .2, 1) both; }
+.app:not([data-fx='minimal']) .view-enter :is(.card, .stat) { animation: rise-in 0.55s cubic-bezier(.2, .8, .2, 1) both; }
+.app:not([data-fx='minimal']) .view-enter :is(.card, .stat):nth-child(2) { animation-delay: 0.05s; }
+.app:not([data-fx='minimal']) .view-enter :is(.card, .stat):nth-child(3) { animation-delay: 0.1s; }
+.app:not([data-fx='minimal']) .view-enter :is(.card, .stat):nth-child(4) { animation-delay: 0.15s; }
+.app:not([data-fx='minimal']) .view-enter :is(.card, .stat):nth-child(n + 5) { animation-delay: 0.2s; }
+::view-transition-old(root) { animation: 0.22s ease both vt-out; }
+::view-transition-new(root) { animation: 0.32s cubic-bezier(.2, .8, .2, 1) both vt-in; }
+@keyframes vt-out { to { opacity: 0; transform: scale(0.99); } }
+@keyframes vt-in { from { opacity: 0; transform: scale(1.01); } }
+
+/* Active nav: living gradient + glow; buttons press in */
+.app:not([data-fx='minimal']) .topnav-item.active, .app:not([data-fx='minimal']) .nav-item.active {
+  background: linear-gradient(110deg, #7c5cff, #a78bfa 35%, #ff5a8a 70%, #7c5cff); background-size: 260% 100%;
+  animation: nav-flow 6s linear infinite; box-shadow: 0 8px 26px -10px rgba(124, 92, 255, 0.8); color: #fff;
+}
+@keyframes nav-flow { to { background-position: -260% 0; } }
+.topnav-item, .btn, .icon-btn, .sd-toggle { transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease; }
+.topnav-item:active, .btn:active, .icon-btn:active, .sd-toggle:active { transform: scale(0.96); }
+.app:not([data-fx='minimal']) .btn-primary:hover { box-shadow: 0 10px 30px -10px rgba(124, 92, 255, 0.9); transform: translateY(-1px); }
+
+/* Card titles: thin animated accent underline */
+.app:not([data-fx='minimal']) .card-head { position: relative; }
+.app:not([data-fx='minimal']) .card-head::after {
+  content: ''; position: absolute; left: 0; bottom: -8px; height: 1px; width: 48%;
+  background: linear-gradient(90deg, rgba(167, 139, 250, 0.9), rgba(255, 90, 138, 0.6), transparent);
+  background-size: 200% 100%; animation: nav-flow 8s linear infinite;
+}
+
+/* Chat bubbles slide in */
+.app:not([data-fx='minimal']) .sd-msg { animation: rise-in 0.35s cubic-bezier(.2, .8, .2, 1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .view-enter, .view-enter *, .sd-msg, .topnav-item.active, .nav-item.active, .card-head::after { animation: none !important; }
+  :is(.card, .stat) { transform: none !important; }
+}

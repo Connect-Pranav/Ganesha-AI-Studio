@@ -2,6 +2,7 @@ import { Suspense, lazy, useCallback, useEffect, useMemo, useState } from 'react
 import { Sidebar, TopNav } from './components/Sidebar';
 import { ViewBoundary } from './components/ViewBoundary';
 import { SettingsView } from './components/SettingsView';
+import { withViewTransition } from './services/premiumFx';
 import { Icon } from './components/Icon';
 import { ConnectionPage, EnginePill, SetupModal, useEngineOverall } from './components/Connection';
 import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
@@ -117,10 +118,12 @@ export default function App() {
   }, []);
 
   const navigate = (v: View) => {
-    window.location.hash = `/${v}`;
-    setView(v);
-    setMobileOpen(false);
-    window.scrollTo({ top: 0 });
+    withViewTransition(() => {
+      window.location.hash = `/${v}`;
+      setView(v);
+      setMobileOpen(false);
+      window.scrollTo({ top: 0 });
+    });
   };
 
   const toggleCollapse = () => {
@@ -283,7 +286,9 @@ export default function App() {
         </header>
 
         <main id="main" className="content">
-          <ViewBoundary key={view}>{renderBody()}</ViewBoundary>
+          <ViewBoundary key={view}>
+            <div className="view-enter">{renderBody()}</div>
+          </ViewBoundary>
         </main>
 
         <footer className="foot">
