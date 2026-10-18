@@ -1216,3 +1216,14 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .sd-steps { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 6px; }
 .sd-steps li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 @media (max-width: 560px) { .sd-reel { flex-direction: column; } .sd-msg { max-width: 96%; } }
+
+/* Sidebar: compact, with a slim scrollbar instead of the chunky system one */
+.nav { gap: 12px; min-height: 0; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.18) transparent; margin-right: -6px; padding-right: 6px; }
+.nav::-webkit-scrollbar { width: 5px; }
+.nav::-webkit-scrollbar-button { display: none; height: 0; }
+.nav::-webkit-scrollbar-track { background: transparent; }
+.nav::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.18); border-radius: 999px; }
+.nav-item { padding: 7px 12px; }
+.nav-label { padding-bottom: 4px; }
+.brand { padding-bottom: 14px; }
+@media (max-height: 760px) { .nav-item { padding: 5px 12px; } .nav { gap: 8px; } }
