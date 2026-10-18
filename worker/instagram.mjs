@@ -47,13 +47,25 @@ export async function withIg(env, db) {
 }
 
 export async function status(env, db) {
-  const row = await db.prepare('SELECT ig_user_id, username, expires_at, refreshed_at, created_at FROM ig_auth WHERE id = 1').first();
+  const row = await db.prepare('SELECT * FROM ig_auth WHERE id = 1').first();
+  // A stored token is only usable if it still decrypts (IG_APP_SECRET unchanged) and has not expired.
+  let problem = null;
+  if (row && !env.IG_ACCESS_TOKEN) {
+    if (!env.IG_APP_SECRET) problem = 'IG_APP_SECRET is missing, so the saved Instagram connection cannot be used. Add it again in Settings, then reconnect.';
+    else if (!(await open(env, row).then(() => true, () => false))) problem = 'IG_APP_SECRET changed since Instagram was connected. Tap Connect Instagram again.';
+    else if (row.expires_at && Date.parse(row.expires_at) < Date.now()) problem = 'The Instagram login expired. Tap Connect Instagram again.';
+  }
   return {
-    connected: Boolean(env.IG_ACCESS_TOKEN || row),
+    connected: Boolean(env.IG_ACCESS_TOKEN || (row && !problem)),
     via: env.IG_ACCESS_TOKEN ? 'worker_secret' : row ? 'connect_button' : null,
+    problem,
     username: row?.username ?? null,
+    accountId: row?.ig_user_id ?? null,
     expiresAt: row?.expires_at ?? null,
+    connectedAt: row?.created_at ?? null,
+    refreshedAt: row?.refreshed_at ?? null,
     appConfigured: appConfigured(env),
+    missing: ['IG_APP_ID', 'IG_APP_SECRET'].filter((k) => !env[k]),
     redirectUri: redirectUri(env),
     scopes: SCOPES,
   };
@@ -61,7 +73,7 @@ export async function status(env, db) {
 
 /** Step 1 (owner, admin): authorize URL with a one-time state. */
 export async function startConnect(env, db) {
-  if (!appConfigured(env)) throw new HttpError(409, 'Set the Worker secrets IG_APP_ID and IG_APP_SECRET (from your Meta app → Instagram → API setup with Instagram login) first.');
+  if (!appConfigured(env)) throw new HttpError(409, `Save ${['IG_APP_ID', 'IG_APP_SECRET'].filter((k) => !env[k]).join(' and ')} in Settings first (IG_APP_ID and IG_APP_SECRET come from your Meta app → Instagram → API setup with Instagram login).`);
   const state = [...crypto.getRandomValues(new Uint8Array(16))].map((b) => b.toString(16).padStart(2, '0')).join('');
   await db.prepare('DELETE FROM ig_oauth_state WHERE created_at < ?').bind(new Date(Date.now() - STATE_TTL_MS).toISOString()).run();
   await db.prepare('INSERT INTO ig_oauth_state (state, created_at) VALUES (?, ?)').bind(state, nowIso()).run();
@@ -97,6 +109,8 @@ export async function finishConnect(env, db, url, deps = {}) {
   const short = await jsonOrThrow(await fetchImpl('https://api.instagram.com/oauth/access_token', { method: 'POST', body: form }), 'Token exchange', env.IG_APP_SECRET);
   const shortToken = short.access_token ?? short.data?.[0]?.access_token;
   if (!shortToken) throw new Error('Token exchange returned no token');
+  const granted = String(short.permissions ?? short.data?.[0]?.permissions ?? '');
+  const missingScopes = granted ? SCOPES.filter((x) => !granted.split(',').map((g) => g.trim()).includes(x)) : [];
   const ll = new URL(`${graph(env)}/access_token`);
   ll.searchParams.set('grant_type', 'ig_exchange_token');
   ll.searchParams.set('client_secret', env.IG_APP_SECRET);
@@ -115,7 +129,7 @@ export async function finishConnect(env, db, url, deps = {}) {
     .bind(sealed.token_enc, sealed.iv, String(who.user_id ?? who.id ?? ''), who.username ?? null, expires, now, now)
     .run();
   await db.prepare('INSERT INTO events (workflow_id, task_id, kind, message, created_at) VALUES (NULL,NULL,?,?,?)').bind('instagram_connected', `Instagram connected: @${who.username ?? '?'}`, now).run();
-  return { username: who.username ?? null, expiresAt: expires };
+  return { username: who.username ?? null, expiresAt: expires, missingScopes };
 }
 
 /** Cron: refresh the stored long-lived token when it has under 10 days left. */
@@ -144,7 +158,7 @@ export function callbackPage(ok, message) {
     `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Instagram · Ganesha</title>
 <body style="font-family:system-ui;background:#05081a;color:#e8e9ff;display:grid;place-items:center;min-height:100vh;margin:0">
 <div style="max-width:420px;padding:24px;text-align:center"><h2>${ok ? '✅ Instagram connected' : '⚠️ Instagram not connected'}</h2><p>${esc(message)}</p>
-<p><a style="color:#a78bfa" href="/#/littleloop">Back to Ganesha</a></p></div>${ok ? '<script>setTimeout(function(){location.href="/#/littleloop"},2500)</script>' : ''}</body>`,
+<p><a style="color:#a78bfa" href="/#/analytics">Back to Ganesha</a></p></div>${ok ? '<script>setTimeout(function(){location.href="/#/analytics"},2500)</script>' : ''}</body>`,
     { status: ok ? 200 : 400, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } },
   );
 }

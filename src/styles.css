@@ -1345,6 +1345,10 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 /* Chat bubbles slide in */
 .app:not([data-fx='minimal']) .sd-msg { animation: rise-in 0.35s cubic-bezier(.2, .8, .2, 1) both; }
 
+/* Settings key boxes: CSS-masked text inputs (no password autofill) + unsaved warning */
+.st-secret { -webkit-text-security: disc; text-security: disc; font-family: ui-monospace, monospace; letter-spacing: 0.08em; }
+.st-unsaved { font-size: 12px; font-weight: 600; color: var(--warn-ink); }
+
 /* SAARTHI — floating CBO chat dock (bottom-right, minimised by default) */
 .dock-fab {
   position: fixed; right: 18px; bottom: 18px; z-index: 55; display: inline-flex; align-items: center; gap: 8px;

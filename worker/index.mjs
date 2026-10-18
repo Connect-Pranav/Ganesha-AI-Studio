@@ -567,12 +567,13 @@ export default {
     }
     // Google Flow clip upload links (the per-reel ticket is the credential; CORS-open so the
     // Flow tab can send clips straight here). GET → what to make, PUT /t/<ticket>/<n> → clip n.
-    if (pathname === '/ig/callback') {
+    if (pathname === '/ig/callback' || pathname === '/ig/callback/') {
       try {
         if (!env.DB) throw new HttpError(503, 'Database not configured');
         await ensureSchema(env.DB);
         const r = await ig.finishConnect(env, env.DB, new URL(request.url));
-        return ig.callbackPage(true, `@${r.username ?? 'account'} is connected. Approved reels will post here and LittleLoop analytics will fill in.`);
+        const warn = r.missingScopes?.length ? ` Not granted: ${r.missingScopes.join(', ')} — reconnect and allow all permissions, or those features stay off.` : '';
+        return ig.callbackPage(true, `@${r.username ?? 'account'} is connected. Approved reels will post here and LittleLoop analytics will fill in.${warn}`);
       } catch (e) {
         return ig.callbackPage(false, e.message);
       }

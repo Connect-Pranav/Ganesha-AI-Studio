@@ -42,12 +42,29 @@ export async function fetchInstagram(env, fetchImpl = fetch) {
     const text = await res.text();
     let body = {};
     try { body = JSON.parse(text); } catch { /* raw */ }
-    if (!res.ok || body.error) throw Object.assign(new Error(`Instagram API ${path} HTTP ${res.status}: ${String(body.error?.message ?? text.slice(0, 200)).split(env.IG_ACCESS_TOKEN).join('[redacted]')}`), { httpStatus: res.status });
+    if (!res.ok || body.error) {
+      const msg = String(body.error?.message ?? text.slice(0, 200)).split(env.IG_ACCESS_TOKEN).join('[redacted]');
+      // 190 = token expired / revoked / password changed; 10 or 200-299 = permission not granted.
+      const code = Number(body.error?.code);
+      const hint = code === 190 ? ' — the Instagram login expired or was revoked. Open Settings → Instagram → Connect Instagram again.'
+        : code === 10 || (code >= 200 && code < 300) ? ' — permission not granted. Reconnect Instagram and allow all requested permissions.' : '';
+      throw Object.assign(new Error(`Instagram API ${path} HTTP ${res.status}: ${msg}${hint}`), { httpStatus: res.status, igCode: code || null });
+    }
     return body;
   };
   const me = await get('me', { fields: 'id,username,name,followers_count,follows_count,media_count' });
-  const media = await get('me/media', { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(IG_MAX_MEDIA) });
-  const items = media.data ?? [];
+  // Follow cursor pagination (Instagram returns at most 25–50 per page) until IG_MAX_MEDIA items.
+  const items = [];
+  let after = null;
+  for (let page = 0; page < 5 && items.length < IG_MAX_MEDIA; page++) {
+    const params = { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(Math.min(25, IG_MAX_MEDIA - items.length)) };
+    if (after) params.after = after;
+    const media = await get('me/media', params);
+    items.push(...(media.data ?? []));
+    after = media.paging?.cursors?.after ?? null;
+    if (!after || !media.paging?.next || !(media.data ?? []).length) break;
+  }
+  items.splice(IG_MAX_MEDIA);
   const metricValue = (d) => d?.total_value?.value ?? d?.values?.[0]?.value ?? null;
   const videos = [];
   for (const [i, m] of items.entries()) {

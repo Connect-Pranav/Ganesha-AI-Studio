@@ -52,3 +52,21 @@ test('analytics history: range filter and change from stored hourly fetches', as
   assert.equal(all.change.views, 420);
   assert.equal((await history(db, 'sunverse', 'bogus')).range, '7d');
 });
+
+test('Instagram keys: format-checked, autofilled admin password refused, saved IG keys enable Connect', async () => {
+  const env = { ADMIN_TOKEN: 'Studio@0901' };
+  await assert.rejects(secrets.save(env, db, { name: 'IG_APP_SECRET', value: 'Studio@0901' }), /admin password \(probably browser autofill\)/);
+  await assert.rejects(secrets.save(env, db, { name: 'IG_APP_ID', value: 'abc123' }), /numeric Instagram app ID/);
+  await assert.rejects(secrets.save(env, db, { name: 'IG_APP_SECRET', value: 'not-a-secret' }), /32 letters\/numbers/);
+  await assert.rejects(secrets.save(env, db, { name: 'IG_ACCESS_TOKEN', value: 'short token' }), /Instagram access token/);
+  assert.equal(await db.prepare('SELECT COUNT(*) AS n FROM app_secrets').first('n'), 0, 'nothing stored by refused saves');
+  await secrets.save(env, db, { name: 'IG_APP_ID', value: '1988560575881781' });
+  await secrets.save(env, db, { name: 'IG_APP_SECRET', value: '0123456789abcdef0123456789ABCDEF' });
+  const list = await secrets.list(env, db);
+  assert.equal(list.find((x) => x.name === 'IG_APP_ID').hint, '1988560575881781', 'app ID is not secret, shown in full');
+  assert.equal(list.find((x) => x.name === 'IG_APP_SECRET').hint, '••••CDEF');
+  assert.equal(list.find((x) => x.name === 'IG_ACCESS_TOKEN').source, null, 'optional token stays unset');
+  const merged = await secrets.withSecrets(env, db);
+  assert.equal(merged.IG_APP_ID, '1988560575881781');
+  assert.equal(merged.IG_APP_SECRET, '0123456789abcdef0123456789ABCDEF');
+});

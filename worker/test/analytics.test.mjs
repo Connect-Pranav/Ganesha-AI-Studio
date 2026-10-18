@@ -2,7 +2,7 @@
 import { test, before, after, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
 import { getDb, disposeDb, resetDb, noSleep } from './helpers.mjs';
-import { getReport, summarize, parseDuration, scheduledAnalytics } from '../analytics.mjs';
+import { getReport, summarize, parseDuration, scheduledAnalytics, fetchInstagram } from '../analytics.mjs';
 import worker from '../index.mjs';
 
 let db;
@@ -163,6 +163,27 @@ test('LittleLoop Instagram: followers + per-post insights from the Instagram API
   assert.equal(r.videos[0].saves, 12);
   assert.equal(r.videos[1].views, null, 'missing insight stays unknown, never guessed');
   assert.equal(r.summary.totalLikes, 30, 'like totals only count posts that have views');
+});
+
+test('LittleLoop Instagram: follows media pagination; expired token gives a reconnect message without leaking it', async () => {
+  const pages = [];
+  const fakeIg = async (url) => {
+    const u = new URL(url);
+    if (u.pathname.endsWith('/me')) return Response.json({ id: '17', username: 'little_loop09', followers_count: 1, media_count: 3 });
+    if (u.pathname.endsWith('/me/media')) {
+      pages.push(u.searchParams.get('after'));
+      return u.searchParams.get('after') === 'C1'
+        ? Response.json({ data: [{ id: 'p3', media_type: 'IMAGE', timestamp: '2026-10-01T00:00:00+0000' }], paging: { cursors: { after: 'C2' } } })
+        : Response.json({ data: [{ id: 'p1', media_type: 'IMAGE' }, { id: 'p2', media_type: 'IMAGE' }], paging: { cursors: { after: 'C1' }, next: 'https://graph.instagram.com/next' } });
+    }
+    if (u.pathname.endsWith('/insights')) return Response.json({ data: [] });
+    throw new Error(`unexpected ${u}`);
+  };
+  const r = await getReport({ IG_ACCESS_TOKEN: 'IGT' }, db, 'littleloop', { force: true, deps: { fetch: fakeIg } });
+  assert.deepEqual(pages, [null, 'C1']);
+  assert.deepEqual(r.videos.map((v) => v.id), ['p1', 'p2', 'p3']);
+  const expired = async () => Response.json({ error: { message: 'Error validating access token: Session has expired IGT-SECRET', code: 190 } }, { status: 400 });
+  await assert.rejects(fetchInstagram({ IG_ACCESS_TOKEN: 'IGT-SECRET' }, expired), (e) => /Connect Instagram again/.test(e.message) && !e.message.includes('IGT-SECRET') && e.igCode === 190);
 });
 
 test('summarize: pure arithmetic, no invented values for empty channels', () => {

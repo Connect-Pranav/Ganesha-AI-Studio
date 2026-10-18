@@ -44,3 +44,35 @@ test('connect: state-checked OAuth → long-lived token stored encrypted → use
   await ig.disconnect(db);
   assert.equal(await ig.igToken(ENV, db), null);
 });
+
+test('status: missing keys listed; data[] token shape; ungranted scopes reported; changed secret or expiry → reconnect', async () => {
+  const s0 = await ig.status({ IG_APP_ID: '123' }, db);
+  assert.deepEqual(s0.missing, ['IG_APP_SECRET']);
+  assert.equal(s0.appConfigured, false);
+  await assert.rejects(ig.startConnect({ IG_APP_ID: '123' }, db), /Save IG_APP_SECRET in Settings/);
+  const { url } = await ig.startConnect(ENV, db);
+  const state = new URL(url).searchParams.get('state');
+  const fake = async (u) => {
+    const s = String(u);
+    if (s === 'https://api.instagram.com/oauth/access_token') return Response.json({ data: [{ access_token: 'SHORT', user_id: '17', permissions: 'instagram_business_basic,instagram_business_content_publish' }] });
+    if (s.includes('ig_exchange_token')) return Response.json({ access_token: 'LONG', expires_in: 5184000 });
+    if (s.includes('/me?')) return Response.json({ user_id: '17', username: 'little_loop09' });
+    throw new Error(`unexpected ${s}`);
+  };
+  const r = await ig.finishConnect(ENV, db, new URL(`https://studio.example/ig/callback?code=abc&state=${state}`), { fetch: fake });
+  assert.deepEqual(r.missingScopes, ['instagram_business_manage_insights']);
+  await assert.rejects(ig.finishConnect(ENV, db, new URL(`https://studio.example/ig/callback?code=abc&state=${state}`), { fetch: fake }), /expired/, 'state is single-use');
+  const ok = await ig.status(ENV, db);
+  assert.equal(ok.connected, true);
+  assert.equal(ok.accountId, '17');
+  assert.equal(ok.problem, null);
+  const changed = await ig.status({ ...ENV, IG_APP_SECRET: 'different' }, db);
+  assert.equal(changed.connected, false);
+  assert.match(changed.problem, /changed/);
+  await db.prepare("UPDATE ig_auth SET expires_at = '2000-01-01T00:00:00Z'").run();
+  const exp = await ig.status(ENV, db);
+  assert.equal(exp.connected, false);
+  assert.match(exp.problem, /expired/);
+  const denied = await ig.startConnect(ENV, db).then(({ url }) => new URL(url).searchParams.get('state'));
+  await assert.rejects(ig.finishConnect(ENV, db, new URL(`https://studio.example/ig/callback?error=access_denied&error_description=User+denied&state=${denied}`)), /User denied/);
+});

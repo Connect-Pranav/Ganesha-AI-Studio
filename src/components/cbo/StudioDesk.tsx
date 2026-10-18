@@ -541,7 +541,7 @@ export function SheetUploader() {
 }
 
 /* ---------------- Instagram connect ---------------- */
-interface IgStatus { connected: boolean; via: 'worker_secret' | 'connect_button' | null; username: string | null; expiresAt: string | null; appConfigured: boolean; redirectUri: string }
+interface IgStatus { connected: boolean; via: 'worker_secret' | 'connect_button' | null; problem?: string | null; username: string | null; accountId?: string | null; expiresAt: string | null; connectedAt?: string | null; appConfigured: boolean; missing?: string[]; redirectUri: string }
 
 export function InstagramConnect({ compact = false }: { compact?: boolean }) {
   const { data, error, load } = useLive<IgStatus>('/api/instagram', 120_000);
@@ -572,7 +572,13 @@ export function InstagramConnect({ compact = false }: { compact?: boolean }) {
       <div className="sd-ig ok">
         <span>📸 Instagram connected{data.username ? ` · @${data.username}` : ''}{data.via === 'worker_secret' ? ' (Worker secret)' : ''}</span>
         {data.expiresAt && <span className="cx-sub">auto-renews · valid till {formatWhen(data.expiresAt)}</span>}
-        {data.via === 'connect_button' && !compact && <button className="btn btn-small" onClick={disconnect}>Disconnect</button>}
+        {data.connectedAt && !compact && <span className="cx-sub">connected {formatWhen(data.connectedAt)}</span>}
+        {data.via === 'connect_button' && !compact && (
+          <>
+            <button className="btn btn-small" disabled={busy} onClick={connect}>Reconnect</button>
+            <button className="btn btn-small" onClick={disconnect}>Disconnect</button>
+          </>
+        )}
       </div>
     );
   return (
@@ -582,13 +588,23 @@ export function InstagramConnect({ compact = false }: { compact?: boolean }) {
         <button className="btn btn-small btn-primary" disabled={busy || !data.appConfigured} onClick={connect}>{busy ? 'Opening Instagram…' : 'Connect Instagram'}</button>
         {!data.appConfigured && <button className="btn btn-small" onClick={() => setShowSetup(!showSetup)}>{showSetup ? 'Hide setup' : 'One-time setup'}</button>}
       </div>
-      {msg && <p className="form-error">{msg}</p>}
+      {data.problem && <p className="form-error">{data.problem}</p>}
+      {!data.appConfigured && (
+        <p className="cx-sub">
+          Missing in ⚙️ Settings → API keys · Platforms: <strong>{(data.missing ?? ['IG_APP_ID', 'IG_APP_SECRET']).join(' + ')}</strong>. Typing in the box is not enough — press <strong>Save</strong> and wait for the green “Saved” pill.
+        </p>
+      )}
+      <p className="cx-sub">
+        Redirect URL for Meta (paste exactly, no slash at the end): <code>{data.redirectUri}</code>{' '}
+        <button type="button" className="btn btn-small" onClick={() => navigator.clipboard?.writeText(data.redirectUri).then(() => setMsg('Redirect URL copied.'), () => {})}>Copy</button>
+      </p>
+      {msg && <p className={msg.endsWith('copied.') ? 'cx-ok' : 'form-error'}>{msg}</p>}
       {!data.appConfigured && showSetup && (
         <ol className="flow sd-ig-steps">
           <li>Instagram app → Settings → Account type → switch <strong>@little_loop09</strong> to <strong>Creator</strong> (free).</li>
           <li>developers.facebook.com → My Apps → Create app → use case <strong>“Manage messaging & content on Instagram”</strong> (Instagram API with Instagram login).</li>
           <li>In the app: Instagram → API setup with Instagram login → <strong>Business login settings</strong> → add redirect URL: <code>{data.redirectUri}</code></li>
-          <li>Same page: copy <strong>Instagram app ID</strong> and <strong>Instagram app secret</strong>. App roles → add @little_loop09 as an Instagram tester and accept it in the Instagram app.</li>
+          <li>Same page: copy <strong>Instagram app ID</strong> (not the Meta app ID at the top of the dashboard) and <strong>Instagram app secret</strong>. App roles → add @little_loop09 as an Instagram tester and accept it in the Instagram app.</li>
           <li>Ganesha → ⚙️ Settings → <strong>Instagram</strong> keys → paste <code>IG_APP_ID</code> and <code>IG_APP_SECRET</code> → Save. (Stored encrypted; no Cloudflare step needed.)</li>
           <li>Come back here and tap <strong>Connect Instagram</strong>. Token renews itself every ~50 days.</li>
         </ol>

@@ -11,9 +11,9 @@ export const SECRET_NAMES = {
   OPENAI_DAILY_REQUEST_LIMIT: 'OpenAI requests allowed per day (optional, default 200)',
   ANTHROPIC_API_KEY: 'Claude API (paid per use) — optional agent engine',
   YOUTUBE_API_KEY: 'YouTube Data API — Sunverse analytics',
-  IG_APP_ID: 'Instagram app ID (Meta app) — for Connect Instagram',
-  IG_APP_SECRET: 'Instagram app secret (Meta app) — for Connect Instagram',
-  IG_ACCESS_TOKEN: 'Instagram access token (only if you are not using Connect Instagram)',
+  IG_APP_ID: 'Instagram app ID — Meta app → Instagram → API setup with Instagram login (NOT the Meta/Facebook app ID at the top of the dashboard)',
+  IG_APP_SECRET: 'Instagram app secret — same page, click Show (32 letters/numbers)',
+  IG_ACCESS_TOKEN: 'Optional — leave empty. Only for a manually generated token instead of Connect Instagram',
 };
 const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID']);
 // Obvious placeholders are refused so a working key is never replaced by "YOUR_KEY_HERE" or "sk-...".
@@ -24,6 +24,9 @@ const VALIDATE = {
   OPENAI_MODEL: (v) => (/^[A-Za-z0-9][A-Za-z0-9._:-]{1,79}$/.test(v) ? null : 'must be a model ID such as gpt-6-luna'),
   OPENAI_MAX_OUTPUT_TOKENS: intIn(256, 64000),
   OPENAI_DAILY_REQUEST_LIMIT: intIn(1, 10000),
+  IG_APP_ID: (v) => (/^\d{10,20}$/.test(v) ? null : 'must be the numeric Instagram app ID (digits only)'),
+  IG_APP_SECRET: (v) => (/^[a-f0-9]{32}$/i.test(v) ? null : 'does not look like an Instagram app secret (32 letters/numbers, no spaces)'),
+  IG_ACCESS_TOKEN: (v) => (/^[A-Za-z0-9_.|-]{40,}$/.test(v) ? null : 'does not look like an Instagram access token (long, no spaces)'),
 };
 const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));
 const unb64 = (s) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
@@ -97,6 +100,8 @@ export async function save(env, db, { name, value }) {
   }
   if (typeof value !== 'string' || value.trim().length < 2 || value.length > 4000) throw new HttpError(400, 'Value must be text (2–4000 chars)');
   const v = value.trim();
+  // Browsers love to autofill the saved studio password into key boxes; never store that as a key.
+  if (env.ADMIN_TOKEN && v === String(env.ADMIN_TOKEN).trim()) throw new HttpError(400, `${name}: this is your studio admin password (probably browser autofill), not the ${name}. Nothing saved.`);
   if (PLACEHOLDER.test(v)) throw new HttpError(400, `${name}: that looks like a placeholder, not a real value. Nothing saved.`);
   const bad = VALIDATE[name]?.(v);
   if (bad) throw new HttpError(400, `${name} ${bad}. Nothing saved.`);

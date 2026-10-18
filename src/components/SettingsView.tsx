@@ -33,6 +33,7 @@ export function SettingsView() {
   const [rows, setRows] = useState<SettingRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [vals, setVals] = useState<Record<string, string>>({});
+  const [shown, setShown] = useState<Record<string, boolean>>({});
   const [busy, setBusy] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
   const [fx, setFx] = useState<CosmicFx>(readFx());
@@ -141,11 +142,33 @@ export function SettingsView() {
                           if (vals[n]?.trim()) save(n, vals[n]);
                         }}
                       >
-                        <input type={r.secret ? 'password' : 'text'} autoComplete="off" placeholder={r.source === 'app' ? 'Replace…' : 'Paste here'} value={vals[n] ?? ''} onChange={(e) => setVals((v) => ({ ...v, [n]: e.target.value }))} aria-label={n} />
+                        {/* Plain text box masked with CSS: browsers never autofill saved passwords into it (a real
+                            password box got the studio password autofilled and looked "saved" while it was not). */}
+                        <input
+                          type="text"
+                          name={`gas-key-${n.toLowerCase()}`}
+                          className={r.secret && !shown[n] ? 'st-secret' : ''}
+                          autoComplete="off"
+                          autoCorrect="off"
+                          autoCapitalize="off"
+                          spellCheck={false}
+                          data-lpignore="true"
+                          data-1p-ignore="true"
+                          placeholder={r.source === 'app' ? 'Replace…' : 'Paste here'}
+                          value={vals[n] ?? ''}
+                          onChange={(e) => setVals((v) => ({ ...v, [n]: e.target.value }))}
+                          aria-label={n}
+                        />
+                        {r.secret && vals[n] && (
+                          <button type="button" className="btn btn-small" onClick={() => setShown((x) => ({ ...x, [n]: !x[n] }))} aria-label={shown[n] ? `Hide ${n}` : `Show ${n}`}>
+                            {shown[n] ? 'Hide' : 'Show'}
+                          </button>
+                        )}
                         <button className="btn btn-small btn-primary" disabled={busy === n || !vals[n]?.trim()}>Save</button>
                         {r.source === 'app' && <button type="button" className="btn btn-small" disabled={busy === n} onClick={() => save(n, null)}>Remove</button>}
                       </form>
                     )}
+                    {vals[n]?.trim() && <span className="st-unsaved">Not saved yet — press Save</span>}
                     {r.updatedAt && <span className="cx-sub">updated {formatWhen(r.updatedAt)}</span>}
                   </div>
                 );
