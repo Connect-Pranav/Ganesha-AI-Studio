@@ -259,8 +259,8 @@ export default function App() {
               <EnginePill />
             </button>
           </div>
+          <TopNav view={view} onNavigate={navigate} />
         </header>
-        <TopNav view={view} onNavigate={navigate} />
 
         <main id="main" className="content">
           <ViewBoundary key={view}>{renderBody()}</ViewBoundary>

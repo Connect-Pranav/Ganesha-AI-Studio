@@ -1242,3 +1242,8 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .topnav-item.active { background: var(--green); color: var(--primary-ink); border-color: transparent; }
 .mobile-only-block { display: none; }
 @media (max-width: 860px) { .topnav { padding: 0 16px 10px; } .mobile-only-block { display: contents; } }
+/* Top nav lives inside the sticky header so it never scrolls away */
+.topbar { flex-wrap: wrap; row-gap: 12px; }
+.topbar .topnav { flex-basis: 100%; order: 10; padding: 0; margin: 0; }
+.drawer-scrim { z-index: 200; }
+.drawer { background: #0a0f26; backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); z-index: 201; }

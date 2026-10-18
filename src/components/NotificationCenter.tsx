@@ -2,6 +2,7 @@
 // Sources (all real): Worker approvals/failures/events (owner-only, needs the admin token),
 // vault pipelines waiting for approval and failed agent runs (public status files).
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { formatWhen } from './ui';
 import { agentName } from '../data/agentsMeta';
@@ -92,6 +93,8 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
         {count > 0 && <span className="bell-badge">{count > 99 ? '99+' : count}</span>}
       </button>
 
+      {createPortal(
+        <>
       {open && (
         <div className="drawer-scrim" onClick={() => setOpen(false)}>
           <aside className="drawer" role="dialog" aria-modal="true" aria-label="Notifications" onClick={(e) => e.stopPropagation()}>
@@ -245,6 +248,9 @@ export function NotificationCenter({ data }: { data: DashboardData | null }) {
             <pre className="preview-text">{preview.text}</pre>
           </div>
         </div>
+      )}
+        </>,
+        document.body,
       )}
     </>
   );
