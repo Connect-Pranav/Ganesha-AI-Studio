@@ -112,7 +112,9 @@ export function CboChat() {
     window.addEventListener(AUTH_EVENT, load);
     return () => window.removeEventListener(AUTH_EVENT, load);
   }, [load]);
-  useEffect(() => endRef.current?.scrollIntoView({ block: 'nearest' }), [msgs, busy]);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ block: 'nearest' });
+  }, [msgs, busy]);
 
   const send = async (e?: FormEvent, t = text) => {
     e?.preventDefault();

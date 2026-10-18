@@ -80,7 +80,9 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
       .then((report) => setState({ status: 'ready', report }))
       .catch((e: unknown) => setState({ status: 'error', message: e instanceof Error ? e.message : 'Could not load analytics' }));
   }, []);
-  useEffect(() => load(brand), [brand, load]);
+  useEffect(() => {
+    load(brand);
+  }, [brand, load]);
 
   const tabs = (
     <div className="tabs" role="tablist" aria-label="Brand">
