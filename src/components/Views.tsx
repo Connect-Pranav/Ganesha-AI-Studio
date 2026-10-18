@@ -1,4 +1,5 @@
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
+import { AgentDecisions, FinishedWork } from './cbo/StudioDesk';
 import { Icon } from './Icon';
 import { ActivityFeed, AgentPanel, ProductCard, QuickActions, StatCard, TaskBoard, type QuickActionKind } from './Widgets';
 import { describeProvider } from './Connection';
@@ -199,9 +200,11 @@ export function AgentsView(p: Common) {
   return (
     <div className="grid-main">
       <div className="col">
+        <AgentDecisions />
         <AgentDirectory pipelines={p.data.pipelines} liveAgents={p.data.agents} />
       </div>
       <div className="col">
+        <FinishedWork />
         <RunHistory runs={p.data.runs} />
         <Card title="How the agents work">
           <ul className="bullets">

@@ -27,6 +27,8 @@ import * as prod from './production.mjs';
 import * as subintel from './subintel.mjs';
 import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from './autopilot.mjs';
 import * as reels from './reels.mjs';
+import * as cbochat from './cbochat.mjs';
+import { finishedWork } from './finished.mjs';
 
 const VERSION = '0.6.0-subintel';
 // The GitHub Pages mirror reads the public analytics report from this Worker.
@@ -426,6 +428,15 @@ async function route(request, env, ctx) {
     await prod.setLearning(db, moduleId, status);
     return json({ ok: true });
   }
+
+  /* ---------- CBO chat + finished work ---------- */
+  if (path === '/api/cbo/chat' && method === 'GET') return json({ engines: cbochat.engines(env), messages: await cbochat.history(db) });
+  if (path === '/api/cbo/chat' && method === 'POST') return json({ reply: await cbochat.send(env, db, await providersStatus(env, db), await readBody(request)) });
+  if (path === '/api/cbo/chat' && method === 'DELETE') {
+    await cbochat.clear(db);
+    return json({ ok: true });
+  }
+  if (path === '/api/finished' && method === 'GET') return json(await finishedWork(env, db, url.searchParams.get('limit')));
 
   /* ---------- LittleLoop Reel Factory ---------- */
   if (path === '/api/reels' && method === 'GET') return json(await reels.overview(env, db));

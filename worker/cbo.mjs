@@ -736,7 +736,7 @@ export async function cboReport(env, db, providers) {
       .bind(nowIso())
       .all()
   ).results;
-  const approvals = (await db.prepare("SELECT a.id, a.action, a.summary, a.created_at, a.workflow_id, w.title AS workflow_title, w.brand FROM approvals a JOIN workflows w ON w.id = a.workflow_id WHERE a.status = 'pending' ORDER BY a.created_at").all()).results;
+  const approvals = (await db.prepare("SELECT a.id, a.action, a.summary, a.created_at, a.workflow_id, a.task_id, w.title AS workflow_title, w.brand, t.agent_id, t.deliverable, t.output_artifact FROM approvals a JOIN workflows w ON w.id = a.workflow_id LEFT JOIN tasks t ON t.id = a.task_id WHERE a.status = 'pending' ORDER BY a.created_at").all()).results;
   const fin = await financeSummary(env, db);
   const providerProblems = providers.filter((p) => p.state !== 'last_request_ok');
   const blocked = tasks.filter((t) => t.state === 'BLOCKED' || t.state === 'FAILED').slice(0, 20);

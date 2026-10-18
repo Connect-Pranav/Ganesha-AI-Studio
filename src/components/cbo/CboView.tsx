@@ -1,5 +1,6 @@
 // GANESHA CBO — executive dashboard + command bar. Every value comes from /api/cbo/report.
 import { useState, type FormEvent } from 'react';
+import { CboChat, FinishedWork } from './StudioDesk';
 import { Card, EmptyState, productNames } from '../ui';
 import { agentName } from '../../data/agentsMeta';
 import { cbo, dateShort, dur, inr, LIFECYCLE_LABEL, money, useLoad, type CommandResult, type Lifecycle, type Plan, type Report } from '../../services/cboService';
@@ -22,10 +23,12 @@ export function CboView({ onNavigate }: { onNavigate: (v: 'tasks' | 'finance' | 
   const r = useLoad(() => cbo.report());
   return (
     <>
+      <CboChat />
       <CommandBar onDone={r.reload} />
       <Gate title="Executive dashboard" locked={r.locked} ready={Boolean(r.data)} error={r.error} onRetry={r.reload}>
         {r.data && <Body rep={r.data} reload={r.reload} onNavigate={onNavigate} />}
       </Gate>
+      <FinishedWork />
     </>
   );
 }

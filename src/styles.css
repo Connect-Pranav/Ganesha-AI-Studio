@@ -1187,3 +1187,32 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .rf-prompt { font-size: 12.5px; color: var(--ink-2); background: var(--muted-soft); border-radius: 8px; padding: 8px 10px; white-space: pre-wrap; max-height: 140px; overflow-y: auto; }
 .rf-file { align-self: flex-start; font-size: 12.5px; font-weight: 600; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--line-2); cursor: pointer; }
 .rf-file input { display: none; }
+
+/* Owner's desk: CBO chat, decisions by agent, finished work */
+.sd-chat-tools { display: flex; gap: 8px; align-items: center; }
+.sd-chat-tools select { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; }
+.sd-thread { display: flex; flex-direction: column; gap: 10px; max-height: 460px; min-height: 120px; overflow-y: auto; padding: 8px 2px; margin: 8px 0; }
+.sd-ideas { display: flex; flex-wrap: wrap; gap: 8px; }
+.sd-msg { display: flex; flex-direction: column; max-width: 88%; }
+.sd-user { align-self: flex-end; align-items: flex-end; }
+.sd-assistant { align-self: flex-start; }
+.sd-bubble { padding: 10px 14px; border-radius: 16px; font-size: 14px; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sd-user .sd-bubble { background: var(--green); color: var(--primary-ink); border-bottom-right-radius: 4px; }
+.sd-assistant .sd-bubble { background: var(--muted-soft); border-bottom-left-radius: 4px; }
+.sd-typing { opacity: .7; font-style: italic; }
+.sd-meta { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+.sd-compose { display: flex; gap: 8px; align-items: flex-end; }
+.sd-compose textarea { flex: 1; resize: none; min-height: 42px; max-height: 160px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface-2, var(--surface)); color: var(--ink); font: inherit; }
+.sd-attach { cursor: pointer; font-size: 20px; padding: 6px; }
+.sd-attach input { display: none; }
+.sd-agent { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+.sd-agent-name { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.sd-avatar { width: 26px; height: 26px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--muted-soft); font-family: var(--serif); }
+.sd-item { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; }
+.sd-reel { flex-direction: row; gap: 12px; }
+.sd-output { border: 1px solid var(--line-2); border-radius: 10px; padding: 10px; }
+.sd-output-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.sd-pre { white-space: pre-wrap; font-family: inherit; font-size: 13px; max-height: 360px; overflow-y: auto; margin: 0; }
+.sd-steps { list-style: none; padding: 0; margin: 4px 0 0; display: flex; flex-direction: column; gap: 6px; }
+.sd-steps li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+@media (max-width: 560px) { .sd-reel { flex-direction: column; } .sd-msg { max-width: 96%; } }
