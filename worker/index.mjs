@@ -31,6 +31,7 @@ import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
 import * as voiceSamples from './voicesamples.mjs';
+import * as flowPack from './flowpack.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -325,6 +326,8 @@ async function route(request, env, ctx, rawEnv = env) {
     const rows = (await db.prepare('SELECT * FROM cost_estimates WHERE task_id = ? ORDER BY created_at DESC LIMIT 20').bind(seg[2]).all()).results;
     return json({ estimates: rows.map((r) => ({ ...r, assumptions: JSON.parse(r.assumptions_json), pricing: r.pricing_json ? JSON.parse(r.pricing_json) : null, assumptions_json: undefined, pricing_json: undefined })) });
   }
+  if (seg[1] === 'workflows' && seg[2] && seg[3] === 'flow-pack' && method === 'GET') return json({ pack: await flowPack.getFlowPack(db, seg[2]) });
+  if (seg[1] === 'workflows' && seg[2] && seg[3] === 'flow-pack' && method === 'POST') return json({ pack: await flowPack.buildFlowPack(env, db, seg[2], { force: (await readBody(request)).force === true }) });
   if (seg[1] === 'workflows' && seg[3] === 'meta' && method === 'PUT') return json(await setWorkflowMeta(db, seg[2], await readBody(request)));
 
   if (path === '/api/finance' && method === 'GET') return json(await financeSummary(env, db));

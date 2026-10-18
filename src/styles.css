@@ -1375,6 +1375,17 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
   .bu-meta { grid-column: 1 / -1; }
 }
 
+/* Flow pack (one Flow prompt per reel + sheets to upload) */
+.fp { display: grid; gap: 12px; margin-top: 10px; }
+.fp-reel { border: 1px solid var(--line-2); border-radius: 14px; padding: 12px; background: var(--surface-2); display: grid; gap: 8px; }
+.fp-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fp-head .btn { margin-left: auto; }
+.fp-sheets { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.fp-sheet { display: inline-flex; align-items: center; gap: 6px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 10px; }
+.fp-sheet .rf-thumb { width: 40px; height: 40px; object-fit: cover; border-radius: 8px; }
+.fp-prompt { white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow: auto; margin: 0; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); font: 12.5px/1.5 ui-monospace, monospace; color: var(--ink-2); }
+.fp-notes { margin: 0; padding-left: 18px; }
+
 /* SAARTHI — floating CBO chat dock (bottom-right, minimised by default) */
 .dock-fab {
   position: fixed; right: 18px; bottom: 18px; z-index: 55; display: inline-flex; align-items: center; gap: 8px;

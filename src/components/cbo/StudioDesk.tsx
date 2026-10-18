@@ -1,6 +1,7 @@
 // Owner's desk: ChatGPT-style CBO chat, decisions grouped by agent (Approve / Decline with the
 // agent's output one tap away) and finished work. All data is live from the Worker.
 import { BatchUpload, InlineRename, nameFromFile } from '../BatchUpload';
+import { FlowPack } from './FlowPack';
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, base, getToken, AUTH_EVENT } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
@@ -429,6 +430,7 @@ interface DoneReel { id: string; day: string; slot: number; status: string; scri
 export function FinishedWork() {
   const { data, error } = useLive<{ goals: Goal[]; reels: DoneReel[] }>('/api/finished?limit=20', 120_000);
   const [openGoal, setOpenGoal] = useState<string | null>(null);
+  const [flowGoal, setFlowGoal] = useState<string | null>(null);
   const [view, setView] = useState<string | null>(null);
   const title = 'Finished work';
   if (error === 'locked') return <Card title={title}><EmptyState title="Unlock the studio to see finished work" /></Card>;
@@ -462,7 +464,11 @@ export function FinishedWork() {
               <p>
                 <span className="pill pill-running">Done</span> <strong>{g.title}</strong> <span className="cx-sub">· {g.brand} · {formatWhen(g.updated_at)} · {g.steps.length} steps</span>
               </p>
-              <button className="btn btn-small" onClick={() => setOpenGoal(openGoal === g.id ? null : g.id)}>{openGoal === g.id ? 'Hide steps' : 'View outputs'}</button>
+              <div className="nt-actions">
+                <button className="btn btn-small" onClick={() => setOpenGoal(openGoal === g.id ? null : g.id)}>{openGoal === g.id ? 'Hide steps' : 'View outputs'}</button>
+                {g.brand === 'littleloop' && <button className="btn btn-small btn-primary" onClick={() => setFlowGoal(flowGoal === g.id ? null : g.id)}>{flowGoal === g.id ? 'Hide Flow pack' : '🎬 Flow prompt + sheets'}</button>}
+              </div>
+              {flowGoal === g.id && <FlowPack workflowId={g.id} />}
               {openGoal === g.id && (
                 <ul className="sd-steps">
                   {g.steps.map((s) => (
