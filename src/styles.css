@@ -1341,6 +1341,6 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .app:not([data-fx='minimal']) .sd-msg { animation: rise-in 0.35s cubic-bezier(.2, .8, .2, 1) both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .view-enter, .view-enter *, .sd-msg, .topnav-item.active, .nav-item.active, .card-head::after { animation: none !important; }
+  .cz-root *, .view-enter, .view-enter *, .sd-msg, .topnav-item.active, .nav-item.active, .card-head::after { animation: none !important; }
   :is(.card, .stat) { transform: none !important; }
 }
