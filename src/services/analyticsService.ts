@@ -13,6 +13,10 @@ export interface Video {
   likes: number | null;
   comments: number | null;
   url: string;
+  reach?: number | null;
+  saves?: number | null;
+  shares?: number | null;
+  type?: string | null;
 }
 export interface Insights {
   headline: string;
@@ -27,6 +31,8 @@ export interface Insights {
 export interface AnalyticsReport {
   brand: ProductId;
   connected: boolean;
+  platform?: 'youtube' | 'instagram';
+  studio?: { sheets: number; factoryOn: boolean; mode: string; published: number; waitingApproval: number; waitingFlow: number; failed: number; recent: { day: string; slot: number; status: string; title: string | null; igPermalink: string | null }[] };
   reason?: string;
   source?: string;
   account?: string;
@@ -76,7 +82,14 @@ function apiBase(): string {
 }
 
 export async function loadAnalytics(brand: ProductId): Promise<AnalyticsReport> {
-  const res = await fetch(`${apiBase()}/api/analytics/${brand}`, { cache: 'no-store' });
+  // The owner's token (if unlocked) adds private Instagram insights and studio reel stats.
+  let token: string | null = null;
+  try {
+    token = localStorage.getItem('gas.adminToken');
+  } catch {
+    token = null;
+  }
+  const res = await fetch(`${apiBase()}/api/analytics/${brand}`, { cache: 'no-store', headers: token ? { authorization: `Bearer ${token}` } : {} });
   const type = res.headers.get('content-type') ?? '';
   if (!type.includes('application/json')) throw new Error('The analytics service is not reachable from this address.');
   const body = await res.json();

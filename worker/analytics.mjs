@@ -11,11 +11,10 @@ import { ensureSchema } from './schema.mjs';
 
 export const BRAND_SOURCES = {
   sunverse: { platform: 'youtube', handle: '@SURVERSE_09' },
-  littleloop: null, // no channel/account connected yet
+  littleloop: { platform: 'instagram', handle: '@little_loop09' }, // Instagram API with Instagram Login (IG_ACCESS_TOKEN)
   foliocraft: null, // no analytics source connected yet
 };
 const NOT_CONNECTED = {
-  littleloop: 'No LittleLoop channel or account is connected yet. Instagram is on hold; share a YouTube channel handle to track it here.',
   foliocraft: 'No Foliocraft analytics source is connected yet (site visits, sign-ups and sales need a tracking source).',
 };
 
@@ -24,6 +23,75 @@ const CACHE_MINUTES = 60; // a page view never triggers more than one fetch per 
 const CRON_REFRESH_HOURS = 6;
 const INSIGHT_EVERY_HOURS = 20;
 const MAX_VIDEOS = 200;
+
+export const GAPS_INSTAGRAM = [
+  'Account-level reach, profile visits and audience demographics need extra Instagram insights permissions — not fetched yet.',
+  'Per-post views/reach/saves come from Instagram media insights; posts where Instagram returns no insight show "—".',
+];
+const IG_MAX_MEDIA = 50;
+const IG_INSIGHT_MEDIA = 25;
+
+/** Instagram professional account via the Instagram API with Instagram Login. Read-only. */
+export async function fetchInstagram(env, fetchImpl = fetch) {
+  const base = `https://${env.IG_GRAPH_HOST || 'graph.instagram.com'}/${env.IG_GRAPH_VERSION || 'v24.0'}`;
+  const get = async (path, params) => {
+    const url = new URL(`${base}/${path}`);
+    for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
+    url.searchParams.set('access_token', env.IG_ACCESS_TOKEN);
+    const res = await fetchImpl(url, { headers: { accept: 'application/json' } });
+    const text = await res.text();
+    let body = {};
+    try { body = JSON.parse(text); } catch { /* raw */ }
+    if (!res.ok || body.error) throw Object.assign(new Error(`Instagram API ${path} HTTP ${res.status}: ${String(body.error?.message ?? text.slice(0, 200)).split(env.IG_ACCESS_TOKEN).join('[redacted]')}`), { httpStatus: res.status });
+    return body;
+  };
+  const me = await get('me', { fields: 'id,username,name,followers_count,follows_count,media_count' });
+  const media = await get('me/media', { fields: 'id,caption,media_type,media_product_type,permalink,timestamp,like_count,comments_count', limit: String(IG_MAX_MEDIA) });
+  const items = media.data ?? [];
+  const metricValue = (d) => d?.total_value?.value ?? d?.values?.[0]?.value ?? null;
+  const videos = [];
+  for (const [i, m] of items.entries()) {
+    let ins = {};
+    if (i < IG_INSIGHT_MEDIA) {
+      try {
+        const r = await get(`${m.id}/insights`, { metric: 'views,reach,saved,shares' });
+        ins = Object.fromEntries((r.data ?? []).map((d) => [d.name, metricValue(d)]));
+      } catch {
+        ins = {};
+      }
+    }
+    videos.push({
+      id: m.id,
+      title: (m.caption ?? '').split('\n')[0].slice(0, 90) || `${m.media_product_type ?? m.media_type} post`,
+      publishedAt: m.timestamp ?? null,
+      durationSec: null,
+      views: num(ins.views),
+      likes: num(m.like_count),
+      comments: num(m.comments_count),
+      reach: num(ins.reach),
+      saves: num(ins.saved),
+      shares: num(ins.shares),
+      type: m.media_product_type ?? m.media_type ?? null,
+      url: m.permalink,
+    });
+  }
+  return {
+    platform: 'instagram',
+    channel: {
+      id: me.id,
+      title: me.name || `@${me.username}`,
+      handle: `@${me.username}`,
+      url: `https://www.instagram.com/${me.username}/`,
+      subscribers: num(me.followers_count),
+      subscribersHidden: false,
+      totalViews: videos.some((v) => v.views !== null) ? videos.reduce((a, v) => a + (v.views ?? 0), 0) : null,
+      videoCount: num(me.media_count),
+      following: num(me.follows_count),
+    },
+    videos,
+    truncated: (me.media_count ?? 0) > items.length,
+  };
+}
 
 export const GAPS_YOUTUBE_PUBLIC = [
   'Reach, impressions, click-through rate, watch time, average view duration, audience retention and traffic sources need the channel owner to sign in (YouTube Analytics API). Not connected yet.',
@@ -177,15 +245,16 @@ async function latestInsights(db, brand) {
 
 export async function refreshSnapshot(env, db, brand, deps = {}) {
   const src = BRAND_SOURCES[brand];
-  const raw = await fetchYouTubeChannel(env, src.handle, deps.fetch ?? fetch);
+  const ig = src.platform === 'instagram';
+  const raw = ig ? await fetchInstagram(env, deps.fetch ?? fetch) : await fetchYouTubeChannel(env, src.handle, deps.fetch ?? fetch);
   const fetchedAt = nowIso();
   const id = newId('an');
   await db
     .prepare('INSERT INTO analytics_snapshots (id, brand, source, account_ref, fetched_at, data_json) VALUES (?,?,?,?,?,?)')
-    .bind(id, brand, 'youtube_data_api', src.handle, fetchedAt, JSON.stringify({ ...raw, fetchedAt }))
+    .bind(id, brand, ig ? 'instagram_graph_api' : 'youtube_data_api', raw.channel?.handle ?? src.handle, fetchedAt, JSON.stringify({ ...raw, fetchedAt }))
     .run();
   await db.prepare('INSERT INTO events (workflow_id, task_id, kind, message, created_at) VALUES (NULL, NULL, ?, ?, ?)')
-    .bind('analytics_refresh', `SOMA fetched ${brand} YouTube stats: ${raw.videos.length} videos`, fetchedAt).run();
+    .bind('analytics_refresh', `SOMA fetched ${brand} ${ig ? 'Instagram' : 'YouTube'} stats: ${raw.videos.length} ${ig ? 'posts' : 'videos'}`, fetchedAt).run();
   return db.prepare('SELECT * FROM analytics_snapshots WHERE id = ?').bind(id).first();
 }
 
@@ -198,18 +267,19 @@ export async function generateInsights(env, db, row, summary, deps = {}) {
     channel: data.channel,
     fetchedAt: data.fetchedAt,
     summary,
-    topVideos: top.map(({ title, views, likes, comments, publishedAt, durationSec }) => ({ title, views, likes, comments, publishedAt, durationSec })),
-    recentVideos: data.videos.slice(0, 10).map(({ title, views, likes, comments, publishedAt, durationSec }) => ({ title, views, likes, comments, publishedAt, durationSec })),
-    dataGaps: GAPS_YOUTUBE_PUBLIC,
+    topVideos: top.map(({ title, views, likes, comments, publishedAt, durationSec, reach, saves, shares }) => ({ title, views, likes, comments, publishedAt, durationSec, reach, saves, shares })),
+    recentVideos: data.videos.slice(0, 10).map(({ title, views, likes, comments, publishedAt, durationSec, reach, saves, shares }) => ({ title, views, likes, comments, publishedAt, durationSec, reach, saves, shares })),
+    dataGaps: data.platform === 'instagram' ? GAPS_INSTAGRAM : GAPS_YOUTUBE_PUBLIC,
   };
+  const isIg = data.platform === 'instagram';
   const system = [
     `You are ${agent.name} (${agent.id}), ${agent.role} at Ganesha AI Studio.`,
-    'You analyse the Sunverse YouTube music channel for its owner.',
-    'Use ONLY numbers present in the provided data. Never estimate reach, impressions, watch time, CTR, retention or revenue — they are not in the data.',
+    isIg ? 'You analyse the LittleLoop Instagram account (kids\' animated Reels) for its owner.' : 'You analyse the Sunverse YouTube music channel for its owner.',
+    isIg ? 'Use ONLY numbers present in the provided data (followers, per-post views/reach/likes/comments/saves/shares). Never estimate anything that is missing.' : 'Use ONLY numbers present in the provided data. Never estimate reach, impressions, watch time, CTR, retention or revenue — they are not in the data.',
     'Be specific and practical. Plain English, short sentences.',
   ].join('\n');
   const prompt = [
-    'Channel data (from the YouTube Data API, public statistics):',
+    isIg ? 'Account data (from the Instagram API):' : 'Channel data (from the YouTube Data API, public statistics):',
     JSON.stringify(facts, null, 2),
     'Return JSON: {"headline":string (<=140 chars),"working":[string],"notWorking":[string],"nextActions":[{"action":string,"why":string,"measureWith":string}],"dataGaps":[string]}',
     'working/notWorking: 2-4 items each, each citing a number from the data. nextActions: exactly 3.',
@@ -239,11 +309,13 @@ export async function getReport(env, db, brand, { force = false, withInsights = 
   const src = BRAND_SOURCES[brand];
   if (!src) return { brand, connected: false, reason: NOT_CONNECTED[brand] };
   await ensureSchema(db);
+  const ig = src.platform === 'instagram';
+  const keySet = ig ? Boolean(env.IG_ACCESS_TOKEN) : Boolean(env.YOUTUBE_API_KEY);
 
   let row = await latestSnapshot(db, brand);
   let fetchError = null;
   const stale = !row || Date.now() - Date.parse(row.fetched_at) > CACHE_MINUTES * 60_000;
-  if ((stale || force) && env.YOUTUBE_API_KEY) {
+  if ((stale || force) && keySet) {
     try {
       row = await refreshSnapshot(env, db, brand, deps);
     } catch (e) {
@@ -254,9 +326,14 @@ export async function getReport(env, db, brand, { force = false, withInsights = 
     return {
       brand,
       connected: false,
-      source: 'YouTube Data API v3',
+      platform: src.platform,
+      source: ig ? 'Instagram API' : 'YouTube Data API v3',
       account: src.handle,
-      reason: env.YOUTUBE_API_KEY ? `Could not fetch the channel: ${fetchError}` : 'Waiting for the Worker secret YOUTUBE_API_KEY.',
+      reason: keySet
+        ? `Could not fetch the ${ig ? 'account' : 'channel'}: ${fetchError}`
+        : ig
+          ? `Instagram not connected yet. Make ${src.handle} a Professional (Creator) account, create an access token with the Instagram API (Instagram Login), and set it as the Worker secret IG_ACCESS_TOKEN — the same token also posts approved reels.`
+          : 'Waiting for the Worker secret YOUTUBE_API_KEY.',
     };
   }
 
@@ -287,16 +364,17 @@ export async function getReport(env, db, brand, { force = false, withInsights = 
     if (fail && (!insights?.at || fail.created_at > insights.at)) insightsError = `${fail.message} (${fail.created_at})`;
   }
 
-  const gaps = [...GAPS_YOUTUBE_PUBLIC];
+  const gaps = ig ? [...GAPS_INSTAGRAM] : [...GAPS_YOUTUBE_PUBLIC];
   if (data.channel.subscribersHidden) gaps.unshift('Subscriber count is hidden on this channel, so it cannot be reported.');
   if (summary.likesHiddenOn) gaps.push(`Likes are hidden on ${summary.likesHiddenOn} video(s); like rate uses the rest.`);
-  if (data.truncated) gaps.push(`Only the latest ${MAX_VIDEOS} uploads were analysed.`);
+  if (data.truncated) gaps.push(`Only the latest ${ig ? IG_MAX_MEDIA : MAX_VIDEOS} ${ig ? 'posts' : 'uploads'} were analysed.`);
   if (!summary.growth) gaps.push('Growth needs two fetches at least 20 hours apart; history starts with the first fetch.');
 
   return {
     brand,
     connected: true,
-    source: 'YouTube Data API v3 (public statistics)',
+    platform: src.platform,
+    source: ig ? 'Instagram API (Instagram Login)' : 'YouTube Data API v3 (public statistics)',
     account: src.handle,
     fetchedAt: row.fetched_at,
     stale: Boolean(fetchError),
@@ -312,11 +390,12 @@ export async function getReport(env, db, brand, { force = false, withInsights = 
 
 /** Cron: refresh connected brands every few hours and let SOMA write a daily analysis. */
 export async function scheduledAnalytics(env, db, deps = {}) {
-  if (!env.YOUTUBE_API_KEY) return [];
+  if (!env.YOUTUBE_API_KEY && !env.IG_ACCESS_TOKEN) return [];
   await ensureSchema(db);
   const out = [];
   for (const [brand, src] of Object.entries(BRAND_SOURCES)) {
     if (!src) continue;
+    if (src.platform === 'instagram' ? !env.IG_ACCESS_TOKEN : !env.YOUTUBE_API_KEY) continue;
     const row = await latestSnapshot(db, brand);
     const dataDue = !row || Date.now() - Date.parse(row.fetched_at) > CRON_REFRESH_HOURS * 3_600_000;
     const last = await latestInsights(db, brand);

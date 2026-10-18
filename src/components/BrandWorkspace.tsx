@@ -33,7 +33,7 @@ const HANDOFF: Record<ProductId, { title: string; steps: string[] }> = {
       'Agents write the concept, timed script, character sheet, shot plan, per-shot video prompts, sound sheet and edit plan.',
       'Google Flow has no public API: copy MAYA’s prompts into Flow and generate the clips there.',
       'DHARMA checks child safety and CHITRAGUPTA checks quality before LAKSHMI prepares the posting package.',
-      'After approving, you post and press “Mark done”. Instagram is on hold; nothing is posted automatically.',
+      'Reels from the Reel Factory post to Instagram automatically only after you tap Approve & post.',
     ],
   },
   foliocraft: {

@@ -240,7 +240,7 @@ export async function setSheetDetails(db, id, { details, error }) {
     await db.prepare("UPDATE reel_sheets SET details_status = 'error', details = ?, updated_at = ? WHERE id = ?").bind(String(error).slice(0, 500), nowIso(), id).run();
     return;
   }
-  if (typeof details !== 'string' || details.trim().length < 40 || details.length > 6000) throw new HttpError(400, 'details must be 40–6000 chars');
+  if (typeof details !== 'string' || details.trim().length < 40 || details.length > 16000) throw new HttpError(400, 'details must be 40–16000 chars');
   await db.prepare("UPDATE reel_sheets SET details = ?, details_status = 'ready', updated_at = ? WHERE id = ?").bind(details.trim(), nowIso(), id).run();
 }
 

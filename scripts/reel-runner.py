@@ -140,21 +140,24 @@ def gemini_json(prompt, image=None, purpose="script", reel_id=None, max_tokens=8
 
 
 SHEET_PROMPT = """You are LittleLoop's continuity supervisor. The image is an official character sheet for an
-original animated character used in a kids' (age 2-8) Instagram Reels series.
-Write a precise CHARACTER BIBLE that a video model can follow so the character looks identical in every clip.
+original animated kids' (age 2-8) Instagram Reels series. It may show ONE character or a whole CAST
+(several characters, each with turnarounds, expressions and detail close-ups).
+Write a precise CHARACTER BIBLE that a video model can follow so every character looks identical in every clip.
 Describe only what is visible; write "not shown" when unsure. Never invent a brand, logo or text.
 Owner notes (trust these over your reading of the image): {notes}
 
-Return JSON: {{"name": "...", "bible": "..."}} where bible is plain text (250-600 words) with these labelled lines:
-Species/type & apparent age; Body proportions & height relative to others; Head & face shape; Eyes (shape, colour);
-Eyebrows, nose, mouth, teeth; Hair/fur (style, colour, length); Skin/fur tone (with hex codes if clearly visible);
-Outfit (each garment, colour, pattern); Shoes; Accessories/props; Signature expressions & poses; Personality as shown;
-Art style (2D/3D, rendering, line work, shading, palette); DO-NOT-CHANGE list (8-12 items that must stay identical)."""
+Return JSON: {{"name": "...", "bible": "..."}} — "name" is the sheet/cast name; "bible" is plain text with one
+section per character, each starting "### <Character name> (<type/role>)" and 100-250 words with labelled lines:
+Species/type & apparent age; Body proportions & size relative to others; Head & face; Eyes (shape, colour, marks);
+Hair/fur/skin/scales (style, colour, pattern; hex codes if clearly visible); Outfit/markings; Accessories/props;
+Signature expressions & poses; Personality as shown; DO-NOT-CHANGE list (6-10 items).
+End with a "### Shared art style" section: 2D/3D, rendering, lighting, palette, background treatment."""
 
 SCRIPT_PROMPT = """You are LittleLoop's head writer and director. LittleLoop makes original, safe, joyful animated
 Instagram Reels for children aged 2-8 and their parents.
 
-Today's character (use the attached character sheet image as the visual truth):
+Today's character sheet (use the attached image as the visual truth). If it shows a cast, pick 1-3 of
+those characters who suit one short story, and use ONLY characters from this sheet:
 {bible}
 
 Language for dialogue/narration: {language}
@@ -171,7 +174,7 @@ effects and a light original instrumental bed; keep the character exactly as in 
 
 Each scene's "video_prompt" must be a complete, self-contained prompt for an AI video model, 120-250 words:
 start with "Vertical 9:16 animated shot, 10 seconds." Refer to the character as "the character shown in
-<IMAGE_REF_0>" and restate the key DO-NOT-CHANGE details. Include setting, lighting, camera framing and
+<IMAGE_REF_0>" (or "the <name> character shown in <IMAGE_REF_0>" when the sheet is a cast) and restate each used character's key DO-NOT-CHANGE details. Include setting, lighting, camera framing and
 movement, time-coded action (0-3s, 3-7s, 7-10s), exact dialogue in quotes with who says it, sound effects,
 music mood, and the final frame. Scene 2's prompt must begin "Continue seamlessly from the previous clip:".
 
@@ -402,7 +405,7 @@ def run():
         log(f"reading character sheet {sheet['name']} ...")
         try:
             img = ganesha("GET", f"/api/reels/sheets/{sheet['id']}/image", raw=True)
-            res = gemini_json(SHEET_PROMPT.format(notes=sheet.get("notes") or "none"), image=(img, sheet["mime"]), purpose="sheet_bible", max_tokens=4096)
+            res = gemini_json(SHEET_PROMPT.format(notes=sheet.get("notes") or "none"), image=(img, sheet["mime"]), purpose="sheet_bible", max_tokens=12288)
             bible = str(res.get("bible") or "").strip()
             ganesha("PUT", f"/api/reels/runner/sheets/{sheet['id']}/details", {"details": bible})
         except Fail as e:

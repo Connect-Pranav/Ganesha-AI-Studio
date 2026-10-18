@@ -27,6 +27,7 @@ export function SubscriptionIntel() {
     <Gate title="Subscription Intelligence" locked={o.locked} ready={Boolean(o.data)} error={o.error} onRetry={o.reload}>
       {o.data && (
         <>
+          <QuickSetup o={o.data} reload={o.reload} />
           <Totals o={o.data} reload={o.reload} />
           <div className="tabs cx-tabs-scroll" role="tablist" aria-label="Subscription Intelligence sections">
             {TABS.map((t) => (
@@ -840,5 +841,80 @@ function ImportCard({ service, name, onDone }: { service: string; name: string; 
       </form>
       <Honest>Duplicates are detected by invoice number (or date + amount + description) and by day/model/unit for usage. Provider-reported (Live) rows always win over imported ones. Never include full card or account numbers.</Honest>
     </Card>
+  );
+}
+
+/* One-screen setup: plan, monthly price and renewal date for each subscription (owner-entered). */
+const QUICK: { service: string; name: string; plans: string[]; def: string }[] = [
+  { service: 'google_ai_pro', name: 'Google AI Pro', plans: ['Google AI Pro', 'Google AI Pro ×2 accounts', 'Google AI Ultra'], def: 'Google AI Pro ×2 accounts' },
+  { service: 'chatgpt', name: 'ChatGPT', plans: ['ChatGPT Go', 'ChatGPT Plus', 'ChatGPT Pro'], def: 'ChatGPT Go' },
+  { service: 'claude', name: 'Claude', plans: ['Claude Pro', 'Claude Max 5x', 'Claude Max 20x'], def: 'Claude Pro' },
+  { service: 'canva', name: 'Canva', plans: ['Canva Pro', 'Canva Teams'], def: 'Canva Pro' },
+];
+function QuickSetup({ o, reload }: { o: SubOverview; reload: () => void }) {
+  const act = useAction();
+  const filled = (svc: string) => Boolean(o.services.find((x) => x.service === svc)?.profile.plan?.value);
+  const [open, setOpen] = useState(() => QUICK.some((q) => !filled(q.service)));
+  const val = (svc: string, f: string) => {
+    const v = o.services.find((x) => x.service === svc)?.profile[f]?.value;
+    return v === null || v === undefined ? '' : String(v);
+  };
+  const [rows, setRows] = useState(() =>
+    Object.fromEntries(QUICK.map((q) => [q.service, { plan: val(q.service, 'plan') || q.def, amount: val(q.service, 'amount'), next_renewal: val(q.service, 'next_renewal'), billing_period: val(q.service, 'billing_period') || 'monthly' }])),
+  );
+  const set = (svc: string, k: string, v: string) => setRows({ ...rows, [svc]: { ...rows[svc], [k]: v } });
+  const [done, setDone] = useState<string | null>(null);
+  const save = () =>
+    act.run(
+      'quick',
+      async () => {
+        for (const q of QUICK) {
+          const r = rows[q.service];
+          const fields: Record<string, unknown> = { plan: r.plan, status: 'active', billing_period: r.billing_period, currency: 'INR' };
+          if (r.amount !== '') fields.amount = Number(r.amount);
+          if (r.next_renewal) fields.next_renewal = r.next_renewal;
+          await subintel.saveProfile(q.service, 'Owner quick setup in Ganesha', fields);
+        }
+      },
+      () => {
+        setDone('Saved. Cards below now show your plans, cost and renewal countdown.');
+        reload();
+      },
+    );
+  return (
+    <section className="card cx-quick">
+      <header className="card-head">
+        <h2 className="card-title">Quick setup · your subscriptions</h2>
+        <button className="btn btn-small" onClick={() => setOpen(!open)}>{open ? 'Close' : 'Edit'}</button>
+      </header>
+      {!open ? (
+        <p className="cx-sub">{QUICK.map((q) => `${q.name}: ${val(q.service, 'plan') || '—'}${val(q.service, 'amount') ? ` ₹${val(q.service, 'amount')}` : ''}`).join(' · ')}</p>
+      ) : (
+        <>
+          <p className="cx-sub">Google, OpenAI, Anthropic aur Canva apne app plans ka koi API nahi dete, isliye yeh 4 lines ek baar bhar dijiye (price + renewal date receipt/app se). Usage aur kharcha GANESHA khud jodta rahega.</p>
+          <div className="cx-quick-grid">
+            {QUICK.map((q) => (
+              <div key={q.service} className="cx-quick-row">
+                <strong>{q.name}</strong>
+                <select value={rows[q.service].plan} onChange={(e) => set(q.service, 'plan', e.target.value)} aria-label={`${q.name} plan`}>
+                  {[...new Set([rows[q.service].plan, ...q.plans])].map((p) => <option key={p}>{p}</option>)}
+                </select>
+                <input type="number" min={0} placeholder="₹ / period" value={rows[q.service].amount} onChange={(e) => set(q.service, 'amount', e.target.value)} aria-label={`${q.name} price in rupees`} />
+                <select value={rows[q.service].billing_period} onChange={(e) => set(q.service, 'billing_period', e.target.value)} aria-label={`${q.name} billing period`}>
+                  <option value="monthly">monthly</option>
+                  <option value="yearly">yearly</option>
+                </select>
+                <input type="date" value={rows[q.service].next_renewal} onChange={(e) => set(q.service, 'next_renewal', e.target.value)} aria-label={`${q.name} next renewal`} />
+              </div>
+            ))}
+          </div>
+          {act.error && <p className="form-error">{act.error}</p>}
+          {done && <p className="cx-ok">{done}</p>}
+          <div className="modal-actions">
+            <button className="btn btn-primary" disabled={act.busy === 'quick'} onClick={save}>{act.busy === 'quick' ? 'Saving…' : 'Save all 4'}</button>
+          </div>
+        </>
+      )}
+    </section>
   );
 }

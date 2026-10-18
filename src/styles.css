@@ -1227,3 +1227,9 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .nav-label { padding-bottom: 4px; }
 .brand { padding-bottom: 14px; }
 @media (max-height: 760px) { .nav-item { padding: 5px 12px; } .nav { gap: 8px; } }
+.cx-quick { margin-bottom: 16px; }
+.cx-quick-grid { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.cx-quick-row { display: grid; grid-template-columns: 120px 1.4fr 1fr 0.9fr 1.1fr; gap: 8px; align-items: center; font-size: 13.5px; }
+.cx-quick-row select, .cx-quick-row input { padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: rgba(6, 10, 28, 0.75); color: var(--ink); font: inherit; min-width: 0; }
+@media (max-width: 720px) { .cx-quick-row { grid-template-columns: 1fr 1fr; } .cx-quick-row strong { grid-column: 1 / -1; } }
+.sd-upload { margin: 8px 0; }

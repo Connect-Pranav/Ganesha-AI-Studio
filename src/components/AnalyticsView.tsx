@@ -127,8 +127,9 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
       <div className="an">
         {tabs}
         <Card title="SOMA analytics">
-          <EmptyState title="No audience data source connected" hint={r.reason ?? 'This brand has no analytics source yet.'} />
+          <EmptyState title={r.platform === 'instagram' ? 'Instagram not connected yet' : 'No audience data source connected'} hint={r.reason ?? 'This brand has no analytics source yet.'} />
         </Card>
+        {r.studio && <StudioReels s={r.studio} />}
         <BrandWorkCounts brand={brand} />
       </div>
     );
@@ -137,6 +138,7 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
   const s = r.summary;
   const g = s.growth;
   const growthHint = g ? `since ${formatWhen(g.since)}` : undefined;
+  const ig = r.platform === 'instagram';
   const top = s.topVideos.map((id) => r.videos!.find((v) => v.id === id)).filter((v): v is Video => Boolean(v));
 
   return (
@@ -145,7 +147,7 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
 
       <section className="an-head">
         <div>
-          <p className="eyebrow">YouTube channel</p>
+          <p className="eyebrow">{ig ? 'Instagram account' : 'YouTube channel'}</p>
           <h2 className="ws-title">
             <a href={r.channel.url} target="_blank" rel="noreferrer">{r.channel.title}</a>
           </h2>
@@ -158,25 +160,30 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
       </section>
 
       <section className="grid-4" aria-label="Channel totals">
-        <Stat label="Subscribers" value={r.channel.subscribersHidden ? 'Hidden' : n(r.channel.subscribers)} delta={signed(g?.subscribers)} hint={growthHint} />
-        <Stat label="Total channel views" value={n(r.channel.totalViews)} delta={signed(g?.totalViews)} hint={growthHint} />
-        <Stat label="Videos" value={n(r.channel.videoCount)} hint={s.latestUpload ? `Latest ${day(s.latestUpload)}` : undefined} />
-        <Stat label="Average views / video" value={n(s.avgViewsPerVideo)} hint={`Median ${n(s.medianViewsPerVideo)}`} />
+        <Stat label={ig ? 'Followers' : 'Subscribers'} value={r.channel.subscribersHidden ? 'Hidden' : n(r.channel.subscribers)} delta={signed(g?.subscribers)} hint={growthHint} />
+        <Stat label={ig ? 'Views (latest posts)' : 'Total channel views'} value={n(r.channel.totalViews)} delta={ig ? undefined : signed(g?.totalViews)} hint={ig ? 'sum of per-post views' : growthHint} />
+        <Stat label={ig ? 'Posts' : 'Videos'} value={n(r.channel.videoCount)} hint={s.latestUpload ? `Latest ${day(s.latestUpload)}` : undefined} />
+        <Stat label={ig ? 'Average views / post' : 'Average views / video'} value={n(s.avgViewsPerVideo)} hint={`Median ${n(s.medianViewsPerVideo)}`} />
       </section>
 
       <section className="grid-4" aria-label="Engagement">
         <Stat label="Last 30 days" value={`${n(s.last30Days.views)} views`} hint={`${s.last30Days.uploads} upload(s) in 30 days`} />
         <Stat label="Like rate" value={pct(s.likeRate)} hint={`${n(s.totalLikes)} likes`} />
         <Stat label="Comment rate" value={pct(s.commentRate)} hint={`${n(s.totalComments)} comments`} />
-        <Stat label="Up to 3 min vs longer" value={`${n(s.upTo3Min.avgViews)} / ${n(s.over3Min.avgViews)}`} hint={`avg views · ${s.upTo3Min.count} vs ${s.over3Min.count} videos`} />
+        {ig ? (
+          <Stat label="Saves · shares" value={`${n(sumOf(r.videos, 'saves'))} · ${n(sumOf(r.videos, 'shares'))}`} hint="latest posts (owner view)" />
+        ) : (
+          <Stat label="Up to 3 min vs longer" value={`${n(s.upTo3Min.avgViews)} / ${n(s.over3Min.avgViews)}`} hint={`avg views · ${s.upTo3Min.count} vs ${s.over3Min.count} videos`} />
+        )}
       </section>
 
       <div className="grid-main">
         <div className="col">
-          <Card title="Top videos by views">
+          {r.studio && <StudioReels s={r.studio} />}
+          <Card title={ig ? 'Top posts by views' : 'Top videos by views'}>
             {top.length ? <VideoTable videos={top} /> : <EmptyState title="No videos yet" />}
           </Card>
-          <Card title={`All videos (${r.videos.length})`}>
+          <Card title={ig ? `Latest posts (${r.videos.length})` : `All videos (${r.videos.length})`}>
             {r.videos.length ? <VideoTable videos={r.videos} /> : <EmptyState title="No uploads yet" />}
           </Card>
         </div>
@@ -221,5 +228,35 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
         </div>
       </div>
     </div>
+  );
+}
+
+function sumOf(v: Video[] | undefined, k: 'saves' | 'shares'): number | null {
+  const xs = (v ?? []).map((x) => x[k]).filter((x): x is number => typeof x === 'number');
+  return xs.length ? xs.reduce((a, b) => a + b, 0) : null;
+}
+
+function StudioReels({ s }: { s: NonNullable<AnalyticsReport['studio']> }) {
+  return (
+    <Card title="LittleLoop studio · reels">
+      <section className="grid-4">
+        <Stat label="Posted to Instagram" value={String(s.published)} hint="by the Reel Factory" />
+        <Stat label="Waiting for you" value={String(s.waitingApproval)} hint="approve in LittleLoop / Agents" />
+        <Stat label="Waiting for Flow clips" value={String(s.waitingFlow)} hint={s.mode === 'flow' ? 'Google Flow mode' : 'API mode'} />
+        <Stat label="Character sheets" value={String(s.sheets)} hint={s.factoryOn ? 'factory ON' : 'factory OFF'} />
+      </section>
+      {s.recent.length > 0 && (
+        <ul className="rf-list">
+          {s.recent.map((r) => (
+            <li key={`${r.day}-${r.slot}`}>
+              <span className="pill pill-idle">{r.status}</span>
+              <span className="rf-li-title">{r.title ?? 'Reel'}</span>
+              <span className="cx-sub">{r.day} #{r.slot}</span>
+              {r.igPermalink && <a href={r.igPermalink} target="_blank" rel="noreferrer">Instagram</a>}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Card>
   );
 }

@@ -67,7 +67,7 @@ const STATUS: Record<ReelStatus, [string, string]> = {
 };
 const usd = (n: number) => `$${n.toFixed(2)}`;
 
-function SheetThumb({ id, name }: { id: string; name: string }) {
+export function SheetThumb({ id, name }: { id: string; name: string }) {
   const [src, setSrc] = useState<string | null>(null);
   useEffect(() => {
     let url: string | null = null;

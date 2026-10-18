@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { Card, EmptyState } from '../ui';
 import { studio, voices, useLoad, type Character } from '../../services/cboService';
 import { BRANDS, Gate, Honest, Pill, useAction } from './common';
+import { SheetUploader } from './StudioDesk';
 
 const EMPTY = { name: '', description: '', appearance: '', wardrobe: '', personality: '', language: '', styleConstraints: '', refs: '' };
 
@@ -20,7 +21,8 @@ export function CharactersView() {
           </button>
         ))}
       </div>
-      <Card title="Characters" action={<button className="btn btn-small btn-primary" onClick={() => setEdit('new')}>+ New character</button>}>
+      {brand === 'littleloop' && <SheetUploader />}
+      <Card title="Detailed characters (optional)" action={<button className="btn btn-small" onClick={() => setEdit('new')}>+ Detailed character</button>}>
         {edit && <CharacterForm key={edit === 'new' ? 'new' : edit.id} brand={brand} c={edit === 'new' ? null : edit} onDone={() => (setEdit(null), l.reload())} />}
         {(l.data?.characters ?? []).length === 0 ? (
           <EmptyState title="No characters for this brand yet." hint="Approved characters are reused across episodes instead of being recreated." />

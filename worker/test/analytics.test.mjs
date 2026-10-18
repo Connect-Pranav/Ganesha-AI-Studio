@@ -134,7 +134,35 @@ test('no key / API error / unconnected brand are reported honestly', async () =>
   assert.match(err.reason, /quotaExceeded/);
   const ll = await getReport(ENV, db, 'littleloop');
   assert.equal(ll.connected, false);
-  assert.match(ll.reason, /No LittleLoop channel/);
+  assert.equal(ll.platform, 'instagram');
+  assert.match(ll.reason, /IG_ACCESS_TOKEN/);
+});
+
+test('LittleLoop Instagram: followers + per-post insights from the Instagram API (mocked)', async () => {
+  const calls = [];
+  const fakeIg = async (url) => {
+    const u = new URL(url);
+    calls.push(u.pathname);
+    assert.equal(u.searchParams.get('access_token'), 'IGT');
+    if (u.pathname.endsWith('/me')) return Response.json({ id: '17', username: 'little_loop09', followers_count: 120, follows_count: 3, media_count: 2 });
+    if (u.pathname.endsWith('/me/media')) return Response.json({ data: [
+      { id: 'm1', caption: 'Chiku puddle jump\n#kids', media_type: 'VIDEO', media_product_type: 'REELS', permalink: 'https://www.instagram.com/reel/a/', timestamp: '2026-10-17T05:00:00+0000', like_count: 30, comments_count: 4 },
+      { id: 'm2', caption: 'Hello', media_type: 'IMAGE', permalink: 'https://www.instagram.com/p/b/', timestamp: '2026-10-10T05:00:00+0000', like_count: 5, comments_count: 0 },
+    ] });
+    if (u.pathname.endsWith('/m1/insights')) return Response.json({ data: [{ name: 'views', total_value: { value: 900 } }, { name: 'reach', values: [{ value: 700 }] }, { name: 'saved', values: [{ value: 12 }] }, { name: 'shares', values: [{ value: 3 }] }] });
+    if (u.pathname.endsWith('/m2/insights')) return Response.json({ error: { message: 'unsupported' } }, { status: 400 });
+    throw new Error(`unexpected ${u}`);
+  };
+  const r = await getReport({ IG_ACCESS_TOKEN: 'IGT' }, db, 'littleloop', { force: true, deps: { fetch: fakeIg } });
+  assert.equal(r.connected, true);
+  assert.equal(r.platform, 'instagram');
+  assert.equal(r.channel.subscribers, 120);
+  assert.equal(r.channel.handle, '@little_loop09');
+  assert.equal(r.videos[0].title, 'Chiku puddle jump');
+  assert.equal(r.videos[0].views, 900);
+  assert.equal(r.videos[0].saves, 12);
+  assert.equal(r.videos[1].views, null, 'missing insight stays unknown, never guessed');
+  assert.equal(r.summary.totalLikes, 30, 'like totals only count posts that have views');
 });
 
 test('summarize: pure arithmetic, no invented values for empty channels', () => {

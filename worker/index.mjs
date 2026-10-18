@@ -106,6 +106,19 @@ async function route(request, env, ctx) {
       console.error('analytics report failed', e?.stack ?? e);
       report = { brand: seg[2], connected: false, reason: `Analytics error: ${String(e?.message ?? e).slice(0, 300)}` };
     }
+    // Owner-only extras: private Instagram insights (reach/saves/shares) and the studio's own reel stats.
+    const h = request.headers.get('authorization') ?? '';
+    const isOwner = Boolean(env.ADMIN_TOKEN) && h.startsWith('Bearer ') && safeEqual(h.slice(7), env.ADMIN_TOKEN);
+    if (!isOwner && Array.isArray(report.videos)) report.videos = report.videos.map(({ reach, saves, shares, ...v }) => v);
+    if (isOwner && seg[2] === 'littleloop' && env.DB) {
+      try {
+        const rf = await reels.overview(env, env.DB);
+        const by = (st) => rf.reels.filter((r) => r.status === st).length;
+        report.studio = { sheets: rf.sheets.length, factoryOn: rf.config.enabled, mode: rf.config.renderMode, published: by('published'), waitingApproval: by('review'), waitingFlow: rf.waitingForFlow, failed: by('failed'), recent: rf.reels.slice(0, 8).map((r) => ({ day: r.day, slot: r.slot, status: r.status, title: r.script?.title ?? null, igPermalink: r.igPermalink })) };
+      } catch {
+        /* studio stats are optional */
+      }
+    }
     return json(report, 200, corsHeaders(request));
   }
   if (seg[1] === 'analytics' && method === 'OPTIONS') return new Response(null, { status: 204, headers: corsHeaders(request) });
