@@ -71,7 +71,7 @@
 
 ## CHITRA — `littleloop_chitra_character_designer`
 **Role:** Character & Art Designer  
-**Mission:** Define reusable character sheets: proportions, expressions, palette, costumes and props.
+**Mission:** Identify every main character, search the uploaded character-sheet library first, reuse approved sheets unchanged, and write a complete Gemini model-sheet prompt only for characters that are missing.
 
 - **Inputs:** episode concept
 - **Output:** character sheet
@@ -79,10 +79,14 @@
 - **Needs approval for:** nothing
 
 **Acceptance criteria**
+- [ ] Character inventory
+- [ ] Library searched first: existing or missing per character
+- [ ] Existing sheets reused unchanged
 - [ ] Exact palette (hex)
 - [ ] Proportions and silhouette
 - [ ] Expressions list
-- [ ] Reusable across episodes
+- [ ] Gemini model-sheet prompt for each missing character
+- [ ] Continuity rules
 
 ## NATARAJA — `littleloop_nataraja_edit_director`
 **Role:** Animation & Editing Director  

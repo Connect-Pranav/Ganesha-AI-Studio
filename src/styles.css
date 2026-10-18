@@ -1386,6 +1386,12 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .fp-prompt { white-space: pre-wrap; word-break: break-word; max-height: 260px; overflow: auto; margin: 0; padding: 10px 12px; border-radius: 10px; background: rgba(0, 0, 0, 0.35); border: 1px solid var(--line); font: 12.5px/1.5 ui-monospace, monospace; color: var(--ink-2); }
 .fp-notes { margin: 0; padding-left: 18px; }
 
+/* Character Sheet Agent */
+.sa { display: grid; gap: 12px; margin-top: 12px; }
+.sa-palette { display: flex; flex-wrap: wrap; gap: 6px; }
+.sa-swatch { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-2); }
+.sa-swatch i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line-2); display: inline-block; }
+
 /* SAARTHI — floating CBO chat dock (bottom-right, minimised by default) */
 .dock-fab {
   position: fixed; right: 18px; bottom: 18px; z-index: 55; display: inline-flex; align-items: center; gap: 8px;

@@ -5,6 +5,9 @@
 // approval steps stop until a human decides.
 import templatesFile from '../agents/pipelines.json' with { type: 'json' };
 import { agentById, buildAgentPrompt, validateAgentOutput } from './agents.mjs';
+import { libraryText, sheetLibrary } from './sheetagent.mjs';
+
+const SHEET_AWARE = new Set(['littleloop_chitra_character_designer', 'littleloop_maya_prompt_engineer']);
 import { callProvider, ProviderError, PROVIDERS, AUTO_FALLBACK_PROVIDERS } from './providers.mjs';
 import { HttpError, isoIn, newId, nowIso } from './util.mjs';
 import { gateDispatch, reconcileTask, releaseReservation } from './cbo.mjs';
@@ -201,7 +204,9 @@ async function executeTask(env, db, task, owner, deps) {
     const c = JSON.parse(art.content_json);
     upstream.push({ step_key: key, agent_id: dep.agent_id, deliverable: dep.deliverable, content: c.deliverable ?? JSON.stringify(c, null, 2) });
   }
-  const { system, prompt } = buildAgentPrompt({ agent, task, workflow: wf, upstream });
+  // Character work searches the uploaded sheet library first (reuse before redesign).
+  const library = SHEET_AWARE.has(agent.id) && wf.brand === 'littleloop' ? libraryText(await sheetLibrary(db)) : null;
+  const { system, prompt } = buildAgentPrompt({ agent, task, workflow: wf, upstream, library });
   const allowed = await enginesFor(db, env, agent);
   // GANESHA_CBO may have picked a specific allowed engine for this dispatch (see cbo.selectEngine).
   const engines = task.preferred_engine && allowed.includes(task.preferred_engine) ? [task.preferred_engine, ...allowed.filter((e) => e !== task.preferred_engine)] : allowed;

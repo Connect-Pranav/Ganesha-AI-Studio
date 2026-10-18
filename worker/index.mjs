@@ -32,6 +32,7 @@ import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
 import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
+import * as sheetAgent from './sheetagent.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -517,6 +518,8 @@ async function route(request, env, ctx, rawEnv = env) {
   if (path === '/api/finished' && method === 'GET') return json(await finishedWork(envIg, db, url.searchParams.get('limit')));
 
   /* ---------- LittleLoop Reel Factory ---------- */
+  if (path === '/api/reels/sheet-agent' && method === 'GET') return json({ plans: await sheetAgent.listPlans(db) });
+  if (path === '/api/reels/sheet-agent' && method === 'POST') return json({ plan: await sheetAgent.planSheets(env, db, await readBody(request)) });
   if (path === '/api/reels' && method === 'GET') return json(await reels.overview(envIg, db));
   if (path === '/api/reels/config' && method === 'PUT') return json({ config: await reels.saveConfig(db, await readBody(request)) });
   if (path === '/api/reels/sheets' && method === 'POST') {

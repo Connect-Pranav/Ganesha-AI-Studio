@@ -16,12 +16,13 @@ const STUDIO_RULES = [
 ];
 
 /** Returns { system, prompt } for one task. `upstream` = [{ step_key, agent_id, deliverable, content }]. */
-export function buildAgentPrompt({ agent, task, workflow, upstream }) {
+export function buildAgentPrompt({ agent, task, workflow, upstream, library = null }) {
   const brand = registry.brands[workflow.brand];
   const system = [
     `You are ${agent.name} (${agent.id}), ${agent.role} at Ganesha AI Studio.`,
     `Mission: ${agent.mission}`,
     agent.limits ? `Limits: ${agent.limits}` : '',
+    ...(Array.isArray(agent.instructions) ? ['Working method:', ...agent.instructions.map((r) => `- ${r}`)] : []),
     'Studio rules:',
     ...STUDIO_RULES.map((r) => `- ${r}`),
   ]
@@ -48,6 +49,7 @@ export function buildAgentPrompt({ agent, task, workflow, upstream }) {
   for (const u of upstream) {
     parts.push(`## Upstream: ${u.step_key} by ${u.agent_id} (${u.deliverable})\n${clip(u.content, MAX_UPSTREAM_CHARS)}`);
   }
+  if (library !== null) parts.push(`# Character-sheet library (uploaded, approved — search this FIRST, use EXACT names)\n${library}`);
   if (task.feedback) parts.push(`# Corrections required from the previous review\n${task.feedback}`);
 
   if (task.is_gate) {

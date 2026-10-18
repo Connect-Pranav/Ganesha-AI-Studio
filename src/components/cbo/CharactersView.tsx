@@ -4,6 +4,7 @@ import { Card, EmptyState } from '../ui';
 import { studio, voices, useLoad, type Character } from '../../services/cboService';
 import { BRANDS, Gate, Honest, Pill, useAction } from './common';
 import { SheetUploader } from './StudioDesk';
+import { SheetAgent } from './SheetAgent';
 
 const EMPTY = { name: '', description: '', appearance: '', wardrobe: '', personality: '', language: '', styleConstraints: '', refs: '' };
 
@@ -12,6 +13,7 @@ export function CharactersView() {
   const l = useLoad(() => studio.characters(brand), [brand]);
   const v = useLoad(() => voices.list());
   const [edit, setEdit] = useState<Character | 'new' | null>(null);
+  const [sheetsKey, setSheetsKey] = useState(0);
   return (
     <Gate title="Characters & Assets" locked={l.locked} ready={Boolean(l.data)} error={l.error} onRetry={l.reload}>
       <div className="tabs" role="tablist" aria-label="Brand">
@@ -21,7 +23,8 @@ export function CharactersView() {
           </button>
         ))}
       </div>
-      {brand === 'littleloop' && <SheetUploader />}
+      {brand === 'littleloop' && <SheetAgent onSheetAdded={() => setSheetsKey((k) => k + 1)} />}
+      {brand === 'littleloop' && <SheetUploader key={sheetsKey} />}
       <Card title="Detailed characters (optional)" action={<button className="btn btn-small" onClick={() => setEdit('new')}>+ Detailed character</button>}>
         {edit && <CharacterForm key={edit === 'new' ? 'new' : edit.id} brand={brand} c={edit === 'new' ? null : edit} onDone={() => (setEdit(null), l.reload())} />}
         {(l.data?.characters ?? []).length === 0 ? (

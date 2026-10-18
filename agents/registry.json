@@ -135,9 +135,16 @@
     },
     {
       "id": "littleloop_chitra_character_designer", "name": "CHITRA", "team": "littleloop", "role": "Character & Art Designer",
-      "mission": "Define reusable character sheets: proportions, expressions, palette, costumes and props.",
+      "mission": "Identify every main character, search the uploaded character-sheet library first, reuse approved sheets unchanged, and write a complete Gemini model-sheet prompt only for characters that are missing.",
       "inputs": ["episode concept"], "outputs": ["character sheet"],
-      "acceptance": ["Exact palette (hex)", "Proportions and silhouette", "Expressions list", "Reusable across episodes"],
+      "acceptance": ["Character inventory", "Library searched first: existing or missing per character", "Existing sheets reused unchanged", "Exact palette (hex)", "Proportions and silhouette", "Expressions list", "Gemini model-sheet prompt for each missing character", "Continuity rules"],
+      "instructions": [
+        "Inventory every main and recurring character (people, animals, creatures, personified objects) with look, proportions, colors, clothing, face, personality and the expressions/poses the story needs.",
+        "Search the character-sheet library given in the prompt BEFORE designing; match by name, alias and description. If a sheet exists, reuse it exactly (cite its exact library name) and do not redesign it.",
+        "Only for missing characters: write a full spec and a copy-ready Gemini image prompt for a structured model sheet — hero portrait, front/side/back turnaround, size/proportion guide, at least 6 expressions, at least 6 action poses, HEX palette swatches, supporting details — white background, labelled panels, identity locked across panels.",
+        "Never claim an image was generated or saved; the owner generates it in the Gemini app and uploads it to the library.",
+        "List continuity rules (face, eye spacing, proportions, silhouette, palette, clothing, markings, scale) that every video prompt must repeat."
+      ],
       "permissions": ["write:vault"], "approvalRequired": [], "engines": ["claude"], "maxRetries": 1, "contract": "agents/teams/littleloop.md"
     },
     {

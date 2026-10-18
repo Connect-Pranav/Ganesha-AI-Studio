@@ -70,5 +70,6 @@ export const SCHEMA_STATEMENTS = [
   "CREATE INDEX IF NOT EXISTS idx_pcd_agent ON provider_call_details(agent_id, created_at)",
   "CREATE TABLE IF NOT EXISTS studio_prefs ( key TEXT PRIMARY KEY, value TEXT NOT NULL, updated_at TEXT NOT NULL )",
   "CREATE TABLE IF NOT EXISTS voice_samples ( id TEXT PRIMARY KEY, brand TEXT NOT NULL DEFAULT 'studio' CHECK (brand IN ('studio','littleloop','sunverse','foliocraft')), name TEXT NOT NULL, media_key TEXT NOT NULL, mime TEXT NOT NULL, bytes INTEGER NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL, UNIQUE (brand, name) )",
-  "CREATE TABLE IF NOT EXISTS flow_packs ( workflow_id TEXT PRIMARY KEY REFERENCES workflows(id) ON DELETE CASCADE, pack_json TEXT NOT NULL, provider TEXT NOT NULL, model TEXT NOT NULL, created_at TEXT NOT NULL )"
+  "CREATE TABLE IF NOT EXISTS flow_packs ( workflow_id TEXT PRIMARY KEY REFERENCES workflows(id) ON DELETE CASCADE, pack_json TEXT NOT NULL, provider TEXT NOT NULL, model TEXT NOT NULL, created_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS sheet_plans ( id TEXT PRIMARY KEY, brand TEXT NOT NULL DEFAULT 'littleloop', project TEXT NOT NULL, plan_json TEXT NOT NULL, provider TEXT NOT NULL, model TEXT NOT NULL, created_at TEXT NOT NULL )"
 ];
