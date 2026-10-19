@@ -1,6 +1,90 @@
 {
-  "updatedAt": "2026-10-18T04:41:27Z",
+  "updatedAt": "2026-10-19T02:25:26Z",
   "findings": [
+    {
+      "id": "f_20261019T022526Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram keeps widening tests of a Series tab that groups Reels into episodes",
+      "insight": "Instagram moved its Series test (group Reels into series, seasons, episodes and watch in order) to publishers in June, and in October was seen internally testing creator series tabs with a short-clips section. LittleLoop should plan episodes as numbered, recurring-character seasons so they can be grouped if the tool opens up. Still a test; not generally available.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram tests Series tab with publishers for microdrama content",
+          "url": "https://indiantelevision.com/iworld/instagram-tests-series-tab-with-publishers-for-microdrama-content/",
+          "source": "indiantelevision.com",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        },
+        {
+          "title": "(October 12, 2026) Instagram updates, news, and features",
+          "url": "https://socialbee.com/blog/instagram-updates/",
+          "source": "SocialBee",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-19T02:25:26Z"
+    },
+    {
+      "id": "f_20261019T022526Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "New preschool slate leans on STEM problem-solving with a 'plan, test, solve' loop",
+      "insight": "Netflix's preschool slate includes an animated Sesame Street spin-off (premiering Oct 26) built around using STEM skills to solve problems with a plan-test-solve approach. LittleLoop could try a short where a character plans, tries, fails gently and fixes a small problem, an easy learning point for ages 4-6. One source; signal of direction, not demand data.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "New Sesame Street Film and Gabby's Dollhouse Series for Preschoolers and Kids Coming to Netflix",
+          "url": "https://www.netflix.com/tudum/articles/new-netflix-preschool-shows-games",
+          "source": "Netflix Tudum",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-19T02:25:26Z"
+    },
+    {
+      "id": "f_20261019T022526Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube Music now shows listener-facing labels on tracks made mainly with generative AI",
+      "insight": "From Oct 14, YouTube Music shows an AI label on the player page (tap for detail), coming to the main YouTube app later. Partners declare Fully, Partly or No Gen AI; pitch correction counts as No Gen AI, and AI use alone does not block monetization. Sunverse should decide each track's designation before release and confirm how its distributor submits it.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube Music launches new labels as AI-generated music floods streaming platforms",
+          "url": "https://techcrunch.com/2026/10/14/youtube-music-launches-new-labels-as-ai-generated-music-floods-streaming-platforms",
+          "source": "TechCrunch",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        },
+        {
+          "title": "YouTube Music labels songs made primarily with generative AI",
+          "url": "https://ppc.land/youtube-music-labels-songs-made-primarily-with-generative-ai",
+          "source": "PPC Land",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-19T02:25:26Z"
+    },
+    {
+      "id": "f_20261019T022526Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Webflow became a connected app in Google Gemini via its MCP server (Oct 16)",
+      "insight": "Webflow's free Gemini connector lets users build pages, edit CMS, check analytics and run SEO/accessibility audits by chat, matching what it already offers in other AI assistants, with AI actions logged. Assistant-based editing is becoming a builder expectation; Foliocraft could scope a small, permissioned connector as a future premium feature.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Webflow, Google Gemini announce new agentic integration",
+          "url": "https://martechcube.com/webflow-google-gemini-announce-new-agentic-integration",
+          "source": "MarTech Cube",
+          "retrievedAt": "2026-10-19T02:25:26Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-19T02:25:26Z"
+    },
     {
       "id": "f_20261018T044046Z_littleloop_1",
       "brand": "littleloop",

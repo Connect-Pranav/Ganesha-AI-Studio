@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-10-18T04:41:53Z",
+  "updatedAt": "2026-10-19T02:25:26Z",
   "tasks": [
+    {
+      "id": "t_20261019T022526Z_littleloop_1_claude",
+      "title": "Plan a 5-episode LittleLoop season with numbered, recurring-character episodes",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit1: Instagram is testing Series grouping for episodic Reels; a season structure is ready if it opens up.",
+      "sourceFindings": [
+        "f_20261019T022526Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261019T022526Z_littleloop_2_claude",
+      "title": "Track when Instagram's Series tools open beyond test creators and publishers",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit1: Series is still limited to tests; confirm availability before relying on it.",
+      "sourceFindings": [
+        "f_20261019T022526Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261019T022526Z_littleloop_3_claude",
+      "title": "Draft a plan-try-fix problem-solving episode concept for ages 4-6",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit2: new preschool animation leans on STEM plan-test-solve storytelling.",
+      "sourceFindings": [
+        "f_20261019T022526Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261019T022526Z_sunverse_4_claude",
+      "title": "Confirm how Sunverse's distributor declares the Gen AI designation for YouTube Music",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun1: YouTube Music labels rely on partner Fully/Partly/No Gen AI declarations, live since Oct 14.",
+      "sourceFindings": [
+        "f_20261019T022526Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261019T022526Z_foliocraft_5_claude",
+      "title": "Compare AI-assistant connectors offered by Webflow, Wix and Framer",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol1: Webflow now edits sites via Gemini and other assistants; check what peers offer before scoping.",
+      "sourceFindings": [
+        "f_20261019T022526Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261019T022526Z_foliocraft_6_claude",
+      "title": "Spec a read-only MCP endpoint exposing a user's Foliocraft portfolio data",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol1: assistant connectors are becoming a builder feature; start with a small read-only, permissioned spec.",
+      "sourceFindings": [
+        "f_20261019T022526Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-19T02:25:26Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261018T044153Z_littleloop_1",
       "title": "Storyboard a toddler handwashing and daily hygiene animated Reel",

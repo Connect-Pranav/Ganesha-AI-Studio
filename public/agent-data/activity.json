@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261019T022526Z_1_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 LittleLoop findings — Instagram Series tests for episodic Reels; STEM problem-solving in new preschool shows."
+    },
+    {
+      "id": "e_20261019T022526Z_2_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 Sunverse finding — YouTube Music now labels tracks made mainly with generative AI."
+    },
+    {
+      "id": "e_20261019T022526Z_3_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 Foliocraft finding — Webflow launched a Gemini connector via its MCP server."
+    },
+    {
+      "id": "e_20261019T022526Z_4_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 3 LittleLoop tasks: season plan, Series availability check, problem-solving episode concept."
+    },
+    {
+      "id": "e_20261019T022526Z_5_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 Sunverse task: confirm distributor Gen AI designation for YouTube Music labels."
+    },
+    {
+      "id": "e_20261019T022526Z_6_claude",
+      "at": "2026-10-19T02:25:26Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: compare AI-assistant connectors; spec a read-only MCP endpoint."
+    },
+    {
       "id": "e_20261018T142135Z_1_claude",
       "at": "2026-10-18T14:21:35Z",
       "brand": "studio",
