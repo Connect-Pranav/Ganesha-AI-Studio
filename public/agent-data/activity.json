@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261019T051942Z_1_claude",
+      "at": "2026-10-19T05:19:42Z",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "engine": "claude",
+      "kind": "code",
+      "text": "CODE-SHAKTI blocked on t_20261013T073443Z_foliocraft_6: no Foliocraft portfolio templates exist in Ganesha-AI-Studio, so no PR was opened. Task left queued."
+    },
+    {
       "id": "e_20261019T045004Z_4_gemini",
       "at": "2026-10-19T04:50:04Z",
       "brand": "littleloop",

@@ -1,6 +1,16 @@
 {
   "runs": [
     {
+      "id": "run_20261019T051942Z_code_claude_1",
+      "agent": "code_shakti",
+      "engine": "claude",
+      "startedAt": "2026-10-19T05:19:42Z",
+      "finishedAt": "2026-10-19T05:19:42Z",
+      "status": "failed",
+      "summary": "Picked t_20261013T073443Z_foliocraft_6 (oldest medium-priority queued task; no high-priority tasks). No PR opened.",
+      "error": "Blocked: the task asks for responsive layout updates across Foliocraft portfolio templates, but this repo (the command-center dashboard) contains no Foliocraft product code or templates (only agents/teams/foliocraft.md docs). The other queued medium Foliocraft tasks (landing page, gallery, CV template, projects-first layout, onboarding) depend on the same missing codebase, and the Sunverse 24/7 stream task is a requiresApproval publishing action, not a code change. Needs owner decision: add the Foliocraft repo or approve a prototypes/foliocraft area. Baseline npm ci + npm run build on main passed."
+    },
+    {
       "id": "run_20261019T045004Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
