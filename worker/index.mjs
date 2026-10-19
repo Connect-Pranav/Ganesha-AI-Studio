@@ -33,6 +33,7 @@ import * as ig from './instagram.mjs';
 import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
+import { growthRoute } from './growth/routes.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -515,6 +516,8 @@ async function route(request, env, ctx, rawEnv = env) {
     await cbochat.clear(db);
     return json({ ok: true });
   }
+  /* ---------- GANESHA GROWTH AI (owner-only; brand scoping inside) ---------- */
+  if (seg[1] === 'growth') return json(await growthRoute({ env, db, method, seg, url, body: () => readBody(request) }));
   if (path === '/api/finished' && method === 'GET') return json(await finishedWork(envIg, db, url.searchParams.get('limit')));
 
   /* ---------- LittleLoop Reel Factory ---------- */

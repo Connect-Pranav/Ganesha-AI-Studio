@@ -179,7 +179,7 @@ export async function callGeminiInteraction(env, db, { system, message, previous
     const text = texts.join('').trim();
     if (!text) throw new Error(`Gemini returned no text (status ${r.status ?? 'unknown'})`);
     await logCall(db, 'gemini', model, 'success', status, r.usage?.total_input_tokens, (r.usage?.total_output_tokens ?? 0) + (r.usage?.total_thought_tokens ?? 0), started, null);
-    return { text, model, interactionId: r.id ?? null, thoughts: thoughts.join('\n\n').trim() || null, sources: sources.slice(0, 12), queries };
+    return { text, model, interactionId: r.id ?? null, thoughts: thoughts.join('\n\n').trim() || null, sources: sources.slice(0, 12), queries, usage: { input: r.usage?.total_input_tokens ?? null, output: r.usage ? (r.usage.total_output_tokens ?? 0) + (r.usage.total_thought_tokens ?? 0) : null } };
   } catch (e) {
     const msg = e.name === 'AbortError' ? 'Gemini timed out' : String(e.message);
     await logCall(db, 'gemini', model, 'error', status, null, null, started, msg);

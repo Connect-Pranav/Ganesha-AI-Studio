@@ -1392,6 +1392,41 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 .sa-swatch { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 3px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--ink-2); }
 .sa-swatch i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line-2); display: inline-block; }
 
+/* GANESHA GROWTH AI */
+.gr { display: grid; gap: 14px; }
+.gr-bar { display: grid; gap: 8px; }
+.gr-tabs { flex-wrap: wrap; }
+.gr-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.gr-stat { display: grid; gap: 2px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface-2); }
+.gr-stat-v { font-size: 22px; font-weight: 700; }
+.gr-stat-k { font-size: 12px; color: var(--ink-3); }
+.gr-link { background: none; border: 0; color: var(--violet); font: inherit; cursor: pointer; padding: 0; text-decoration: underline; }
+.gr-list { margin: 6px 0; padding-left: 18px; display: grid; gap: 4px; font-size: 13.5px; }
+.gr-rows { list-style: none; margin: 8px 0; padding: 0; display: grid; gap: 8px; }
+.gr-row { padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.gr-lead, .gr-draft { display: grid; justify-content: stretch; }
+.gr-lead-head { display: flex; gap: 12px; align-items: center; background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; padding: 0; }
+.gr-score { flex: none; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; border: 2px solid var(--line-2); }
+.gr-score[data-band='hi'] { border-color: var(--ok); color: var(--ok); }
+.gr-score[data-band='mid'] { border-color: var(--warn); color: var(--warn); }
+.gr-score[data-band='lo'] { border-color: var(--err); color: var(--err); }
+.gr-panel { display: grid; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.gr-panel select { padding: 5px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--surface); color: var(--ink); font-size: 12.5px; }
+.gr-score-box, .gr-evidence { padding: 8px 10px; border-radius: 10px; background: rgba(0, 0, 0, 0.25); border: 1px solid var(--line); font-size: 13.5px; }
+.gr-pipe { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.cx-chip.on { background: var(--green-soft); border-color: var(--green-2); }
+.gr-filters { margin-bottom: 6px; }
+.gr-body { max-height: 220px; }
+.gr-done { opacity: 0.6; }
+.gr-table-wrap { overflow-x: auto; }
+.gr-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.gr-table th, .gr-table td { padding: 6px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.gr-dl { display: grid; gap: 8px; margin: 0; }
+.gr-dl div { display: grid; grid-template-columns: 180px 1fr; gap: 10px; }
+.gr-dl dt { color: var(--ink-3); font-size: 13px; }
+.gr-dl dd { margin: 0; font-size: 13.5px; }
+@media (max-width: 640px) { .gr-dl div { grid-template-columns: 1fr; gap: 2px; } }
+
 /* SAARTHI — floating CBO chat dock (bottom-right, minimised by default) */
 .dock-fab {
   position: fixed; right: 18px; bottom: 18px; z-index: 55; display: inline-flex; align-items: center; gap: 8px;

@@ -18,6 +18,7 @@ export const TOP_NAV: NavItem[] = [
   { id: 'sunverse', label: 'Sunverse', icon: 'sunverse' },
   { id: 'foliocraft', label: 'Foliocraft', icon: 'foliocraft' },
   { id: 'analytics', label: 'Analytics', icon: 'analytics' },
+  { id: 'growth', label: 'Growth', icon: 'growth' },
 ];
 const work: NavItem[] = [
   { id: 'pipelines', label: 'Pipelines', icon: 'pipelines' },
