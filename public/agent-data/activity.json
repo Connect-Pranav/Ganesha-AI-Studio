@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261019T045004Z_4_gemini",
+      "at": "2026-10-19T04:50:04Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 3 task(s) for LittleLoop"
+    },
+    {
+      "id": "e_20261019T045004Z_5_gemini",
+      "at": "2026-10-19T04:50:04Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 3 task(s) for Sunverse"
+    },
+    {
+      "id": "e_20261019T045004Z_6_gemini",
+      "at": "2026-10-19T04:50:04Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 3 task(s) for Foliocraft"
+    },
+    {
+      "id": "e_20261019T044854Z_1_gemini",
+      "at": "2026-10-19T04:48:54Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "1 new finding for LittleLoop from 12 sources"
+    },
+    {
+      "id": "e_20261019T044915Z_2_gemini",
+      "at": "2026-10-19T04:49:15Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "0 new findings for Sunverse from 18 sources"
+    },
+    {
+      "id": "e_20261019T044923Z_3_gemini",
+      "at": "2026-10-19T04:49:23Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "0 new findings for Foliocraft from 15 sources"
+    },
+    {
       "id": "e_20261019T022526Z_1_claude",
       "at": "2026-10-19T02:25:26Z",
       "brand": "littleloop",
