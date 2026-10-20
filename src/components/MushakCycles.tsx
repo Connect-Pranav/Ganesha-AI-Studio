@@ -77,7 +77,7 @@ interface Cycle {
 }
 interface Data { settings: { autopilot: boolean; everyHours: number; maxSteps: number }; nextRunAt: string | null; cycles: Cycle[] }
 
-const KIND: Record<string, string> = { audience: 'Growth pack (followers · reach · customers)', discover: 'Find new leads', research: 'Research', qualify: 'Score', draft: 'Write outreach draft' };
+const KIND: Record<string, string> = { audience: 'Growth pack (followers · reach · customers)', youtube: 'Find creators on YouTube (free API)', discover: 'Find new leads (Google Search)', research: 'Research', qualify: 'Score', draft: 'Write outreach draft' };
 const BRAND: Record<string, string> = { littleloop: 'LittleLoop', sunverse: 'Sunverse', foliocraft: 'Foliocraft' };
 const ist = (iso: string) => new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
 const pill = (s: string) => (s === 'done' ? 'pill-running' : s === 'running' || s === 'pending' ? 'pill-idle' : 'pill-warn');

@@ -10,7 +10,7 @@ export interface Blueprint {
   run?: { cycleId: string; appended: boolean; campaign: { id: string; name: string }; steps: number };
   error?: string;
 }
-const KIND: Record<string, string> = { discover: 'Find leads', research: 'Research', qualify: 'Score', draft: 'Write drafts' };
+const KIND: Record<string, string> = { audience: 'Growth pack', youtube: 'Find YouTube creators', discover: 'Find leads', research: 'Research', qualify: 'Score', draft: 'Write drafts' };
 const BRAND: Record<string, string> = { littleloop: 'LittleLoop', sunverse: 'Sunverse', foliocraft: 'Foliocraft' };
 
 export function BlueprintCard({ bp, from }: { bp: Blueprint; from?: string }) {

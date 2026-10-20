@@ -87,14 +87,14 @@ async function leadsFor(db, sql, ...args) {
 }
 
 /** Finish what is in the pipeline before finding more: score → draft → research → discover. */
-async function buildPlan(db, camps, maxSteps) {
+async function buildPlan(db, camps, maxSteps, { youtube = false } = {}) {
   const plan = [];
   const push = (s) => plan.length < maxSteps && plan.push({ id: `s${plan.length + 1}`, status: 'pending', ...s });
   // Audience first (followers, reach, customers): one brand per run, rotating LittleLoop → Sunverse → Foliocraft.
   const runs = (await db.prepare('SELECT COUNT(*) AS n FROM growth_cycles').first()).n;
   const brand = GROWTH_BRAND_IDS[runs % GROWTH_BRAND_IDS.length];
   push({ kind: 'audience', agent: 'NARADA', brand, campaign: 'Audience growth', why: `Growth pack for ${GROWTH_BRANDS[brand].name}: what is trending now, 3 content ideas, posting times, collab targets and customer actions.` });
-  for (const kind of ['qualify', 'draft', 'research', 'discover']) {
+  for (const kind of ['qualify', 'draft', 'research', 'youtube', 'discover']) {
     for (const c of camps) {
       const room = Math.max(0, c.dailyJobLimit - c.jobsToday - plan.filter((p) => p.campaignId === c.id).length);
       if (!room) continue;
@@ -112,6 +112,8 @@ async function buildPlan(db, camps, maxSteps) {
       if (kind === 'research')
         for (const l of await leadsFor(db, "SELECT id, name FROM growth_leads WHERE campaign_id = ? AND origin != 'demo' AND stage IN ('new','researching') AND researched_at IS NULL ORDER BY created_at LIMIT 2", c.id))
           push({ kind, agent: 'NARADA', brand: c.brand, campaignId: c.id, campaign: c.name, leadId: l.id, lead: l.name, why: `${l.name} is new; verify facts and find the right contact role.` });
+      if (kind === 'youtube' && youtube && ['sunverse', 'littleloop'].includes(c.brand) && c.status === 'active' && c.leads < c.maxLeads && c.unresearched < 3)
+        push({ kind, agent: 'NARADA', brand: c.brand, campaignId: c.id, campaign: c.name, count: 6, why: `Free YouTube search for ${c.brand === 'sunverse' ? 'artists and music creators' : 'kids & family creators'} to collaborate with.` });
       if (kind === 'discover' && c.status === 'active' && c.leads < c.maxLeads && c.unresearched < 3)
         push({ kind, agent: 'NARADA', brand: c.brand, campaignId: c.id, campaign: c.name, count: 3, why: `Only ${c.unresearched} unresearched lead(s) left and ${c.maxLeads - c.leads} slot(s) free; find 3 more.` });
     }
@@ -166,7 +168,7 @@ async function audienceStep(env, db, s, deps) {
 
 /** Blueprint steps may leave the lead open ("research the next new lead"); pick it when the step runs. */
 async function resolveLead(db, s) {
-  if (s.leadId || s.kind === 'discover' || s.kind === 'audience') return true;
+  if (s.leadId || s.kind === 'discover' || s.kind === 'audience' || s.kind === 'youtube') return true;
   const sql = {
     research: "SELECT id, name FROM growth_leads WHERE campaign_id = ? AND origin != 'demo' AND stage IN ('new','researching') AND researched_at IS NULL ORDER BY created_at LIMIT 1",
     qualify: "SELECT id, name FROM growth_leads WHERE campaign_id = ? AND origin != 'demo' AND researched_at IS NOT NULL AND score IS NULL AND stage NOT IN ('suppressed','lost') ORDER BY updated_at LIMIT 1",
@@ -181,6 +183,10 @@ async function resolveLead(db, s) {
 
 async function runStep(env, db, s, deps) {
   if (s.kind === 'audience') return audienceStep(env, db, s, deps);
+  if (s.kind === 'youtube') {
+    const r = await agents.youtubeDiscover(env, db, s.campaignId, { count: s.count ?? 6 }, deps);
+    return { jobId: r.jobId, text: `YouTube search “${r.query}”: ${r.created.length} new creator lead(s)${r.skipped.length ? `, skipped ${r.skipped.length}` : ''}.`, leads: r.created.map((l) => ({ id: l.id, name: l.name, website: l.website, category: l.category, sources: [l.website].filter(Boolean) })), skipped: r.skipped.slice(0, 10) };
+  }
   if (s.kind === 'discover') {
     const r = await agents.discover(env, db, s.campaignId, { count: s.count ?? 3 }, deps);
     return {
@@ -214,7 +220,7 @@ async function finish(db, cycle, plan, status, error = null) {
     stepsDone: done.length,
     stepsFailed: plan.filter((p) => p.status === 'failed').length,
     stepsSkipped: plan.filter((p) => p.status === 'skipped').length,
-    leadsFound: done.filter((p) => p.kind === 'discover').reduce((a, p) => a + (p.result?.leads?.length ?? 0), 0),
+    leadsFound: done.filter((p) => p.kind === 'discover' || p.kind === 'youtube').reduce((a, p) => a + (p.result?.leads?.length ?? 0), 0),
     researched: done.filter((p) => p.kind === 'research').length,
     scored: done.filter((p) => p.kind === 'qualify').length,
     draftsForApproval: done.filter((p) => p.kind === 'draft').map((p) => ({ lead: p.lead, draftId: p.result?.draftId, subject: p.result?.subject })),
@@ -249,7 +255,7 @@ export async function startCycle(env, db, trigger = 'manual') {
   const camps = (await db.prepare("SELECT * FROM growth_campaigns WHERE status = 'active' ORDER BY updated_at").all()).results;
   const state = [];
   for (const c of camps) state.push(await campaignState(db, c));
-  const plan = await buildPlan(db, state, settings.maxSteps);
+  const plan = await buildPlan(db, state, settings.maxSteps, { youtube: Boolean(env.YOUTUBE_API_KEY) });
   const inputs = {
     settings,
     openedCampaigns,
@@ -334,8 +340,8 @@ export async function listCycles(db, limit = 30) {
 }
 
 /* ---------------- owner commands → blueprint → run ---------------- */
-const KINDS = ['audience', 'discover', 'research', 'qualify', 'draft'];
-const AGENT_OF = { audience: 'NARADA', discover: 'NARADA', research: 'NARADA', qualify: 'SOMA', draft: 'SAMVADA' };
+const KINDS = ['audience', 'youtube', 'discover', 'research', 'qualify', 'draft'];
+const AGENT_OF = { audience: 'NARADA', youtube: 'NARADA', discover: 'NARADA', research: 'NARADA', qualify: 'SOMA', draft: 'SAMVADA' };
 
 /**
  * Validates a blueprint Mushak wrote from the owner's command, opens its campaign if needed, and puts
@@ -372,7 +378,8 @@ export async function runBlueprint(env, db, bp, command) {
     const kind = String(raw?.kind ?? '');
     if (!KINDS.includes(kind)) continue;
     const count = Math.max(1, Math.min(10, Math.round(Number(raw.count) || (kind === 'discover' ? 5 : 3))));
-    if (kind === 'audience') steps.push({ kind, why: 'Your command: growth pack (trends, content ideas, posting times, collabs, customer actions).' });
+    if (kind === 'youtube') steps.push({ kind, count, why: `Your command: find ${count} creator(s) on YouTube.` });
+    else if (kind === 'audience') steps.push({ kind, why: 'Your command: growth pack (trends, content ideas, posting times, collabs, customer actions).' });
     else if (kind === 'discover') {
       for (let left = count; left > 0; left -= 5) steps.push({ kind, count: Math.min(5, left), why: `Your command: find ${count} lead(s).` });
     } else for (let i = 0; i < count; i++) steps.push({ kind, why: `Your command: ${kind} the next lead that is ready.` });

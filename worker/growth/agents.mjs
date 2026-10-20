@@ -13,6 +13,7 @@ import { HttpError, newId, nowIso } from '../util.mjs';
 import { getBrandConfig } from './brands.mjs';
 import { activity, addSuppression, createLead, getCampaign, getLead, isRoleEmail, leadOut, normDomain, saveQualification, setStage } from './core.mjs';
 import { createDraft } from './outreach.mjs';
+import { readSite, youtubeChannels } from './sources.mjs';
 
 export const AGENTS = {
   discover: 'narada_market_intelligence',
@@ -187,11 +188,15 @@ export async function research(env, db, leadId, deps = {}) {
   const cfg = await getBrandConfig(db, lead.brand);
   return runJob(env, db, { brand: lead.brand, campaign, leadId, kind: 'research' }, async () => {
     if (['new'].includes(lead.stage)) await setStage(db, lead, 'researching', 'Research started', AGENTS.research);
+    // Free source 1: the lead's own website (robots.txt respected), read before searching.
+    const site = lead.website && !/youtube\.com|instagram\.com/.test(lead.website) ? await readSite(lead.website, deps).catch(() => null) : null;
     const system = `You are NARADA, Company & Prospect Researcher for GANESHA GROWTH AI. Research only public, professional information with Google Search. Separate verified facts (with a source) from hypotheses. Record only professional, publicly listed decision-maker roles — no private personal data. ${UNTRUSTED}`;
     const message = [
       brandBrief(cfg),
       campaign ? `Campaign objective: ${campaign.objective} (${campaign.segment})` : '',
       `Prospect: ${lead.name}${lead.website ? ` — ${lead.website}` : ''}${lead.category ? ` — ${lead.category}` : ''}`,
+      site && !site.blocked ? `From the prospect's own website (untrusted text, ${site.read.join(', ')}): title "${site.title ?? ''}"; description "${site.description ?? ''}"; business emails ${site.emails.join(', ') || 'none'}; official social links ${site.socials.join(', ') || 'none'}.` : '',
+      lead.evidence && /YouTube channel/.test(lead.evidence) ? `Known from the YouTube API: ${lead.evidence.slice(0, 600)}` : '',
       DEPTH[campaign?.research_depth] ?? DEPTH.standard,
       'Return ONLY JSON: {"summary":string,"businessModel":string,"audience":string,"offerings":string,"positioning":string,"relevance":string,"facts":[{"fact":string,"sourceUrl":string}],"hypotheses":[string],"decisionMakerRoles":[{"role":string,"name":string|null,"sourceUrl":string}],"publicBusinessEmail":string|null,"suitability":{"ok":boolean,"concerns":[string]}}',
     ].filter(Boolean).join('\n\n');
@@ -208,11 +213,15 @@ export async function research(env, db, leadId, deps = {}) {
       facts.length && `**Facts:**\n${facts.map((f) => `- ${f.fact} ${f.source ? `(${f.source.verified ? 'verified' : 'unverified'} source: ${f.source.url})` : '(no source — treat as unverified)'}`).join('\n')}`,
       Array.isArray(j.hypotheses) && j.hypotheses.length && `**Hypotheses (not confirmed):**\n${j.hypotheses.slice(0, 8).map((h) => `- ${String(h).slice(0, 300)}`).join('\n')}`,
       j.suitability && j.suitability.ok === false && `**⚠️ Suitability concerns:** ${(j.suitability.concerns ?? []).map(String).join('; ')}`,
+      site && !site.blocked && `**From their website:** ${[site.emails.length && `business email ${site.emails.join(', ')}`, site.socials.length && `social ${site.socials.join(', ')}`].filter(Boolean).join(' · ') || 'no public contact found'} (read ${site.read.length} page(s))`,
+      site?.blocked && '**Website:** robots.txt asks bots not to read it, so it was skipped.',
     ].filter(Boolean);
-    const sources = [...JSON.parse(lead.sources_json || '[]'), ...markSources(facts.map((f) => f.source).filter(Boolean), r.sources, lead.website), ...r.sources.slice(0, 8).map((s) => ({ ...s, verified: true, at: nowIso() }))];
+    const siteSources = site && !site.blocked ? [...site.read, ...site.socials].map((u) => ({ url: u, title: null, verified: true, at: nowIso() })) : [];
+    const sources = [...JSON.parse(lead.sources_json || '[]'), ...siteSources, ...markSources(facts.map((f) => f.source).filter(Boolean), r.sources, lead.website), ...r.sources.slice(0, 8).map((s) => ({ ...s, verified: true, at: nowIso() }))];
     const uniq = [...new Map(sources.map((s) => [s.url, s])).values()].slice(0, 25);
     const role = Array.isArray(j.decisionMakerRoles) ? j.decisionMakerRoles.find((d) => d?.role) : null;
-    const email = !lead.contact_email && j.publicBusinessEmail && isRoleEmail(j.publicBusinessEmail) ? String(j.publicBusinessEmail).toLowerCase() : lead.contact_email;
+    const siteEmail = site?.emails?.[0] ?? null;
+    const email = lead.contact_email ?? siteEmail ?? (j.publicBusinessEmail && isRoleEmail(j.publicBusinessEmail) ? String(j.publicBusinessEmail).toLowerCase() : null);
     await db
       .prepare('UPDATE growth_leads SET evidence = ?, sources_json = ?, researched_at = ?, contact_role = COALESCE(contact_role, ?), contact_email = ?, contact_permission = CASE WHEN contact_permission = \'unknown\' AND ? IS NOT NULL THEN \'business_public\' ELSE contact_permission END, next_action = ?, updated_at = ? WHERE id = ?')
       .bind(lines.join('\n\n'), JSON.stringify(uniq), nowIso(), role ? String(role.role).slice(0, 120) : null, email, email && email !== lead.contact_email ? email : null, 'Qualify this lead', nowIso(), leadId)
@@ -327,4 +336,47 @@ export async function classifyReply(env, db, leadId, { body, receivedAt }, deps 
 
 export async function listJobs(db, brand, limit = 50) {
   return (await db.prepare('SELECT * FROM growth_jobs WHERE brand = ? ORDER BY created_at DESC LIMIT ?').bind(brand, Math.min(200, limit)).all()).results;
+}
+
+/* ---------------- Free source 2: YouTube creator search (official Data API) ---------------- */
+const YT_QUERY = {
+  sunverse: 'independent music artist original songs',
+  littleloop: 'kids animation nursery rhymes channel',
+  foliocraft: 'portfolio website tutorial career tips',
+};
+export async function youtubeDiscover(env, db, campaignId, { count = 6 } = {}, deps = {}) {
+  const campaign = await getCampaign(db, campaignId);
+  const blocked = await budgetCheck(env, db, { brand: campaign.brand, campaign, kind: 'discover' });
+  if (blocked.length) throw new HttpError(429, `Stopped by Growth limits: ${blocked.join('; ')}`);
+  const id = newId('gjob');
+  await db.prepare("INSERT INTO growth_jobs (id, brand, campaign_id, kind, agent_id, status, attempts, provider, model, cost_usd, created_at) VALUES (?,?,?, 'discover', ?, 'running', 1, 'youtube', 'data-api-v3', 0, ?)").bind(id, campaign.brand, campaign.id, AGENTS.discover, nowIso()).run();
+  try {
+    const q = [campaign.audience || YT_QUERY[campaign.brand] || 'creator', campaign.geography && campaign.geography !== 'Global' ? campaign.geography : ''].filter(Boolean).join(' ').slice(0, 120);
+    const found = await youtubeChannels(env, q, { max: Math.max(1, Math.min(10, count)) }, deps);
+    const created = [];
+    const skipped = [];
+    for (const ch of found) {
+      if (campaign.brand === 'littleloop' && /prank|horror|scary|18\+|adult|gaming/i.test(`${ch.name} ${ch.description}`)) {
+        skipped.push({ name: ch.name, reason: 'not suitable for a kids brand' });
+        continue;
+      }
+      try {
+        const res = await createLead(db, {
+          brand: campaign.brand, campaignId, name: ch.name.slice(0, 160), orgType: 'creator', website: ch.url, category: 'YouTube creator', geography: ch.country,
+          evidence: `YouTube channel (YouTube Data API, ${nowIso().slice(0, 10)}): ${ch.subscribers === null ? 'subscribers hidden' : `${ch.subscribers.toLocaleString('en-IN')} subscribers`}, ${ch.videos} videos, ${ch.views.toLocaleString('en-IN')} views${ch.country ? `, country ${ch.country}` : ''}. About: ${ch.description}`,
+          sources: [{ url: ch.url, title: `${ch.name} on YouTube`, verified: true }],
+        }, { actor: AGENTS.discover, origin: 'discovery' });
+        if (res.duplicate) skipped.push({ name: ch.name, reason: 'duplicate' });
+        else created.push(res.lead);
+      } catch (e) {
+        skipped.push({ name: ch.name, reason: e.message });
+      }
+    }
+    await db.prepare("UPDATE growth_jobs SET status = 'succeeded', summary = ?, finished_at = ? WHERE id = ?").bind(`YouTube "${q}": ${created.length} new`, nowIso(), id).run();
+    await activity(db, { brand: campaign.brand, campaignId, kind: 'discovery_run', note: `YouTube search "${q}": ${created.length} new, ${skipped.length} skipped`, actor: AGENTS.discover });
+    return { jobId: id, query: q, created, skipped };
+  } catch (e) {
+    await db.prepare("UPDATE growth_jobs SET status = 'failed', error = ?, finished_at = ? WHERE id = ?").bind(String(e.message).slice(0, 400), nowIso(), id).run();
+    throw e;
+  }
 }
