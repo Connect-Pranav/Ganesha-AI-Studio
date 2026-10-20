@@ -72,6 +72,18 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
 
   const t = data?.total;
   const status = useMushakStatus();
+  const [boosting, setBoosting] = useState(false);
+  const boost = async () => {
+    setBoosting(true);
+    try {
+      await api('/api/growth/cycles/boost', { method: 'POST', body: '{}' });
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : 'Boost failed');
+    } finally {
+      setBoosting(false);
+      openTab('runs');
+    }
+  };
   const started = Boolean(t && ((t.leads ?? 0) > 0 || (t.jobs ?? 0) > 0));
   return (
     <>
@@ -97,6 +109,9 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
         <div className="gs-actions">
           <button className="btn btn-primary" onClick={() => openTab('runs')} disabled={locked || !data}>
             <Icon name="analytics" size={16} /> 4-hour reports
+          </button>
+          <button className="btn btn-ghost" onClick={boost} disabled={locked || boosting} title="Push Mushak's work now">
+            {boosting ? '⚡ Boosting…' : '⚡ Boost'}
           </button>
           <button className="btn btn-ghost" onClick={() => openTab('talk')} disabled={locked}>
             🙏 Talk

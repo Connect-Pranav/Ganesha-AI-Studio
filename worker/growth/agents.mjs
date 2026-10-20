@@ -91,9 +91,28 @@ async function runJob(env, db, { brand, campaign = null, leadId = null, kind }, 
   throw lastErr instanceof HttpError ? lastErr : new HttpError(502, `Agent job failed: ${lastErr?.message ?? 'unknown error'}`);
 }
 
-async function grounded(env, db, system, message, deps) {
-  const r = await callGeminiInteraction(env, db, { system, message, research: true, think: false }, deps);
-  const json = parseJsonOutput(r.text);
+/**
+ * Google-Search-grounded Gemini call that must return JSON. Two safety nets:
+ *  • the search answer came back as prose → a cheap second Gemini call converts it to the JSON asked for
+ *    (the grounding sources from the search are kept, so verification still works);
+ *  • the search call itself failed → plain Gemini without search; its URLs are then UNVERIFIED.
+ */
+export async function grounded(env, db, system, message, deps) {
+  let r;
+  try {
+    r = await callGeminiInteraction(env, db, { system, message, research: true, think: false }, deps);
+  } catch (e) {
+    const p = await callProvider(env, db, 'gemini', { system: `${system}\nWeb search is unavailable right now: use only what you know, never invent organisations, and say so in your text fields.`, prompt: message, json: true, maxTokens: 4000, purpose: 'growth_fallback' }, deps);
+    if (!p.json || typeof p.json !== 'object') throw new HttpError(502, `Search failed (${String(e.message).slice(0, 120)}) and the fallback returned no JSON`);
+    return { json: p.json, sources: [], model: p.model, usage: p.usage, fallback: `search unavailable: ${String(e.message).slice(0, 120)}` };
+  }
+  let json = null;
+  try {
+    json = parseJsonOutput(r.text);
+  } catch {
+    const fix = await callProvider(env, db, 'gemini', { system: 'Convert the research notes into the exact JSON shape requested. Use only facts and URLs present in the notes. Return JSON only.', prompt: `REQUEST:\n${message.slice(-1500)}\n\nNOTES:\n${r.text.slice(0, 12000)}`, json: true, maxTokens: 4000, purpose: 'growth_json_repair' }, deps);
+    json = fix.json;
+  }
   if (!json || typeof json !== 'object') throw new HttpError(502, 'The research agent did not return valid JSON');
   return { json, sources: r.sources ?? [], model: r.model, usage: r.usage };
 }

@@ -40,28 +40,31 @@ test('autopilot: opens starter campaigns, plans with reasons, runs steps a few p
   const c1 = await ap.scheduledMushak(ENV, db, { fetch: gemini, sleep: noSleep });
   assert.equal(c1.inputs.openedCampaigns.length, 3);
   assert.equal((await core.listCampaigns(db)).filter((c) => c.status === 'active').length, 3);
-  assert.ok(c1.plan.every((p) => p.kind === 'discover' && p.why));
+  assert.equal(c1.plan[0].kind, 'audience', 'growth pack first');
+  assert.ok(c1.plan.slice(1).every((p) => p.kind === 'discover' && p.why));
   let c = c1;
   while (c.status === 'running') c = await ap.advance(ENV, db, { deps: { fetch: gemini, sleep: noSleep } });
   assert.equal(c.status, 'done');
   assert.equal(c.outputs.leadsFound, 9);
   assert.match(c.summary, /found 9 lead/);
-  assert.ok(c.plan[0].result.leads[0].sources.length > 0, 'outputs keep sources');
+  assert.ok(c.plan[1].result.leads[0].sources.length > 0, 'outputs keep sources');
+  assert.equal(c.outputs.growthPacks.length, 1);
+  assert.ok(Array.isArray(c.plan[0].result.audience.contentIdeas));
 
   // Not due again yet.
   assert.equal(await ap.scheduledMushak(ENV, db, { fetch: gemini }), null);
 
   // Cycle 2 (manual): pipeline first — research the new leads.
-  await ap.saveSettings(db, { maxSteps: 4 });
+  await ap.saveSettings(db, { maxSteps: 5 });
   let m = await ap.startCycle(ENV, db, 'manual');
-  assert.ok(m.plan.every((p) => p.kind === 'research'));
+  assert.ok(m.plan.slice(1).every((p) => p.kind === 'research'));
   while (m.status === 'running') m = await ap.advance(ENV, db, { deps: { fetch: gemini, sleep: noSleep } });
   assert.equal(m.outputs.researched, 4);
 
   // Cycle 3: those are scored, then drafted (qualify comes first in the plan).
   await ap.saveSettings(db, { maxSteps: 30 });
   let k = await ap.startCycle(ENV, db, 'manual');
-  assert.equal(k.plan[0].kind, 'qualify');
+  assert.equal(k.plan[1].kind, 'qualify');
   while (k.status === 'running') k = await ap.advance(ENV, db, { deps: { fetch: gemini, sleep: noSleep } });
   assert.ok(k.outputs.scored >= 4);
   // Nothing is ever sent by Mushak.
@@ -139,4 +142,13 @@ test('SAARTHI can command Mushak: its MUSHAK line is delegated, Mushak blueprint
   const hist = await cbochat.history(db);
   assert.equal(hist.at(-1).action.type, 'mushak');
   assert.equal((await db.prepare("SELECT status FROM growth_cycles").first()).status, 'running');
+});
+
+test('boost: starts a run when idle, pushes the running one forward when busy', async () => {
+  n = 0;
+  const c = await ap.boost(ENV, db, { fetch: gemini, sleep: noSleep });
+  assert.equal(c.plan.filter((p) => p.status !== 'pending').length, 2, 'idle: new run, first 2 steps done now');
+  const c2 = await ap.boost(ENV, db, { fetch: gemini, sleep: noSleep });
+  assert.equal(c2.id, c.id);
+  assert.ok(c2.plan.filter((p) => p.status !== 'pending').length > 2 || c2.status !== 'running');
 });

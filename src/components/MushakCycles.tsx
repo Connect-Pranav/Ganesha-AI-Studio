@@ -5,7 +5,63 @@ import { api, AUTH_EVENT, getToken } from '../services/adminService';
 import { BrandMark } from './BrandMark';
 import { formatWhen } from './ui';
 
-interface Step { id: string; kind: string; agent: string; brand: string; campaign: string; lead?: string; count?: number; why: string; status: string; startedAt?: string; finishedAt?: string; result?: { text: string; leads?: { name: string; website: string | null; category: string | null; sources: string[] }[]; summary?: string; sources?: string[]; score?: number; missing?: string[]; subject?: string; preview?: string; draftId?: string } }
+interface Step { id: string; kind: string; agent: string; brand: string; campaign: string; lead?: string; count?: number; why: string; status: string; startedAt?: string; finishedAt?: string; result?: { text: string; audience?: Audience; leads?: { name: string; website: string | null; category: string | null; sources: string[] }[]; summary?: string; sources?: string[]; score?: number; missing?: string[]; subject?: string; preview?: string; draftId?: string } }
+interface Audience {
+  trends: { trend: string; whyNow: string; sourceUrl: string | null; verified: boolean }[];
+  contentIdeas: { title: string; hook: string; format: string; outline: string; hashtags: string[] }[];
+  postingPlan: { bestTimesIST: string[]; perWeek: number | null; basis: string } | null;
+  collabTargets: { name: string; url: string | null; why: string }[];
+  engagementActions: string[];
+  customerActions: string[];
+  kpiTargets: string | null;
+  current: { followers: number | null; totalViews: number | null; posts: number | null } | null;
+  fallback: string | null;
+}
+function AudiencePack({ a }: { a: Audience }) {
+  return (
+    <div className="mc-pack">
+      {a.current && <p className="cx-sub">Now: {a.current.followers ?? '—'} followers/subs · {a.current.totalViews ?? '—'} views · {a.current.posts ?? '—'} posts</p>}
+      {a.trends.length > 0 && (
+        <>
+          <strong>Trending now</strong>
+          <ul>{a.trends.map((t) => <li key={t.trend}>{t.trend}: <span className="cx-sub">{t.whyNow}</span> {t.sourceUrl && <a href={t.sourceUrl} target="_blank" rel="noreferrer">{t.verified ? 'source ✓' : 'source ?'}</a>}</li>)}</ul>
+        </>
+      )}
+      {a.contentIdeas.length > 0 && (
+        <>
+          <strong>Content ideas</strong>
+          <ol>
+            {a.contentIdeas.map((c) => (
+              <li key={c.title}>
+                <b>{c.title}</b> <span className="cx-sub">({c.format})</span>
+                <p className="cx-sub">Hook: {c.hook}</p>
+                <p className="cx-sub">{c.outline}</p>
+                {c.hashtags.length > 0 && <p className="mc-tags">{c.hashtags.map((h) => (h.startsWith('#') ? h : `#${h}`)).join(' ')}</p>}
+              </li>
+            ))}
+          </ol>
+        </>
+      )}
+      {a.postingPlan && <p><strong>Post at:</strong> {a.postingPlan.bestTimesIST.join(', ') || '—'}{a.postingPlan.perWeek ? ` · ${a.postingPlan.perWeek}/week` : ''} <span className="cx-sub">({a.postingPlan.basis})</span></p>}
+      {a.collabTargets.length > 0 && (
+        <>
+          <strong>Collab targets</strong>
+          <ul>{a.collabTargets.map((c) => <li key={c.name}>{c.url ? <a href={c.url} target="_blank" rel="noreferrer">{c.name}</a> : c.name}: <span className="cx-sub">{c.why}</span></li>)}</ul>
+        </>
+      )}
+      {a.engagementActions.length > 0 && (<><strong>Engagement today</strong><ul>{a.engagementActions.map((x) => <li key={x}>{x}</li>)}</ul></>)}
+      {a.customerActions.length > 0 && (<><strong>Customers & revenue</strong><ul>{a.customerActions.map((x) => <li key={x}>{x}</li>)}</ul></>)}
+      {a.kpiTargets && <p><strong>Next 7 days target:</strong> {a.kpiTargets}</p>}
+      {a.fallback && <p className="cx-warn-text">Web search was unavailable for this pack, so treat it as unverified ideas.</p>}
+    </div>
+  );
+}
+const slot = (iso: string, every: number) => {
+  const h = Number(new Date(iso).toLocaleString('en-US', { hour: 'numeric', hour12: false, timeZone: 'Asia/Kolkata' })) % 24;
+  const a = Math.floor(h / every) * every;
+  const f = (x: number) => `${x % 12 === 0 ? 12 : x % 12} ${x % 24 < 12 ? 'AM' : 'PM'}`;
+  return `${f(a)}–${f(a + every)}`;
+};
 interface CampState { id: string; brand: string; name: string; objective: string; leads: number; maxLeads: number; unresearched: number; unscored: number; readyToDraft: number; waitingApproval: number; jobsToday: number; dailyJobLimit: number; threshold: number }
 interface Cycle {
   id: string;
@@ -21,18 +77,18 @@ interface Cycle {
 }
 interface Data { settings: { autopilot: boolean; everyHours: number; maxSteps: number }; nextRunAt: string | null; cycles: Cycle[] }
 
-const KIND: Record<string, string> = { discover: 'Find new leads', research: 'Research', qualify: 'Score', draft: 'Write outreach draft' };
+const KIND: Record<string, string> = { audience: 'Growth pack (followers · reach · customers)', discover: 'Find new leads', research: 'Research', qualify: 'Score', draft: 'Write outreach draft' };
 const BRAND: Record<string, string> = { littleloop: 'LittleLoop', sunverse: 'Sunverse', foliocraft: 'Foliocraft' };
 const ist = (iso: string) => new Date(iso).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
 const pill = (s: string) => (s === 'done' ? 'pill-running' : s === 'running' || s === 'pending' ? 'pill-idle' : 'pill-warn');
 
-function CycleCard({ c, open, onToggle }: { c: Cycle; open: boolean; onToggle: () => void }) {
+function CycleCard({ c, open, onToggle, every }: { c: Cycle; open: boolean; onToggle: () => void; every: number }) {
   const o = c.outputs;
   return (
     <li className={`mc-cycle st-${c.status}`}>
       <button className="mc-head" onClick={onToggle} aria-expanded={open}>
         <span className="mc-when">
-          {ist(c.startedAt)}
+          <span className="mc-slot">{slot(c.startedAt, every)} slot</span> {ist(c.startedAt)}
           {c.finishedAt ? ` → ${new Date(c.finishedAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' })}` : ''}
         </span>
         <span className={`pill ${pill(c.status)}`}>{c.status === 'running' ? `running ${c.plan.filter((p) => p.status !== 'pending').length}/${c.plan.length}` : c.status}</span>
@@ -116,6 +172,7 @@ function CycleCard({ c, open, onToggle }: { c: Cycle; open: boolean; onToggle: (
                       ))}
                     </ul>
                   )}
+                  {s.result!.audience && <AudiencePack a={s.result!.audience} />}
                   {s.result!.summary && <p className="cx-sub">{s.result!.summary}</p>}
                   {s.result!.missing && s.result!.missing.length > 0 && <p className="cx-sub">Missing evidence: {s.result!.missing.join(', ')}</p>}
                   {s.result!.preview && <pre className="fp-prompt mc-preview">{s.result!.preview}…</pre>}
@@ -174,7 +231,7 @@ export function MushakCycles() {
     setBusy(true);
     setErr(null);
     try {
-      const r = await api<{ cycle: Cycle }>('/api/growth/cycles/run', { method: 'POST', body: '{}' });
+      const r = await api<{ cycle: Cycle }>('/api/growth/cycles/boost', { method: 'POST', body: '{}' });
       setOpenId(r.cycle.id);
       load();
     } catch (e) {
@@ -200,7 +257,7 @@ export function MushakCycles() {
           </select>
         </label>
         <span className="cx-sub">{s.autopilot && data.nextRunAt ? `next run ${new Date(data.nextRunAt) <= new Date() ? 'within 5 min' : ist(data.nextRunAt)}` : 'paused'} · up to {s.maxSteps} steps per run</span>
-        <button className="btn btn-small btn-primary" onClick={runNow} disabled={busy || running}>{running ? 'Running…' : busy ? 'Starting…' : 'Run now'}</button>
+        <button className="btn btn-small btn-primary mc-boost" onClick={runNow} disabled={busy} title={running ? 'Push the running work forward now' : 'Start a run now'}>{busy ? '⚡ Boosting… (up to 2 min)' : running ? '⚡ Boost (push now)' : '⚡ Boost (start now)'}</button>
       </div>
       {err && <p className="form-error">{err}</p>}
       {data.cycles.length === 0 ? (
@@ -208,11 +265,11 @@ export function MushakCycles() {
       ) : (
         <ul className="mc-list">
           {data.cycles.map((c) => (
-            <CycleCard key={c.id} c={c} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
+            <CycleCard key={c.id} c={c} every={s.everyHours} open={openId === c.id} onToggle={() => setOpenId(openId === c.id ? null : c.id)} />
           ))}
         </ul>
       )}
-      <p className="ai-note">Each run: score → draft → research → find new leads, inside your campaign limits. Mushak never approves or sends; drafts wait for you. Times are IST.</p>
+      <p className="ai-note">Each run: growth pack for one brand (rotating) → score → draft → research → find new leads, inside your campaign limits. ⚡ Boost works any time. Mushak never approves or sends; drafts wait for you. Times are IST.</p>
     </div>
   );
 }

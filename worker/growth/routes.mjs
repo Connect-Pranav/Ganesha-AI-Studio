@@ -20,6 +20,7 @@ export async function growthRoute({ env, db, method, seg, url, body }) {
   if (r1 === 'autopilot' && method === 'GET') return autopilot.getSettings(db);
   if (r1 === 'autopilot' && method === 'PUT') return autopilot.saveSettings(db, await b());
   if (r1 === 'cycles' && !r2 && method === 'GET') return autopilot.listCycles(db);
+  if (r1 === 'cycles' && r2 === 'boost' && method === 'POST') return { cycle: await autopilot.boost(env, db) };
   if (r1 === 'cycles' && r2 === 'run' && method === 'POST') {
     await autopilot.startCycle(env, db, 'manual');
     return { cycle: await autopilot.advance(env, db, { n: 1 }) };

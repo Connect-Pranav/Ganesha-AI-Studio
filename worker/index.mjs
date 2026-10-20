@@ -95,25 +95,41 @@ async function providersStatus(env, db) {
   return out;
 }
 
-/** Server-sent events: `delta` chunks while ChatGPT writes, then one `done` (saved reply) or `error`. */
-function chatStream(env, db, providers, body, ctx) {
+/**
+ * Server-sent events for any long chat: optional `delta` chunks, a `ping` every 15 s so Cloudflare's
+ * 100-second idle limit never cuts a slow answer (Gemini research, SAARTHI → Mushak delegation),
+ * then one `done` (the saved reply) or `error`.
+ */
+function sse(ctx, work) {
   const { readable, writable } = new TransformStream();
   const w = writable.getWriter();
   const enc = new TextEncoder();
   const emit = (event, data) => w.write(enc.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`)).catch(() => {});
+  const ping = setInterval(() => emit('ping', { t: Date.now() }), 15_000);
   const run = (async () => {
     try {
-      const reply = await cbochat.send(env, db, providers, body, {}, { onDelta: (t) => emit('delta', { t }) });
-      if (reply.delegation?.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak run failed', e.message)));
+      await emit('ping', { t: Date.now() });
+      const reply = await work((t) => emit('delta', { t }));
       await emit('done', { reply });
     } catch (e) {
       await emit('error', { error: e instanceof HttpError ? e.message : 'Chat failed', status: e.status ?? 500 });
     } finally {
+      clearInterval(ping);
       await w.close().catch(() => {});
     }
   })();
   ctx?.waitUntil?.(run);
   return new Response(readable, { headers: { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-store', 'x-accel-buffering': 'no' } });
+}
+const kickMushak = (env, db, ctx, reply) => {
+  if (reply?.blueprint?.run || reply?.delegation?.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak run failed', e.message)));
+};
+function chatStream(env, db, providers, body, ctx) {
+  return sse(ctx, async (onDelta) => {
+    const reply = await cbochat.send(env, db, providers, body, {}, { onDelta: body.engine === 'openai' ? onDelta : undefined });
+    kickMushak(env, db, ctx, reply);
+    return reply;
+  });
 }
 
 async function route(request, env, ctx, rawEnv = env) {
@@ -503,10 +519,15 @@ async function route(request, env, ctx, rawEnv = env) {
   /* ---------- Talk to an agent (owner-only) ---------- */
   if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'GET') return json({ messages: await agentchat.history(db, seg[2]), research: agentchat.canResearch(seg[2]) });
   if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'POST') {
-    const reply = await agentchat.send(await ig.withIg(env, db), db, seg[2], await readBody(request));
+    const b = await readBody(request);
     // A blueprint from Mushak starts running now; the 5-minute cron carries on with the rest.
-    if (reply.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak command run failed', e.message)));
-    return json({ reply });
+    const work = async () => {
+      const reply = await agentchat.send(envIg, db, seg[2], b);
+      kickMushak(env, db, ctx, reply);
+      return reply;
+    };
+    if (b.stream === true) return sse(ctx, work);
+    return json({ reply: await work() });
   }
   if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'DELETE') {
     await agentchat.clear(db, seg[2]);
@@ -535,9 +556,9 @@ async function route(request, env, ctx, rawEnv = env) {
   if (path === '/api/cbo/chat' && method === 'POST') {
     const b = await readBody(request, 8 * 1024 * 1024); // room for one attached image
     const body = { message: b.message, engine: b.engine, think: b.think === true, research: b.research === true, image: b.image ?? null };
-    if (b.stream === true && body.engine === 'openai') return chatStream(envIg, db, await providersStatus(env, db), body, ctx);
+    if (b.stream === true) return chatStream(envIg, db, await providersStatus(env, db), body, ctx);
     const reply = await cbochat.send(envIg, db, await providersStatus(env, db), body);
-    if (reply.delegation?.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak run failed', e.message)));
+    kickMushak(env, db, ctx, reply);
     return json({ reply });
   }
   if (path === '/api/cbo/chat' && method === 'DELETE') {

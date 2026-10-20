@@ -2,6 +2,7 @@
 // Owner-only (studio unlocked). A proposed goal starts only when the owner presses the button.
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, AUTH_EVENT, getToken } from '../services/adminService';
+import { postStream } from '../services/sseChat';
 import { Markdown } from './Markdown';
 import { formatWhen } from './ui';
 import { BlueprintCard, type Blueprint } from './BlueprintCard';
@@ -55,13 +56,26 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
     const temp: Msg = { id: `tmp-${Date.now()}`, role: 'user', content: message, created_at: new Date().toISOString(), action: null, sources: [] };
     setMsgs((m) => [...(m ?? []), temp]);
     setText('');
+    const sentAt = new Date().toISOString();
     try {
-      const { reply } = await api<{ reply: Msg }>(`/api/agent-chat/${agentId}`, { method: 'POST', body: JSON.stringify({ message, research }) });
+      const reply = await postStream<Msg>(`/api/agent-chat/${agentId}`, { message, research });
       setMsgs((m) => [...(m ?? []), reply]);
     } catch (e2) {
-      setMsgs((m) => (m ?? []).filter((x) => x.id !== temp.id));
-      setText(message);
       setErr(e2 instanceof Error ? e2.message : 'No answer');
+      // The answer may have been saved even though this connection dropped: reload and keep it.
+      try {
+        const r = await api<{ messages: Msg[] }>(`/api/agent-chat/${agentId}`);
+        if (r.messages.some((x) => x.role === 'assistant' && x.created_at > sentAt)) {
+          setMsgs(r.messages);
+          setErr(null);
+        } else {
+          setMsgs((m) => (m ?? []).filter((x) => x.id !== temp.id));
+          setText(message);
+        }
+      } catch {
+        setMsgs((m) => (m ?? []).filter((x) => x.id !== temp.id));
+        setText(message);
+      }
     } finally {
       setBusy(false);
     }

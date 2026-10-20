@@ -1,5 +1,6 @@
 // Owner's desk: ChatGPT-style CBO chat, decisions grouped by agent (Approve / Decline with the
 // agent's output one tap away) and finished work. All data is live from the Worker.
+import { postStream } from '../../services/sseChat';
 import { BlueprintCard, type Blueprint } from '../BlueprintCard';
 import { BatchUpload, InlineRename, nameFromFile } from '../BatchUpload';
 import { FlowPack } from './FlowPack';
@@ -72,32 +73,7 @@ interface Msg {
 interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean; images?: boolean; stream?: boolean }
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 
-/** Reads the Worker's server-sent events: `delta` while ChatGPT writes, then `done` or `error`. */
-async function streamChat(body: object, onDelta: (t: string) => void): Promise<Msg> {
-  const res = await fetch(`${base()}/api/cbo/chat`, { method: 'POST', cache: 'no-store', headers: { authorization: `Bearer ${getToken()}`, 'content-type': 'application/json' }, body: JSON.stringify({ ...body, stream: true }) });
-  if (!res.ok || !res.body) throw new Error((await res.json().catch(() => null))?.error ?? `HTTP ${res.status}`);
-  const reader = res.body.getReader();
-  const dec = new TextDecoder();
-  let buf = '';
-  for (;;) {
-    const { value, done } = await reader.read();
-    if (done) break;
-    buf += dec.decode(value, { stream: true });
-    let i;
-    while ((i = buf.indexOf('\n\n')) >= 0) {
-      const block = buf.slice(0, i);
-      buf = buf.slice(i + 2);
-      const ev = /^event: (\w+)/m.exec(block)?.[1];
-      const data = /^data: (.*)$/m.exec(block)?.[1];
-      if (!ev || !data) continue;
-      const d = JSON.parse(data);
-      if (ev === 'delta') onDelta(d.t);
-      else if (ev === 'done') return d.reply as Msg;
-      else if (ev === 'error') throw new Error(d.error ?? 'Chat failed');
-    }
-  }
-  throw new Error('Connection closed before the reply finished');
-}
+const streamChat = (body: object, onDelta: (t: string) => void) => postStream<Msg>('/api/cbo/chat', body, onDelta);
 const readPref = (k: string) => {
   try {
     return localStorage.getItem(k) === '1';
@@ -164,26 +140,26 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
     setImage(null);
     setMsgs((x) => [...x, { id: `tmp-${Date.now()}`, role: 'user', content: img ? `${m}\n\n_(image attached)_` : m, created_at: new Date().toISOString() }]);
     const payload = { message: m, engine, think: think && Boolean(current?.think), research: research && Boolean(current?.research), image: img?.url ?? null };
+    const sentAt = new Date().toISOString();
     try {
-      if (current?.stream) {
-        setLive('');
-        const reply = await streamChat(payload, (t) => setLive((x) => (x ?? '') + t));
-        setMsgs((x) => [...x, reply]);
-      } else {
-        const ctl = new AbortController();
-        const timer = setTimeout(() => ctl.abort(), (payload.research || payload.think ? 170 : 110) * 1000);
-        try {
-          const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify(payload), signal: ctl.signal });
-          setMsgs((x) => [...x, r.reply]);
-        } finally {
-          clearTimeout(timer);
-        }
-      }
+      // Always streamed: keepalive pings stop long answers from being cut off on phones.
+      setLive(current?.stream ? '' : null);
+      const reply = await streamChat(payload, (t) => setLive((x) => (x ?? '') + t));
+      setMsgs((x) => [...x, reply]);
     } catch (err) {
       const aborted = err instanceof DOMException && err.name === 'AbortError';
       setError(aborted ? 'SAARTHI took too long to answer. If the reply was ready it appears below; otherwise send again.' : err instanceof Error ? err.message : 'Failed');
-      // The Worker may have saved the reply even if this connection dropped: reload the chat.
-      setTimeout(() => load(), 1500);
+      // The Worker may have saved the reply even if this connection dropped: reload, and clear the
+      // error once that reply is there.
+      setTimeout(async () => {
+        try {
+          const r = await api<{ messages: Msg[] }>('/api/cbo/chat');
+          setMsgs(r.messages);
+          if (r.messages.some((x) => x.role === 'assistant' && x.created_at > sentAt)) setError(null);
+        } catch {
+          /* keep the error */
+        }
+      }, 2500);
     } finally {
       setLive(null);
       setBusy(false);

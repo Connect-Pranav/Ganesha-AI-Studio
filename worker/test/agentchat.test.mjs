@@ -93,3 +93,16 @@ test('http: agent chat and daily report are owner-only', async () => {
   const d = await worker.fetch(new Request('https://g.test/api/growth/daily?date=2026-10-20', { headers: { authorization: 'Bearer t' } }), env, ctx);
   assert.equal((await d.json()).day, '2026-10-20');
 });
+
+test('http: chats stream with an immediate keepalive ping, then done/error (no 100-second cut-off)', async () => {
+  const ctx = { waitUntil: (p) => p.catch(() => {}) };
+  const env = { DB: db, ASSETS: { fetch: async () => new Response('ok') }, ADMIN_TOKEN: 't' };
+  const H = { authorization: 'Bearer t', 'content-type': 'application/json' };
+  for (const path of ['/api/agent-chat/ops_soma_analytics', '/api/cbo/chat']) {
+    const r = await worker.fetch(new Request(`https://g.test${path}`, { method: 'POST', headers: H, body: JSON.stringify({ message: 'hi', engine: 'gemini', stream: true }) }), env, ctx);
+    assert.match(r.headers.get('content-type'), /event-stream/);
+    const text = await r.text();
+    assert.match(text.split('\n\n')[0], /^event: ping/, `${path}: first event is a keepalive`);
+    assert.match(text, /event: error/, `${path}: no AI key here, so it ends with a clear error event`);
+  }
+});
