@@ -89,5 +89,8 @@ export const SCHEMA_STATEMENTS = [
   "CREATE INDEX IF NOT EXISTS idx_growth_tasks_brand ON growth_tasks(brand, done)",
   "CREATE TABLE IF NOT EXISTS growth_jobs ( id TEXT PRIMARY KEY, brand TEXT NOT NULL CHECK (brand IN ('littleloop','sunverse','foliocraft')), campaign_id TEXT, lead_id TEXT, kind TEXT NOT NULL CHECK (kind IN ('discover','research','qualify','draft','classify_reply')), agent_id TEXT NOT NULL, status TEXT NOT NULL CHECK (status IN ('running','succeeded','failed','blocked')), attempts INTEGER NOT NULL DEFAULT 0, provider TEXT, model TEXT, input_tokens INTEGER, output_tokens INTEGER, cost_usd REAL, error TEXT, summary TEXT, created_at TEXT NOT NULL, finished_at TEXT )",
   "CREATE INDEX IF NOT EXISTS idx_growth_jobs_campaign ON growth_jobs(campaign_id, created_at)",
-  "CREATE INDEX IF NOT EXISTS idx_growth_jobs_brand ON growth_jobs(brand, created_at)"
+  "CREATE INDEX IF NOT EXISTS idx_growth_jobs_brand ON growth_jobs(brand, created_at)",
+  "CREATE TABLE IF NOT EXISTS yt_auth ( id INTEGER PRIMARY KEY CHECK (id = 1), token_enc TEXT NOT NULL, iv TEXT NOT NULL, channel_id TEXT, channel_title TEXT, created_at TEXT NOT NULL, refreshed_at TEXT )",
+  "CREATE TABLE IF NOT EXISTS yt_oauth_state ( state TEXT PRIMARY KEY, created_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS yt_watch_cache ( id INTEGER PRIMARY KEY CHECK (id = 1), data_json TEXT NOT NULL, fetched_at TEXT NOT NULL )"
 ];

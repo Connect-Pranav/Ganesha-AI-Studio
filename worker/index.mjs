@@ -30,6 +30,7 @@ import { decideProposal, listProposals, runAutopilot, scheduledAutopilot } from 
 import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
+import * as yt from './ytanalytics.mjs';
 import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
@@ -496,6 +497,15 @@ async function route(request, env, ctx, rawEnv = env) {
   if (path === '/api/settings/test-openai' && method === 'POST') return json(await testOpenAI(env, db, {}, { live: (await readBody(request)).live === true }));
   if (path === '/api/settings/openai' && method === 'GET') return json(await openaiProvider.status(rawEnv, env, db));
 
+  /* ---------- YouTube Analytics (Sunverse watch time, owner-only) ---------- */
+  if (path === '/api/youtube' && method === 'GET') return json(await yt.status(env, db));
+  if (path === '/api/youtube/connect' && method === 'POST') return json(await yt.startConnect(env, db));
+  if (path === '/api/youtube/watchtime' && method === 'GET') return json(await yt.watchTime(env, db, { force: url.searchParams.get('refresh') === '1' }));
+  if (path === '/api/youtube' && method === 'DELETE') {
+    await yt.disconnect(db);
+    return json({ ok: true });
+  }
+
   /* ---------- Instagram connection ---------- */
   if (path === '/api/instagram' && method === 'GET') return json(await ig.status(env, db));
   if (path === '/api/instagram/connect' && method === 'POST') return json(await ig.startConnect(env, db));
@@ -586,6 +596,16 @@ export default {
     }
     // Google Flow clip upload links (the per-reel ticket is the credential; CORS-open so the
     // Flow tab can send clips straight here). GET → what to make, PUT /t/<ticket>/<n> → clip n.
+    if (pathname === '/yt/callback' || pathname === '/yt/callback/') {
+      try {
+        if (!env.DB) throw new HttpError(503, 'Database not configured');
+        await ensureSchema(env.DB);
+        const r = await yt.finishConnect(env, env.DB, new URL(request.url));
+        return yt.callbackPage(true, `${r.channelTitle ?? 'Your channel'} is connected. Watch time will show in Sunverse → Progress & analytics.`);
+      } catch (e) {
+        return yt.callbackPage(false, e.message);
+      }
+    }
     if (pathname === '/ig/callback' || pathname === '/ig/callback/') {
       try {
         if (!env.DB) throw new HttpError(503, 'Database not configured');

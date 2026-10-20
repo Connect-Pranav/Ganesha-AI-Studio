@@ -14,8 +14,10 @@ export const SECRET_NAMES = {
   IG_APP_ID: 'Instagram app ID — Meta app → Instagram → API setup with Instagram login (NOT the Meta/Facebook app ID at the top of the dashboard)',
   IG_APP_SECRET: 'Instagram app secret — same page, click Show (32 letters/numbers)',
   IG_ACCESS_TOKEN: 'Optional — leave empty. Only for a manually generated token instead of Connect Instagram',
+  YT_CLIENT_ID: 'Google OAuth client ID (Web application) — Sunverse watch time via YouTube Analytics',
+  YT_CLIENT_SECRET: 'Google OAuth client secret — same OAuth client',
 };
-const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID']);
+const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID', 'YT_CLIENT_ID']);
 // Obvious placeholders are refused so a working key is never replaced by "YOUR_KEY_HERE" or "sk-...".
 const PLACEHOLDER = /^(your|xxx+|placeholder|example|changeme|null|undefined)\b|<[^>]*>|\.{3}|\*{3}|YOUR_|_HERE$/i;
 const intIn = (min, max) => (v) => (/^\d+$/.test(v) && Number(v) >= min && Number(v) <= max ? null : `must be a whole number ${min}–${max}`);
@@ -26,6 +28,8 @@ const VALIDATE = {
   OPENAI_DAILY_REQUEST_LIMIT: intIn(1, 10000),
   IG_APP_ID: (v) => (/^\d{10,20}$/.test(v) ? null : 'must be the numeric Instagram app ID (digits only)'),
   IG_APP_SECRET: (v) => (/^[a-f0-9]{32}$/i.test(v) ? null : 'does not look like an Instagram app secret (32 letters/numbers, no spaces)'),
+  YT_CLIENT_ID: (v) => (/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(v) ? null : 'must look like 1234-abc.apps.googleusercontent.com'),
+  YT_CLIENT_SECRET: (v) => (/^[A-Za-z0-9_-]{20,64}$/.test(v) ? null : 'does not look like a Google OAuth client secret (no spaces)'),
   IG_ACCESS_TOKEN: (v) => (/^[A-Za-z0-9_.|-]{40,}$/.test(v) ? null : 'does not look like an Instagram access token (long, no spaces)'),
 };
 const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));

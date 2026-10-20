@@ -1668,3 +1668,14 @@ select option { background: #0e1540; color: var(--ink); }
 .hc { max-width: 1100px; }
 .hc-horizon { width: max(1400px, 110vw); }
 @media (min-width: 1700px) { .content, .foot { max-width: 1600px; } }
+
+/* Sunverse watch time */
+.wt-grid { margin-bottom: 16px; }
+.wt-ypp { display: grid; gap: 8px; padding: 14px 16px; border-radius: 14px; border: 1px solid var(--line); background: rgba(10, 16, 51, 0.6); }
+.wt-ypp-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: 14px; }
+.wt-ypp-head span { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.wt-bar { height: 10px; border-radius: 999px; background: rgba(160, 178, 255, 0.14); overflow: hidden; }
+.wt-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.wt-chart { display: flex; align-items: flex-end; gap: 3px; height: 110px; margin: 16px 0 8px; padding: 8px; border-radius: 12px; background: rgba(10, 16, 51, 0.5); }
+.wt-chart span { flex: 1; min-width: 3px; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--cyan), var(--green)); opacity: 0.9; }
+.wt-chart span:hover { opacity: 1; filter: brightness(1.2); }

@@ -10,7 +10,7 @@ import { FX_EVENT, readFx, writeFx, type CosmicFx } from './cosmic/CosmicBackgro
 interface SettingRow { name: string; purpose: string; secret: boolean; source: 'worker' | 'app' | null; hint: string | null; updatedAt: string | null }
 const GROUPS: { title: string; names: string[]; note?: string }[] = [
   { title: 'AI engines', names: ['GEMINI_API_KEY', 'OPENAI_API_KEY', 'OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'ANTHROPIC_API_KEY'], note: 'Gemini is free (aistudio.google.com → Get API key). ChatGPT needs an OpenAI API key from platform.openai.com/api-keys (paid per use — ChatGPT Go/Plus app plans do not include API access).' },
-  { title: 'Platforms', names: ['YOUTUBE_API_KEY', 'IG_APP_ID', 'IG_APP_SECRET', 'IG_ACCESS_TOKEN'], note: 'For Instagram, add the app ID + secret once, then use Connect Instagram below (no token copying needed).' },
+  { title: 'Platforms', names: ['YOUTUBE_API_KEY', 'YT_CLIENT_ID', 'YT_CLIENT_SECRET', 'IG_APP_ID', 'IG_APP_SECRET', 'IG_ACCESS_TOKEN'], note: 'For Instagram, add the app ID + secret once, then use Connect Instagram below. For Sunverse watch time, add the Google OAuth client ID + secret, then use Connect YouTube Analytics in Sunverse.' },
 ];
 const pref = (k: string, d = false) => {
   try {

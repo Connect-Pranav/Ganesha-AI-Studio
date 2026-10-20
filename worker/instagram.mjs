@@ -158,7 +158,7 @@ export function callbackPage(ok, message) {
     `<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Instagram · Ganesha</title>
 <body style="font-family:system-ui;background:#05081a;color:#e8e9ff;display:grid;place-items:center;min-height:100vh;margin:0">
 <div style="max-width:420px;padding:24px;text-align:center"><h2>${ok ? '✅ Instagram connected' : '⚠️ Instagram not connected'}</h2><p>${esc(message)}</p>
-<p><a style="color:#a78bfa" href="/#/analytics">Back to Ganesha</a></p></div>${ok ? '<script>setTimeout(function(){location.href="/#/analytics"},2500)</script>' : ''}</body>`,
+<p><a style="color:#a78bfa" href="/#/littleloop">Back to Ganesha</a></p></div>${ok ? '<script>setTimeout(function(){location.href="/#/littleloop"},2500)</script>' : ''}</body>`,
     { status: ok ? 200 : 400, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } },
   );
 }
