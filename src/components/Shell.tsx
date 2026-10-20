@@ -61,7 +61,7 @@ export const SECTIONS: Section[] = [
     groups: [
       {
         pages: [
-          { id: 'cbo', label: 'CBO Chat', hint: 'Talk to GANESHA and hand out work.' },
+          { id: 'cbo', label: 'Saarthi', hint: 'SAARTHI, your Chief Business Officer: ask anything and hand out work.' },
           { id: 'agents', label: 'Team', hint: 'Every agent, what it does and how its runs went.' },
           { id: 'pipelines', label: 'Pipelines', hint: 'Work in progress, step by step.' },
           { id: 'tasks', label: 'Tasks', hint: 'Your to-do list across the studio.' },

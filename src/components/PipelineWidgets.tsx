@@ -199,7 +199,8 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   const lastRun = new Map(liveAgents.filter((a) => a.lastRun).map((a) => [a.lastRun!.agent, a.lastRun!]));
   const techId: Record<string, string> = { ganesha: 'ganesha_orchestrator', narada: 'narada_market_intelligence', 'code-shakti': 'code_shakti' };
   const runFor = (id: string) => [...lastRun.entries()].find(([k]) => techId[k] === id)?.[1];
-  const ALL = [MUSHAK_META, ...AGENTS];
+  // MUSHAK has its own banner above the grid, so the grid lists the 31 pipeline agents only.
+  const ALL = AGENTS;
   const shown = team === 'all' ? ALL : ALL.filter((a) => a.team === team);
   const live = !locked && Boolean(summary);
   const [openId, setOpenId] = useState<string | null>(null);

@@ -6,7 +6,7 @@ import { autopilot, dateShort, money, useLoad } from '../../services/cboService'
 import { Pill, useAction } from './common';
 
 const STATUS: Record<string, { label: string; cls: string }> = {
-  started: { label: 'Started by CBO', cls: 'pill-running' },
+  started: { label: 'Started by SAARTHI', cls: 'pill-running' },
   proposed: { label: 'Waiting for your tap', cls: 'pill-warn' },
   rejected: { label: 'Skipped', cls: 'pill-idle' },
   expired: { label: 'Expired', cls: 'pill-idle' },
@@ -23,7 +23,7 @@ export function AutopilotCard({ onChanged }: { onChanged: () => void }) {
   const waiting = d.proposals.filter((p) => p.status === 'proposed');
   return (
     <Card
-      title="CBO Autopilot"
+      title="SAARTHI Autopilot"
       className="cc-cbo-card"
       action={
         <button className="btn btn-small btn-primary" disabled={act.busy === 'run' || d.mode === 'off'} onClick={() => act.run('run', async () => { const r = await autopilot.run(); setMsg(r.actions.length ? `${r.actions.length} goal(s): ${r.actions.map((a) => `${a.title} → ${a.status}`).join('; ')}` : r.note ?? 'Nothing new to do right now — every brand already has work in progress or is within its cadence.'); }, reload)}>

@@ -10,6 +10,7 @@ import { Icon } from './Icon';
 import { formatWhen } from './ui';
 import { AgentChat } from './AgentChat';
 import { MushakDaily } from './MushakDaily';
+import { MushakCycles, useMushakStatus } from './MushakCycles';
 import type { View } from '../types';
 
 type Metrics = { name: string; leads: number; qualified: number; pendingApprovals: number; sent: number; repliedLeads: number; replyRate: number | null; meetingsConfirmed: number; won: number; costUsd: number; costInr: number | null; jobs: number; failedJobs: number };
@@ -30,8 +31,8 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
   const [data, setData] = useState<Overview | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
-  const [tab, setTab] = useState<'today' | 'performance' | 'talk'>('today');
-  const openTab = (t: 'today' | 'performance' | 'talk') => {
+  const [tab, setTab] = useState<'runs' | 'today' | 'performance' | 'talk'>('runs');
+  const openTab = (t: 'runs' | 'today' | 'performance' | 'talk') => {
     setTab(t);
     setOpen(true);
   };
@@ -48,7 +49,7 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
         try {
           if (localStorage.getItem('gas.growthPopup.day') !== today()) {
             localStorage.setItem('gas.growthPopup.day', today());
-            setTab('today');
+            setTab('runs');
             setOpen(true);
           }
         } catch {
@@ -70,6 +71,7 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
   }, [open]);
 
   const t = data?.total;
+  const status = useMushakStatus();
   const started = Boolean(t && ((t.leads ?? 0) > 0 || (t.jobs ?? 0) > 0));
   return (
     <>
@@ -85,14 +87,16 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
                 ? err
                 : !data
                   ? 'Loading performance…'
-                  : started
-                    ? `${t!.leads} leads · ${t!.sent} sent · ${t!.meetingsConfirmed} meetings · ${t!.won} won`
-                    : 'Ready. No campaign has run yet.'}
+                  : status
+                    ? status
+                    : started
+                      ? `${t!.leads} leads · ${t!.sent} sent · ${t!.meetingsConfirmed} meetings · ${t!.won} won`
+                      : 'Autopilot starts its first run within 5 minutes.'}
           </p>
         </div>
         <div className="gs-actions">
-          <button className="btn btn-primary" onClick={() => openTab('today')} disabled={locked || !data}>
-            <Icon name="analytics" size={16} /> Today’s report
+          <button className="btn btn-primary" onClick={() => openTab('runs')} disabled={locked || !data}>
+            <Icon name="analytics" size={16} /> 4-hour reports
           </button>
           <button className="btn btn-ghost" onClick={() => openTab('talk')} disabled={locked}>
             🙏 Talk
@@ -120,12 +124,13 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
                 </div>
               </div>
               <div className="ws-tabs" role="tablist" aria-label="Mushak">
-                {(['today', 'performance', 'talk'] as const).map((k) => (
+                {(['runs', 'today', 'performance', 'talk'] as const).map((k) => (
                   <button key={k} role="tab" aria-selected={tab === k} className={`ws-tab ${tab === k ? 'active' : ''}`} onClick={() => setTab(k)}>
-                    {k === 'today' ? 'Daily report' : k === 'performance' ? 'Performance' : '🙏 Talk'}
+                    {k === 'runs' ? '4-hour reports' : k === 'today' ? 'Daily' : k === 'performance' ? 'Performance' : '🙏 Talk'}
                   </button>
                 ))}
               </div>
+              {tab === 'runs' && <MushakCycles />}
               {tab === 'today' && <MushakDaily />}
               {tab === 'talk' && <AgentChat agentId="mushak_growth" name="MUSHAK" />}
               {tab === 'performance' && data && (<>

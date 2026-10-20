@@ -6,6 +6,7 @@ import * as core from './core.mjs';
 import * as out from './outreach.mjs';
 import * as agents from './agents.mjs';
 import * as stats from './analytics.mjs';
+import * as autopilot from './autopilot.mjs';
 
 export async function growthRoute({ env, db, method, seg, url, body }) {
   const [, , r1, r2, r3] = seg; // seg = ['api','growth', r1, r2, r3]
@@ -16,6 +17,14 @@ export async function growthRoute({ env, db, method, seg, url, body }) {
   if (r1 === 'brands' && r2 && method === 'PUT') return { brand: await saveBrandConfig(db, r2, await b()) };
 
   if (r1 === 'overview' && method === 'GET') return stats.overview(db, q('brand') || null);
+  if (r1 === 'autopilot' && method === 'GET') return autopilot.getSettings(db);
+  if (r1 === 'autopilot' && method === 'PUT') return autopilot.saveSettings(db, await b());
+  if (r1 === 'cycles' && !r2 && method === 'GET') return autopilot.listCycles(db);
+  if (r1 === 'cycles' && r2 === 'run' && method === 'POST') {
+    await autopilot.startCycle(env, db, 'manual');
+    return { cycle: await autopilot.advance(env, db, { n: 1 }) };
+  }
+  if (r1 === 'cycles' && r2 && method === 'GET') return { cycle: await autopilot.getCycle(db, r2) };
   if (r1 === 'daily' && method === 'GET') return stats.dailyReport(db, q('date'));
   if (r1 === 'days' && method === 'GET') return { days: await stats.reportDays(db) };
 

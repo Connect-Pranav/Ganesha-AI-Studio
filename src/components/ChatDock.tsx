@@ -47,7 +47,7 @@ export function ChatDock({ hidden = false }: { hidden?: boolean }) {
       {mounted && (
         <aside className={`dock-panel ${open ? 'is-open' : ''}`} aria-label={`${CHAT_BOT_NAME} chat`} aria-hidden={!open}>
           <div className="dock-head">
-            <span className="dock-avatar" aria-hidden="true">✦</span>
+            <img className="dock-avatar dock-saarthi" src="./agents/saarthi-96.webp" alt="" aria-hidden="true" />
             <div>
               <strong>{CHAT_BOT_NAME}</strong>
               <span className="dock-sub">Your CBO assistant · same chat as the CBO page</span>
@@ -63,7 +63,7 @@ export function ChatDock({ hidden = false }: { hidden?: boolean }) {
       )}
       {!open && (
         <button className="dock-fab" onClick={() => setOpen(true)} aria-label={`Open ${CHAT_BOT_NAME} chat`} title={`Chat with ${CHAT_BOT_NAME}`}>
-          <span className="dock-avatar" aria-hidden="true">✦</span>
+          <img className="dock-avatar dock-saarthi" src="./agents/saarthi-96.webp" alt="" aria-hidden="true" />
           <span className="dock-fab-label">{CHAT_BOT_NAME}</span>
         </button>
       )}

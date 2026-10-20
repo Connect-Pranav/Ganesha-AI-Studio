@@ -1794,3 +1794,37 @@ select option { background: #0e1540; color: var(--ink); }
 .mk-job.st-failed, .mk-job.st-blocked { border-color: rgba(251, 113, 133, 0.4); }
 .mk-brand { color: var(--ink-3); }
 @media (max-width: 560px) { .mk-list li { grid-template-columns: 1fr; gap: 2px; } .ac-msg { max-width: 100%; } }
+
+/* Mushak 4-hour reports */
+.mc { display: grid; gap: 12px; }
+.mc-bar { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line-2); background: rgba(10, 16, 51, 0.6); }
+.mc-bar .btn { margin-left: auto; }
+.mc-every { display: inline-flex; gap: 6px; align-items: center; font-size: 13.5px; }
+.mc-every select { padding: 4px 8px; border-radius: 999px; border: 1px solid var(--line-2); background: #0a1033; color: var(--ink); }
+.mc-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.mc-cycle { border-radius: 16px; border: 1px solid var(--line); background: rgba(10, 16, 51, 0.55); overflow: hidden; }
+.mc-cycle.st-running { border-color: rgba(122, 162, 255, 0.6); box-shadow: 0 0 24px -10px rgba(47, 85, 255, 0.8); }
+.mc-cycle.st-failed { border-color: rgba(251, 113, 133, 0.45); }
+.mc-head { width: 100%; display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 12px 14px; border: 0; background: none; color: var(--ink); font: inherit; text-align: left; }
+.mc-when { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mc-sum { font-size: 13.5px; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.mc-body { display: grid; gap: 16px; padding: 4px 14px 16px; border-top: 1px solid var(--line); }
+.mc-body section { display: grid; gap: 8px; }
+.mc-table td, .mc-table th { white-space: nowrap; }
+.mc-rules { font-size: 12.5px; color: var(--ink-3); margin: 0; }
+.mc-plan, .mc-out { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 13.5px; }
+.mc-plan p, .mc-out p { margin: 2px 0 0; }
+.mc-out li.st-failed > p:first-child { color: var(--err); }
+.mc-leads { margin: 4px 0 0; padding-left: 16px; font-size: 13px; color: var(--ink-2); }
+.mc-preview { max-height: 120px; font-size: 12.5px; }
+.mc-kpis { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 700px) {
+  .mc-head { grid-template-columns: auto 1fr; }
+  .mc-sum { grid-column: 1 / -1; }
+  .mc-kpis { grid-template-columns: repeat(2, 1fr); }
+  .mc-bar .btn { margin-left: 0; width: 100%; }
+}
+
+/* SAARTHI avatar (owner's art) */
+.dock-avatar.dock-saarthi { width: 40px; height: 40px; padding: 2px; object-fit: contain; background: radial-gradient(circle at 50% 45%, #fff, #e8eeff 60%, #c9d6ff); border-radius: 50%; }
+.dock-fab { padding: 6px 18px 6px 6px; }

@@ -223,7 +223,7 @@ function CommandBar({ onDone }: { onDone: () => void }) {
   };
   const plan = res?.intent === 'plan' ? (res.data as Plan) : null;
   return (
-    <Card title="Ask GANESHA CBO" className="cc-cbo-card">
+    <Card title="Ask SAARTHI" className="cc-cbo-card">
       <form className="cx-cmd" onSubmit={submit}>
         <label className="sr-only" htmlFor="cbo-cmd">
           Command

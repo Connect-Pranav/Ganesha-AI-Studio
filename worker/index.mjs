@@ -36,6 +36,7 @@ import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
 import { growthRoute } from './growth/routes.mjs';
+import { scheduledMushak } from './growth/autopilot.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -678,6 +679,8 @@ export default {
         .then((r) => r.length && console.log('reels', JSON.stringify(r)))
         .catch((e) => console.error('reels failed', e.message)),
     );
+    // MUSHAK autopilot: a growth cycle every few hours, a couple of steps per tick.
+    ctx.waitUntil(scheduledMushak(env, env.DB).then((c) => c && console.log('mushak', c.id, c.status)).catch((e) => console.error('mushak failed', e.message)));
     ctx.waitUntil(ig.withIg(env, env.DB).then((e2) => scheduledAnalytics(e2, env.DB)).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },
 };

@@ -5,6 +5,7 @@ import { api, AUTH_EVENT, getToken } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
 import { Markdown } from '../Markdown';
 import { MushakDaily } from '../MushakDaily';
+import { MushakCycles } from '../MushakCycles';
 
 type Brand = 'littleloop' | 'sunverse' | 'foliocraft';
 const BRANDS: { id: Brand; name: string }[] = [
@@ -12,7 +13,7 @@ const BRANDS: { id: Brand; name: string }[] = [
   { id: 'sunverse', name: 'Sunverse' },
   { id: 'foliocraft', name: 'Foliocraft' },
 ];
-const TABS = ['Overview', 'Daily report', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
+const TABS = ['Overview', '4-hour reports', 'Daily report', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
 type Tab = (typeof TABS)[number];
 const STAGES = ['new', 'researching', 'qualified', 'outreach_drafted', 'pending_approval', 'approved', 'sent', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost', 'suppressed'];
 const MANUAL = ['new', 'researching', 'qualified', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost'];
@@ -97,6 +98,7 @@ export function GrowthView() {
         </div>
       </div>
       {tab === 'Overview' && <Overview brand={brand} onGo={setTab} />}
+      {tab === '4-hour reports' && <Card title="Mushak · every run (inputs → plan → output)"><MushakCycles /></Card>}
       {tab === 'Daily report' && <Card title="Mushak · daily report (all brands)"><MushakDaily /></Card>}
       {tab === 'Campaigns' && <Campaigns key={brand} brand={brand} />}
       {tab === 'Leads' && <Leads key={brand} brand={brand} />}

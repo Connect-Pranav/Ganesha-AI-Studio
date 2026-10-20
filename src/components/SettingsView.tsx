@@ -184,7 +184,7 @@ export function SettingsView() {
           </Card>
         ))}
 
-      <Card title="CBO chat defaults">
+      <Card title="SAARTHI chat defaults">
         <label className="st-check"><input type="checkbox" checked={think} onChange={(e) => (setThink(e.target.checked), setPref('gas.chat.think', e.target.checked))} /> Start chats with 🧠 Think ON (deeper, slower)</label>
         <label className="st-check"><input type="checkbox" checked={research} onChange={(e) => (setResearch(e.target.checked), setPref('gas.chat.research', e.target.checked))} /> Start chats with 🔎 Research ON (live Google search)</label>
       </Card>

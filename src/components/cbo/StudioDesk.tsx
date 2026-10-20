@@ -112,7 +112,7 @@ const writePref = (k: string, v: boolean) => {
 };
 const CHAT_IDEAS = ['Aaj mujhe kya karna chahiye?', 'Kaun se approvals pending hain?', 'Is mahine ka kharcha kitna hua?', 'LittleLoop ke liye 3 reel ideas do'];
 
-export function CboChat({ compact = false, title = 'Chat with GANESHA CBO' }: { compact?: boolean; title?: string } = {}) {
+export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { compact?: boolean; title?: string } = {}) {
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [engines, setEngines] = useState<Engine[]>([]);
   const [engine, setEngine] = useState<'gemini' | 'openai'>('gemini');
@@ -306,7 +306,7 @@ export function CboChat({ compact = false, title = 'Chat with GANESHA CBO' }: { 
         ))}
         {busy && live ? (
           <div className="sd-msg sd-assistant"><div className="sd-bubble sd-live"><Markdown text={live} /></div></div>
-        ) : busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'CBO search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
+        ) : busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'SAARTHI search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
         <div ref={endRef} />
       </div>
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
@@ -329,7 +329,7 @@ export function CboChat({ compact = false, title = 'Chat with GANESHA CBO' }: { 
               send();
             }
           }}
-          placeholder={compact ? `Message ${title.replace(/^Chat with /, "")}…` : "Message GANESHA CBO…"}
+          placeholder={compact ? `Message ${title.replace(/^Chat with /, "")}…` : "Message SAARTHI…"}
           rows={1}
           maxLength={4000}
         />
