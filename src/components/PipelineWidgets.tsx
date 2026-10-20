@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
+import { AgentAvatar } from './AgentAvatar';
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
 import { AGENTS, TEAMS, TEMPLATES, agentName } from '../data/agentsMeta';
 import { openNewGoal } from './GoalModal';
@@ -184,9 +186,22 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   const runFor = (id: string) => [...lastRun.entries()].find(([k]) => techId[k] === id)?.[1];
   const shown = team === 'all' ? AGENTS : AGENTS.filter((a) => a.team === team);
   const live = !locked && Boolean(summary);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const open = openId ? AGENTS.find((a) => a.id === openId) ?? null : null;
+  useEffect(() => {
+    if (!openId) return;
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpenId(null);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [openId]);
+  const statusFor = (id: string, info: LiveAgentInfo) => {
+    if (live) return liveStatus(info);
+    const s = active.get(id);
+    return s === 'running' ? { label: 'Working', cls: 'pill-running' } : s ? { label: 'Awaiting approval', cls: 'pill-paused' } : { label: 'Idle', cls: 'pill-idle' };
+  };
 
   return (
-    <Card title={`Agent directory · ${AGENTS.length} agents`} action={live ? <LiveBadge /> : undefined}>
+    <Card title={`Your agent team · ${AGENTS.length} agents`} action={live ? <LiveBadge /> : undefined}>
       <div className="tabs" role="tablist" aria-label="Filter by team">
         {['all', ...Object.keys(TEAMS)].map((t) => (
           <button key={t} role="tab" aria-selected={team === t} className={`tab ${team === t ? 'active' : ''}`} onClick={() => setTeam(t)}>
@@ -197,30 +212,49 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
       </div>
       {locked && <p className="ai-note">Unlock (🔔 or AI Connection) to see each agent’s live work and choose its AI engine.</p>}
       {err && <p className="drawer-notice error">{err}</p>}
-      <ul className="dir">
+      <ul className="ag-grid">
         {shown.map((a) => {
-          const run = runFor(a.id);
           const eng = engines?.[a.id];
           const info: LiveAgentInfo = { stats: summary?.agents.find((x) => x.id === a.id), engines: eng, usable: eng ? eng.some(keyOk) : undefined };
-          const st = live ? liveStatus(info) : (() => {
-            const s = active.get(a.id);
-            return s === 'running' ? { label: 'Working', cls: 'pill-running' } : s ? { label: 'Awaiting approval', cls: 'pill-paused' } : { label: 'Idle', cls: 'pill-idle' };
-          })();
-          const stats = info.stats;
+          const st = statusFor(a.id, info);
           return (
-            <li key={a.id} className="dir-item">
-              <div className="dir-top">
-                <span className="dir-avatar" aria-hidden="true">{a.name[0]}</span>
-                <div className="dir-head">
-                  <p className="dir-name">{a.name}</p>
-                  <p className="dir-role">{a.role}</p>
-                </div>
+            <li key={a.id}>
+              <button className={`ag-tile team-${a.team}`} onClick={() => setOpenId(a.id)} aria-haspopup="dialog">
+                <AgentAvatar agent={a} size={88} />
+                <span className="ag-name">{a.name}</span>
+                <span className="ag-role">{a.role}</span>
                 <span className={`pill ${st.cls}`}>{st.label}</span>
+              </button>
+            </li>
+          );
+        })}
+      </ul>
+      {open && createPortal((() => {
+        const a = open;
+        const run = runFor(a.id);
+        const eng = engines?.[a.id];
+        const info: LiveAgentInfo = { stats: summary?.agents.find((x) => x.id === a.id), engines: eng, usable: eng ? eng.some(keyOk) : undefined };
+        const st = statusFor(a.id, info);
+        const stats = info.stats;
+        return (
+          <div className="ag-modal-scrim" onClick={() => setOpenId(null)}>
+            <div className={`ag-modal team-${a.team}`} role="dialog" aria-modal="true" aria-label={a.name} onClick={(e) => e.stopPropagation()}>
+              <button className="icon-btn ag-close" onClick={() => setOpenId(null)} aria-label="Close">
+                <Icon name="close" />
+              </button>
+              <div className="ag-modal-head">
+                <AgentAvatar agent={a} size={120} />
+                <div>
+                  <p className="eyebrow">{TEAMS[a.team]?.name ?? a.team}</p>
+                  <h2 className="ag-modal-name">{a.name}</h2>
+                  <p className="ag-modal-role">{a.role}</p>
+                  <span className={`pill ${st.cls}`}>{st.label}</span>
+                </div>
               </div>
-              <p className="dir-mission">{a.mission}</p>
-              {live && stats && (
+              <p className="ag-mission">{a.mission}</p>
+              {live && (
                 <p className="dir-stats">
-                  {stats.total ? (
+                  {stats?.total ? (
                     <>
                       {stats.completed} done · {stats.failed} failed{stats.gate ? ` · reviews ${stats.gate.pass} pass / ${stats.gate.fail} fail` : ''}
                       {stats.last_activity ? ` · active ${formatWhen(stats.last_activity)}` : ''}
@@ -232,13 +266,22 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
                   )}
                 </p>
               )}
-              <p className="dir-meta">
-                <code>{a.id}</code>
-                {a.approvalRequired.length > 0 && <span className="approval">Approval: {a.approvalRequired.join(', ').replace(/_/g, ' ')}</span>}
-              </p>
+              {a.outputs?.length > 0 && (
+                <>
+                  <h3 className="ag-h">Delivers</h3>
+                  <ul className="bullets">{a.outputs.map((o) => <li key={o}>{o}</li>)}</ul>
+                </>
+              )}
+              {a.acceptance?.length > 0 && (
+                <>
+                  <h3 className="ag-h">Checked against</h3>
+                  <ul className="bullets">{a.acceptance.map((o) => <li key={o}>{o}</li>)}</ul>
+                </>
+              )}
+              {a.approvalRequired.length > 0 && <p className="approval">Needs your approval for: {a.approvalRequired.join(', ').replace(/_/g, ' ')}</p>}
               {a.limits && <p className="dir-limit">{a.limits}</p>}
               {run && <p className="dir-run">Scheduled run {formatWhen(run.finishedAt)} · {run.summary}</p>}
-              {eng && (
+              {eng ? (
                 <label className="dir-engine">
                   <span>AI engine</span>
                   <select value={eng.join(',')} disabled={saving === a.id} onChange={(e) => setEngine(a.id, e.target.value)}>
@@ -251,11 +294,14 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
                     ))}
                   </select>
                 </label>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+              ) : locked ? (
+                <p className="ai-note">Unlock to see live work and choose this agent’s AI engine.</p>
+              ) : null}
+              <p className="dir-meta"><code>{a.id}</code></p>
+            </div>
+          </div>
+        );
+      })(), document.body)}
     </Card>
   );
 }

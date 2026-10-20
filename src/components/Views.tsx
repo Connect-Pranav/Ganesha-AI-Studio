@@ -1,13 +1,14 @@
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
 import { AgentDecisions, FinishedWork } from './cbo/StudioDesk';
 import { Icon } from './Icon';
-import { ActivityFeed, AgentPanel, ProductCard, QuickActions, StatCard, TaskBoard, type QuickActionKind } from './Widgets';
+import { ActivityFeed, AgentPanel, QuickActions, StatCard, TaskBoard, type QuickActionKind } from './Widgets';
 import { describeProvider } from './Connection';
 import { agentName } from '../data/agentsMeta';
 import { useStudio, OPEN_STATUSES, WF_STATUS } from '../services/StudioContext';
 import type { Summary } from '../services/studioService';
 import { ResearchPanel, RunHistory } from './AgentWidgets';
 import { AgentDirectory, PipelineBoard } from './PipelineWidgets';
+import { GrowthSpotlight } from './GrowthSpotlight';
 import { StudioWorkflows } from './StudioWorkflows';
 import type { AiStatus, DashboardData, ProductId, View } from '../types';
 
@@ -26,25 +27,6 @@ interface Common extends ViewHandlers {
 
 /* ---------- Overview ---------- */
 const pl = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
-const BRAND_IDS: ProductId[] = ['sunverse', 'littleloop', 'foliocraft'];
-
-/** Live per-brand counts from the backend replace the scheduled-runner counts when unlocked. */
-function liveProducts(data: DashboardData, s: Summary | null) {
-  if (!s) return data.products;
-  return data.products.map((prod) => {
-    const c = s.counts.workflowsByBrand[prod.id] ?? {};
-    const open = Object.entries(c).filter(([k]) => OPEN_STATUSES.includes(k)).reduce((x, [, v]) => x + v, 0);
-    return {
-      ...prod,
-      metrics: [
-        { label: 'Goals in progress', value: String(open) },
-        { label: 'Waiting for you', value: String((c.waiting_for_approval ?? 0) + (c.waiting_for_external_action ?? 0)) },
-        { label: 'Done', value: String(c.completed ?? 0) },
-      ],
-    };
-  });
-}
-
 function NeedsYou({ s, onOpen }: { s: Summary; onOpen: () => void }) {
   const waiting = s.workflows.filter((w) => w.status === 'waiting_for_approval' || w.status === 'waiting_for_external_action');
   const failed = s.workflows.filter((w) => w.status === 'failed').slice(0, 3);
@@ -163,19 +145,8 @@ export function OverviewView(p: Common & { onNavigate: (v: View) => void }) {
         ))}
       </section>
 
-      <section aria-label="Brands">
-        <div className="section-head">
-          <h2 className="section-title">Brands</h2>
-          <p className="section-sub">Three separate workspaces — data never mixes.</p>
-        </div>
-        <div className="grid-3">
-          {liveProducts(data, s)
-            .filter((x) => BRAND_IDS.includes(x.id))
-            .map((prod) => (
-              <ProductCard key={prod.id} product={prod} onOpen={p.onOpenProduct} />
-            ))}
-        </div>
-      </section>
+      <GrowthSpotlight onNavigate={p.onNavigate} />
+      <AgentDirectory pipelines={data.pipelines} liveAgents={data.agents} />
 
       <div className="grid-main">
         <div className="col">
