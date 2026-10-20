@@ -1,7 +1,10 @@
 // Original agent portraits, drawn in SVG from the agent's id: a friendly robot whose colours come
 // from its team and whose chest badge shows its job. Deterministic (same agent → same face), no
 // external images, and deliberately not based on any traditional or religious depiction.
-import type { AgentMeta } from '../data/agentsMeta';
+import { AGENTS, type AgentMeta } from '../data/agentsMeta';
+
+// Every agent in the registry has a portrait in public/agents (cut from the owner's agent sheet).
+const ART = new Set(AGENTS.map((a) => a.id));
 
 const TEAM: Record<string, [string, string, string]> = {
   // [main, deep, glow]
@@ -44,6 +47,9 @@ function hash(s: string) {
 }
 
 export function AgentAvatar({ agent, size = 96, className = '' }: { agent: Pick<AgentMeta, 'id' | 'name' | 'team' | 'role'>; size?: number; className?: string }) {
+  // Owner-supplied portraits (public/agents/<id>.webp) win; the drawn robot is the fallback.
+  if (ART.has(agent.id))
+    return <img className={`agent-avatar agent-art ${className}`} src={`./agents/${agent.id}.webp`} alt={`${agent.name} portrait`} width={size} loading="lazy" decoding="async" />;
   const [main, deep, glow] = TEAM[agent.team] ?? TEAM.ops;
   const h = hash(agent.id);
   const eyes = h % 4; // 0 round · 1 visor · 2 happy arcs · 3 ovals

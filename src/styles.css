@@ -1752,3 +1752,10 @@ select option { background: #0e1540; color: var(--ink); }
   .gs-table { display: block; overflow-x: auto; white-space: nowrap; }
   .gs-kpi b { font-size: 19px; }
 }
+
+/* Agent portraits (owner's art): portrait card art on top of each tile */
+.ag-tile { padding: 8px 8px 14px; }
+.ag-tile .agent-art { width: 100%; height: auto; aspect-ratio: 152 / 163; object-fit: cover; border-radius: 12px; margin-bottom: 8px; filter: none; box-shadow: 0 10px 22px -12px rgba(0, 0, 0, 0.9); }
+.ag-tile:hover .agent-art { box-shadow: 0 14px 28px -12px rgba(0, 0, 0, 0.9), 0 0 24px -6px rgba(245, 184, 61, 0.55); }
+.ag-modal .agent-art { width: 150px; height: auto; aspect-ratio: 152 / 163; object-fit: cover; border-radius: 16px; flex: none; box-shadow: 0 16px 34px -14px rgba(0, 0, 0, 0.9); }
+@media (max-width: 560px) { .ag-tile .agent-art { width: 100%; height: auto; } .ag-modal .agent-art { width: 140px; } }
