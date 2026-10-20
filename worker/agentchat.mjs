@@ -12,6 +12,8 @@ import { REGISTRY, agentById } from './agents.mjs';
 import { TEMPLATES, enginesFor } from './orchestrator.mjs';
 import { callGeminiInteraction, validAction } from './cbochat.mjs';
 import { dailyReport, overview as growthOverview } from './growth/analytics.mjs';
+import { runBlueprint } from './growth/autopilot.mjs';
+import { GROWTH_BRANDS } from './growth/brands.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
 
 const MAX_MSG = 4000;
@@ -79,6 +81,29 @@ async function liveFacts(env, db, a) {
   return lines.join('\n');
 }
 
+/** MUSHAK talks like a sharp employee (the owner asked: employee, not deity) and turns commands into blueprints it runs. */
+function mushakSystem(facts, camps) {
+  const objectives = Object.entries(GROWTH_BRANDS).map(([id, b]) => `${id}: ${b.objectives.join(', ')}`).join(' | ');
+  return `You are MUSHAK, Growth Manager at Ganesha AI Studio, an employee reporting to the owner (call him "Sir"). Brands: LittleLoop (kids' animated Instagram Reels @little_loop09), Sunverse (YouTube music channel @SURVERSE_09), Foliocraft (portfolio builder).
+
+YOUR JOB: find real partners and customers, research and score them with evidence, and draft honest outreach. You run these tools: NARADA finds and researches leads with Google Search; SOMA scores them; SAMVADA writes outreach drafts. You never approve or send messages; drafts wait for the owner in Growth → Approvals.
+
+VOICE: a sharp, respectful employee giving a status update. Hinglish is fine. Short, concrete, no flattery, no divine or spiritual language. Use numbers from LIVE FACTS only; never invent results.
+
+WHEN THE OWNER GIVES A COMMAND (wants growth work done):
+1. Reply with a short BLUEPRINT for the owner: goal, brand, campaign, the steps with counts, what he will get, and a realistic expectation.
+2. Be honest about what your tools can and cannot do. You cannot buy or force followers or views. For audience goals (followers, subscribers), plan partnerships that can bring an audience (collab creators, cross-promotion, communities, sponsors) and say plainly that results are not guaranteed.
+3. End the reply with ONE line exactly like this so it runs automatically:
+BLUEPRINT: {"title":"<short>","brand":"littleloop|sunverse|foliocraft","campaign":{"id":"<existing campaign id>"} or {"new":{"name":"<name>","objective":"<objective>","audience":"<who>","geography":"<where>","criteria":"<must-haves>"}},"steps":[{"kind":"discover","count":<1-10>},{"kind":"research","count":<n>},{"kind":"qualify","count":<n>},{"kind":"draft","count":<n>}],"expected":"<what the owner gets>"}
+Allowed objectives per brand → ${objectives}. One brand per blueprint (for several brands, plan the most important one first and say so). Keep counts modest (find ≤10, research/score/draft ≤10 each).
+If the owner only asks a question or for a report, just answer — no BLUEPRINT line.
+
+EXISTING CAMPAIGNS (id · brand · name · objective · status): ${camps || 'none'}
+
+LIVE FACTS (read just now):
+${facts}`;
+}
+
 function systemFor(a, facts) {
   return `You are ${a.name}, ${a.role} of Ganesha AI Studio${a.id === MUSHAK.id ? '' : ` (${teamOf(a)})`}. The studio serves three brands: LittleLoop (kids' animated Instagram Reels), Sunverse (YouTube music channel @SURVERSE_09) and Foliocraft (portfolio builder).
 
@@ -134,8 +159,13 @@ export async function send(env, db, agentId, { message, research = false }, deps
   if (message.length > MAX_MSG) throw new HttpError(400, `message max ${MAX_MSG} chars`);
   const past = await history(db, agentId, HISTORY);
   await db.prepare("INSERT INTO agent_chat (id, agent_id, role, content, created_at) VALUES (?,?, 'user', ?, ?)").bind(newId('am'), agentId, message.trim(), nowIso()).run();
-  const system = systemFor(a, await liveFacts(env, db, a));
-  const transcript = [...past.map((m) => `${m.role === 'user' ? 'Owner (prayer)' : a.name}: ${m.content}`), `Owner (prayer): ${message.trim()}`].join('\n\n');
+  let system;
+  if (a.id === MUSHAK.id) {
+    const camps = (await db.prepare('SELECT id, brand, name, objective, status FROM growth_campaigns ORDER BY updated_at DESC LIMIT 12').all()).results.map((c) => `${c.id} · ${c.brand} · ${c.name} · ${c.objective} · ${c.status}`).join('\n');
+    system = mushakSystem(await liveFacts(env, db, a), camps);
+  } else system = systemFor(a, await liveFacts(env, db, a));
+  const who = a.id === MUSHAK.id ? 'Owner' : 'Owner (prayer)';
+  const transcript = [...past.map((m) => `${m.role === 'user' ? who : a.name}: ${m.content}`), `${who}: ${message.trim()}`].join('\n\n');
 
   // The agent's own engine first; free Gemini as the fallback so every agent can always answer in chat.
   const engines = a.id === MUSHAK.id ? ['gemini'] : [...new Set([...(await enginesFor(db, env, a)), 'gemini'])];
@@ -162,13 +192,28 @@ export async function send(env, db, agentId, { message, research = false }, deps
     await db.prepare("DELETE FROM agent_chat WHERE agent_id = ? AND role = 'user' AND id = (SELECT id FROM agent_chat WHERE agent_id = ? ORDER BY created_at DESC LIMIT 1)").bind(agentId, agentId).run();
     throw new HttpError(409, `${a.name} could not answer — no working AI engine. ${errors.join(' | ') || 'Set a key in Settings → API keys, or change this agent’s engine.'}`);
   }
-  const { text, action } = splitAction(out.text, a);
+  let { text, action } = a.id === MUSHAK.id ? { text: out.text.trim(), action: null } : splitAction(out.text, a);
+  let blueprint = null;
+  if (a.id === MUSHAK.id) {
+    const m = /\n?\s*BLUEPRINT:\s*(\{[\s\S]*\})\s*$/.exec(text);
+    if (m) {
+      text = text.slice(0, m.index).trim();
+      try {
+        const bp = JSON.parse(m[1]);
+        const run = await runBlueprint(env, db, bp, message.trim());
+        blueprint = { type: 'blueprint', title: String(bp.title ?? '').slice(0, 140), brand: bp.brand, expected: String(bp.expected ?? '').slice(0, 400), steps: (bp.steps ?? []).slice(0, 12).map((x) => ({ kind: x.kind, count: x.count ?? null })), run };
+      } catch (e) {
+        blueprint = { type: 'blueprint', error: String(e.message ?? e).slice(0, 300) };
+      }
+      action = blueprint;
+    }
+  }
   const reply = { id: newId('am'), agent_id: agentId, role: 'assistant', content: (text || '…').slice(0, 20000), engine: out.provider, model: out.model, created_at: nowIso() };
   await db
     .prepare('INSERT INTO agent_chat (id, agent_id, role, content, engine, model, action_json, sources_json, created_at) VALUES (?,?,?,?,?,?,?,?,?)')
     .bind(reply.id, agentId, 'assistant', reply.content, reply.engine, reply.model, action ? JSON.stringify(action) : null, JSON.stringify(out.sources ?? []), reply.created_at)
     .run();
-  return { ...reply, action, sources: out.sources ?? [] };
+  return { ...reply, action, blueprint, sources: out.sources ?? [] };
 }
 
 export const canResearch = (id) => RESEARCHERS.has(id);

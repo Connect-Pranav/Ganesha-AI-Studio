@@ -11,7 +11,7 @@ import { GROWTH_BRAND_IDS, GROWTH_BRANDS, getBrandConfig } from './brands.mjs';
 import { createCampaign, setCampaignStatus } from './core.mjs';
 import * as agents from './agents.mjs';
 
-const STEPS_PER_TICK = 2;
+const STEPS_PER_TICK = 3;
 const STALE_CYCLE_MS = 3 * 3_600_000; // a cycle not finished in 3 h is closed as partial
 
 /** Starting campaigns Mushak opens for a brand that has none yet (the owner can edit/pause/cancel). */
@@ -116,6 +116,21 @@ async function buildPlan(db, camps, maxSteps) {
 }
 
 /* ---------------- running ---------------- */
+/** Blueprint steps may leave the lead open ("research the next new lead"); pick it when the step runs. */
+async function resolveLead(db, s) {
+  if (s.leadId || s.kind === 'discover') return true;
+  const sql = {
+    research: "SELECT id, name FROM growth_leads WHERE campaign_id = ? AND origin != 'demo' AND stage IN ('new','researching') AND researched_at IS NULL ORDER BY created_at LIMIT 1",
+    qualify: "SELECT id, name FROM growth_leads WHERE campaign_id = ? AND origin != 'demo' AND researched_at IS NOT NULL AND score IS NULL AND stage NOT IN ('suppressed','lost') ORDER BY updated_at LIMIT 1",
+    draft: "SELECT l.id, l.name FROM growth_leads l JOIN growth_campaigns c ON c.id = l.campaign_id WHERE l.campaign_id = ? AND l.origin != 'demo' AND l.stage = 'qualified' AND l.score >= c.threshold AND NOT EXISTS (SELECT 1 FROM growth_drafts d WHERE d.lead_id = l.id AND d.status NOT IN ('rejected','cancelled')) ORDER BY l.score DESC LIMIT 1",
+  }[s.kind];
+  const l = sql ? await db.prepare(sql).bind(s.campaignId).first() : null;
+  if (!l) return false;
+  s.leadId = l.id;
+  s.lead = l.name;
+  return true;
+}
+
 async function runStep(env, db, s, deps) {
   if (s.kind === 'discover') {
     const r = await agents.discover(env, db, s.campaignId, { count: s.count ?? 3 }, deps);
@@ -214,6 +229,11 @@ export async function advance(env, db, { n = STEPS_PER_TICK, deps = {} } = {}) {
     ran++;
     s.startedAt = nowIso();
     try {
+      if (!(await resolveLead(db, s))) {
+        Object.assign(s, { status: 'skipped', result: { text: `No lead ready to ${s.kind} in this campaign yet.` }, finishedAt: nowIso() });
+        await db.prepare('UPDATE growth_cycles SET plan_json = ? WHERE id = ?').bind(JSON.stringify(plan), cycle.id).run();
+        continue;
+      }
       s.result = await runStep(env, db, s, deps);
       s.status = 'done';
     } catch (e) {
@@ -259,4 +279,67 @@ export async function listCycles(db, limit = 30) {
   const lastSched = await db.prepare("SELECT started_at FROM growth_cycles WHERE trigger_kind = 'schedule' ORDER BY started_at DESC LIMIT 1").first();
   const nextRunAt = s.autopilot ? new Date(lastSched ? Date.parse(lastSched.started_at) + s.everyHours * 3_600_000 : Date.now() + 5 * 60_000).toISOString() : null;
   return { settings: s, nextRunAt, cycles: rows.map(cycleOut) };
+}
+
+/* ---------------- owner commands → blueprint → run ---------------- */
+const KINDS = ['discover', 'research', 'qualify', 'draft'];
+const AGENT_OF = { discover: 'NARADA', research: 'NARADA', qualify: 'SOMA', draft: 'SAMVADA' };
+
+/**
+ * Validates a blueprint Mushak wrote from the owner's command, opens its campaign if needed, and puts
+ * the steps into a run (a new one, or appended to the run already going). Returns what was queued.
+ * Shape: { title, brand, campaign: { id } | { new: {name, objective, segment?, audience?, geography?, criteria?} },
+ *          steps: [{ kind, count? }], expected? }
+ */
+export async function runBlueprint(env, db, bp, command) {
+  if (!bp || typeof bp !== 'object') throw new HttpError(400, 'Blueprint missing');
+  const brand = String(bp.brand ?? '');
+  if (!GROWTH_BRAND_IDS.includes(brand)) throw new HttpError(400, 'Blueprint brand must be littleloop, sunverse or foliocraft');
+  if (!env.GEMINI_API_KEY) throw new HttpError(409, 'Gemini is not configured (Settings → API keys), so Mushak cannot run.');
+  let campaign;
+  if (bp.campaign?.id) {
+    campaign = await db.prepare('SELECT * FROM growth_campaigns WHERE id = ? AND brand = ?').bind(String(bp.campaign.id), brand).first();
+    if (!campaign) throw new HttpError(400, 'Blueprint campaign not found for that brand');
+    if (['cancelled', 'completed'].includes(campaign.status)) throw new HttpError(409, `Campaign "${campaign.name}" is ${campaign.status}`);
+    if (campaign.status !== 'active') await setCampaignStatus(db, campaign.id, campaign.status === 'draft' ? 'activate' : 'resume');
+  } else if (bp.campaign?.new) {
+    const n = bp.campaign.new;
+    const name = String(n.name ?? bp.title ?? 'Mushak campaign').slice(0, 110);
+    const existing = await db.prepare('SELECT * FROM growth_campaigns WHERE brand = ? AND name = ?').bind(brand, name).first();
+    if (existing) campaign = existing;
+    else {
+      const c = await createCampaign(db, { brand, name, objective: n.objective, segment: n.segment ?? 'business', audience: n.audience ?? '', geography: n.geography ?? 'India', criteria: n.criteria ?? '', threshold: 60, dailyJobLimit: 30, maxLeads: 100, budgetInr: 0, researchDepth: 'standard', channel: 'manual' });
+      await setCampaignStatus(db, c.id, 'activate');
+      campaign = await db.prepare('SELECT * FROM growth_campaigns WHERE id = ?').bind(c.id).first();
+    }
+    if (campaign.status !== 'active') await setCampaignStatus(db, campaign.id, campaign.status === 'draft' ? 'activate' : 'resume');
+  } else throw new HttpError(400, 'Blueprint needs a campaign (existing id or new)');
+
+  const steps = [];
+  for (const raw of Array.isArray(bp.steps) ? bp.steps.slice(0, 12) : []) {
+    const kind = String(raw?.kind ?? '');
+    if (!KINDS.includes(kind)) continue;
+    const count = Math.max(1, Math.min(10, Math.round(Number(raw.count) || (kind === 'discover' ? 5 : 3))));
+    if (kind === 'discover') {
+      for (let left = count; left > 0; left -= 5) steps.push({ kind, count: Math.min(5, left), why: `Your command: find ${count} lead(s).` });
+    } else for (let i = 0; i < count; i++) steps.push({ kind, why: `Your command: ${kind} the next lead that is ready.` });
+  }
+  if (!steps.length) throw new HttpError(400, 'Blueprint has no runnable steps');
+  const queued = steps.slice(0, 20).map((s) => ({ status: 'pending', agent: AGENT_OF[s.kind], brand, campaignId: campaign.id, campaign: campaign.name, source: 'command', ...s }));
+
+  const open = await db.prepare("SELECT * FROM growth_cycles WHERE status = 'running' ORDER BY started_at LIMIT 1").first();
+  if (open) {
+    const plan = JSON.parse(open.plan_json);
+    const base = plan.length;
+    queued.forEach((s, i) => (s.id = `s${base + i + 1}`));
+    const inputs = JSON.parse(open.inputs_json || '{}');
+    inputs.commands = [...(inputs.commands ?? []), { at: nowIso(), command, blueprint: bp }];
+    await db.prepare('UPDATE growth_cycles SET plan_json = ?, inputs_json = ? WHERE id = ?').bind(JSON.stringify([...plan, ...queued]), JSON.stringify(inputs), open.id).run();
+    return { cycleId: open.id, appended: true, campaign: { id: campaign.id, name: campaign.name }, steps: queued.length };
+  }
+  const id = newId('gcyc');
+  queued.forEach((s, i) => (s.id = `s${i + 1}`));
+  const inputs = { source: 'Owner command in chat', commands: [{ at: nowIso(), command, blueprint: bp }], campaigns: [await campaignState(db, campaign)], rules: ['Runs inside the campaign daily job limit and ₹0 budget (free Gemini)', 'Mushak never approves or sends — drafts wait for you'] };
+  await db.prepare("INSERT INTO growth_cycles (id, trigger_kind, status, started_at, inputs_json, plan_json) VALUES (?, 'manual', 'running', ?, ?, ?)").bind(id, nowIso(), JSON.stringify(inputs), JSON.stringify(queued)).run();
+  return { cycleId: id, appended: false, campaign: { id: campaign.id, name: campaign.name }, steps: queued.length };
 }

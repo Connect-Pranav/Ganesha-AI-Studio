@@ -17,7 +17,8 @@ import { HttpError, newId, nowIso } from './util.mjs';
 
 const MAX_MSG = 4000;
 const HISTORY = 16;
-const GEMINI_TIMEOUT = 120_000;
+const GEMINI_TIMEOUT = 120_000; // research / think
+const GEMINI_QUICK_TIMEOUT = 60_000; // plain chat: leave time for the fallback before the phone gives up
 const API = 'https://generativelanguage.googleapis.com/v1beta';
 
 export function engines(env) {
@@ -75,12 +76,19 @@ async function snapshot(env, db, providers) {
 const TEMPLATE_LIST = () => Object.entries(TEMPLATES).map(([k, v]) => `${k} (${v.name})`).join(', ');
 
 const SYSTEM = () => `You are SAARTHI (technical id GANESHA_CBO), the Chief Business Officer of Ganesha AI Studio — the owner's internal command center for three brands: LittleLoop (kids' animated Instagram Reels), Sunverse (YouTube music channel) and Foliocraft (portfolio builder).
-Talk like a sharp, friendly business partner in a chat app (like ChatGPT/Gemini). Reply in the owner's language (Hinglish is welcome). Answer directly; keep it short unless asked for depth; use short lists when they help.
+VOICE (the owner asked for this): speak as the calm, wise divine charioteer who guides the owner's journey; the owner's message is a prayer ("prarthana") offered to you. Open with at most one short line of blessing in the owner's language (Hinglish is welcome, e.g. "Tathastu, Parth —"), then give real, practical substance like a sharp business partner. Keep the divine tone light; never preach, never claim supernatural powers or that a prayer guarantees results. Answer directly; keep it short unless asked for depth; use short lists when they help.
 Use the LIVE STUDIO SNAPSHOT for anything about the studio's own state, numbers, tasks, approvals, reels or spend. Never invent studio figures; if something is not in the snapshot, say so.
 For general questions (strategy, ideas, scripts, captions, growth, research) answer from your knowledge — and from web search results when they are provided, citing them.
 You can hand work to the 31-agent team. When the owner asks the studio to DO something that a goal template covers, propose it by ending your reply with ONE line exactly like:
 ACTION: {"type":"start_goal","template":"<template id>","title":"<short title>","goal":"<clear goal for the agents>"}
 Template ids: ${TEMPLATE_LIST()}. Only propose when the owner wants work done; the owner confirms with a button. Never claim you already started, posted, published, spent or deployed anything.
+You lead MUSHAK, the Growth Manager (finds partners/customers with NARADA, scores with SOMA, drafts outreach with SAMVADA; never sends without the owner). When the owner wants growth work (leads, partners, sponsors, collaborations, outreach, audience growth through partnerships), DELEGATE to Mushak instead of a goal by ending your reply with ONE line exactly like:
+MUSHAK: <one clear command for Mushak, naming the brand and what to find/do>
+Mushak turns it into a blueprint and runs it right away; its drafts still wait for the owner's approval.
+WHEN THE OWNER ASKS FOR A PLAN OR BLUEPRINT (e.g. a revenue target, a launch, "next 30 days"):
+- Give a concrete BLUEPRINT, not generic advice: the goal and a realistic read on it (say plainly if a target is unlikely and what is achievable), week-by-week milestones, which agent or brand owns each part, the numbers to track, and what the owner must do himself (approvals, uploads, payments). Use LIVE STUDIO SNAPSHOT facts; never promise results.
+- Then put the first moves in motion in the same reply: a MUSHAK line for the growth/outreach part (it runs immediately) and, if content or product work should start, an ACTION line (the owner confirms with a button). Both lines may be used, MUSHAK first, ACTION last.
+- Ask at most one question, only if a missing fact truly blocks the plan.
 For approvals, uploads, settings or connections, point to the exact panel place. Panel map (use only these):
 - Top bar: Command Center, Overview, CBO (this chat), Agents (decisions by agent + finished work), LittleLoop (Reel Factory: switch, Flow clips, approvals), Sunverse, Foliocraft, Analytics (range dropdown, Instagram/YouTube stats).
 - Gear icon / sidebar → Settings: API keys (Gemini, OpenAI/ChatGPT, Claude, YouTube, Instagram app ID/secret) saved encrypted from the app, Connect Instagram, chat defaults, updates.
@@ -153,7 +161,7 @@ export async function callGeminiInteraction(env, db, { system, message, previous
   if (previous) body.previous_interaction_id = previous;
   const started = Date.now();
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), GEMINI_TIMEOUT);
+  const timer = setTimeout(() => ctrl.abort(), research || think ? GEMINI_TIMEOUT : GEMINI_QUICK_TIMEOUT);
   let status = null;
   try {
     const res = await fetchImpl(`${API}/interactions`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY }, body: JSON.stringify(body), signal: ctrl.signal });
@@ -248,14 +256,30 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
       }
     }
   }
+  // Delegation to Mushak: a trailing "MUSHAK: <command>" line is sent to Mushak, who plans and runs it.
+  let delegation = null;
+  const dm = /^[ \t]*MUSHAK:[ \t]*(.+)$/m.exec(out.text);
+  if (dm) {
+    out.text = (out.text.slice(0, dm.index) + out.text.slice(dm.index + dm[0].length)).replace(/\n{3,}/g, '\n\n').trim();
+    const command = dm[1].trim().slice(0, 1000);
+    try {
+      const { send: askAgent } = await import('./agentchat.mjs');
+      const m = await askAgent(env, db, 'mushak_growth', { message: `[Command from SAARTHI, CBO] ${command}` }, deps);
+      delegation = { type: 'mushak', command, reply: m.content.slice(0, 1500), blueprint: m.blueprint ?? null };
+    } catch (e) {
+      delegation = { type: 'mushak', command, error: String(e.message ?? e).slice(0, 300) };
+    }
+  }
   const extracted = extractAction(out.text);
   const text = extracted.text;
-  const action = toolAction ?? extracted.action;
+  // A goal proposal keeps the button; a Mushak delegation is shown alongside it.
+  const action = toolAction ?? extracted.action ?? delegation;
+  if (action && delegation && action !== delegation) action.delegation = delegation;
   const reply = { id: newId('msg'), role: 'assistant', content: (text || '…').slice(0, 20000), engine, model: out.model, created_at: nowIso() };
   const mode = { think: Boolean(think), research: Boolean(research), image: Boolean(image), fallback: out.fallback ?? null, requestId: out.requestId ?? null, incomplete: out.incomplete ?? null };
   await db.batch([
     db.prepare('INSERT INTO cbo_chat (id, role, content, engine, model, created_at) VALUES (?,?,?,?,?,?)').bind(reply.id, reply.role, reply.content, reply.engine, reply.model, reply.created_at),
     db.prepare('INSERT INTO cbo_chat_meta (msg_id, interaction_id, thoughts, sources_json, action_json, mode_json) VALUES (?,?,?,?,?,?)').bind(reply.id, out.interactionId ?? null, out.thoughts ?? null, JSON.stringify(out.sources ?? []), action ? JSON.stringify(action) : null, JSON.stringify(mode)),
   ]);
-  return { ...reply, thoughts: out.thoughts ?? null, sources: out.sources ?? [], action, mode };
+  return { ...reply, thoughts: out.thoughts ?? null, sources: out.sources ?? [], action, delegation, mode };
 }

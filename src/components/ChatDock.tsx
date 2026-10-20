@@ -50,7 +50,7 @@ export function ChatDock({ hidden = false }: { hidden?: boolean }) {
             <img className="dock-avatar dock-saarthi" src="./agents/saarthi-96.webp" alt="" aria-hidden="true" />
             <div>
               <strong>{CHAT_BOT_NAME}</strong>
-              <span className="dock-sub">Your CBO assistant · same chat as the CBO page</span>
+              <span className="dock-sub">Your Chief Business Officer · plans, delegates, runs</span>
             </div>
             <button className="icon-btn dock-min" onClick={() => setOpen(false)} aria-label="Minimise chat" title="Minimise (Esc)">
               —

@@ -36,7 +36,7 @@ import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
 import { growthRoute } from './growth/routes.mjs';
-import { scheduledMushak } from './growth/autopilot.mjs';
+import { scheduledMushak, advance as advanceMushak } from './growth/autopilot.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
 
@@ -104,6 +104,7 @@ function chatStream(env, db, providers, body, ctx) {
   const run = (async () => {
     try {
       const reply = await cbochat.send(env, db, providers, body, {}, { onDelta: (t) => emit('delta', { t }) });
+      if (reply.delegation?.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak run failed', e.message)));
       await emit('done', { reply });
     } catch (e) {
       await emit('error', { error: e instanceof HttpError ? e.message : 'Chat failed', status: e.status ?? 500 });
@@ -501,7 +502,12 @@ async function route(request, env, ctx, rawEnv = env) {
 
   /* ---------- Talk to an agent (owner-only) ---------- */
   if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'GET') return json({ messages: await agentchat.history(db, seg[2]), research: agentchat.canResearch(seg[2]) });
-  if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'POST') return json({ reply: await agentchat.send(await ig.withIg(env, db), db, seg[2], await readBody(request)) });
+  if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'POST') {
+    const reply = await agentchat.send(await ig.withIg(env, db), db, seg[2], await readBody(request));
+    // A blueprint from Mushak starts running now; the 5-minute cron carries on with the rest.
+    if (reply.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak command run failed', e.message)));
+    return json({ reply });
+  }
   if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'DELETE') {
     await agentchat.clear(db, seg[2]);
     return json({ ok: true });
@@ -530,7 +536,9 @@ async function route(request, env, ctx, rawEnv = env) {
     const b = await readBody(request, 8 * 1024 * 1024); // room for one attached image
     const body = { message: b.message, engine: b.engine, think: b.think === true, research: b.research === true, image: b.image ?? null };
     if (b.stream === true && body.engine === 'openai') return chatStream(envIg, db, await providersStatus(env, db), body, ctx);
-    return json({ reply: await cbochat.send(envIg, db, await providersStatus(env, db), body) });
+    const reply = await cbochat.send(envIg, db, await providersStatus(env, db), body);
+    if (reply.delegation?.blueprint?.run) ctx?.waitUntil?.(advanceMushak(env, db, { n: 3 }).catch((e) => console.error('mushak run failed', e.message)));
+    return json({ reply });
   }
   if (path === '/api/cbo/chat' && method === 'DELETE') {
     await cbochat.clear(db);

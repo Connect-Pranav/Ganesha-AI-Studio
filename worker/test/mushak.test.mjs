@@ -85,3 +85,58 @@ test('autopilot: owner campaigns are respected, off switch stops new cycles, no 
   assert.equal(await ap.scheduledMushak(ENV, db), null);
   await assert.rejects(ap.saveSettings(db, { everyHours: 0 }), /1–24/);
 });
+
+test('owner command → Mushak replies like an employee with a blueprint → it runs by itself', async () => {
+  const { send } = await import('../agentchat.mjs');
+  n = 0;
+  const reply = 'Ji Sir. Blueprint: Sunverse ke liye 5 indie artists dhoondhunga, research aur score karunga, aur best 2 ke liye drafts banaunga.\nBLUEPRINT: {"title":"Sunverse artist collabs","brand":"sunverse","campaign":{"new":{"name":"Indie artist collabs","objective":"creator_collaboration","audience":"Indie artists","geography":"India"}},"steps":[{"kind":"discover","count":5},{"kind":"research","count":2},{"kind":"qualify","count":2},{"kind":"draft","count":2}],"expected":"2 drafts for approval"}';
+  const seen = [];
+  const chatFetch = async (url, init) => {
+    if (!/Growth Manager at Ganesha/.test(String(init?.body ?? ''))) return gemini(url, init);
+    seen.push(String(init?.body ?? ''));
+    return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: reply }] }, finishReason: 'STOP' }] }), { status: 200 });
+  };
+  const r = await send(ENV, db, 'mushak_growth', { message: 'Sunverse ke liye collab artists dhoondo' }, { fetch: chatFetch, sleep: noSleep });
+  assert.match(seen[0], /employee/, 'employee voice for Mushak');
+  assert.doesNotMatch(seen[0], /deity/);
+  assert.doesNotMatch(r.content, /BLUEPRINT:/, 'the machine line is hidden from the chat');
+  assert.equal(r.blueprint.run.steps, 1 + 2 + 2 + 2);
+  const camp = await db.prepare("SELECT * FROM growth_campaigns WHERE name = 'Indie artist collabs'").first();
+  assert.equal(camp.status, 'active');
+  let c = await ap.getCycle(db, r.blueprint.run.cycleId);
+  assert.equal(c.inputs.commands[0].command, 'Sunverse ke liye collab artists dhoondo');
+  while (c.status === 'running') c = await ap.advance(ENV, db, { deps: { fetch: gemini, sleep: noSleep } });
+  assert.equal(c.outputs.leadsFound, 3, 'mock returns 3 leads per search');
+  assert.equal(c.outputs.researched, 2);
+  assert.equal(c.outputs.scored, 2);
+  assert.equal(c.outputs.draftsForApproval.length, 2);
+  assert.equal((await db.prepare("SELECT COUNT(*) AS n FROM growth_drafts WHERE status = 'pending_approval'").first()).n, 2, 'drafts wait for the owner');
+
+  // A bad blueprint is reported, not run.
+  const bad = 'Ok Sir.\nBLUEPRINT: {"title":"x","brand":"nts","campaign":{"new":{"name":"x","objective":"sponsorship"}},"steps":[{"kind":"discover","count":3}]}';
+  const r2 = await send(ENV, db, 'mushak_growth', { message: 'nts ke liye' }, { fetch: async () => new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: bad }] }, finishReason: 'STOP' }] }), { status: 200 }), sleep: noSleep });
+  assert.match(r2.blueprint.error, /brand must be/);
+});
+
+test('SAARTHI can command Mushak: its MUSHAK line is delegated, Mushak blueprints and queues the run', async () => {
+  const cbochat = await import('../cbochat.mjs');
+  const raw = (text) => new Response(JSON.stringify({ id: 'i2', steps: [{ type: 'model_output', content: [{ type: 'text', text }] }], usage: { total_input_tokens: 5, total_output_tokens: 5 } }), { status: 200 });
+  const bp = 'Ji Sir, blueprint ready.\nBLUEPRINT: {"title":"Kids brands","brand":"littleloop","campaign":{"new":{"name":"Kids brands via Saarthi","objective":"sponsorship"}},"steps":[{"kind":"discover","count":3}],"expected":"3 leads"}';
+  const fetch = async (url, init) => {
+    const body = String(init?.body ?? '');
+    if (/SAARTHI \(technical id/.test(body)) return raw('Theek hai, Mushak ko bol diya.\nMUSHAK: LittleLoop ke liye 3 kids brands dhoondo');
+    if (/Growth Manager at Ganesha/.test(body)) {
+      assert.match(body, /Command from SAARTHI/);
+      return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: bp }] }, finishReason: 'STOP' }] }), { status: 200 });
+    }
+    return gemini(url, init);
+  };
+  const r = await cbochat.send(ENV, db, [], { message: 'LittleLoop ke liye sponsors chahiye' }, { fetch, sleep: noSleep });
+  assert.doesNotMatch(r.content, /MUSHAK:/);
+  assert.equal(r.delegation.command, 'LittleLoop ke liye 3 kids brands dhoondo');
+  assert.equal(r.delegation.blueprint.run.steps, 1);
+  assert.equal(r.action.type, 'mushak', 'stored on the Saarthi message for the chat UI');
+  const hist = await cbochat.history(db);
+  assert.equal(hist.at(-1).action.type, 'mushak');
+  assert.equal((await db.prepare("SELECT status FROM growth_cycles").first()).status, 'running');
+});

@@ -1,5 +1,6 @@
 // Owner's desk: ChatGPT-style CBO chat, decisions grouped by agent (Approve / Decline with the
 // agent's output one tap away) and finished work. All data is live from the Worker.
+import { BlueprintCard, type Blueprint } from '../BlueprintCard';
 import { BatchUpload, InlineRename, nameFromFile } from '../BatchUpload';
 import { FlowPack } from './FlowPack';
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react';
@@ -54,7 +55,8 @@ function OutputViewer({ artifactId, onClose }: { artifactId: string; onClose: ()
 }
 
 /* ---------------- CBO chat ---------------- */
-interface ChatAction { type: 'start_goal'; template: string; title: string; goal: string }
+interface MushakDelegation { type: 'mushak'; command: string; reply?: string; blueprint?: Blueprint | null; error?: string }
+interface ChatAction { type: 'start_goal'; template: string; title: string; goal: string; delegation?: MushakDelegation }
 interface Msg {
   id: string;
   role: 'user' | 'assistant';
@@ -64,7 +66,7 @@ interface Msg {
   created_at: string;
   thoughts?: string | null;
   sources?: { url: string; title: string }[];
-  action?: ChatAction | null;
+  action?: ChatAction | MushakDelegation | null;
   mode?: { think?: boolean; research?: boolean; image?: boolean; fallback?: string | null; requestId?: string | null; incomplete?: string | null } | null;
 }
 interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean; images?: boolean; stream?: boolean }
@@ -168,11 +170,20 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
         const reply = await streamChat(payload, (t) => setLive((x) => (x ?? '') + t));
         setMsgs((x) => [...x, reply]);
       } else {
-        const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify(payload) });
-        setMsgs((x) => [...x, r.reply]);
+        const ctl = new AbortController();
+        const timer = setTimeout(() => ctl.abort(), (payload.research || payload.think ? 170 : 110) * 1000);
+        try {
+          const r = await api<{ reply: Msg }>('/api/cbo/chat', { method: 'POST', body: JSON.stringify(payload), signal: ctl.signal });
+          setMsgs((x) => [...x, r.reply]);
+        } finally {
+          clearTimeout(timer);
+        }
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed');
+      const aborted = err instanceof DOMException && err.name === 'AbortError';
+      setError(aborted ? 'SAARTHI took too long to answer. If the reply was ready it appears below; otherwise send again.' : err instanceof Error ? err.message : 'Failed');
+      // The Worker may have saved the reply even if this connection dropped: reload the chat.
+      setTimeout(() => load(), 1500);
     } finally {
       setLive(null);
       setBusy(false);
@@ -191,7 +202,8 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
   };
 
   const startGoal = async (m: Msg) => {
-    const a = m.action!;
+    const a = m.action;
+    if (!a || a.type !== 'start_goal') return;
     setStarted((x) => ({ ...x, [m.id]: 'starting' }));
     try {
       await api('/api/workflows', { method: 'POST', headers: { 'idempotency-key': `chat-${m.id}` }, body: JSON.stringify({ template: a.template, title: a.title, goal: a.goal }) });
@@ -278,7 +290,17 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
                 ))}
               </div>
             )}
-            {m.action && (
+            {(() => {
+              const d = m.action?.type === 'mushak' ? m.action : m.action?.type === 'start_goal' ? m.action.delegation : undefined;
+              return d ? (
+                <div className="sd-action">
+                  <p><strong>➜ Command to MUSHAK:</strong> {d.command}</p>
+                  {d.error ? <p className="form-error">{d.error}</p> : d.reply && <div className="cx-sub"><Markdown text={d.reply} /></div>}
+                  {d.blueprint && <BlueprintCard bp={d.blueprint} from="Mushak" />}
+                </div>
+              ) : null;
+            })()}
+            {m.action?.type === 'start_goal' && (
               <div className="sd-action">
                 <p><strong>Proposed goal:</strong> {m.action.title}</p>
                 <p className="cx-sub">{m.action.goal}</p>
@@ -306,7 +328,7 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
         ))}
         {busy && live ? (
           <div className="sd-msg sd-assistant"><div className="sd-bubble sd-live"><Markdown text={live} /></div></div>
-        ) : busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? 'SAARTHI search kar raha hai…' : think ? 'CBO gehraai se soch raha hai…' : 'CBO soch raha hai…'}</div></div>}
+        ) : busy && <div className="sd-msg sd-assistant"><div className="sd-bubble sd-typing">{research ? '🙏 Prarthana sweekar hui… SAARTHI jagat mein khoj rahe hain (1–2 min)' : think ? '🙏 Prarthana sweekar hui… SAARTHI gehre dhyaan mein hain' : '🙏 Prarthana sweekar hui… SAARTHI dhyaan mein hain'}</div></div>}
         <div ref={endRef} />
       </div>
       {notice && <p className="drawer-notice" role="status">{notice}</p>}
@@ -329,7 +351,7 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
               send();
             }
           }}
-          placeholder={compact ? `Message ${title.replace(/^Chat with /, "")}…` : "Message SAARTHI…"}
+          placeholder={compact ? `${title.replace(/^Chat with /, "")} se prarthana karein…` : "SAARTHI se prarthana karein…"}
           rows={1}
           maxLength={4000}
         />

@@ -4,16 +4,18 @@ import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { api, AUTH_EVENT, getToken } from '../services/adminService';
 import { Markdown } from './Markdown';
 import { formatWhen } from './ui';
+import { BlueprintCard, type Blueprint } from './BlueprintCard';
 
 interface Action { type: 'start_goal'; template: string; title: string; goal: string }
-interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?: string | null; model?: string | null; created_at: string; action: Action | null; sources: { url: string; title: string }[] }
+interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?: string | null; model?: string | null; created_at: string; action: Action | Blueprint | null; sources: { url: string; title: string }[] }
 
 const SUGGEST: Record<string, string[]> = {
   default: ['Aap kya kya kar sakte ho?', 'Aaj ke liye 3 ideas do', 'Mere brand ke liye aapki salah?'],
-  mushak_growth: ['Aaj aapne kya kya kiya?', 'LittleLoop ke liye 5 partner ideas do', 'Kaun si approvals pending hain?'],
+  mushak_growth: ['Aaj ka status do', 'LittleLoop ke liye 5 kids brands dhoondo aur drafts banao', 'Sunverse ke liye collab artists dhoondo'],
 };
 
 export function AgentChat({ agentId, name }: { agentId: string; name: string }) {
+  const employee = agentId === 'mushak_growth'; // Mushak talks like an employee, the others like deities of their craft
   const [msgs, setMsgs] = useState<Msg[] | null>(null);
   const [canResearch, setCanResearch] = useState(false);
   const [research, setResearch] = useState(false);
@@ -66,7 +68,7 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
   };
 
   const startGoal = async (m: Msg) => {
-    if (!m.action) return;
+    if (!m.action || m.action.type !== 'start_goal') return;
     setStarted((s) => ({ ...s, [m.id]: 'starting' }));
     try {
       await api('/api/workflows', { method: 'POST', headers: { 'idempotency-key': `agentchat-${m.id}` }, body: JSON.stringify({ template: m.action.template, title: m.action.title, goal: m.action.goal }) });
@@ -90,7 +92,7 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
           <p className="ai-note">Loading…</p>
         ) : msgs.length === 0 ? (
           <div className="ac-empty">
-            <p>🙏 Apni prarthana likhiye. {name} apni kala ke anusaar uttar denge.</p>
+            <p>{employee ? `${name} ko command dijiye. Woh blueprint banakar khud chala dega.` : `🙏 Apni prarthana likhiye. ${name} apni kala ke anusaar uttar denge.`}</p>
             <div className="ac-suggest">
               {(SUGGEST[agentId] ?? SUGGEST.default).map((s) => (
                 <button key={s} className="cx-chip" onClick={() => send(undefined, s)} disabled={busy}>
@@ -102,7 +104,7 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
         ) : (
           msgs.map((m) => (
             <div key={m.id} className={`ac-msg ${m.role}`}>
-              <span className="ac-who">{m.role === 'user' ? '🙏 Your prayer' : `✨ ${name}`}</span>
+              <span className="ac-who">{m.role === 'user' ? (employee ? 'You' : '🙏 Your prayer') : employee ? name : `✨ ${name}`}</span>
               <div className="ac-bubble">{m.role === 'assistant' ? <Markdown text={m.content} /> : m.content}</div>
               {m.sources.length > 0 && (
                 <div className="sd-sources">
@@ -111,7 +113,8 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
                   ))}
                 </div>
               )}
-              {m.action && (
+              {m.action?.type === 'blueprint' && <BlueprintCard bp={m.action} />}
+              {m.action?.type === 'start_goal' && (
                 <div className="sd-action">
                   <p><strong>Proposed goal:</strong> {m.action.title}</p>
                   <p className="cx-sub">{m.action.goal}</p>
@@ -129,7 +132,7 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
             </div>
           ))
         )}
-        {busy && <div className="ac-msg assistant"><span className="ac-who">✨ {name}</span><div className="ac-bubble ac-typing">dhyaan mein hain…</div></div>}
+        {busy && <div className="ac-msg assistant"><span className="ac-who">{employee ? name : `✨ ${name}`}</span><div className="ac-bubble ac-typing">{employee ? 'kaam par hai… (research mein 1 minute lag sakta hai)' : 'dhyaan mein hain…'}</div></div>}
         <div ref={end} />
       </div>
       {err && <p className="form-error">{err}</p>}
@@ -137,7 +140,7 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
         <textarea
           rows={2}
           value={text}
-          placeholder={`${name} se prarthana karein…`}
+          placeholder={employee ? `${name} ko command dein…` : `${name} se prarthana karein…`}
           maxLength={4000}
           onChange={(e) => setText(e.target.value)}
           onKeyDown={(e) => {
