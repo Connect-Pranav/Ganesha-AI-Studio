@@ -2,6 +2,7 @@
 import { BrandMark, hasLogo } from './BrandMark';
 import { useCallback, useEffect, useState } from 'react';
 import { ReelFactory } from './ReelFactory';
+import { AnalyticsView } from './AnalyticsView';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
 import { StudioWorkflows } from './StudioWorkflows';
@@ -219,6 +220,22 @@ function Integrations({ brand }: { brand: ProductId }) {
 }
 
 export function BrandWorkspace({ data, productId, onNavigate }: { data: DashboardData; productId: ProductId; onNavigate: (v: View) => void }) {
+  // Progress (analytics) opens first, so a brand's numbers are right here — no other page needed.
+  const [tab, setTab] = useState<'progress' | 'work'>(() => {
+    try {
+      return localStorage.getItem(`gas.ws.tab.${productId}`) === 'work' ? 'work' : 'progress';
+    } catch {
+      return 'progress';
+    }
+  });
+  const pickTab = (t: 'progress' | 'work') => {
+    setTab(t);
+    try {
+      localStorage.setItem(`gas.ws.tab.${productId}`, t);
+    } catch {
+      /* storage unavailable */
+    }
+  };
   const { summary, locked } = useStudio();
   const product = data.products.find((x) => x.id === productId)!;
   const live = !locked && summary;
@@ -258,6 +275,18 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
         )}
       </section>
 
+      <div className="ws-tabs" role="tablist" aria-label={`${product.name} view`}>
+        <button role="tab" aria-selected={tab === 'progress'} className={`ws-tab ${tab === 'progress' ? 'active' : ''}`} onClick={() => pickTab('progress')}>
+          <Icon name="analytics" size={16} /> Progress &amp; analytics
+        </button>
+        <button role="tab" aria-selected={tab === 'work'} className={`ws-tab ${tab === 'work' ? 'active' : ''}`} onClick={() => pickTab('work')}>
+          <Icon name="pipelines" size={16} /> Work
+        </button>
+      </div>
+
+      {tab === 'progress' ? (
+        <AnalyticsView key={productId} initialBrand={productId} embedded />
+      ) : (
       <div className="grid-main">
         <div className="col">
           {productId === 'littleloop' && <ReelFactory />}
@@ -299,6 +328,7 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
           <ActivityFeed items={data.activity.filter((a) => a.product === productId)} live={data.live.activity} />
         </div>
       </div>
+      )}
     </div>
   );
 }

@@ -70,7 +70,8 @@ function VideoTable({ videos }: { videos: Video[] }) {
   );
 }
 
-export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Tab }) {
+/** `embedded`: shown inside a brand workspace — one brand, no brand tabs, no duplicate work counts. */
+export function AnalyticsView({ initialBrand = 'sunverse', embedded = false }: { initialBrand?: Tab; embedded?: boolean }) {
   const [brand, setBrand] = useState<Tab>(initialBrand);
   const [state, setState] = useState<{ status: 'loading' } | { status: 'error'; message: string } | { status: 'ready'; report: AnalyticsReport }>({ status: 'loading' });
 
@@ -85,7 +86,7 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
     load(brand);
   }, [brand, load]);
 
-  const tabs = (
+  const tabs = embedded ? null : (
     <div className="tabs" role="tablist" aria-label="Brand">
       {BRANDS.map((b) => (
         <button key={b.id} role="tab" aria-selected={brand === b.id} className={`tab ${brand === b.id ? 'active' : ''}`} onClick={() => setBrand(b.id)}>
@@ -135,7 +136,7 @@ export function AnalyticsView({ initialBrand = 'sunverse' }: { initialBrand?: Ta
           {r.platform === 'instagram' && <InstagramConnect />}
         </Card>
         {r.studio && <StudioReels s={r.studio} />}
-        <BrandWorkCounts brand={brand} />
+        {!embedded && <BrandWorkCounts brand={brand} />}
       </div>
     );
   }

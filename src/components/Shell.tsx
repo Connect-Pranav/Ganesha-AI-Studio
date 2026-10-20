@@ -65,6 +65,7 @@ export const SECTIONS: Section[] = [
           { id: 'agents', label: 'Team', hint: 'Every agent, what it does and how its runs went.' },
           { id: 'pipelines', label: 'Pipelines', hint: 'Work in progress, step by step.' },
           { id: 'tasks', label: 'Tasks', hint: 'Your to-do list across the studio.' },
+          { id: 'analytics', label: 'Studio Ops', hint: 'How the studio machinery is running: runs, queues and storage. Channel numbers live in each brand.' },
         ],
       },
     ],
@@ -82,7 +83,6 @@ export const SECTIONS: Section[] = [
     groups: [
       {
         pages: [
-          { id: 'analytics', label: 'Analytics', hint: 'Views, followers and reach from real data.' },
           { id: 'finance', label: 'Costs', hint: 'What the agents spend, and the budgets that stop them.' },
           { id: 'subscriptions', label: 'Subscriptions', hint: 'Your paid AI tools and how much you really use them.' },
         ],

@@ -7,7 +7,7 @@ import { Icon } from './components/Icon';
 import { ConnectionPage, EnginePill, SetupModal } from './components/Connection';
 import { GoalModal, NEW_GOAL_EVENT } from './components/GoalModal';
 import { AgentsView, OverviewView, PipelinesView } from './components/Views';
-import { AnalyticsView } from './components/AnalyticsView';
+import { StudioOps } from './components/StudioOps';
 import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
 import { ChatDock } from './components/ChatDock';
@@ -137,7 +137,7 @@ export default function App() {
       aiChecking,
       onOpenProduct: (id: ProductId) => navigate(id),
       // Analytics shows the real report; other quick actions open the in-panel goal form.
-      onQuickAction: (k: QuickActionKind) => (k === 'analytics' ? navigate('analytics') : setGoalTemplate(QUICK_TEMPLATE[k](defaultProduct))),
+      onQuickAction: (k: QuickActionKind) => (k === 'analytics' ? navigate(PRODUCT_VIEWS.includes(lastProduct) ? lastProduct : 'sunverse') : setGoalTemplate(QUICK_TEMPLATE[k](defaultProduct))),
       onRecheckAi: () => fetchData(true),
       onConnectAi: () => setShowConnect(true),
     };
@@ -164,7 +164,7 @@ export default function App() {
       ) : view === 'agents' ? (
         <AgentsView {...common} />
       ) : view === 'analytics' ? (
-        <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
+        <StudioOps />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
       ) : view === 'growth' ? (
