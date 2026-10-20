@@ -11,6 +11,7 @@ import { AnalyticsView } from './components/AnalyticsView';
 import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
 import { ChatDock } from './components/ChatDock';
+import { GrowthView } from './components/growth/GrowthView';
 import { CboView } from './components/cbo/CboView';
 import { TaskManager } from './components/cbo/TaskManager';
 import { FinanceView } from './components/cbo/FinanceView';
@@ -27,7 +28,7 @@ import type { AiStatus, DashboardData, ProductId, View } from './types';
 
 const Universe3D = lazy(() => import('./components/universe/Universe3D'));
 
-const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection', 'settings'];
+const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection', 'settings', 'growth'];
 const TITLES: Record<View, string> = {
   universe: '3D Command Center',
   overview: 'Studio overview',
@@ -46,6 +47,7 @@ const TITLES: Record<View, string> = {
   agents: 'Agents',
   connection: 'AI Connection',
   settings: 'Settings',
+  growth: 'GANESHA GROWTH AI',
 };
 const PRODUCT_VIEWS: View[] = ['littleloop', 'sunverse', 'foliocraft'];
 
@@ -221,6 +223,8 @@ export default function App() {
         <AnalyticsView initialBrand={PRODUCT_VIEWS.includes(lastProduct) ? (lastProduct as ProductId) : 'sunverse'} />
       ) : view === 'pipelines' ? (
         <PipelinesView {...common} />
+      ) : view === 'growth' ? (
+        <GrowthView />
       ) : view === 'settings' ? (
         <SettingsView />
       ) : view === 'connection' ? (
