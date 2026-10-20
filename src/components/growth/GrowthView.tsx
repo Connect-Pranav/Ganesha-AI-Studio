@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from
 import { api, AUTH_EVENT, getToken } from '../../services/adminService';
 import { Card, EmptyState, formatWhen } from '../ui';
 import { Markdown } from '../Markdown';
+import { MushakDaily } from '../MushakDaily';
 
 type Brand = 'littleloop' | 'sunverse' | 'foliocraft';
 const BRANDS: { id: Brand; name: string }[] = [
@@ -11,7 +12,7 @@ const BRANDS: { id: Brand; name: string }[] = [
   { id: 'sunverse', name: 'Sunverse' },
   { id: 'foliocraft', name: 'Foliocraft' },
 ];
-const TABS = ['Overview', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
+const TABS = ['Overview', 'Daily report', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
 type Tab = (typeof TABS)[number];
 const STAGES = ['new', 'researching', 'qualified', 'outreach_drafted', 'pending_approval', 'approved', 'sent', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost', 'suppressed'];
 const MANUAL = ['new', 'researching', 'qualified', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost'];
@@ -80,7 +81,7 @@ export function GrowthView() {
       /* ignore */
     }
   };
-  if (locked) return <Card title="GANESHA GROWTH AI"><EmptyState title="Unlock the studio to use Growth AI" hint="Bell → Unlock with your admin token." /></Card>;
+  if (locked) return <Card title="MUSHAK · Growth"><EmptyState title="Unlock the studio to use Mushak" hint="Bell → Unlock with your admin token." /></Card>;
   return (
     <div className="gr">
       <div className="gr-bar">
@@ -96,6 +97,7 @@ export function GrowthView() {
         </div>
       </div>
       {tab === 'Overview' && <Overview brand={brand} onGo={setTab} />}
+      {tab === 'Daily report' && <Card title="Mushak · daily report (all brands)"><MushakDaily /></Card>}
       {tab === 'Campaigns' && <Campaigns key={brand} brand={brand} />}
       {tab === 'Leads' && <Leads key={brand} brand={brand} />}
       {tab === 'Approvals' && <Approvals key={brand} brand={brand} />}

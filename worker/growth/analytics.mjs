@@ -90,3 +90,102 @@ export async function clearDemo(db) {
   await db.prepare("DELETE FROM growth_leads WHERE origin = 'demo'").run();
   return { removed: n };
 }
+
+/* ---------------- MUSHAK daily report ---------------- */
+// One Indian-time (IST) day of Growth work, built only from saved rows: every agent job (with tokens,
+// cost, result or error) and every pipeline event. The headline is assembled from the counts — no AI.
+const IST_MS = 5.5 * 3_600_000;
+const AGENT_NAMES = { narada_market_intelligence: 'NARADA', ops_soma_analytics: 'SOMA', samvada_handoffs: 'SAMVADA' };
+const JOB_LABEL = { discover: 'Searched for new leads', research: 'Researched a lead', qualify: 'Scored a lead', draft: 'Wrote an outreach draft', classify_reply: 'Read a reply' };
+export function istDay(d = new Date()) {
+  return new Date(d.getTime() + IST_MS).toISOString().slice(0, 10);
+}
+function istWindow(day) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day ?? '')) day = istDay();
+  const start = new Date(Date.parse(`${day}T00:00:00Z`) - IST_MS);
+  const end = new Date(start.getTime() + 86_400_000);
+  return { day, from: start.toISOString(), to: end.toISOString() };
+}
+
+export async function dailyReport(db, dayIn) {
+  const { day, from, to } = istWindow(dayIn);
+  const fx = (await getSettings(db)).fx_usd_inr;
+  const jobs = (await db.prepare('SELECT j.*, c.name AS campaign_name, l.name AS lead_name FROM growth_jobs j LEFT JOIN growth_campaigns c ON c.id = j.campaign_id LEFT JOIN growth_leads l ON l.id = j.lead_id WHERE j.created_at >= ? AND j.created_at < ? ORDER BY j.created_at').bind(from, to).all()).results;
+  const acts = (await db.prepare("SELECT a.*, l.name AS lead_name, l.origin AS lead_origin, c.name AS campaign_name FROM growth_activities a LEFT JOIN growth_leads l ON l.id = a.lead_id LEFT JOIN growth_campaigns c ON c.id = a.campaign_id WHERE a.created_at >= ? AND a.created_at < ? AND a.kind != 'demo_created' ORDER BY a.created_at").bind(from, to).all()).results.filter((a) => a.lead_origin !== 'demo');
+  const count = (k) => acts.filter((a) => a.kind === k).length;
+  const toStage = (s) => acts.filter((a) => a.kind === 'stage_changed' && a.to_stage === s).length;
+  const counts = {
+    jobs: jobs.length,
+    jobsSucceeded: jobs.filter((j) => j.status === 'succeeded').length,
+    jobsFailed: jobs.filter((j) => j.status === 'failed').length,
+    jobsBlocked: jobs.filter((j) => j.status === 'blocked').length,
+    searches: jobs.filter((j) => j.kind === 'discover' && j.status === 'succeeded').length,
+    leadsFound: acts.filter((a) => a.kind === 'lead_created').length,
+    researched: count('researched'),
+    scored: count('qualified'),
+    qualified: toStage('qualified'),
+    drafts: count('draft_created'),
+    approved: count('draft_approved'),
+    rejected: count('draft_rejected'),
+    sent: count('message_sent'),
+    replies: count('reply_received'),
+    meetings: count('meeting_confirmed'),
+    won: toStage('won'),
+    lost: toStage('lost'),
+    optOuts: count('suppressed'),
+  };
+  const usd = jobs.reduce((a, j) => a + (j.cost_usd ?? 0), 0);
+  const unknownCost = jobs.filter((j) => j.status === 'succeeded' && j.cost_usd === null).length;
+  const tokens = { input: jobs.reduce((a, j) => a + (j.input_tokens ?? 0), 0), output: jobs.reduce((a, j) => a + (j.output_tokens ?? 0), 0) };
+  const byBrand = {};
+  for (const b of GROWTH_BRAND_IDS) {
+    const ja = jobs.filter((j) => j.brand === b);
+    const aa = acts.filter((a) => a.brand === b);
+    byBrand[b] = { jobs: ja.length, leadsFound: aa.filter((a) => a.kind === 'lead_created').length, drafts: aa.filter((a) => a.kind === 'draft_created').length, sent: aa.filter((a) => a.kind === 'message_sent').length, replies: aa.filter((a) => a.kind === 'reply_received').length, costUsd: ja.reduce((x, j) => x + (j.cost_usd ?? 0), 0) };
+  }
+  const parts = [];
+  if (counts.searches) parts.push(`searched ${counts.searches} time(s)`);
+  if (counts.leadsFound) parts.push(`found ${counts.leadsFound} lead(s)`);
+  if (counts.researched) parts.push(`researched ${counts.researched}`);
+  if (counts.scored) parts.push(`scored ${counts.scored}`);
+  if (counts.drafts) parts.push(`wrote ${counts.drafts} draft(s)`);
+  if (counts.sent) parts.push(`${counts.sent} message(s) went out after your approval`);
+  if (counts.replies) parts.push(`read ${counts.replies} repl${counts.replies === 1 ? 'y' : 'ies'}`);
+  const headline = parts.length ? `Mushak ${parts.join(', ')}.` : 'No Growth work was recorded on this day.';
+  const pending = (await db.prepare("SELECT COUNT(*) AS n FROM growth_drafts d JOIN growth_leads l ON l.id = d.lead_id WHERE d.status = 'pending_approval' AND l.origin != 'demo'").first()).n;
+  return {
+    day,
+    window: { from, to, timezone: 'Asia/Kolkata' },
+    headline,
+    counts,
+    cost: { usd, inr: toInr(usd, fx), unknownCostJobs: unknownCost },
+    tokens,
+    byBrand,
+    waitingForYouNow: pending,
+    jobs: jobs.map((j) => ({
+      id: j.id, at: j.created_at, brand: j.brand, agent: AGENT_NAMES[j.agent_id] ?? j.agent_id, kind: j.kind, what: JOB_LABEL[j.kind] ?? j.kind,
+      campaign: j.campaign_name, lead: j.lead_name, status: j.status, attempts: j.attempts, model: j.model,
+      tokens: j.input_tokens === null && j.output_tokens === null ? null : { input: j.input_tokens, output: j.output_tokens },
+      costUsd: j.cost_usd, result: j.summary, error: j.error,
+    })),
+    timeline: acts.map((a) => ({ id: a.id, at: a.created_at, brand: a.brand, kind: a.kind, lead: a.lead_name, campaign: a.campaign_name, from: a.from_stage, to: a.to_stage, note: a.note, actor: AGENT_NAMES[a.actor] ?? a.actor })),
+    note: 'Built from saved Growth records (demo leads excluded). Mushak works when a campaign runs or you press its buttons; nothing is sent without your approval.',
+  };
+}
+
+/** Days with any Growth work in the last `limit` IST days, newest first. */
+export async function reportDays(db, limit = 30) {
+  const since = new Date(Date.now() - limit * 86_400_000).toISOString();
+  const rows = [
+    ...(await db.prepare('SELECT created_at FROM growth_jobs WHERE created_at >= ?').bind(since).all()).results,
+    ...(await db.prepare("SELECT created_at FROM growth_activities WHERE created_at >= ? AND kind != 'demo_created'").bind(since).all()).results,
+  ];
+  const m = new Map();
+  for (const r of rows) {
+    const d = istDay(new Date(r.created_at));
+    m.set(d, (m.get(d) ?? 0) + 1);
+  }
+  const today = istDay();
+  if (!m.has(today)) m.set(today, 0);
+  return [...m.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1)).map(([day, events]) => ({ day, events }));
+}

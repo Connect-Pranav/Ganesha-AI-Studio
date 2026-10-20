@@ -48,6 +48,8 @@ function hash(s: string) {
 
 export function AgentAvatar({ agent, size = 96, className = '' }: { agent: Pick<AgentMeta, 'id' | 'name' | 'team' | 'role'>; size?: number; className?: string }) {
   // Owner-supplied portraits (public/agents/<id>.webp) win; the drawn robot is the fallback.
+  if (agent.id === 'mushak_growth')
+    return <img className={`agent-avatar agent-art agent-mushak ${className}`} src={`./agents/mushak-${size > 160 ? 400 : 160}.webp`} alt="MUSHAK portrait" width={size} loading="lazy" decoding="async" />;
   if (ART.has(agent.id))
     return <img className={`agent-avatar agent-art ${className}`} src={`./agents/${agent.id}.webp`} alt={`${agent.name} portrait`} width={size} loading="lazy" decoding="async" />;
   const [main, deep, glow] = TEAM[agent.team] ?? TEAM.ops;

@@ -92,5 +92,7 @@ export const SCHEMA_STATEMENTS = [
   "CREATE INDEX IF NOT EXISTS idx_growth_jobs_brand ON growth_jobs(brand, created_at)",
   "CREATE TABLE IF NOT EXISTS yt_auth ( id INTEGER PRIMARY KEY CHECK (id = 1), token_enc TEXT NOT NULL, iv TEXT NOT NULL, channel_id TEXT, channel_title TEXT, created_at TEXT NOT NULL, refreshed_at TEXT )",
   "CREATE TABLE IF NOT EXISTS yt_oauth_state ( state TEXT PRIMARY KEY, created_at TEXT NOT NULL )",
-  "CREATE TABLE IF NOT EXISTS yt_watch_cache ( id INTEGER PRIMARY KEY CHECK (id = 1), data_json TEXT NOT NULL, fetched_at TEXT NOT NULL )"
+  "CREATE TABLE IF NOT EXISTS yt_watch_cache ( id INTEGER PRIMARY KEY CHECK (id = 1), data_json TEXT NOT NULL, fetched_at TEXT NOT NULL )",
+  "CREATE TABLE IF NOT EXISTS agent_chat ( id TEXT PRIMARY KEY, agent_id TEXT NOT NULL, role TEXT NOT NULL CHECK (role IN ('user','assistant')), content TEXT NOT NULL, engine TEXT, model TEXT, action_json TEXT, sources_json TEXT, created_at TEXT NOT NULL )",
+  "CREATE INDEX IF NOT EXISTS idx_agent_chat_agent ON agent_chat(agent_id, created_at)"
 ];

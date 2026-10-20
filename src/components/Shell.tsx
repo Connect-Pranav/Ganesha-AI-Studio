@@ -74,7 +74,7 @@ export const SECTIONS: Section[] = [
     id: 'growth',
     label: 'Growth',
     icon: 'growth',
-    groups: [{ pages: [{ id: 'growth', label: 'Growth', hint: 'Find partners and customers. Nothing is sent without your approval.' }] }],
+    groups: [{ pages: [{ id: 'growth', label: 'Mushak', hint: 'Your Growth agent finds partners and customers. Nothing is sent without your approval.' }] }],
   },
   {
     id: 'money',

@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
 import { AgentAvatar } from './AgentAvatar';
+import { AgentChat } from './AgentChat';
+import { MushakDaily } from './MushakDaily';
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
-import { AGENTS, TEAMS, TEMPLATES, agentName } from '../data/agentsMeta';
+import { AGENTS, TEAMS, TEMPLATES, agentName, type AgentMeta } from '../data/agentsMeta';
 import { openNewGoal } from './GoalModal';
 import type { Agent, Pipeline, PipelineStatus, StepStatus } from '../types';
 import { useStudio } from '../services/StudioContext';
@@ -146,6 +148,19 @@ function liveStatus(i: LiveAgentInfo): { label: string; cls: string } {
   return { label: 'Ready', cls: 'pill-idle' };
 }
 
+/** MUSHAK — the Growth agent (lead generation + approval-gated outreach). Not a pipeline agent. */
+const MUSHAK_META: AgentMeta = {
+  id: 'mushak_growth',
+  name: 'MUSHAK',
+  team: 'master',
+  role: 'Growth — leads & outreach',
+  mission: 'Finds real partners and customers for LittleLoop, Sunverse and Foliocraft, researches and scores them with evidence, and drafts honest outreach that goes out only after you approve.',
+  outputs: ['Lead lists with sources', 'Scores with evidence', 'Outreach drafts', 'Reply summaries', 'Daily report'],
+  acceptance: ['Only verified, sourced facts', 'Nothing sent without your approval', 'Opt-outs always respected'],
+  approvalRequired: ['send_message'],
+  engines: ['gemini'],
+};
+
 export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[]; liveAgents: Agent[] }) {
   const { summary, health, locked } = useStudio();
   const [team, setTeam] = useState<string>('all');
@@ -184,10 +199,16 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   const lastRun = new Map(liveAgents.filter((a) => a.lastRun).map((a) => [a.lastRun!.agent, a.lastRun!]));
   const techId: Record<string, string> = { ganesha: 'ganesha_orchestrator', narada: 'narada_market_intelligence', 'code-shakti': 'code_shakti' };
   const runFor = (id: string) => [...lastRun.entries()].find(([k]) => techId[k] === id)?.[1];
-  const shown = team === 'all' ? AGENTS : AGENTS.filter((a) => a.team === team);
+  const ALL = [MUSHAK_META, ...AGENTS];
+  const shown = team === 'all' ? ALL : ALL.filter((a) => a.team === team);
   const live = !locked && Boolean(summary);
   const [openId, setOpenId] = useState<string | null>(null);
-  const open = openId ? AGENTS.find((a) => a.id === openId) ?? null : null;
+  const open = openId ? ALL.find((a) => a.id === openId) ?? null : null;
+  const [ptab, setPtab] = useState<'talk' | 'about' | 'report'>('talk');
+  const openAgent = (id: string) => {
+    setPtab('talk');
+    setOpenId(id);
+  };
   useEffect(() => {
     if (!openId) return;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpenId(null);
@@ -201,12 +222,12 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   };
 
   return (
-    <Card title={`Your agent team · ${AGENTS.length} agents`} action={live ? <LiveBadge /> : undefined}>
+    <Card title={`Your agent team · ${ALL.length} agents`} action={live ? <LiveBadge /> : undefined}>
       <div className="tabs" role="tablist" aria-label="Filter by team">
         {['all', ...Object.keys(TEAMS)].map((t) => (
           <button key={t} role="tab" aria-selected={team === t} className={`tab ${team === t ? 'active' : ''}`} onClick={() => setTeam(t)}>
             {t === 'all' ? 'All' : TEAMS[t].name.split(' — ')[0]}
-            <span className="tab-count">{t === 'all' ? AGENTS.length : AGENTS.filter((a) => a.team === t).length}</span>
+            <span className="tab-count">{t === 'all' ? ALL.length : ALL.filter((a) => a.team === t).length}</span>
           </button>
         ))}
       </div>
@@ -219,7 +240,7 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
           const st = statusFor(a.id, info);
           return (
             <li key={a.id}>
-              <button className={`ag-tile team-${a.team}`} onClick={() => setOpenId(a.id)} aria-haspopup="dialog">
+              <button className={`ag-tile team-${a.team}`} onClick={() => openAgent(a.id)} aria-haspopup="dialog">
                 <AgentAvatar agent={a} size={88} />
                 <span className="ag-name">{a.name}</span>
                 <span className="ag-role">{a.role}</span>
@@ -251,6 +272,14 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
                   <span className={`pill ${st.cls}`}>{st.label}</span>
                 </div>
               </div>
+              <div className="ws-tabs" role="tablist" aria-label={`${a.name} panel`}>
+                <button role="tab" aria-selected={ptab === 'talk'} className={`ws-tab ${ptab === 'talk' ? 'active' : ''}`} onClick={() => setPtab('talk')}>🙏 Talk</button>
+                {a.id === MUSHAK_META.id && <button role="tab" aria-selected={ptab === 'report'} className={`ws-tab ${ptab === 'report' ? 'active' : ''}`} onClick={() => setPtab('report')}>Daily report</button>}
+                <button role="tab" aria-selected={ptab === 'about'} className={`ws-tab ${ptab === 'about' ? 'active' : ''}`} onClick={() => setPtab('about')}>About</button>
+              </div>
+              {ptab === 'talk' && <AgentChat key={a.id} agentId={a.id} name={a.name} />}
+              {ptab === 'report' && <MushakDaily />}
+              {ptab === 'about' && (<>
               <p className="ag-mission">{a.mission}</p>
               {live && (
                 <p className="dir-stats">
@@ -298,6 +327,7 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
                 <p className="ai-note">Unlock to see live work and choose this agent’s AI engine.</p>
               ) : null}
               <p className="dir-meta"><code>{a.id}</code></p>
+              </>)}
             </div>
           </div>
         );

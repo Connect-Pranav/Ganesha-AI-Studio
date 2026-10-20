@@ -8,6 +8,8 @@ import { AgentAvatar } from './AgentAvatar';
 import { BrandMark } from './BrandMark';
 import { Icon } from './Icon';
 import { formatWhen } from './ui';
+import { AgentChat } from './AgentChat';
+import { MushakDaily } from './MushakDaily';
 import type { View } from '../types';
 
 type Metrics = { name: string; leads: number; qualified: number; pendingApprovals: number; sent: number; repliedLeads: number; replyRate: number | null; meetingsConfirmed: number; won: number; costUsd: number; costInr: number | null; jobs: number; failedJobs: number };
@@ -18,7 +20,7 @@ interface Overview {
   attention: { id: string; name: string; why: string[] }[];
 }
 
-const GROWTH_AGENT = { id: 'ganesha_growth_ai', name: 'GROWTH AI', team: 'master', role: 'Growth — lead generation and outreach' };
+const GROWTH_AGENT = { id: 'mushak_growth', name: 'MUSHAK', team: 'master', role: 'Growth — lead generation and outreach' };
 const BRANDS = ['littleloop', 'sunverse', 'foliocraft'] as const;
 const today = () => new Date().toISOString().slice(0, 10);
 const label = (s: string) => s.replace(/_/g, ' ');
@@ -28,6 +30,11 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
   const [data, setData] = useState<Overview | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<'today' | 'performance' | 'talk'>('today');
+  const openTab = (t: 'today' | 'performance' | 'talk') => {
+    setTab(t);
+    setOpen(true);
+  };
   const [locked, setLocked] = useState(!getToken());
 
   const load = useCallback(() => {
@@ -41,13 +48,14 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
         try {
           if (localStorage.getItem('gas.growthPopup.day') !== today()) {
             localStorage.setItem('gas.growthPopup.day', today());
+            setTab('today');
             setOpen(true);
           }
         } catch {
           /* storage unavailable: no auto-open */
         }
       })
-      .catch((e: unknown) => setErr(e instanceof Error ? e.message : 'Could not load Growth AI'));
+      .catch((e: unknown) => setErr(e instanceof Error ? e.message : 'Could not load Mushak'));
   }, []);
   useEffect(() => {
     load();
@@ -65,26 +73,29 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
   const started = Boolean(t && ((t.leads ?? 0) > 0 || (t.jobs ?? 0) > 0));
   return (
     <>
-      <section className="gs-banner" aria-label="GANESHA GROWTH AI">
+      <section className="gs-banner" aria-label="MUSHAK — Growth agent">
         <AgentAvatar agent={GROWTH_AGENT} size={84} />
         <div className="gs-text">
-          <p className="eyebrow">New agent</p>
-          <h2>GANESHA GROWTH AI</h2>
+          <p className="eyebrow">Growth agent</p>
+          <h2>MUSHAK</h2>
           <p>
             {locked
-              ? 'Unlock the studio to see how your marketing agent is doing.'
+              ? 'Unlock the studio to see what Mushak did today.'
               : err
                 ? err
                 : !data
                   ? 'Loading performance…'
                   : started
                     ? `${t!.leads} leads · ${t!.sent} sent · ${t!.meetingsConfirmed} meetings · ${t!.won} won`
-                    : 'Live and ready. No campaign has run yet.'}
+                    : 'Ready. No campaign has run yet.'}
           </p>
         </div>
         <div className="gs-actions">
-          <button className="btn btn-primary" onClick={() => setOpen(true)} disabled={locked || !data}>
-            <Icon name="analytics" size={16} /> Performance
+          <button className="btn btn-primary" onClick={() => openTab('today')} disabled={locked || !data}>
+            <Icon name="analytics" size={16} /> Today’s report
+          </button>
+          <button className="btn btn-ghost" onClick={() => openTab('talk')} disabled={locked}>
+            🙏 Talk
           </button>
           <button className="btn btn-ghost" onClick={() => onNavigate('growth')}>
             Open Growth
@@ -93,21 +104,31 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
       </section>
 
       {open &&
-        data &&
+        (data || tab === 'talk') &&
         createPortal(
           <div className="ag-modal-scrim" onClick={() => setOpen(false)}>
-            <div className="ag-modal gs-modal" role="dialog" aria-modal="true" aria-label="Growth AI performance" onClick={(e) => e.stopPropagation()}>
+            <div className="ag-modal gs-modal" role="dialog" aria-modal="true" aria-label="Mushak" onClick={(e) => e.stopPropagation()}>
               <button className="icon-btn ag-close" onClick={() => setOpen(false)} aria-label="Close">
                 <Icon name="close" />
               </button>
               <div className="ag-modal-head">
                 <AgentAvatar agent={GROWTH_AGENT} size={100} />
                 <div>
-                  <p className="eyebrow">Performance · all three brands</p>
-                  <h2 className="ag-modal-name">GROWTH AI</h2>
+                  <p className="eyebrow">Growth agent · all three brands</p>
+                  <h2 className="ag-modal-name">MUSHAK</h2>
                   <p className="ag-modal-role">Finds partners and customers, drafts outreach, and sends only what you approve.</p>
                 </div>
               </div>
+              <div className="ws-tabs" role="tablist" aria-label="Mushak">
+                {(['today', 'performance', 'talk'] as const).map((k) => (
+                  <button key={k} role="tab" aria-selected={tab === k} className={`ws-tab ${tab === k ? 'active' : ''}`} onClick={() => setTab(k)}>
+                    {k === 'today' ? 'Daily report' : k === 'performance' ? 'Performance' : '🙏 Talk'}
+                  </button>
+                ))}
+              </div>
+              {tab === 'today' && <MushakDaily />}
+              {tab === 'talk' && <AgentChat agentId="mushak_growth" name="MUSHAK" />}
+              {tab === 'performance' && data && (<>
 
               <div className="gs-kpis">
                 {[
@@ -189,6 +210,7 @@ export function GrowthSpotlight({ onNavigate }: { onNavigate: (v: View) => void 
                 <button className="btn btn-ghost" onClick={() => setOpen(false)}>Close</button>
               </div>
               <p className="ai-note">Counted from saved records; demo leads are excluded. This popup opens by itself once a day.</p>
+              </>)}
             </div>
           </div>,
           document.body,

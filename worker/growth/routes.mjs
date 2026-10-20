@@ -16,6 +16,8 @@ export async function growthRoute({ env, db, method, seg, url, body }) {
   if (r1 === 'brands' && r2 && method === 'PUT') return { brand: await saveBrandConfig(db, r2, await b()) };
 
   if (r1 === 'overview' && method === 'GET') return stats.overview(db, q('brand') || null);
+  if (r1 === 'daily' && method === 'GET') return stats.dailyReport(db, q('date'));
+  if (r1 === 'days' && method === 'GET') return { days: await stats.reportDays(db) };
 
   if (r1 === 'campaigns' && !r2 && method === 'GET') return { campaigns: await core.listCampaigns(db, q('brand') || null) };
   if (r1 === 'campaigns' && !r2 && method === 'POST') return { campaign: await core.createCampaign(db, await b()) };

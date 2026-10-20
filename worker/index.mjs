@@ -31,6 +31,7 @@ import * as reels from './reels.mjs';
 import * as cbochat from './cbochat.mjs';
 import * as ig from './instagram.mjs';
 import * as yt from './ytanalytics.mjs';
+import * as agentchat from './agentchat.mjs';
 import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
@@ -496,6 +497,14 @@ async function route(request, env, ctx, rawEnv = env) {
   if (path === '/api/settings/secrets' && method === 'PUT') return json(await appSecrets.save(rawEnv, db, await readBody(request)));
   if (path === '/api/settings/test-openai' && method === 'POST') return json(await testOpenAI(env, db, {}, { live: (await readBody(request)).live === true }));
   if (path === '/api/settings/openai' && method === 'GET') return json(await openaiProvider.status(rawEnv, env, db));
+
+  /* ---------- Talk to an agent (owner-only) ---------- */
+  if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'GET') return json({ messages: await agentchat.history(db, seg[2]), research: agentchat.canResearch(seg[2]) });
+  if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'POST') return json({ reply: await agentchat.send(await ig.withIg(env, db), db, seg[2], await readBody(request)) });
+  if (seg[1] === 'agent-chat' && seg[2] && !seg[3] && method === 'DELETE') {
+    await agentchat.clear(db, seg[2]);
+    return json({ ok: true });
+  }
 
   /* ---------- YouTube Analytics (Sunverse watch time, owner-only) ---------- */
   if (path === '/api/youtube' && method === 'GET') return json(await yt.status(env, db));
