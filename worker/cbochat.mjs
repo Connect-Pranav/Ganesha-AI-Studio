@@ -8,7 +8,7 @@
 // Research = OpenAI web search with citations, image questions, live streaming, and goal proposals
 // via a start_goal function tool (a proposal only — the owner still confirms with a button).
 // It needs an OpenAI API key (ChatGPT app plans include no API access).
-import { callProvider, ProviderError } from './providers.mjs';
+import { callProvider, geminiModels, ProviderError } from './providers.mjs';
 import * as openai from './openai.mjs';
 import { cboReport } from './cbo.mjs';
 import { TEMPLATES } from './orchestrator.mjs';
@@ -147,9 +147,33 @@ async function logCall(db, provider, model, status, http, inTok, outTok, started
 }
 
 /** Gemini Interactions API: conversation memory server-side, thinking level, Google Search tool. */
-export async function callGeminiInteraction(env, db, { system, message, previous, think, research }, deps = {}) {
+/**
+ * Gemini Interactions call with resilience: when the model is overloaded (503), rate-limited (429),
+ * errors (5xx) or times out, wait briefly and retry, then move to the fallback models
+ * (GEMINI_FALLBACK_MODELS, same list the agents use). Other errors (bad key, bad request) fail at once.
+ */
+export async function callGeminiInteraction(env, db, opts, deps = {}) {
+  const models = geminiModels(env);
+  const sleep = deps.sleep ?? ((ms) => new Promise((r) => setTimeout(r, ms)));
+  const errors = [];
+  for (let i = 0; i < models.length; i++) {
+    for (let attempt = 0; attempt < (i === 0 ? 2 : 1); attempt++) {
+      try {
+        // A previous interaction belongs to one model: drop it when switching.
+        return await geminiInteractionOnce(env, db, { ...opts, previous: i === 0 ? opts.previous : null, model: models[i], quick: i > 0 || attempt > 0 }, deps);
+      } catch (e) {
+        errors.push(`${models[i]}: ${String(e.message).slice(0, 160)}`);
+        const transient = e.status === 503 || e.status === 429 || e.status === 500 || e.status === 502 || e.status === 504 || /timed out|overloaded|high demand|UNAVAILABLE/i.test(String(e.message));
+        if (!transient) throw e;
+        if (attempt === 0 && i === 0) await sleep(2500);
+      }
+    }
+  }
+  throw Object.assign(new Error(`Gemini is overloaded right now (tried ${models.join(', ')}). Please try again in a minute. ${errors.at(-1) ?? ''}`), { status: 503 });
+}
+
+async function geminiInteractionOnce(env, db, { system, message, previous, think, research, model, quick }, deps = {}) {
   const fetchImpl = deps.fetch ?? fetch;
-  const model = geminiModel(env);
   const body = {
     model,
     input: message,
@@ -161,7 +185,7 @@ export async function callGeminiInteraction(env, db, { system, message, previous
   if (previous) body.previous_interaction_id = previous;
   const started = Date.now();
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), research || think ? GEMINI_TIMEOUT : GEMINI_QUICK_TIMEOUT);
+  const timer = setTimeout(() => ctrl.abort(), quick ? 45_000 : research || think ? GEMINI_TIMEOUT : GEMINI_QUICK_TIMEOUT);
   let status = null;
   try {
     const res = await fetchImpl(`${API}/interactions`, { method: 'POST', headers: { 'content-type': 'application/json', 'x-goog-api-key': env.GEMINI_API_KEY }, body: JSON.stringify(body), signal: ctrl.signal });

@@ -106,3 +106,21 @@ test('http: chats stream with an immediate keepalive ping, then done/error (no 1
     assert.match(text, /event: error/, `${path}: no AI key here, so it ends with a clear error event`);
   }
 });
+
+test('Gemini 503 "high demand": retried, then the next fallback model answers', async () => {
+  const { callGeminiInteraction } = await import('../cbochat.mjs');
+  const models = [];
+  const fetch = async (url, init) => {
+    const m = JSON.parse(init.body).model;
+    models.push(m);
+    if (m === 'gemini-3.8-flash') return new Response(JSON.stringify({ error: { code: 503, message: 'This model is currently experiencing high demand.', status: 'UNAVAILABLE' } }), { status: 503 });
+    return new Response(JSON.stringify({ id: 'i', steps: [{ type: 'model_output', content: [{ type: 'text', text: 'ok from backup' }] }] }), { status: 200 });
+  };
+  const r = await callGeminiInteraction({ GEMINI_API_KEY: 'k', GEMINI_MODEL: 'gemini-3.8-flash' }, db, { system: 's', message: 'm' }, { fetch, sleep: noSleep });
+  assert.equal(r.text, 'ok from backup');
+  assert.deepEqual(models, ['gemini-3.8-flash', 'gemini-3.8-flash', 'gemini-3.6-flash']);
+  // A bad key is not retried.
+  let n = 0;
+  await assert.rejects(callGeminiInteraction({ GEMINI_API_KEY: 'k' }, db, { system: 's', message: 'm' }, { fetch: async () => (n++, new Response('{"error":{"code":400}}', { status: 400 })), sleep: noSleep }));
+  assert.equal(n, 1);
+});
