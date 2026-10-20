@@ -6,6 +6,7 @@ import { Card, EmptyState, formatWhen } from '../ui';
 import { Markdown } from '../Markdown';
 import { MushakDaily } from '../MushakDaily';
 import { MushakCycles } from '../MushakCycles';
+import { AgentChat } from '../AgentChat';
 
 type Brand = 'littleloop' | 'sunverse' | 'foliocraft';
 const BRANDS: { id: Brand; name: string }[] = [
@@ -13,7 +14,7 @@ const BRANDS: { id: Brand; name: string }[] = [
   { id: 'sunverse', name: 'Sunverse' },
   { id: 'foliocraft', name: 'Foliocraft' },
 ];
-const TABS = ['Overview', '4-hour reports', 'Daily report', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
+const TABS = ['Overview', '💬 Chat with Mushak', '4-hour reports', 'Daily report', 'Campaigns', 'Leads', 'Approvals', 'Replies', 'Tasks', 'Agents & Costs', 'Settings'] as const;
 type Tab = (typeof TABS)[number];
 const STAGES = ['new', 'researching', 'qualified', 'outreach_drafted', 'pending_approval', 'approved', 'sent', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost', 'suppressed'];
 const MANUAL = ['new', 'researching', 'qualified', 'replied', 'meeting_scheduled', 'proposal', 'negotiation', 'won', 'lost'];
@@ -98,6 +99,7 @@ export function GrowthView() {
         </div>
       </div>
       {tab === 'Overview' && <Overview brand={brand} onGo={setTab} />}
+      {tab === '💬 Chat with Mushak' && <Card title="Chat with Mushak · give a command, he makes a blueprint and runs it"><AgentChat agentId="mushak_growth" name="MUSHAK" /></Card>}
       {tab === '4-hour reports' && <Card title="Mushak · every run (inputs → plan → output)"><MushakCycles /></Card>}
       {tab === 'Daily report' && <Card title="Mushak · daily report (all brands)"><MushakDaily /></Card>}
       {tab === 'Campaigns' && <Campaigns key={brand} brand={brand} />}

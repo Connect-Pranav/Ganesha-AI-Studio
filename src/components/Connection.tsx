@@ -330,7 +330,12 @@ export function useEngineOverall(): EngineView & { dot: 'connected' | 'error' | 
   if (!locked && summary) {
     const st = summary.providers.map((p) => p.state);
     if (st.includes('last_request_ok')) return { label: 'Connected', tone: 'ok', detail: 'Last real request succeeded.', dot: 'connected' };
-    if (st.includes('last_request_failed')) return { label: 'Error', tone: 'error', detail: 'Last request to a provider failed.', dot: 'error' };
+    if (st.includes('last_request_failed')) {
+      const bad = summary.providers.find((p) => p.state === 'last_request_failed');
+      const why = bad?.lastError?.message ? ` ${String(bad.lastError.message).slice(0, 160)}` : '';
+      const limit = bad?.lastError?.httpStatus === 429 || /quota|rate|limit|exhaust/i.test(why);
+      return { label: limit ? `${bad?.provider ?? 'AI'} limit` : `${bad?.provider ?? 'AI'} error`, tone: 'error', detail: `Last ${bad?.provider ?? 'provider'} request failed${bad?.lastError?.httpStatus ? ` (HTTP ${bad.lastError.httpStatus})` : ''}.${why} Tap for details.`, dot: 'error' };
+    }
     if (st.includes('key_set_untested')) return { label: 'Key set · untested', tone: 'warn', detail: 'No request yet.', dot: 'disconnected' };
     return { label: 'Not configured', tone: 'muted', detail: 'No AI key on the Worker.', dot: 'not_configured' };
   }

@@ -290,7 +290,8 @@ export async function advance(env, db, { n = STEPS_PER_TICK, deps = {} } = {}) {
     } catch (e) {
       s.status = 'failed';
       s.result = { text: String(e.message ?? e).slice(0, 400) };
-      if (/not configured|dispatch is paused|Monthly agent-job limit/i.test(s.result.text)) fatal = s.result.text;
+      // Stop the run (instead of burning the free quota) on config problems or a Gemini rate/quota limit.
+      if (/not configured|dispatch is paused|Monthly agent-job limit|HTTP 429|quota|rate.?limit|RESOURCE_EXHAUSTED/i.test(s.result.text)) fatal = s.result.text;
     }
     s.finishedAt = nowIso();
     await db.prepare('UPDATE growth_cycles SET plan_json = ? WHERE id = ?').bind(JSON.stringify(plan), cycle.id).run();
