@@ -1,6 +1,24 @@
 {
   "events": [
     {
+      "id": "e_20261020T050643Z_1_gemini",
+      "at": "2026-10-20T05:06:43Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "0 new findings for Sunverse from 18 sources"
+    },
+    {
+      "id": "e_20261020T050745Z_2_gemini",
+      "at": "2026-10-20T05:07:45Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "0 new findings for Foliocraft from 15 sources"
+    },
+    {
       "id": "e_20261020T023659Z_1_claude",
       "at": "2026-10-20T02:36:59Z",
       "brand": "littleloop",
