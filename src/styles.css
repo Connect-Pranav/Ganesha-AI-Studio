@@ -1660,3 +1660,11 @@ select option { background: #0e1540; color: var(--ink); }
   .ws-tabs { width: 100%; }
   .ws-tab { flex: 1; justify-content: center; padding: 8px 10px; font-size: 13px; }
 }
+
+/* Wide screens: centre the page instead of pinning it left; hero glow spans the full width. */
+.content, .foot { max-width: 1440px; margin-left: auto; margin-right: auto; width: 100%; }
+.gx-page { max-width: none; }
+.gx-page > * { margin-left: auto; margin-right: auto; }
+.hc { max-width: 1100px; }
+.hc-horizon { width: max(1400px, 110vw); }
+@media (min-width: 1700px) { .content, .foot { max-width: 1600px; } }
