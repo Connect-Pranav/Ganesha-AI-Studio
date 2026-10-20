@@ -1,6 +1,87 @@
 {
-  "updatedAt": "2026-10-19T04:50:04Z",
+  "updatedAt": "2026-10-20T02:36:59Z",
   "tasks": [
+    {
+      "id": "t_20261020T023659Z_littleloop_1_claude",
+      "title": "Design a parent recap carousel template (key stills + learning point) for episodes",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Edits now builds photo+video carousels with shared presets (lit1). A reusable template lets each episode get a parent-facing companion post. Posting stays approval-gated.",
+      "sourceFindings": [
+        "f_20261020T023659Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-20T02:36:59Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261020T023659Z_sunverse_2_claude",
+      "title": "Write an originality checklist for Sunverse Shorts (own footage, real edit or commentary)",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Shorts recommendations now reduce reach for re-uploaded or lightly edited clips (sun1). A pre-upload checklist keeps Sunverse Shorts clearly original.",
+      "sourceFindings": [
+        "f_20261020T023659Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-20T02:36:59Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261020T023659Z_sunverse_3_claude",
+      "title": "Review and sign the updated YPP terms in YouTube Studio before Feb 1, 2027",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "high",
+      "reason": "Updated YPP terms take effect Feb 1, 2027 and change Shorts revenue eligibility (sun2). Accepting terms is an account action, so it needs owner approval.",
+      "sourceFindings": [
+        "f_20261020T023659Z_sunverse_3_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-20T02:36:59Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261020T023659Z_sunverse_4_claude",
+      "title": "Rebalance the Sunverse release plan toward long-form uploads for revenue",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Shorts revenue share will require 10M qualified Shorts views per 90 days while long-form earnings continue (sun2). Plan revenue around long-form; Shorts for discovery.",
+      "sourceFindings": [
+        "f_20261020T023659Z_sunverse_3_claude",
+        "f_20261020T023659Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-20T02:36:59Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261020T023659Z_foliocraft_5_claude",
+      "title": "Spec a per-action approval rule for any Foliocraft AI action that spends or publishes",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Wix's agents act on users' behalf only after per-purchase approval (fol1). Foliocraft should define the same guardrail before shipping any agentic feature.",
+      "sourceFindings": [
+        "f_20261020T023659Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-20T02:36:59Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261019T045004Z_littleloop_1",
       "title": "Storyboard a first-day preschool routine animated Reel",

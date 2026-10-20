@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261020T023659Z_1_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Instagram Edits added a photo+video carousel editor (iOS); idea: parent recap carousels per episode."
+    },
+    {
+      "id": "e_20261020T023659Z_2_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Shorts now favour original clips; Shorts revenue share needs 10M views/90 days from Feb 1, 2027."
+    },
+    {
+      "id": "e_20261020T023659Z_3_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Wix's Symphony agents can now pay on users' behalf with per-purchase approval via Stripe Link."
+    },
+    {
+      "id": "e_20261020T023659Z_4_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: parent recap carousel template."
+    },
+    {
+      "id": "e_20261020T023659Z_5_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 3 tasks: Shorts originality checklist, YPP terms review (approval), long-form revenue plan."
+    },
+    {
+      "id": "e_20261020T023659Z_6_claude",
+      "at": "2026-10-20T02:36:59Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: per-action approval rule for AI actions."
+    },
+    {
       "id": "e_20261019T051942Z_1_claude",
       "at": "2026-10-19T05:19:42Z",
       "brand": "foliocraft",

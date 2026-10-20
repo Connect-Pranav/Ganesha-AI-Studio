@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-10-19T04:49:23Z",
+  "updatedAt": "2026-10-20T02:36:59Z",
   "findings": [
+    {
+      "id": "f_20261020T023659Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram's Edits app added a carousel editor mixing photos and video (iOS, Oct 8)",
+      "insight": "Edits can now build multi-slide carousels combining photos and clips, with images and headlines spanning slides and saved fonts/colour presets carried over; posts go straight to Instagram. iOS only for now, Android in development. LittleLoop could test a parent-facing carousel per episode (key stills + the learning point) built with the same presets as its Reels.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Instagram's Edits Now Lets You Create Custom Carousels",
+          "url": "https://www.androidheadlines.com/2026/10/instagrams-edits-now-lets-you-create-custom-carousels.html",
+          "source": "Android Headlines",
+          "retrievedAt": "2026-10-20T02:33:00Z"
+        },
+        {
+          "title": "Instagram Adds Carousel Editor To Its Edits App",
+          "url": "https://www.netinfluencer.com/instagram-adds-carousel-editor-to-its-edits-app/",
+          "source": "Net Influencer",
+          "retrievedAt": "2026-10-20T02:33:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-20T02:36:59Z"
+    },
+    {
+      "id": "f_20261020T023659Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "YouTube Shorts now cuts reach for channels that mainly re-upload or aggregate others' clips",
+      "insight": "Since early October YouTube's Shorts recommendations favour original clips; minor edits or template changes don't count as original, and YouTube has not defined an exact threshold. Monetisation rules are unchanged. Sunverse Shorts should use its own studio, performance and making-of footage with real editing or commentary rather than recut third-party material.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube Shorts just changed its algorithm to bury reuploads. Musicians who post their own clips stand to gain.",
+          "url": "https://artvoice.com/youtube-shorts-just-changed-its-algorithm-to-bury-reuploads-musicians-who-post-t",
+          "source": "Artvoice",
+          "retrievedAt": "2026-10-20T02:27:00Z"
+        },
+        {
+          "title": "YouTube Shorts & Monetisation Updates (October 2026)",
+          "url": "https://schedulifyx.com/blog/youtube-shorts-monetisation-updates-october-2026",
+          "source": "Schedulifyx",
+          "retrievedAt": "2026-10-20T02:27:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-20T02:36:59Z"
+    },
+    {
+      "id": "f_20261020T023659Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "From Feb 1, 2027 Shorts revenue share needs 10M qualified Shorts views per 90 days",
+      "insight": "YouTube's updated YPP terms (effective Feb 1, 2027, signed in YouTube Studio) pause Shorts ad/subscription revenue share for channels under 10M qualified Shorts views in the last 90 days; long-form earnings continue. New applicants need 8,000 watch hours/365 days or 20M Shorts views/90 days; existing members are not affected by the entry change. Sunverse should weight revenue planning toward long-form uploads.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube Partner Program updates for 2027",
+          "url": "https://blog.youtube/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/",
+          "source": "YouTube Official Blog",
+          "retrievedAt": "2026-10-20T02:29:00Z"
+        },
+        {
+          "title": "YouTube tightens monetisation rules, Shorts creators now need 10 mn views every 90 days",
+          "url": "https://www.exchange4media.com/industry-briefing-news/youtube-sets-10-million-shorts-views-for-monetisation-from-2027-157245.html",
+          "source": "exchange4media",
+          "retrievedAt": "2026-10-20T02:29:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-20T02:36:59Z"
+    },
+    {
+      "id": "f_20261020T023659Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Wix's Symphony agents can now pay on a user's behalf, with approval for every purchase",
+      "insight": "Wix's multi-agent assistant for solopreneurs (Symphony) integrated Stripe's Link wallet on Oct 15: agents show merchant, item and exact total, the owner approves each spend, and agents never see card details; rolling out to US Link users. Builders are moving from advising to acting. If Foliocraft adds AI actions, per-action human approval should be the default pattern.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Symphony by Wix and Link by Stripe: AI agent payments",
+          "url": "https://www.wix.com/blog/symphony-wix-link-stripe-ai-agent-payments",
+          "source": "Wix Blog",
+          "retrievedAt": "2026-10-20T02:35:00Z"
+        },
+        {
+          "title": "Symphony by Wix integrates Link's Wallet for Agents",
+          "url": "https://techintelpro.com/news/AI/Agentic-AI/symphony-by-wix-integrates-links-wallet-for-agents",
+          "source": "TechIntelPro",
+          "retrievedAt": "2026-10-20T02:35:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-20T02:36:59Z"
+    },
     {
       "id": "f_20261019T044854Z_littleloop_1",
       "brand": "littleloop",
