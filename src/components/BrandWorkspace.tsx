@@ -1,4 +1,5 @@
 // Brand workspace: live goals, the deliverables library, integrations and production handoffs.
+import { BrandMark, hasLogo } from './BrandMark';
 import { useCallback, useEffect, useState } from 'react';
 import { ReelFactory } from './ReelFactory';
 import { Icon } from './Icon';
@@ -231,8 +232,8 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
   return (
     <div className="workspace" style={{ ['--accent' as string]: product.accent }}>
       <section className="ws-hero">
-        <div className="product-icon lg" aria-hidden="true">
-          <Icon name={product.id} size={26} />
+        <div className={`product-icon lg ${hasLogo(product.id) ? 'has-logo' : ''}`} aria-hidden="true">
+          <BrandMark id={product.id} size={96} iconSize={26} />
         </div>
         <div className="ws-hero-text">
           <p className="eyebrow">Brand workspace</p>

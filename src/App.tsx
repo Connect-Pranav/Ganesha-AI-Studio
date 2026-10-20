@@ -206,7 +206,7 @@ export default function App() {
           }
         />
         <SubTabs view={view} onNavigate={navigate} />
-        <PageTitle view={view} />
+        <PageTitle view={view} onNavigate={navigate} />
 
         <main id="main" className="content">
           <ViewBoundary key={view}>

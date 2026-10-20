@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { BrandMark, hasLogo } from './BrandMark';
 import { Icon, type IconName } from './Icon';
 import { Card, EmptyState, LiveBadge, SourceBadge, agentNames, engineNames, formatWhen, productNames, timeAgo } from './ui';
 import { openNewGoal } from './GoalModal';
@@ -23,8 +24,8 @@ export function ProductCard({ product, onOpen }: { product: Product; onOpen: (id
   return (
     <article className="product" style={{ ['--accent' as string]: product.accent }}>
       <div className="product-top">
-        <div className="product-icon" aria-hidden="true">
-          <Icon name={product.id} size={20} />
+        <div className={`product-icon ${hasLogo(product.id) ? 'has-logo' : ''}`} aria-hidden="true">
+          <BrandMark id={product.id} size={64} iconSize={20} />
         </div>
         <LiveBadge label="Counts" />
       </div>

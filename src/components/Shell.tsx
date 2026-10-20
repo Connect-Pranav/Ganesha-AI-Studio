@@ -3,6 +3,8 @@
 // and buttons inside pages keep working; only where pages live in the navigation changed.
 import type { ReactNode } from 'react';
 import { Icon, type IconName } from './Icon';
+import { HeroCast } from './HeroCast';
+import { BrandMark } from './BrandMark';
 import type { View } from '../types';
 
 export type SectionId = 'home' | 'brands' | 'agents' | 'growth' | 'money' | 'system';
@@ -165,6 +167,7 @@ export function SubTabs({ view, onNavigate }: { view: View; onNavigate: (v: View
           {g.label && <span className="gx-sub-label">{g.label}</span>}
           {g.pages.map((p) => (
             <button key={p.id} className={`gx-chip ${view === p.id ? 'active' : ''}`} aria-current={view === p.id ? 'page' : undefined} onClick={() => onNavigate(p.id)}>
+              {(p.id === 'littleloop' || p.id === 'sunverse' || p.id === 'foliocraft') && <BrandMark id={p.id} size={22} iconSize={14} className="gx-chip-logo" />}
               {p.label}
             </button>
           ))}
@@ -174,14 +177,16 @@ export function SubTabs({ view, onNavigate }: { view: View; onNavigate: (v: View
   );
 }
 
-export function PageTitle({ view }: { view: View }) {
+export function PageTitle({ view, onNavigate }: { view: View; onNavigate: (v: View) => void }) {
   // Brand workspaces open with their own header, so they don't get a second title.
   if (view === 'littleloop' || view === 'sunverse' || view === 'foliocraft') return null;
-  const { page } = pageInfo(view);
+  const { page, section } = pageInfo(view);
   return (
     <div className="gx-page">
-      <h1>{page.label === 'Home' ? 'Good to see you' : page.label}</h1>
+      <small>{section.id === 'home' ? 'Ganesha AI Studio' : section.label}</small>
+      <h1>{page.label === 'Home' ? 'Command Center' : page.label}</h1>
       <p>{page.hint}</p>
+      {section.id === 'home' && <HeroCast onOpen={onNavigate} />}
     </div>
   );
 }
