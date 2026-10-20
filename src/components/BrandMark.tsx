@@ -2,7 +2,7 @@
 // Logos are only resized, never redrawn or altered.
 import { Icon, type IconName } from './Icon';
 
-const LOGOS: Record<string, boolean> = { littleloop: true, sunverse: true };
+const LOGOS: Record<string, boolean> = { littleloop: true, sunverse: true, foliocraft: true };
 const NAMES: Record<string, string> = { littleloop: 'LittleLoop', sunverse: 'Sunverse', foliocraft: 'Foliocraft' };
 
 export function hasLogo(id: string) {
