@@ -81,3 +81,46 @@ test('callGemini: persistent 503 gives up after maxRetries within the wait budge
   assert.deepEqual(res.waits, [5_000, 20_000]);
   assert.ok(res.waits.reduce((a, b) => a + b, 0) <= RETRY.budgetMs);
 });
+
+/* ---------- A1: a failed agent run makes the runner exit non-zero ---------- */
+test('runner: Gemini 503 on every attempt → failed record written and exit code 2', async () => {
+  // Run a copy of the runner against a copy of the data so the repo's live data is untouched.
+  const dir = mkdtempSync(join(tmpdir(), 'ganesha-runner-'));
+  try {
+    for (const p of ['scripts', 'agents', 'public/agent-data']) cpSync(join(ROOT, p), join(dir, p), { recursive: true });
+    const startIso = new Date().toISOString();
+    const prevKey = process.env.GEMINI_API_KEY;
+    process.env.GEMINI_API_KEY = 'test-key-not-real';
+    let runner;
+    try {
+      runner = await import(pathToFileURL(join(dir, 'scripts/agent-runner.mjs')).href);
+    } finally {
+      if (prevKey === undefined) delete process.env.GEMINI_API_KEY;
+      else process.env.GEMINI_API_KEY = prevKey;
+    }
+    const rss = `<rss><channel><item><title>Test headline</title><link>https://example.com/a</link><source>Example</source><pubDate>${new Date().toUTCString()}</pubDate></item></channel></rss>`;
+    let geminiCalls = 0;
+    runner.deps.fetch = async (url) => {
+      if (String(url).includes('news.google.com')) return { ok: true, status: 200, headers: new Headers(), text: async () => rss };
+      geminiCalls++;
+      return err(503, 'The model is overloaded.');
+    };
+    runner.deps.sleep = async () => {};
+    runner.deps.random = () => 0.5;
+
+    const code = await runner.main(['--agent', 'narada']);
+    assert.equal(code, runner.EXIT_AGENT_FAILED);
+    assert.equal(code, 2);
+    assert.ok(geminiCalls >= 3, 'retried before failing');
+    const runs = JSON.parse(readFileSync(join(dir, 'public/agent-data/runs.json'), 'utf8')).runs;
+    assert.ok(runs[0].startedAt >= startIso.slice(0, 19), 'newest run is from this invocation');
+    assert.equal(runs[0].agent, 'narada_market_intelligence');
+    assert.equal(runs[0].engine, 'gemini');
+    assert.equal(runs[0].status, 'failed');
+    assert.match(runs[0].error, /HTTP 503/);
+
+    assert.equal(await runner.main(['--agent', 'bogus']), 1, 'usage error is exit 1, distinct from agent failure');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});

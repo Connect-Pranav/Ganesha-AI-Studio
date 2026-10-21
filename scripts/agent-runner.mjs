@@ -186,6 +186,11 @@ async function gatherEvidence(brandId) {
 }
 
 /* ---------------- Store helpers ---------------- */
+// Number of `failed` runs recorded by this invocation. main() turns it into exit code 2
+// so the workflow can commit the failure record first and then go red.
+let failedRuns = 0;
+export const EXIT_AGENT_FAILED = 2;
+
 function recordRun(agent, startedAt, status, summary, error) {
   const store = readJson('runs.json');
   const run = {
@@ -200,6 +205,7 @@ function recordRun(agent, startedAt, status, summary, error) {
   };
   store.runs = prependTrim(store.runs, [run], LIMITS.runs);
   writeJson('runs.json', store);
+  if (status === 'failed') failedRuns++;
   log(`run recorded: ${status} — ${run.summary}`);
 }
 function addEvents(events) {
@@ -431,25 +437,38 @@ Never invent metrics or deadlines. Return an empty array if nothing is worth doi
 }
 
 /* ---------------- main ---------------- */
+// Returns the process exit code: 0 = ok (or not configured), 1 = usage error,
+// 2 = at least one agent run was recorded as `failed` (data already written).
 export async function main(argv = process.argv.slice(2)) {
   const i = argv.indexOf('--agent');
   const which = i >= 0 ? argv[i + 1] : 'all';
   if (!['narada', 'ganesha', 'all'].includes(which)) {
     console.error('Usage: node scripts/agent-runner.mjs --agent narada|ganesha|all');
-    process.exit(2);
+    return 1;
   }
   if (!KEY && !MOCK) {
     log('GEMINI_API_KEY is not configured — skipping. No data written.');
-    return;
+    return 0;
   }
+  failedRuns = 0;
   log(`model ${MOCK ? '(mock)' : MODEL}`);
   if (which === 'narada' || which === 'all') await runNarada();
   if (which === 'ganesha' || which === 'all') await runGanesha();
+  if (failedRuns > 0) {
+    log(`${failedRuns} agent run(s) failed — exiting ${EXIT_AGENT_FAILED} after writing the records`);
+    return EXIT_AGENT_FAILED;
+  }
+  return 0;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+  main().then(
+    (code) => {
+      process.exitCode = code;
+    },
+    (err) => {
+      console.error(err);
+      process.exit(1);
+    },
+  );
 }
