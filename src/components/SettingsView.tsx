@@ -1,11 +1,14 @@
 // Settings: everything the owner configures, in one place — AI keys (saved encrypted, never shown
 // back), Instagram connection, chat defaults, display, updates and this browser's access.
-import { useCallback, useEffect, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { api, getToken, setToken, AUTH_EVENT } from '../services/adminService';
 import { Card, EmptyState, formatWhen } from './ui';
 import { InstagramConnect } from './cbo/StudioDesk';
 import { Unlock } from './NotificationCenter';
 import { FX_EVENT, readFx, writeFx, type CosmicFx } from './cosmic/CosmicBackground';
+
+// The shadcn gallery is code-split so its Radix/Lucide code loads only when Settings is opened.
+const UiKitCard = lazy(() => import('./shadcn/UiKitCard').then((m) => ({ default: m.UiKitCard })));
 
 interface SettingRow { name: string; purpose: string; secret: boolean; source: 'worker' | 'app' | null; hint: string | null; updatedAt: string | null }
 const GROUPS: { title: string; names: string[]; note?: string }[] = [
@@ -188,6 +191,10 @@ export function SettingsView() {
         <label className="st-check"><input type="checkbox" checked={think} onChange={(e) => (setThink(e.target.checked), setPref('gas.chat.think', e.target.checked))} /> Start chats with 🧠 Think ON (deeper, slower)</label>
         <label className="st-check"><input type="checkbox" checked={research} onChange={(e) => (setResearch(e.target.checked), setPref('gas.chat.research', e.target.checked))} /> Start chats with 🔎 Research ON (live Google search)</label>
       </Card>
+
+      <Suspense fallback={<Card title="UI components (shadcn/ui)"><EmptyState title="Loading…" /></Card>}>
+        <UiKitCard />
+      </Suspense>
 
       <Card title="Display & app">
         <label className="st-inline">

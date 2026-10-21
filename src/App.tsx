@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Header, PageTitle, SubTabs, pageInfo } from './components/Shell';
 import { ViewBoundary } from './components/ViewBoundary';
+import { Toaster } from './components/shadcn/sonner';
 import { SettingsView } from './components/SettingsView';
 import { withViewTransition } from './services/premiumFx';
 import { Icon } from './components/Icon';
@@ -213,6 +214,7 @@ export default function App() {
             <div className="view-enter">{renderBody()}</div>
           </ViewBoundary>
         </main>
+        <Toaster position="top-center" />
 
         <footer className="foot">
           Every number here is counted from real agent runs. Empty sections mean nothing has been recorded yet.

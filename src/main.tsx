@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { StudioProvider } from './services/StudioContext';
 import './styles.css';
+import './shadcn.css';
 import { startAutoUpdate } from './services/autoUpdate';
 import { startPremiumFx } from './services/premiumFx';
 
