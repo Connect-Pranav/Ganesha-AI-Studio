@@ -14,6 +14,7 @@ import { callGeminiInteraction, validAction } from './cbochat.mjs';
 import { dailyReport, overview as growthOverview } from './growth/analytics.mjs';
 import { runBlueprint } from './growth/autopilot.mjs';
 import { GROWTH_BRANDS } from './growth/brands.mjs';
+import { MUSHAK_SKILLS } from './growth/playbooks.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
 
 const MAX_MSG = 4000;
@@ -97,6 +98,8 @@ WHEN THE OWNER GIVES A COMMAND (wants growth work done):
 BLUEPRINT: {"title":"<short>","brand":"littleloop|sunverse|foliocraft","campaign":{"id":"<existing campaign id>"} or {"new":{"name":"<name>","objective":"<objective>","audience":"<who>","geography":"<where>","criteria":"<must-haves>"}},"steps":[{"kind":"audience"},{"kind":"youtube","count":<1-10>},{"kind":"discover","count":<1-10>},{"kind":"research","count":<n>},{"kind":"qualify","count":<n>},{"kind":"draft","count":<n>}],"expected":"<what the owner gets>"}
 Allowed objectives per brand → ${objectives}. One brand per blueprint (for several brands, plan the most important one first and say so). Keep counts modest (find ≤10, research/score/draft ≤10 each).
 If the owner only asks a question or for a report, just answer — no BLUEPRINT line.
+
+${MUSHAK_SKILLS}
 
 EXISTING CAMPAIGNS (id · brand · name · objective · status): ${camps || 'none'}
 

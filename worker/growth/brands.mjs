@@ -22,9 +22,9 @@ export const GROWTH_BRANDS = Object.freeze({
     description: 'Original animated shorts for children aged 2–8 on Instagram (@little_loop09): gentle, kind, educational stories.',
     valueProposition: 'Safe, original, high-quality kids animation with a growing family audience — open to sponsorships, licensing and distribution.',
     idealProfile: 'Family-focused and children\'s brands, kids-content platforms, edtech for early learners, children\'s publishers, animation studios and family creators whose values fit a toddler audience.',
-    prospectCategories: ['children\'s brands', 'family-focused businesses', 'kids edtech', 'children\'s publishers', 'content licensing & distribution', 'animation studios', 'family creators & platforms'],
+    prospectCategories: ['parenting pages & family creators (collab reels)', 'children\'s brands', 'family-focused businesses', 'kids edtech', 'children\'s publishers', 'content licensing & distribution', 'animation studios', 'family creators & platforms'],
     geography: 'India first, then English-speaking markets',
-    goals: ['brand sponsorships', 'content licensing', 'distribution partnerships', 'animation collaborations'],
+    goals: ['followers who share reels (collabs and reshares with parenting pages)', 'brand sponsorships', 'content licensing', 'distribution partnerships', 'animation collaborations'],
     metrics: ['qualified partners', 'replies', 'meetings', 'signed deals'],
     objectives: ['sponsorship', 'licensing', 'distribution', 'partnership', 'creator_collaboration'],
     messaging: {
@@ -42,7 +42,7 @@ export const GROWTH_BRANDS = Object.freeze({
     idealProfile: 'Independent artists, producers, small labels and distributors, music licensing platforms, playlist and music-media curators, and creators who need original music.',
     prospectCategories: ['independent artists', 'music producers', 'labels & distributors', 'music licensing', 'creator collaborations', 'playlist & media partners'],
     geography: 'India first, then global',
-    goals: ['artist collaborations', 'licensing opportunities', 'distribution', 'audience growth partnerships'],
+    goals: ['YouTube subscribers through artist collabs, features and Shorts', 'artist collaborations', 'licensing opportunities', 'distribution'],
     metrics: ['qualified collaborators', 'replies', 'meetings', 'agreements'],
     objectives: ['creator_collaboration', 'licensing', 'distribution', 'partnership'],
     messaging: {
@@ -60,7 +60,7 @@ export const GROWTH_BRANDS = Object.freeze({
     idealProfile: 'Individuals: freelancers, designers, developers, creators, students and job seekers. Businesses: agencies, bootcamps, colleges, career and creator communities, and integration partners.',
     prospectCategories: ['freelancers', 'students & job seekers', 'creators', 'agencies', 'career & education communities', 'B2B / integration partners'],
     geography: 'India first, then global',
-    goals: ['individual sign-ups (individual segment)', 'B2B / distribution partnerships (business segment)'],
+    goals: ['paying customers who buy portfolios (individual segment)', 'B2B / distribution partnerships (business segment)'],
     metrics: ['qualified leads', 'replies', 'demos', 'conversions — tracked separately for individual and business campaigns'],
     objectives: ['customer_acquisition', 'partnership', 'distribution'],
     messaging: {

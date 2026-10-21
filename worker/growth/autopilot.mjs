@@ -16,9 +16,9 @@ const STALE_CYCLE_MS = 3 * 3_600_000; // a cycle not finished in 3 h is closed a
 
 /** Starting campaigns Mushak opens for a brand that has none yet (the owner can edit/pause/cancel). */
 const STARTERS = {
-  littleloop: { name: 'Mushak · Kids & family brands', objective: 'sponsorship', segment: 'business', audience: "Children's and family brands, kids edtech and children's publishers", geography: 'India' },
-  sunverse: { name: 'Mushak · Artists & music partners', objective: 'creator_collaboration', segment: 'business', audience: 'Independent artists, producers, small labels and music curators', geography: 'India' },
-  foliocraft: { name: 'Mushak · Bootcamps & career communities', objective: 'partnership', segment: 'business', audience: 'Design/dev bootcamps, colleges and career communities', geography: 'India' },
+  littleloop: { name: 'Mushak · Parenting pages & family creators', objective: 'creator_collaboration', segment: 'business', audience: 'Parenting pages, family creators and early-learning educators whose followers are parents (collab reels and reshares that bring followers)', geography: 'India' },
+  sunverse: { name: 'Mushak · Collab artists for subscribers', objective: 'creator_collaboration', segment: 'business', audience: 'Independent singers, producers and small YouTube music creators open to features, duets and Shorts collabs', geography: 'India' },
+  foliocraft: { name: 'Mushak · Portfolio buyers', objective: 'customer_acquisition', segment: 'individual', audience: 'Freelancers, designers, developers, students and job seekers who need a portfolio website', geography: 'India' },
 };
 
 export async function getSettings(db) {

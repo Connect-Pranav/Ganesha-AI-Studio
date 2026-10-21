@@ -23,6 +23,16 @@ migration. NIKHILs TECH Studio is not part of Growth AI and is not configured an
 Data: `growth_campaigns`, `growth_leads`, `growth_activities` (audit trail), `growth_drafts`,
 `growth_suppressions`, `growth_replies`, `growth_tasks`, `growth_jobs`, `growth_brand_config`.
 
+## Sales playbooks (Mushak's skills)
+`worker/growth/playbooks.mjs` holds the playbooks each agent job loads into its prompt:
+finding (signal-based prospecting from public sources), signals, qualification (BANT mapped onto the
+5-part score), writing (short, signal-first, one easy-yes question), offer ladder, replies & objections,
+and account rules (one contact per organisation at a time; stop after 3 silent contacts or ~6 touches).
+Adapted from the MIT-licensed skill files of github.com/ethanplusai/harvey (© 2026 Ethan Rogers).
+Not adopted: email-pattern guessing / SMTP probing, LinkedIn profile search and LinkedIn automation,
+and automated sending. A first message whose subject fakes a thread ("re:"/"fwd:") is refused;
+template/AI phrases, em dashes, "!" and long bodies are shown to the owner as non-blocking style flags.
+
 ## Approval gate (mandatory)
 1. Agent or owner creates a draft → status `pending_approval`; recipient, suppression and permission checked.
 2. Owner approves → `approved_hash = content_hash`.

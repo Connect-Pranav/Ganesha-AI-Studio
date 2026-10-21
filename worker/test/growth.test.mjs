@@ -232,3 +232,30 @@ test('http: Growth AI is owner-only, validates brand, never echoes the Gemini ke
   assert.equal((await worker.fetch(req('/api/growth/leads', dup), env, ctx)).status, 200);
   assert.equal((await worker.fetch(req('/api/growth/leads', dup), env, ctx)).status, 409);
 });
+
+test('playbooks (adapted sales skills): loaded into every Growth agent prompt; fake "re:" blocks a first draft; style flags reach the owner', async () => {
+  const { playbookFor, styleFlags, deceptiveSubject, MUSHAK_SKILLS } = await import('../growth/playbooks.mjs');
+  for (const k of ['discover', 'research', 'qualify', 'draft', 'classify_reply']) assert.ok(playbookFor(k).includes('PLAYBOOK'), k);
+  assert.match(playbookFor('draft'), /never a fake "re:"/);
+  assert.match(playbookFor('classify_reply'), /opt-out wording .* is final/);
+  assert.doesNotMatch(Object.values(['discover', 'research', 'qualify', 'draft', 'classify_reply']).map(playbookFor).join('\n'), /SMTP|first\.last@|site:linkedin\.com/i, 'no email guessing or LinkedIn profile search');
+  assert.match(MUSHAK_SKILLS, /Opt-outs are final/);
+  assert.equal(deceptiveSubject('Re: our chat', 'first_contact'), true);
+  assert.equal(deceptiveSubject('re: our chat', 'reply'), false);
+  assert.deepEqual(styleFlags('Hi team. Short and plain, one question?'), []);
+  assert.ok(styleFlags('I hope this finds you well! Picture this — a game-changer.').length >= 4);
+
+  const c = await camp();
+  const l = await lead({ campaignId: c.id });
+  await agents.research(ENV, db, l.id, { fetch: async () => interaction({ summary: 'Picture-book publisher', facts: [{ fact: 'Launched a toddler series in 2026', sourceUrl: 'https://tinytales.example/books' }], hypotheses: [], decisionMakerRoles: [], publicBusinessEmail: null, suitability: { ok: true, concerns: [] } }, ['https://tinytales.example/books']), sleep: noSleep });
+  let sent;
+  const capture = (obj) => async (_url, init) => {
+    sent = String(init?.body ?? '');
+    return generate(obj);
+  };
+  await assert.rejects(agents.draftOutreach(ENV, db, l.id, {}, { fetch: capture({ subject: 'Re: toddler series', body: 'Your new toddler series caught our eye. Want three reel ideas built around it?' }), sleep: noSleep }), /pretends to continue a thread/);
+  assert.match(sent, /PLAYBOOK · WRITING/, 'writer prompt carries the playbook');
+  const dr = await agents.draftOutreach(ENV, db, l.id, {}, { fetch: capture({ subject: 'toddler series', body: 'I hope this finds you well! Your new toddler series caught our eye. Want three reel ideas built around it?' }), sleep: noSleep });
+  assert.equal(dr.draft.status, 'pending_approval', 'style flags do not block');
+  assert.match(dr.draft.personalization, /Style flags \(playbook\): .*finds you well/);
+});

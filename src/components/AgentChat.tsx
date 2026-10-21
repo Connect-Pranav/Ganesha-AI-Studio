@@ -12,7 +12,7 @@ interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?
 
 const SUGGEST: Record<string, string[]> = {
   default: ['Aap kya kya kar sakte ho?', 'Aaj ke liye 3 ideas do', 'Mere brand ke liye aapki salah?'],
-  mushak_growth: ['Aaj ka status do', 'LittleLoop ke liye 5 kids brands dhoondo aur drafts banao', 'Sunverse ke liye collab artists dhoondo'],
+  mushak_growth: ['Aaj ka status do', 'Foliocraft ke liye portfolio buyers dhoondo', 'Sunverse subscribers ke liye collab artists dhoondo', 'LittleLoop ke liye parenting pages dhoondo jo reels share karein'],
 };
 
 export function AgentChat({ agentId, name }: { agentId: string; name: string }) {
