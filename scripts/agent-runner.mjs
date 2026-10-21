@@ -31,8 +31,42 @@ function annotateError(msg) {
   console.log(`::error::${msg.replace(/\n/g, ' ')}`);
 }
 
+/* ---------------- Injectable side effects (tests replace these) ---------------- */
+export const deps = {
+  fetch: (...args) => globalThis.fetch(...args),
+  sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
+  random: () => Math.random(),
+};
+
+/* ---------------- Retry policy ---------------- */
+// Backoff schedule per retry (5 s → 20 s → 60 s) with ±20% jitter. A Retry-After header,
+// when present, replaces the schedule for that wait. Each wait is capped at 60 s and the
+// total wait per call at 120 s, which keeps a full run inside the 15-minute job timeout.
+export const RETRY = { scheduleMs: [5_000, 20_000, 60_000], maxWaitMs: 60_000, budgetMs: 120_000, jitter: 0.2 };
+
+export function parseRetryAfter(value, now = Date.now()) {
+  if (value == null || value === '') return null;
+  const s = String(value).trim();
+  if (/^\d+(\.\d+)?$/.test(s)) return Math.round(Number(s) * 1000);
+  const t = Date.parse(s);
+  return Number.isNaN(t) ? null : Math.max(0, t - now);
+}
+
+export function retryDelayMs(retryIndex, retryAfterMs = null, random = deps.random) {
+  if (retryAfterMs != null) return Math.min(Math.max(retryAfterMs, 0), RETRY.maxWaitMs);
+  const base = RETRY.scheduleMs[Math.min(retryIndex, RETRY.scheduleMs.length - 1)];
+  const jittered = base * (1 + (random() * 2 - 1) * RETRY.jitter);
+  return Math.min(Math.round(jittered), RETRY.maxWaitMs);
+}
+
+// Gemini returns 429 both for short rate limits (retryable) and for an exhausted quota
+// (not retryable until the quota resets — retrying only burns the job's time).
+export function isQuotaExhausted(status, text) {
+  return status === 429 && /exceeded your current quota|quota exceeded/i.test(text);
+}
+
 /* ---------------- Gemini call with bounded retries ---------------- */
-async function callGemini(prompt, schema, maxRetries) {
+export async function callGemini(prompt, schema, maxRetries) {
   if (MOCK) return globalThis.__mockGemini(prompt);
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(MODEL)}:generateContent`;
   const body = {
@@ -40,12 +74,23 @@ async function callGemini(prompt, schema, maxRetries) {
     generationConfig: { temperature: 0.4, responseMimeType: 'application/json', responseSchema: schema },
   };
   let lastErr;
+  let nextWaitMs = 0;
+  let waitedMs = 0;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    if (attempt > 0) await new Promise((r) => setTimeout(r, 4000 * attempt));
+    if (attempt > 0) {
+      if (waitedMs + nextWaitMs > RETRY.budgetMs) {
+        log(`retry budget (${RETRY.budgetMs / 1000}s) exhausted — giving up`);
+        break;
+      }
+      log(`waiting ${Math.round(nextWaitMs / 1000)}s before retry ${attempt}/${maxRetries}`);
+      await deps.sleep(nextWaitMs);
+      waitedMs += nextWaitMs;
+    }
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 90_000);
+    let retryAfterMs = null;
     try {
-      const res = await fetch(url, {
+      const res = await deps.fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': KEY },
         body: JSON.stringify(body),
@@ -58,6 +103,13 @@ async function callGemini(prompt, schema, maxRetries) {
           // Not retryable: bad key, bad model id, or request problem.
           throw Object.assign(new Error(`Gemini HTTP ${res.status} (model "${MODEL}"): ${short}`), { fatal: true });
         }
+        if (isQuotaExhausted(res.status, text)) {
+          throw Object.assign(
+            new Error(`Gemini quota exhausted for model "${MODEL}" (HTTP 429) — not retrying; wait for the quota reset or change GEMINI_MODEL: ${short}`),
+            { fatal: true },
+          );
+        }
+        retryAfterMs = parseRetryAfter(res.headers?.get?.('retry-after'));
         throw new Error(`Gemini HTTP ${res.status}: ${short}`);
       }
       const json = JSON.parse(text);
@@ -68,6 +120,7 @@ async function callGemini(prompt, schema, maxRetries) {
       lastErr = err;
       if (err.fatal) throw err;
       log(`attempt ${attempt + 1}/${maxRetries + 1} failed: ${err.message}`);
+      nextWaitMs = retryDelayMs(attempt, retryAfterMs);
     } finally {
       clearTimeout(timer);
     }
@@ -111,7 +164,7 @@ async function gatherEvidence(brandId) {
   for (const q of brand.queries) {
     const url = `https://news.google.com/rss/search?q=${encodeURIComponent(q + ' when:30d')}&hl=en-IN&gl=IN&ceid=IN:en`;
     try {
-      const res = await fetch(url, { headers: { 'User-Agent': 'GaneshaAIStudio-NARADA/1.0' } });
+      const res = await deps.fetch(url, { headers: { 'User-Agent': 'GaneshaAIStudio-NARADA/1.0' } });
       if (!res.ok) {
         log(`RSS ${res.status} for "${q}"`);
         continue;
@@ -133,6 +186,11 @@ async function gatherEvidence(brandId) {
 }
 
 /* ---------------- Store helpers ---------------- */
+// Number of `failed` runs recorded by this invocation. main() turns it into exit code 2
+// so the workflow can commit the failure record first and then go red.
+let failedRuns = 0;
+export const EXIT_AGENT_FAILED = 2;
+
 function recordRun(agent, startedAt, status, summary, error) {
   const store = readJson('runs.json');
   const run = {
@@ -147,6 +205,7 @@ function recordRun(agent, startedAt, status, summary, error) {
   };
   store.runs = prependTrim(store.runs, [run], LIMITS.runs);
   writeJson('runs.json', store);
+  if (status === 'failed') failedRuns++;
   log(`run recorded: ${status} — ${run.summary}`);
 }
 function addEvents(events) {
@@ -378,25 +437,38 @@ Never invent metrics or deadlines. Return an empty array if nothing is worth doi
 }
 
 /* ---------------- main ---------------- */
+// Returns the process exit code: 0 = ok (or not configured), 1 = usage error,
+// 2 = at least one agent run was recorded as `failed` (data already written).
 export async function main(argv = process.argv.slice(2)) {
   const i = argv.indexOf('--agent');
   const which = i >= 0 ? argv[i + 1] : 'all';
   if (!['narada', 'ganesha', 'all'].includes(which)) {
     console.error('Usage: node scripts/agent-runner.mjs --agent narada|ganesha|all');
-    process.exit(2);
+    return 1;
   }
   if (!KEY && !MOCK) {
     log('GEMINI_API_KEY is not configured — skipping. No data written.');
-    return;
+    return 0;
   }
+  failedRuns = 0;
   log(`model ${MOCK ? '(mock)' : MODEL}`);
   if (which === 'narada' || which === 'all') await runNarada();
   if (which === 'ganesha' || which === 'all') await runGanesha();
+  if (failedRuns > 0) {
+    log(`${failedRuns} agent run(s) failed — exiting ${EXIT_AGENT_FAILED} after writing the records`);
+    return EXIT_AGENT_FAILED;
+  }
+  return 0;
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((err) => {
-    console.error(err);
-    process.exit(1);
-  });
+  main().then(
+    (code) => {
+      process.exitCode = code;
+    },
+    (err) => {
+      console.error(err);
+      process.exit(1);
+    },
+  );
 }
