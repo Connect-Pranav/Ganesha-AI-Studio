@@ -1,6 +1,16 @@
 {
   "runs": [
     {
+      "id": "run_20261021T200035Z_ganesha_claude_1",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-21T19:53:31Z",
+      "finishedAt": "2026-10-21T20:00:35Z",
+      "status": "partial",
+      "summary": "p_20261018T141816Z_ops completed (vault#4): AGNI approved, PR #2 opened unmerged; SAMVADA handoff written. npm ci blocked, so build/worker tests unverified.",
+      "error": "npm ci was denied in the session; npm run build and worker tests could not run (wrangler/tsc/vite missing). Script tests 26/26 pass."
+    },
+    {
       "id": "run_20261021T045733Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",

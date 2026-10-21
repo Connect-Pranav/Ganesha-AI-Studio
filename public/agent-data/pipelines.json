@@ -6,10 +6,10 @@
       "brand": "studio",
       "title": "Weekly ops review 2026-W42",
       "goalRef": "vault#4",
-      "status": "approval_required",
+      "status": "completed",
       "engine": "claude",
       "createdAt": "2026-10-18T14:18:16Z",
-      "updatedAt": "2026-10-18T14:21:14Z",
+      "updatedAt": "2026-10-21T20:00:15Z",
       "steps": [
         {
           "key": "metrics",
@@ -60,8 +60,9 @@
             "incidents"
           ],
           "approval": true,
-          "status": "approval_required",
-          "attempts": 1
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-21T19:59:55Z"
         },
         {
           "key": "handoff",
@@ -72,8 +73,9 @@
             "docs",
             "automation"
           ],
-          "status": "pending",
-          "attempts": 0
+          "status": "completed",
+          "attempts": 1,
+          "finishedAt": "2026-10-21T20:00:15Z"
         }
       ]
     },
