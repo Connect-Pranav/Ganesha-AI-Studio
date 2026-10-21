@@ -1,6 +1,96 @@
 {
-  "updatedAt": "2026-10-20T02:36:59Z",
+  "updatedAt": "2026-10-21T02:32:17Z",
   "findings": [
+    {
+      "id": "f_20261021T023217Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "MIPJunior 2026 research: animation, music-led series and animals (cats rising) still lead kids' taste",
+      "insight": "Glance's MIPJunior keynote says animation stays children's favourite genre, music-driven series remain a reliable draw, animals are a strong character territory with cats gaining on dogs, and vertical/creator-led series are growing. LittleLoop can test a recurring animal (e.g. cat) character in short musical Reels.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Report: Kids' programmes increasingly inspired by social media",
+          "url": "https://www.advanced-television.com/2026/10/12/report-kids-programmes-increasingly-inspired-by-social-media/",
+          "source": "Advanced Television",
+          "retrievedAt": "2026-10-21T02:20:00Z"
+        },
+        {
+          "title": "MIPJUNIOR 2026",
+          "url": "https://www.mediametrie.fr/en/audiences-and-results/tv-video-worldwide/kids-tv-report-animation-trends/mipjunior-2026",
+          "source": "Médiamétrie / Glance",
+          "retrievedAt": "2026-10-21T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-21T02:32:17Z"
+    },
+    {
+      "id": "f_20261021T023217Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Disney Jr. says it tests stories with children and feeds results back to writers",
+      "insight": "At MIPJunior, Disney Jr.'s programming lead said stories are regularly tested with children to check what preschoolers understand, then revised. LittleLoop could add a lightweight comprehension check (e.g. parent preview of the script/animatic) before producing an episode.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "MipJunior 2026: Disney focuses on audience feedback to build new franchises",
+          "url": "https://senalnews.com/en/events/mipjunior-2026-disney-focuses-on-audience-feedback-to-build-new-franchises",
+          "source": "Señal News",
+          "retrievedAt": "2026-10-21T02:24:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-21T02:32:17Z"
+    },
+    {
+      "id": "f_20261021T023217Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Spotify: 50M+ slop/spam tracks pulled from recommendations in 2026; AI Credits and verification pushed",
+      "insight": "Spotify's Oct 20 update says it removed 50M+ slop/spam tracks from recommendations this year, targets mass uploads, duplicates and artificially short tracks, and says likely-AI tracks are far more likely to miss the 1,000-stream royalty threshold. Sunverse should disclose AI roles via AI Credits, avoid duplicate/short uploads, and seek artist verification.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "One Year In: Putting Human Artistry First on Spotify",
+          "url": "https://newsroom.spotify.com/2026-10-20/prioritizing-human-artistry/",
+          "source": "Spotify Newsroom",
+          "retrievedAt": "2026-10-21T02:27:00Z"
+        },
+        {
+          "title": "Spotify Says It's Removed 50M+ AI Tracks from Recommendations",
+          "url": "https://www.digitalmusicnews.com/2026/10/20/spotify-ai-recommendations-stats/",
+          "source": "Digital Music News",
+          "retrievedAt": "2026-10-21T02:27:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-21T02:32:17Z"
+    },
+    {
+      "id": "f_20261021T023217Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace now sells custom-domain email with Titan from $3 per user per month",
+      "insight": "Squarespace added Essential Email by Titan (inbox, calendar, contacts) for customers with a Squarespace-bought or connected domain, from $3/user/month, live in the US, UK, Canada and Australia with more markets planned. Bundling domain + site + email is a premium hook Foliocraft could evaluate.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Titan partners with Squarespace to offer custom-domain email to users",
+          "url": "https://www.business-standard.com/companies/news/titan-partners-with-squarespace-to-offer-custom-domain-email-to-users-126101301214_1.html",
+          "source": "Business Standard",
+          "retrievedAt": "2026-10-21T02:30:00Z"
+        },
+        {
+          "title": "Squarespace and Titan team up to offer $3/month professional email",
+          "url": "https://techradar.com/pro/squarespace-and-titan-team-up-to-offer-usd3-month-professional-email",
+          "source": "TechRadar",
+          "retrievedAt": "2026-10-21T02:30:30Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-21T02:32:17Z"
+    },
     {
       "id": "f_20261020T023659Z_littleloop_1_claude",
       "brand": "littleloop",

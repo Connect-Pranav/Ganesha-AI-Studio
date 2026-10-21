@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261021T023217Z_1_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — MIPJunior kids' trends (music, animals, cats rising) and Disney Jr. story testing."
+    },
+    {
+      "id": "e_20261021T023217Z_2_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: cat musical episode concept and parent-preview comprehension check."
+    },
+    {
+      "id": "e_20261021T023217Z_3_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Spotify pulled 50M+ slop/spam tracks from recommendations; AI Credits and verification pushed."
+    },
+    {
+      "id": "e_20261021T023217Z_4_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: Spotify AI Credits/anti-spam checklist and verification eligibility check."
+    },
+    {
+      "id": "e_20261021T023217Z_5_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Squarespace launched custom-domain email with Titan from $3/user/month in US, UK, CA, AU."
+    },
+    {
+      "id": "e_20261021T023217Z_6_claude",
+      "at": "2026-10-21T02:32:17Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: email add-on price comparison and premium email spec (approval required)."
+    },
+    {
       "id": "e_20261020T050643Z_1_gemini",
       "at": "2026-10-20T05:06:43Z",
       "brand": "sunverse",
