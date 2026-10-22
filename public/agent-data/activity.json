@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261022T045813Z_1_gemini",
+      "at": "2026-10-22T04:58:13Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Sunverse from 18 sources"
+    },
+    {
       "id": "e_20261022T022741Z_1_claude",
       "at": "2026-10-22T02:27:41Z",
       "brand": "littleloop",

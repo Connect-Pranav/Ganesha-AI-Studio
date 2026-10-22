@@ -1,6 +1,48 @@
 {
-  "updatedAt": "2026-10-22T02:27:41Z",
+  "updatedAt": "2026-10-22T04:58:29Z",
   "findings": [
+    {
+      "id": "f_20261022T045813Z_sunverse_1",
+      "brand": "sunverse",
+      "title": "Scrutiny on 2026 YouTube Creator Payouts and Per-View Earnings",
+      "insight": "Industry analysis into 2026 YouTube per-view payouts and creator earnings benchmarks allows Sunverse to recalibrate channel monetization projections, focus on high-yield audience retention, and evaluate production budgets against realistic revenue models.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "How much does YouTube pay per view in 2026? - Hootsuite Blog",
+          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE5KMF93MVgxTWx2SXctaUhmbHRQR1RaSXNseF8tODRNek9nR1ZWVEFrclJhTzFkZHpQT29YcHVMZGgtcnlmdzhQUUFpeTNnSmVpc2o1ZGRvbmdFUXFDeGN3MW1SRVlOQ2Q0NjBaY0FQNA?oc=5",
+          "source": "Hootsuite Blog",
+          "retrievedAt": "2026-10-22T04:57:05Z"
+        },
+        {
+          "title": "How Much do YouTubers Make in 2026? + YouTube Earnings Calculator - Influencer Marketing Hub",
+          "url": "https://news.google.com/rss/articles/CBMib0FVX3lxTE1NZ1NSVUhrVmxqdVBNYzUyWkliUUVtY1puRnZCZzhoMW1yWDQzcEdiS19ESDhOcXpUaXFQQ3ExakJyVEdfQzh5LU9LRmkxSlVURDFjWTJvMTNIU3B1aHdqdVQxdGpaTHlFbTRTYU5EOA?oc=5",
+          "source": "Influencer Marketing Hub",
+          "retrievedAt": "2026-10-22T04:57:05Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-22T04:58:13Z"
+    },
+    {
+      "id": "f_20261022T045813Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "Indian Musicians Increasingly Reject Traditional Record Labels",
+      "insight": "More Indian artists are actively bypassing legacy record labels for their music releases. Sunverse can leverage this shift by positioning its production house and channel as an attractive, creator-friendly partner offering collaborative distribution and creative autonomy.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Don’t put a label on me: Why more Indian musicians are rejecting music labels for releases - Mid-Day",
+          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNLTlhbEMxMzRNODVTTUJtSnV4elNEWjRUTGxrcV90VHRNZjNfcnpjZktJa3h2NnpoVmp0aG1lT0hCVktnTk5oT25tVVVncG5FNVpsMDhRTnJxc0tGeHZLdGUxUDFLTTlfd2dsS3c0cVFHUW4tUXZIcVRBN29YUUdqM2pSN0tkLUQwZ1NjLXM1Y3hFa1Zid2EwbC1kS2F6R20xMHE4WTZYNjhIaHZlVlVpR1pCWGlkSWd6czViMFhIaEd2VHFfMlcyX2tCX3JBUG9wMFhPd0hoN21WdDEy0gHiAUFVX3lxTE9sSDJzeUczX0Rvd28zYkxiQy00a1Atd2locFlPdDdRMXpNRW1hbjlkakdobUtPMFFTNk1ibUk1TmJqcm5jSDV5cUlCN1g2WHBLMENBclJBMHpWM1l2RjdCT1VGMy1uT1FYQWJWRHl0RmVaaW90R2RvOGhCUXMxUHJFd1hYRGhMYVRCN056ZUdVWjhjeU1rSGRuVkh5RlJnSWtMamwyc3kwUHVCYm4tTllpZ2VsZkE3ei1XMWpMaWptNl95ZmUzc0tUay1JU01CcElpd0RoT0F1OW0yb3BqcmVRclE?oc=5",
+          "source": "Mid-Day",
+          "retrievedAt": "2026-10-22T04:57:05Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-22T04:58:13Z"
+    },
     {
       "id": "f_20261022T022741Z_littleloop_1_claude",
       "brand": "littleloop",
