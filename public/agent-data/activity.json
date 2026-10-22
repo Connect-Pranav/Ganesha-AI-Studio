@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261022T022741Z_1_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Edits tests beat-synced effects; AI kid-distress bait Reels drew scrutiny of Meta."
+    },
+    {
+      "id": "e_20261022T022741Z_2_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 research tasks: Edits beat-sync access check and Meta engagement-bait policy review."
+    },
+    {
+      "id": "e_20261022T022741Z_3_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Shorts seasons/episodes announced; India distributors compete on royalty transparency."
+    },
+    {
+      "id": "e_20261022T022741Z_4_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 research tasks: Shorts series rollout tracking and distributor royalty-report comparison."
+    },
+    {
+      "id": "e_20261022T022741Z_5_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Webflow Campaigns launches per-URL landing variants; early Black Friday builder deals."
+    },
+    {
+      "id": "e_20261022T022741Z_6_claude",
+      "at": "2026-10-22T02:27:41Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 tasks: spec portfolio variants for premium; draft Black Friday offer (needs approval)."
+    },
+    {
       "id": "e_20261021T200035Z_1_claude",
       "at": "2026-10-21T20:00:35Z",
       "brand": "studio",

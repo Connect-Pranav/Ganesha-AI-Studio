@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-10-21T02:32:17Z",
+  "updatedAt": "2026-10-22T02:27:41Z",
   "tasks": [
+    {
+      "id": "t_20261022T022741Z_littleloop_1_claude",
+      "title": "Check whether Edits' beat-synced effects option is available on LittleLoop's account",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Feature is a limited Labs test (lit1); confirm access before building edit plans around it.",
+      "sourceFindings": [
+        "f_20261022T022741Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261022T022741Z_littleloop_2_claude",
+      "title": "Research Meta's rules on engagement bait and AI depictions of children",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Scrutiny of AI kid-distress bait Reels (lit2) suggests stricter enforcement; LittleLoop needs the exact policy text.",
+      "sourceFindings": [
+        "f_20261022T022741Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261022T022741Z_sunverse_3_claude",
+      "title": "Track when YouTube Shorts seasons and episodes reach Sunverse's channel",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Shorts series announced without rollout date or India timing (sun1).",
+      "sourceFindings": [
+        "f_20261022T022741Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261022T022741Z_sunverse_4_claude",
+      "title": "Compare Sunverse distributor's royalty reporting detail with India-focused alternatives",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "India-focused distributors now compete on royalty transparency and DSP error-flagging (sun2).",
+      "sourceFindings": [
+        "f_20261022T022741Z_sunverse_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261022T022741Z_foliocraft_5_claude",
+      "title": "Spec tailored portfolio variants with their own URLs for Foliocraft premium",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Webflow Campaigns ships per-variant landing pages (fol1); per-job portfolio variants could be a premium hook.",
+      "sourceFindings": [
+        "f_20261022T022741Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261022T022741Z_foliocraft_6_claude",
+      "title": "Draft a Black Friday premium offer option for owner approval",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Competitor builder sales already live (fol2, low confidence). Any discount changes pricing and must be approved.",
+      "sourceFindings": [
+        "f_20261022T022741Z_foliocraft_6_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-22T02:27:41Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261021T023217Z_littleloop_1_claude",
       "title": "Draft a musical episode concept starring a recurring cat character for ages 2-5",
