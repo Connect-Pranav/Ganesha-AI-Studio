@@ -7,7 +7,7 @@ import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
 import { StudioWorkflows } from './StudioWorkflows';
 import { ResearchPanel } from './AgentWidgets';
-import { ActivityFeed, StatCard, TaskBoard } from './Widgets';
+import { ActivityFeed, StatCard, TaskBoard, scrollToSection } from './Widgets';
 import { Integ } from './Connection';
 import { openNewGoal } from './GoalModal';
 import { agentName } from '../data/agentsMeta';
@@ -236,6 +236,17 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
       /* storage unavailable */
     }
   };
+  // Every status tile opens the section that explains its number.
+  const openWork = (sectionId: string) => {
+    pickTab('work');
+    scrollToSection(sectionId);
+  };
+  const openMetric = (label: string) => {
+    if (label === 'Research findings') openWork('ws-research');
+    else if (label === 'Open tasks') openWork('ws-tasks');
+    else if (label === 'Pipelines') onNavigate('pipelines');
+    else openWork('ws-goals');
+  };
   const { summary, locked } = useStudio();
   const product = data.products.find((x) => x.id === productId)!;
   const live = !locked && summary;
@@ -265,13 +276,13 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
       <section className="grid-4" aria-label={`${product.name} status`}>
         {live ? (
           <>
-            <StatCard metric={{ label: 'Goals', value: String(total), hint: 'Started on the studio backend' }} />
-            <StatCard metric={{ label: 'In progress', value: String(open), hint: `${c.running ?? 0} working now` }} />
-            <StatCard metric={{ label: 'Waiting for you', value: String(waiting), hint: 'Approvals and manual steps' }} />
-            <StatCard metric={{ label: 'Done', value: String(c.completed ?? 0), hint: `${c.failed ?? 0} failed` }} />
+            <StatCard metric={{ label: 'Goals', value: String(total), hint: 'Started on the studio backend' }} onClick={() => openWork('ws-goals')} />
+            <StatCard metric={{ label: 'In progress', value: String(open), hint: `${c.running ?? 0} working now` }} onClick={() => openWork('ws-goals')} />
+            <StatCard metric={{ label: 'Waiting for you', value: String(waiting), hint: 'Approvals and manual steps' }} onClick={() => onNavigate('pipelines')} />
+            <StatCard metric={{ label: 'Done', value: String(c.completed ?? 0), hint: `${c.failed ?? 0} failed` }} onClick={() => openWork('ws-goals')} />
           </>
         ) : (
-          product.metrics.map((m) => <StatCard key={m.label} metric={m} />)
+          product.metrics.map((m) => <StatCard key={m.label} metric={m} onClick={() => openMetric(m.label)} />)
         )}
       </section>
 
@@ -290,10 +301,10 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
       <div className="grid-main">
         <div className="col">
           {productId === 'littleloop' && <ReelFactory />}
-          <StudioWorkflows brand={productId} title={`${product.name} goals`} />
+          <div id="ws-goals" className="anchor"><StudioWorkflows brand={productId} title={`${product.name} goals`} /></div>
           <Deliverables brand={productId} />
-          <ResearchPanel findings={data.research} brand={product.id} title={`NARADA research · ${product.name}`} />
-          <TaskBoard tasks={data.tasks.filter((t) => t.product === productId)} live={data.live.tasks} />
+          <div id="ws-research" className="anchor"><ResearchPanel findings={data.research} brand={product.id} title={`NARADA research · ${product.name}`} /></div>
+          <div id="ws-tasks" className="anchor"><TaskBoard tasks={data.tasks.filter((t) => t.product === productId)} live={data.live.tasks} /></div>
         </div>
         <div className="col">
           {productId === 'sunverse' && <SunverseChannel onNavigate={onNavigate} />}

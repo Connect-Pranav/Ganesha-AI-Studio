@@ -1,7 +1,7 @@
 import { Card, EmptyState, LiveBadge, formatWhen, productNames } from './ui';
 import { AgentDecisions, FinishedWork } from './cbo/StudioDesk';
 import { Icon } from './Icon';
-import { ActivityFeed, AgentPanel, QuickActions, StatCard, TaskBoard, type QuickActionKind } from './Widgets';
+import { ActivityFeed, AgentPanel, QuickActions, StatCard, TaskBoard, scrollToSection, type QuickActionKind } from './Widgets';
 import { describeProvider } from './Connection';
 import { agentName } from '../data/agentsMeta';
 import { useStudio, OPEN_STATUSES, WF_STATUS } from '../services/StudioContext';
@@ -135,13 +135,20 @@ export function OverviewView(p: Common & { onNavigate: (v: View) => void }) {
         { label: 'Failed steps · 7 days', value: String(s.counts.failedTasks7d), hint: s.counts.failedTasks7d ? 'Retry from Pipelines' : 'No failures', trend: s.counts.failedTasks7d ? ('down' as const) : ('flat' as const) },
       ]
     : data.overview;
+  // Every KPI tile opens the page (or section) behind its number.
+  const openKpi = (label: string) => {
+    if (label === 'Research findings') scrollToSection('ov-research');
+    else if (label === 'Open agent tasks') p.onNavigate('tasks');
+    else if (label === 'Agent runs' || label === 'Agents working now') p.onNavigate('agents');
+    else p.onNavigate('pipelines');
+  };
 
   return (
     <>
       {locked && <p className="notice">Showing scheduled-runner data only. Unlock (🔔 bell or AI Connection) to see live goals, approvals and agent health.</p>}
       <section className="grid-4" aria-label="Key metrics">
         {kpis.map((m) => (
-          <StatCard key={m.label} metric={m} />
+          <StatCard key={m.label} metric={m} onClick={() => openKpi(m.label)} />
         ))}
       </section>
 
@@ -152,7 +159,7 @@ export function OverviewView(p: Common & { onNavigate: (v: View) => void }) {
         <div className="col">
           <StudioWorkflows title="Latest goals" compact />
           {s ? <AgentHealth s={s} /> : <AgentPanel agents={data.agents} live={data.live.agents} />}
-          <ResearchPanel findings={data.research} limit={3} title="Latest NARADA research" />
+          <div id="ov-research" className="anchor"><ResearchPanel findings={data.research} limit={3} title="Latest NARADA research" /></div>
           <TaskBoard tasks={data.tasks.filter((t) => t.status !== 'done').slice(0, 8)} live={data.live.tasks} />
         </div>
         <div className="col">

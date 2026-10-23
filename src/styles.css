@@ -206,6 +206,15 @@ h1, h2, h3, p { margin: 0; }
 .stat-value { font-family: var(--serif); font-size: 32px; font-weight: 500; letter-spacing: -0.02em; margin: 6px 0 8px; font-variant-numeric: tabular-nums; }
 .stat-foot { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; }
 .stat-hint { color: var(--ink-3); }
+.stat-link {
+  position: relative; display: block; width: 100%; text-align: left; font: inherit; color: inherit;
+  cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.stat-link:hover { border-color: var(--accent, var(--line)); transform: translateY(-1px); }
+.stat-link:active { transform: translateY(0); }
+.stat-link:focus-visible { outline: 2px solid var(--accent, currentColor); outline-offset: 2px; }
+.stat-go { position: absolute; top: 14px; right: 16px; font-size: 20px; line-height: 1; color: var(--ink-3); }
+.anchor { scroll-margin-top: 140px; }
 .delta { font-weight: 600; padding: 2px 8px; border-radius: 999px; }
 .delta-up { color: var(--ok); background: var(--ok-soft); }
 .delta-down { color: var(--err); background: var(--err-soft); }

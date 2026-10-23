@@ -6,17 +6,35 @@ import { openNewGoal } from './GoalModal';
 import type { Activity, Agent, Metric, Product, ProductId, Task, TaskStatus, Workflow } from '../types';
 
 /* ---------- Stat card ---------- */
-export function StatCard({ metric }: { metric: Metric }) {
-  return (
-    <div className="stat">
+export function StatCard({ metric, onClick }: { metric: Metric; onClick?: () => void }) {
+  const body = (
+    <>
       <p className="stat-label">{metric.label}</p>
       <p className="stat-value">{metric.value}</p>
       <div className="stat-foot">
         {metric.delta && <span className={`delta delta-${metric.trend ?? 'flat'}`}>{metric.delta}</span>}
         {metric.hint && <span className="stat-hint">{metric.hint}</span>}
       </div>
-    </div>
+    </>
   );
+  if (!onClick) return <div className="stat">{body}</div>;
+  return (
+    <button type="button" className="stat stat-link" onClick={onClick} aria-label={`${metric.label}: ${metric.value}. Open details`}>
+      {body}
+      <span className="stat-go" aria-hidden="true">›</span>
+    </button>
+  );
+}
+
+/** Scroll a section into view once it has rendered (e.g. right after switching tabs). */
+export function scrollToSection(id: string) {
+  let tries = 0;
+  const go = () => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    else if (tries++ < 20) requestAnimationFrame(go);
+  };
+  requestAnimationFrame(go);
 }
 
 /* ---------- Product card ---------- */
