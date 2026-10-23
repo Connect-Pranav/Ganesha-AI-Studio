@@ -1,6 +1,33 @@
 {
   "events": [
     {
+      "id": "e_20261023T045913Z_1_gemini",
+      "at": "2026-10-23T04:59:13Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "1 new finding for LittleLoop from 11 sources"
+    },
+    {
+      "id": "e_20261023T050020Z_2_gemini",
+      "at": "2026-10-23T05:00:20Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Sunverse from 15 sources"
+    },
+    {
+      "id": "e_20261023T050114Z_3_gemini",
+      "at": "2026-10-23T05:01:14Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "1 new finding for Foliocraft from 15 sources"
+    },
+    {
       "id": "e_20261023T022653Z_1_claude",
       "at": "2026-10-23T02:26:53Z",
       "brand": "littleloop",

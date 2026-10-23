@@ -1,6 +1,78 @@
 {
-  "updatedAt": "2026-10-23T02:26:53Z",
+  "updatedAt": "2026-10-23T05:01:14Z",
   "findings": [
+    {
+      "id": "f_20261023T045913Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Cultural Adaptations of Classic Nursery Rhymes Engage Diverse Audiences",
+      "insight": "Adapting public-domain nursery melodies with cultural or community-specific twists, such as 'Old Adam Had a Farm', demonstrates a pathway for LittleLoop to create inclusive, relatable short-form musical content that resonates with multicultural family demographics.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Old Adam Had a Farm E-I-E-I-O | Islamic Kids Nasheed | Muslim Kids Nursery Rhymes | Cartoon Song - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE4yMUUxblRmRkwxcjZheVZENzNqSExHVkRPT3ZkTENrTHRGbXowNXY0UEc3d2JnRjJxdlFQbVBaal9hd1dRc3NZM2swUHVSTm1KZ21qYVFR?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-23T04:58:33Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-23T04:59:13Z"
+    },
+    {
+      "id": "f_20261023T050020Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "Indian Industry Acceptance for Responsible AI Adoption in Music",
+      "insight": "Composer Shankar Mahadevan noted there is nothing wrong with using AI if used responsibly. For Sunverse, adopting ethical AI tools for workflow enhancements, ideation, and production is viable as long as transparency and human oversight are maintained.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "‘There is nothing wrong with using AI, provided it is used responsibly’: Shankar Mahadevan - The Times of India",
+          "url": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxQVmw5M3prVlh0OVhaNFJtX0s2d1Y4NW1fMER0akFOaklzUmctYjU2T1hVZjdyLVljOGxGU3M4RXB0OXpNSzZlUzA1bGNZZWpKWmRNTkZJNUhwWUhoUUlqaWo3ODFPUUFMV2t0Y0lidjBMMVl3RmpaNUVpaEkzTG9xY2ZEX1RDTUlHSWRyNXdfME9nbGFBTFlwR1E3NmxjRm02SkV0NWZhTlJCWFZkNkdLSVhwQ3UyeExFZXRYZHFQU0UxbnF0UkNvQ1lBbFdOMjN0czE0N1FNZWdZS3p5OWVveERJX2Zyc0R5aFpxb2lpQmJFWk9JUjR5VjVCSEY3WldfUmFfVmlHTUdoUHfSAZACQVVfeXFMT181d09JNHA3c003NkVmTlRodi02TmdON1R3RlRGTkdzM2oyNVJPUEtMRFVTWWpHUFlMUF9BczM1NmZ6a0NKRWNrdVpMd2d2ZkpPcHZkTlNXbWFYSEFsalZNNkoxQUdCejdMLTItVHpHb3RlSkhfUTdPU2h2Z1l4dUxMdXk3dHhBUHBQcm4yTnFXWjY0d2IwWUJ2elVJQklqbkVVYjBmZEc0UlBiS0QzcENQczRJeWtNS0lrN0RoNEtMcXY0OWtsQWx0SmZaM21KZ2d4enFrTFY0NlV0ZUI2Zm93TmNwN19YNURWZGFVa1ZuRTlhUHhtY0lXcFVBU0VKaFBkUTRyQUdhY1dDZTMtaWU?oc=5",
+          "source": "The Times of India",
+          "retrievedAt": "2026-10-23T04:59:14Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-23T05:00:20Z"
+    },
+    {
+      "id": "f_20261023T050020Z_sunverse_3",
+      "brand": "sunverse",
+      "title": "Mainstream Pop and Hip-Hop Crossovers Continue to Emerge",
+      "insight": "Nikhita Gandhi's release 'RUDE' featuring rapper Dino James underscores the continuing demand for pop vocalist and hip-hop artist crossover tracks. Sunverse can pair melodic singers with emerging rap talent to bridge audiences across distinct Indian music listener segments.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Nikhita Gandhi Teams Up with Dino James for New Song ‘RUDE’ - mamaraazzi.com",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQa004QXc5bmJSSGliVndqVWtrNlpTbDR6cmRPM0ZMUXVRaE92OGhxaEJWTWVsVnJ4WXlGTHllUzNOODdSbzN6bWQ4M0gyODg1d3lwQXFlR3JWVmZuQUdYWm9iSUxsLXRpQjJqc2dSR2pkZ19ObnJjNl9DTVFZS2p5NXJyRjNGaFdja0dOZHZEa0pvWnJsSkdR?oc=5",
+          "source": "mamaraazzi.com",
+          "retrievedAt": "2026-10-23T04:59:14Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-23T05:00:20Z"
+    },
+    {
+      "id": "f_20261023T050114Z_foliocraft_4",
+      "brand": "foliocraft",
+      "title": "AI Builder Benchmarks Pit Emerging Challengers Against Wix and Squarespace",
+      "insight": "Coverage comparing Design.com against Wix and Squarespace shows AI-first website generation is becoming the standard baseline for comparisons. Foliocraft should differentiate its paid premium offering by emphasizing specialized portfolio presentation and creative agency layouts that generic AI site generators overlook.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Design.com vs. Wix vs. Squarespace: Comparing AI Website Builders in 2026 - https://tech-insider.org/",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNOHlBS0ZMcW1uX2JjenZIeFFrQnkxNmUwdF9zdFNkNUg1ajN1TlFWZUF5dUUwb1JMYjlMRjhoZVpQY3RsZDFsRE9qTWtqbWNKSUlCTjlJZDc3QkFQWGVkdFNESnQ4bXI4Y1J6SW1GenI5b0taZWJybDhpQlh2ZGVSU1lRWXAtWUZlU2U5UUhCeGluUWlKVVlmbFhKVFY?oc=5",
+          "source": "https://tech-insider.org/",
+          "retrievedAt": "2026-10-23T05:00:21Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-23T05:01:14Z"
+    },
     {
       "id": "f_20261023T022653Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1212,84 +1284,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-12T19:04:26Z"
-    },
-    {
-      "id": "f_20261012T190426Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "Spotify India report: non-film I-Pop and regional languages are growing",
-      "insight": "Spotify's India Loud & Clear report (Sep 2, 2026) says non-film I-Pop made up half of its 2025 India year-end top 10, regional-language royalties rose sharply (Telugu over 120%), and over 40% of Indian artists' royalties came from listeners abroad. Sunverse can weigh independent, non-film releases, regional-language tracks and international audiences in its slate.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Indian Artists Are Finding Success Across More Languages, Genres, and Borders",
-          "url": "https://newsroom.spotify.com/2026-09-02/india-loud-and-clear-report/",
-          "source": "Spotify Newsroom",
-          "retrievedAt": "2026-10-12T19:03:40Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:04:26Z"
-    },
-    {
-      "id": "f_20261012T190426Z_foliocraft_3_claude",
-      "brand": "foliocraft",
-      "title": "Design hiring favours shipped work, few focused case studies",
-      "insight": "A 2026 design-hiring article advises 3-5 focused case studies of shipped, verifiable work, short project pages with a live link and outcome, and decision-focused narratives over process diagrams; it warns look-alike AI-generated portfolios signal sameness. Foliocraft could offer a 'shipped project' block and case-study prompts that steer users this way.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "What Actually Gets Senior Product Designers Hired in 2026",
-          "url": "https://www.thefountaininstitute.com/blog/senior-product-designers-hired",
-          "source": "The Fountain Institute",
-          "retrievedAt": "2026-10-12T19:03:40Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:04:26Z"
-    },
-    {
-      "id": "f_20261012T190245Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram's 2026 Reels guide names 15-60s as the main sweet spot",
-      "insight": "Instagram's creator guide (reported Sep 28) sets three length tiers: 3-15s for quick moments, 15-60s as the primary sweet spot, and 60s-3min for storytelling and education. LittleLoop can make 15-60s episodes its core format, test occasional longer story or learning episodes, and use auto-captions plus the Edits app's keyframes for animation polish.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Instagram Shares Ultimate Blueprint for Viral Reels in 2026",
-          "url": "https://www.iphoneincanada.ca/2026/09/28/instagram-shares-ultimate-blueprint-for-viral-reels-in-2026/",
-          "source": "iPhone in Canada",
-          "retrievedAt": "2026-10-12T19:00:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_littleloop_2_claude",
-      "brand": "littleloop",
-      "title": "Pressure is rising on AI-generated kids' video and AI labelling",
-      "insight": "About 200 groups led by Fairplay asked YouTube (Apr 2026) to label all AI content and stop recommending it to minors; YouTube said it is building AI labels for YouTube Kids. In Sep 2026 Instagram changed how it labels AI profiles amid pushback. LittleLoop should disclose AI use plainly, keep human review on every episode, and favour original recurring characters over template output.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "200 experts tell YouTube to stop recommending AI slop to kids",
-          "url": "https://www.tubefilter.com/2026/04/01/youtube-fairplay-kids-ai-open-letter/",
-          "source": "Tubefilter",
-          "retrievedAt": "2026-10-12T19:00:30Z"
-        },
-        {
-          "title": "The biggest Instagram updates from 2026: A social media manager's guide",
-          "url": "https://www.heyorca.com/blog/instagram-social-news",
-          "source": "HeyOrca",
-          "retrievedAt": "2026-10-12T19:00:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
     }
   ]
 }
