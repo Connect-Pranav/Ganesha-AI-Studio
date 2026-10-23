@@ -1,6 +1,86 @@
 {
-  "updatedAt": "2026-10-22T02:27:41Z",
+  "updatedAt": "2026-10-23T02:26:53Z",
   "tasks": [
+    {
+      "id": "t_20261023T022653Z_littleloop_1_claude",
+      "title": "Replace Reels series links in the season plan with numbered titles before Oct 28",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "high",
+      "reason": "Series linking is being removed from Oct 28 (lit1); the planned 5-episode season needs another way to show episode order.",
+      "sourceFindings": [
+        "f_20261023T022653Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-23T02:26:53Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261023T022653Z_littleloop_2_claude",
+      "title": "Define an Edits Kit spec locking LittleLoop's episode look (effects, text style, colours)",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Edits Kits save reusable visual styles (lit1), which can keep episodes consistent.",
+      "sourceFindings": [
+        "f_20261023T022653Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-23T02:26:53Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261023T022653Z_sunverse_3_claude",
+      "title": "Add channel-security and a 24h scheduling buffer to the Sunverse release checklist",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "YouTube can auto-pause uploads for ~24h on suspected compromise (sun1), which could block a planned release.",
+      "sourceFindings": [
+        "f_20261023T022653Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-23T02:26:53Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261023T022653Z_foliocraft_4_claude",
+      "title": "Research which Framer MCP actions (e.g. publish) require user confirmation",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Framer MCP lets agents publish sites (fol1); its approval model informs Foliocraft's per-action approval spec.",
+      "sourceFindings": [
+        "f_20261023T022653Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-23T02:26:53Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261023T022653Z_foliocraft_5_claude",
+      "title": "Spec a prompt-to-first-draft portfolio generator for Foliocraft onboarding",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Squarespace Forma beta and Wix's platform-wide AI generator (fol2) make prompt-first creation an expected starting point.",
+      "sourceFindings": [
+        "f_20261023T022653Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-23T02:26:53Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261022T022741Z_littleloop_1_claude",
       "title": "Check whether Edits' beat-synced effects option is available on LittleLoop's account",
@@ -1199,72 +1279,6 @@
       "reason": "sun2: since Jul 16, 2026 generic/template-based content is ineligible for monetization; identify uploads that look near-identical.",
       "sourceFindings": [
         "f_20261012T190245Z_sunverse_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:02:45Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190245Z_sunverse_6_claude",
-      "title": "Check when video A/B testing and Gemini Shorts editing reach Sunverse's channel",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "sun1, sun3: both announced without release dates or eligibility criteria.",
-      "sourceFindings": [
-        "f_20261012T190245Z_sunverse_3_claude",
-        "f_20261012T190245Z_sunverse_5_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:02:45Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190245Z_foliocraft_7_claude",
-      "title": "Draft a clear free-vs-premium comparison for Foliocraft's pricing page",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "fol1: Squarespace annual price rises of up to 26% may push creatives to compare builders. Publishing the page needs approval.",
-      "sourceFindings": [
-        "f_20261012T190245Z_foliocraft_6_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-12T19:02:45Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190245Z_foliocraft_8_claude",
-      "title": "Prototype a content-only collaborator role for Foliocraft premium",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "low",
-      "reason": "fol2: Framer added a cheaper content-only editor seat. Prototype via PR only; pricing and deploy need human approval.",
-      "sourceFindings": [
-        "f_20261012T190245Z_foliocraft_7_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-12T19:02:45Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190245Z_foliocraft_9_claude",
-      "title": "Compare current premium pricing of Wix, Framer, Webflow and Squarespace",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "fol1, fol2: competitor pricing shifted in mid-2026; Foliocraft needs a verified, dated comparison before setting prices.",
-      "sourceFindings": [
-        "f_20261012T190245Z_foliocraft_6_claude",
-        "f_20261012T190245Z_foliocraft_7_claude"
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-12T19:02:45Z",

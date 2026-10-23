@@ -1,6 +1,114 @@
 {
-  "updatedAt": "2026-10-22T04:58:29Z",
+  "updatedAt": "2026-10-23T02:26:53Z",
   "findings": [
+    {
+      "id": "f_20261023T022653Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram drops Reels series linking on Oct 28; Edits adds reusable style Kits",
+      "insight": "Meta is removing the option to link Reels into a series (from Oct 28) while Edits adds Kits that save a visual style for reuse and an iOS 'use as reference' camera overlay. LittleLoop should carry episode order in titles/captions instead of series links and save its look as a Kit for consistency.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Meta adds audio links, trending insights and reference Reels to Edits, drops series linking",
+          "url": "https://www.netinfluencer.com/meta-adds-audio-links-trending-insights-and-reference-reels-to-edits-drops-series-linking/",
+          "source": "Net Influencer",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        },
+        {
+          "title": "Meta adds video creation tools to Edits, introduces Reels reference feature",
+          "url": "https://socialsamosa.com/news-2/meta-adds-video-creation-tools-to-edits-reels-reference-feature-12681204",
+          "source": "Social Samosa",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-23T02:26:53Z"
+    },
+    {
+      "id": "f_20261023T022653Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Australia is preparing a court case over platforms' compliance with its under-16 ban",
+      "insight": "Australia's minister says eSafety is gathering evidence for a Federal Court case against Meta, TikTok, Snap and YouTube over the under-16 ban, and is courting other countries. LittleLoop should keep addressing parents, not children, in captions and calls to action.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Australia set to sue Meta, TikTok, Snap and YouTube, Bloomberg reports",
+          "url": "https://thenextweb.com/news/australia-social-media-ban-sue-meta-tiktok-snap-youtube",
+          "source": "The Next Web",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-23T02:26:53Z"
+    },
+    {
+      "id": "f_20261023T022653Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube now auto-pauses uploads on channels it suspects were hacked, ~24h review",
+      "insight": "Since Oct 21 YouTube can automatically block uploads, livestreams, thumbnails and making videos public while it reviews suspicious activity, typically within about 24 hours; monetisation continues. Sunverse should secure channel access and avoid scheduling releases with no time buffer.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube adds temporary pause for hacked accounts",
+          "url": "https://www.socialmediatoday.com/news/youtube-adds-temporary-pause-for-hacked-accounts/833651/",
+          "source": "Social Media Today",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        },
+        {
+          "title": "YouTube's new security update gives creators more protection against hackers",
+          "url": "https://www.analyticsinsight.net/news/youtubes-new-security-update-gives-creators-more-protection-against-hackers",
+          "source": "Analytics Insight",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-23T02:26:53Z"
+    },
+    {
+      "id": "f_20261023T022653Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Framer shipped an MCP server letting AI agents edit, manage CMS and publish sites",
+      "insight": "Framer's changelog lists Framer MCP (Oct 22), which lets AI tools edit the canvas, manage CMS content and publish, following Skills (Sep 22) for saved agent instructions. Agent-driven editing is becoming standard; Foliocraft should define how an agent may change or publish a portfolio and where the owner approves.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Framer Updates: Features and improvements",
+          "url": "https://www.framer.com/updates",
+          "source": "Framer",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-23T02:26:53Z"
+    },
+    {
+      "id": "f_20261023T022653Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace opened a Forma beta waitlist; Wix pushes its AI site generator platform-wide",
+      "insight": "Squarespace is taking waitlist sign-ups for Forma, a beta builder that creates sites and apps from prompts, and Wix is rolling its prompt-based AI site generator across its platform. Prompt-to-first-draft creation is becoming a baseline expectation for new Foliocraft users.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Squarespace opens waitlist for Forma AI app builder",
+          "url": "https://www.zeniteq.com/squarespace-opens-waitlist-for-forma-ai-app-builder-kpofhk",
+          "source": "Zeniteq",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        },
+        {
+          "title": "Wix.com (NASDAQ:WIX) pushes its AI site generator across the platform",
+          "url": "https://kalkinemedia.com/us/stocks/midcap/wixcom-nasdaqwix-pushes-its-ai-site-generator-across-the-platform",
+          "source": "Kalkine Media",
+          "retrievedAt": "2026-10-23T02:26:53Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-23T02:26:53Z"
+    },
     {
       "id": "f_20261022T045813Z_sunverse_1",
       "brand": "sunverse",
@@ -1177,114 +1285,6 @@
           "url": "https://www.heyorca.com/blog/instagram-social-news",
           "source": "HeyOrca",
           "retrievedAt": "2026-10-12T19:00:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "YouTube is adding A/B tests for up to three video cuts",
-      "insight": "Announced at Made on YouTube (Sep 23, 2026): creators will be able to upload two or three cuts of a video and compare retention curves, alongside dynamic thumbnails served by audience segment. Marked 'coming soon' with no date. Sunverse can prepare alternate opening hooks for music videos and Shorts so it is ready to test when the feature reaches the channel.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "YouTube to test up to 3 versions of one video on real viewers, Shorts too",
-          "url": "https://ppc.land/youtube-to-test-up-to-3-versions-of-one-video-on-real-viewers-shorts-too/",
-          "source": "PPC Land",
-          "retrievedAt": "2026-10-12T19:01:30Z"
-        },
-        {
-          "title": "Made on YouTube 2026: the AI creator stack",
-          "url": "https://www.ngram.com/blog/made-on-youtube-2026-ai-creator-stack",
-          "source": "Ngram",
-          "retrievedAt": "2026-10-12T19:01:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_sunverse_4_claude",
-      "brand": "sunverse",
-      "title": "YouTube clarified that generic, template-based AI content can't be monetized",
-      "insight": "From Jul 16, 2026, YPP defines 'inauthentic content' including generic, repetitive or template-based videos easy to mass-produce with AI or templates; channels with too much of it lose monetization. Loop-style music uploads with near-identical visuals are exposed. Sunverse should keep releases distinct per track (original visuals, credits, production context).",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "YouTube clarifies policies around AI slop and upsetting videos",
-          "url": "https://techcrunch.com/2026/07/20/youtube-clarifies-policies-around-ai-slop-and-upsetting-videos/",
-          "source": "TechCrunch",
-          "retrievedAt": "2026-10-12T19:00:50Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_sunverse_5_claude",
-      "brand": "sunverse",
-      "title": "Gemini chat editing for Shorts can sync music to the beat",
-      "insight": "Made on YouTube 2026 showed conversational editing in Shorts and YouTube Create: draft a cut from a prompt, then refine by chat, including reordering, trimming and syncing music to the beat, with manual timeline fallback. Availability not specified. Sunverse could use it to cut beat-synced Shorts teasers from each release once available.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Made on YouTube 2026: New Live, Music, Studio and AI features announced",
-          "url": "https://www.fonearena.com/blog/493327/made-on-youtube-2026-announcements.html/amp",
-          "source": "Fone Arena",
-          "retrievedAt": "2026-10-12T18:59:59Z"
-        },
-        {
-          "title": "Made on YouTube 2026: the AI creator stack",
-          "url": "https://www.ngram.com/blog/made-on-youtube-2026-ai-creator-stack",
-          "source": "Ngram",
-          "retrievedAt": "2026-10-12T19:01:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_foliocraft_6_claude",
-      "brand": "foliocraft",
-      "title": "Squarespace raised annual prices by up to 26% in July 2026",
-      "insight": "Two reports say Squarespace's annual Core and Plus plans rose 26% and Basic 19% (Advanced unchanged), effective July 6 and applying to existing users at renewal, with no feature changes reported. Price-sensitive creatives may be comparing options; Foliocraft can make its free vs premium value clear and transparent.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Squarespace Is Increasing Prices By Up to 26%",
-          "url": "https://petapixel.com/2026/07/17/squarespace-is-increasing-prices-by-up-to-26/",
-          "source": "PetaPixel",
-          "retrievedAt": "2026-10-12T19:01:00Z"
-        },
-        {
-          "title": "Squarespace Is Raising Prices by Up to 26%",
-          "url": "https://topsitehosters.com/blog/squarespace-is-raising-prices-by-up-to-26-heres-what-it-costs-you/",
-          "source": "TopSiteHosters",
-          "retrievedAt": "2026-10-12T19:01:45Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-12T19:02:45Z"
-    },
-    {
-      "id": "f_20261012T190245Z_foliocraft_7_claude",
-      "brand": "foliocraft",
-      "title": "Framer added a cheaper content-only editor seat and more Basic bandwidth",
-      "insight": "Framer (June 2026) raised Basic plan bandwidth 5x and added a $10/month Content Editor seat for CMS and on-page edits without design permissions, below its $20 Editor role. Role-based, lower-cost collaborator access is a possible Foliocraft premium feature, e.g. letting a client or mentor edit text only.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Framer upgrades Basic plan with 5x bandwidth and introduces new Content Editor tier",
-          "url": "https://www.createwith.com/tool/framer/updates/framer-upgrades-basic-plan-with-5x-bandwidth-and-introduces-new-content-editor-t",
-          "source": "CreateWith",
-          "retrievedAt": "2026-10-12T19:01:45Z"
         }
       ],
       "agent": "narada_market_intelligence",

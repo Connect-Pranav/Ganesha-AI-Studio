@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261023T022653Z_1_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Instagram ends Reels series linking Oct 28; Edits adds style Kits. Australia readies under-16 ban case."
+    },
+    {
+      "id": "e_20261023T022653Z_2_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: numbered episode titles before Oct 28 and an Edits Kit style spec."
+    },
+    {
+      "id": "e_20261023T022653Z_3_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: YouTube now auto-pauses uploads on suspected hacked channels for about 24h review."
+    },
+    {
+      "id": "e_20261023T022653Z_4_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 Sunverse task: add channel security and a 24h buffer to the release checklist."
+    },
+    {
+      "id": "e_20261023T022653Z_5_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Framer launched an MCP server for agent edits and publishing; Squarespace Forma beta waitlist opened."
+    },
+    {
+      "id": "e_20261023T022653Z_6_claude",
+      "at": "2026-10-23T02:26:53Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: Framer MCP approval research and a prompt-to-draft generator spec."
+    },
+    {
       "id": "e_20261022T045813Z_1_gemini",
       "at": "2026-10-22T04:58:13Z",
       "brand": "sunverse",
