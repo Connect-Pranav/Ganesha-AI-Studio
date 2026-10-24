@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261024T044429Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-10-24T04:44:16Z",
+      "finishedAt": "2026-10-24T04:44:29Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
+      "id": "run_20261024T044416Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-10-24T04:43:26Z",
+      "finishedAt": "2026-10-24T04:44:16Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
       "id": "run_20261024T023120Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",
