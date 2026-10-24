@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261024T023120Z_1_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Instagram plans more AI labels and asks creators to tag AI content voluntarily."
+    },
+    {
+      "id": "e_20261024T023120Z_2_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Komca Shorts royalty probe; YouTube leads India music platform usage (EY-IMI)."
+    },
+    {
+      "id": "e_20261024T023120Z_3_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Squarespace invoicing/UPI update and its 15 new gTLD applications."
+    },
+    {
+      "id": "e_20261024T023120Z_4_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: dated originality record for characters and episodes."
+    },
+    {
+      "id": "e_20261024T023120Z_5_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 tasks: Shorts usage policy and a YouTube-first India release checklist (approval-gated)."
+    },
+    {
+      "id": "e_20261024T023120Z_6_claude",
+      "at": "2026-10-24T02:31:20Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 3 tasks: client-invoicing spec, UPI gateway research, gTLD tracking."
+    },
+    {
       "id": "e_20261023T045913Z_1_gemini",
       "at": "2026-10-23T04:59:13Z",
       "brand": "littleloop",
@@ -845,51 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: 2 findings — Instagram's Reels length guidance and rising pressure to label AI-made kids' video."
-    },
-    {
-      "id": "e_20261012T190245Z_2_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 3 findings — YouTube video-cut A/B tests, YPP template-content policy, Gemini beat-synced Shorts editing."
-    },
-    {
-      "id": "e_20261012T190245Z_3_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — Squarespace price rises up to 26% and Framer's cheaper content-only editor seat."
-    },
-    {
-      "id": "e_20261012T190245Z_4_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 tasks: Reels format plan, AI-disclosure checklist, AI-label research."
-    },
-    {
-      "id": "e_20261012T190245Z_5_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 tasks: alternate hooks (needs approval), YPP risk audit, feature availability check."
-    },
-    {
-      "id": "e_20261012T190245Z_6_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 tasks: pricing comparison page (approval), collaborator role prototype (approval), competitor pricing research."
     }
   ]
 }

@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261024T023120Z_narada_claude_1",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "startedAt": "2026-10-24T02:23:07Z",
+      "finishedAt": "2026-10-24T02:31:20Z",
+      "status": "success",
+      "summary": "5 findings across 3 brands (littleloop 1, sunverse 2, foliocraft 2)"
+    },
+    {
+      "id": "run_20261024T023120Z_ganesha_claude_2",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-24T02:23:07Z",
+      "finishedAt": "2026-10-24T02:31:20Z",
+      "status": "success",
+      "summary": "6 tasks planned (littleloop 1, sunverse 2, foliocraft 3); 1 approval-gated"
+    },
+    {
       "id": "run_20261023T050256Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
