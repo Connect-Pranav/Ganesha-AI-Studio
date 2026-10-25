@@ -28,16 +28,28 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
 
+      # Exit code 2 = an agent run was recorded as failed. Capture it so the failure record
+      # is still validated and committed, then fail the job in the last step (red run + email).
       - name: Run agents
+        id: agents
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
-        run: node scripts/agent-runner.mjs --agent "${{ github.event.inputs.agent || 'all' }}"
+        run: |
+          set +e
+          node scripts/agent-runner.mjs --agent "${{ github.event.inputs.agent || 'all' }}"
+          code=$?
+          set -e
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          if [ "$code" -ne 0 ] && [ "$code" -ne 2 ]; then
+            echo "::error::agent-runner crashed with exit code $code"
+            exit "$code"
+          fi
 
       - name: Validate agent data
         run: node scripts/validate.mjs
@@ -54,3 +66,9 @@ jobs:
           git commit -m "agents: gemini run $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull --rebase origin main
           git push origin HEAD:main
+
+      - name: Fail if an agent run failed
+        if: steps.agents.outputs.exit_code == '2'
+        run: |
+          echo "::error::One or more agent runs failed — see the run record in public/agent-data/runs.json and the log above."
+          exit 1
