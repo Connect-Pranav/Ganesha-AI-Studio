@@ -1,6 +1,70 @@
 {
-  "updatedAt": "2026-10-24T02:31:20Z",
+  "updatedAt": "2026-10-25T02:31:12Z",
   "tasks": [
+    {
+      "id": "t_20261025T023112Z_littleloop_1_claude",
+      "title": "Add a full-screen 9:16 safe-zone and first-second hook check to episode QA",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Reported Reels-first feed tests (lit1) mean more full-screen viewing; a QA check is cheap and useful either way.",
+      "sourceFindings": [
+        "f_20261025T023112Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-25T02:31:12Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261025T023112Z_littleloop_2_claude",
+      "title": "Track whether Instagram's Reels-first feed and Longform profile tab leave testing",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit1 rests on a single tracker of unconfirmed tests; confirm with official sources before planning around it.",
+      "sourceFindings": [
+        "f_20261025T023112Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-25T02:31:12Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261025T023112Z_sunverse_3_claude",
+      "title": "Check whether Ask YouTube surfaces music and Shorts, and when it reaches India",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "sun1: Ask YouTube is US-only and Shorts support is upcoming; verify relevance to Sunverse's audience first.",
+      "sourceFindings": [
+        "f_20261025T023112Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-25T02:31:12Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261025T023112Z_foliocraft_4_claude",
+      "title": "Spec reusable project collections so users manage portfolio entries in one list",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "fol1: Relume now ships portfolio collections free; a structured project list should be part of Foliocraft's free core.",
+      "sourceFindings": [
+        "f_20261025T023112Z_foliocraft_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-25T02:31:12Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261024T023120Z_littleloop_1_claude",
       "title": "Set up a dated originality record for LittleLoop characters and episodes",
@@ -1217,70 +1281,6 @@
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190426Z_littleloop_1_claude",
-      "title": "Write a calm wind-down episode style guide for LittleLoop",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "lit3: slow pacing, soft colour and gentle music cited as a growing toddler niche. Guide only; no publishing.",
-      "sourceFindings": [
-        "f_20261012T190426Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:04:26Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190426Z_sunverse_2_claude",
-      "title": "Outline one regional-language independent single concept for Sunverse",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "sun4: Spotify India report shows non-film I-Pop and regional-language music growing. Concept only; release needs separate approval.",
-      "sourceFindings": [
-        "f_20261012T190426Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:04:26Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190426Z_sunverse_3_claude",
-      "title": "Research which regional-language indie genres are growing on YouTube in India",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "sun4 covers Spotify only; confirm whether the same languages and genres are rising on YouTube before committing.",
-      "sourceFindings": [
-        "f_20261012T190426Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:04:26Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261012T190426Z_foliocraft_4_claude",
-      "title": "Add a 'shipped project' portfolio block with live link and outcome",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "low",
-      "reason": "fol3: hiring advice favours short shipped-project pages with a live link and outcome. Delivered as a PR; merge needs human approval.",
-      "sourceFindings": [
-        "f_20261012T190426Z_foliocraft_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-12T19:04:26Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
     }

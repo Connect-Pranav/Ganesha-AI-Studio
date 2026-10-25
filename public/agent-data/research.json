@@ -1,6 +1,78 @@
 {
-  "updatedAt": "2026-10-24T02:31:20Z",
+  "updatedAt": "2026-10-25T02:31:12Z",
   "findings": [
+    {
+      "id": "f_20261025T023112Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram reportedly tests a Reels-first iOS feed and a profile Longform tab",
+      "insight": "October trackers report Instagram testing a Reels-first feed on iOS, a Longform profile tab in development and an Edits prompt when uploading Reels. Unconfirmed tests, but they point to more full-screen viewing: LittleLoop should check 9:16 safe zones and a clear first-second hook on every episode.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "(October 19, 2026) Instagram updates, news, and features",
+          "url": "https://socialbee.com/blog/instagram-updates/",
+          "source": "SocialBee",
+          "retrievedAt": "2026-10-25T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-25T02:31:12Z"
+    },
+    {
+      "id": "f_20261025T023112Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "Ask YouTube conversational search is live in the US; Shorts and live watch pages next",
+      "insight": "YouTube's blog (Oct 12) says Ask YouTube, a conversational search tool, is available to US viewers on web, mobile and TV and will soon appear on Shorts and live-stream watch pages. Sunverse should watch whether it surfaces music and reaches India before changing metadata practice.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Official YouTube Blog for Latest YouTube News & Insights",
+          "url": "https://blog.youtube/",
+          "source": "YouTube Official Blog",
+          "retrievedAt": "2026-10-25T02:29:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-25T02:31:12Z"
+    },
+    {
+      "id": "f_20261025T023112Z_foliocraft_3_claude",
+      "brand": "foliocraft",
+      "title": "Relume added a CMS with portfolio collections (Oct 20) and a Publish MCP (Oct 14)",
+      "insight": "Relume's changelog says its new CMS adds blog, portfolio and other collection types with AI-assisted content at no extra cost, a week after a Publish MCP for building sites from AI assistants. Collection-based project entries are becoming a free baseline; Foliocraft should treat structured project lists as core, not premium.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "What's New — Relume AI Website Builder Updates",
+          "url": "https://www.relume.ai/whats-new",
+          "source": "Relume",
+          "retrievedAt": "2026-10-25T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-25T02:31:12Z"
+    },
+    {
+      "id": "f_20261025T023112Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Wix Studio's Aria can now learn an agency's services, pricing and past proposals",
+      "insight": "Wix's updates page (Oct 15) says agencies can teach the Aria assistant their services, pricing, brand guidelines and past proposals via chat or PDF/CSV/DOCX uploads, internal only. Builders are moving to AI that remembers the user's own business context; relevant to any Foliocraft AI copy feature.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "New Releases & Updates",
+          "url": "https://www.wix.com/updates",
+          "source": "Wix",
+          "retrievedAt": "2026-10-25T02:28:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-25T02:31:12Z"
+    },
     {
       "id": "f_20261024T023120Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1182,96 +1254,6 @@
       "agent": "narada_market_intelligence",
       "engine": "gemini",
       "createdAt": "2026-10-13T07:33:06Z"
-    },
-    {
-      "id": "f_20261013T073326Z_sunverse_3",
-      "brand": "sunverse",
-      "title": "Lofi Girl Expands into Lofi House with New 24/7 Radio Format",
-      "insight": "Lofi Girl's introduction of a 24/7 Lofi House radio and character highlights genre diversification in ambient streaming. Sunverse should consider producing Lofi House tracks and launching dedicated continuous live streams to engage lifestyle and study audiences.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "What is Lofi House? Meet Lofi Girl's new 24/7 radio and Lofi Teacher. - Mashable",
-          "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE5sX0lfOW5FM2Y5NFlnM0ItenRkSks4RWRJT0hsYThhMDkzbjRqWjRLbWxXRzZPUXJodEFfS21qX1RSSm9BTmIwNUZzaVI1eGFxdVFOclJtSVlmYTRVaDV6cU1Dby03aXRXUEdNRjFuNlhzUQ?oc=5",
-          "source": "Mashable",
-          "retrievedAt": "2026-10-13T07:33:07Z"
-        },
-        {
-          "title": "Lofi Girl Debuts New Livestream Radio & Character With Lofi House - Bleeding Cool News",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxOU0VjUERtbDh0ajlQQWMxMTNRak0wd3FIbk14SElpbWVoMDVfaHFLYU5BUWtBV3VDM0MwQmg3N0RrTWRjUVhaMU9nYXRhanJQb0JVMGlKVndUQVJmcEtaZC1EdGh0NWdQUmhZVk1KaHNBbkpZdFRzdmNVVmhtX1RkRUcxZm1scDlqX0p3bmFEVG1HTUtXWmtBQ2ZJRkpDelNhb1Nj?oc=5",
-          "source": "Bleeding Cool News",
-          "retrievedAt": "2026-10-13T07:33:07Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-13T07:33:26Z"
-    },
-    {
-      "id": "f_20261013T073326Z_sunverse_4",
-      "brand": "sunverse",
-      "title": "Indian Musicians Reject Traditional Labels for Independent Releases",
-      "insight": "More Indian musicians are actively rejecting conventional record labels for releases. Sunverse can capitalize on this trend by positioning its production house as a creator-first partner, collaborating with indie artists on YouTube distribution and production support without restrictive legacy contracts.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Don’t put a label on me: Why more Indian musicians are rejecting music labels for releases - Mid-Day",
-          "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxNLTlhbEMxMzRNODVTTUJtSnV4elNEWjRUTGxrcV90VHRNZjNfcnpjZktJa3h2NnpoVmp0aG1lT0hCVktnTk5oT25tVVVncG5FNVpsMDhRTnJxc0tGeHZLdGUxUDFLTTlfd2dsS3c0cVFHUW4tUXZIcVRBN29YUUdqM2pSN0tkLUQwZ1NjLXM1Y3hFa1Zid2EwbC1kS2F6R20xMHE4WTZYNjhIaHZlVlVpR1pCWGlkSWd6czViMFhIaEd2VHFfMlcyX2tCX3JBUG9wMFhPd0hoN21WdDEy0gHiAUFVX3lxTE9sSDJzeUczX0Rvd28zYkxiQy00a1Atd2locFlPdDdRMXpNRW1hbjlkakdobUtPMFFTNk1ibUk1TmJqcm5jSDV5cUlCN1g2WHBLMENBclJBMHpWM1l2RjdCT1VGMy1uT1FYQWJWRHl0RmVaaW90R2RvOGhCUXMxUHJFd1hYRGhMYVRCN056ZUdVWjhjeU1rSGRuVkh5RlJnSWtMamwyc3kwUHVCYm4tTllpZ2VsZkE3ei1XMWpMaWptNl95ZmUzc0tUay1JU01CcElpd0RoT0F1OW0yb3BqcmVRclE?oc=5",
-          "source": "Mid-Day",
-          "retrievedAt": "2026-10-13T07:33:07Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-13T07:33:26Z"
-    },
-    {
-      "id": "f_20261013T073418Z_foliocraft_5",
-      "brand": "foliocraft",
-      "title": "AI Website Builder Comparisons Focus on Wix, Squarespace, and Design.com",
-      "insight": "Major 2026 comparisons of AI website builders spotlight Design.com, Wix, and Squarespace. Foliocraft should benchmark its own AI creation workflow against these competitors to identify differentiation opportunities for portfolio creators.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Design.com vs. Wix vs. Squarespace: Comparing AI Website Builders in 2026 - https://tech-insider.org/",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNOHlBS0ZMcW1uX2JjenZIeFFrQnkxNmUwdF9zdFNkNUg1ajN1TlFWZUF5dUUwb1JMYjlMRjhoZVpQY3RsZDFsRE9qTWtqbWNKSUlCTjlJZDc3QkFQWGVkdFNESnQ4bXI4Y1J6SW1GenI5b0taZWJybDhpQlh2ZGVSU1lRWXAtWUZlU2U5UUhCeGluUWlKVVlmbFhKVFY?oc=5",
-          "source": "https://tech-insider.org/",
-          "retrievedAt": "2026-10-13T07:33:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-13T07:34:18Z"
-    },
-    {
-      "id": "f_20261013T073418Z_foliocraft_6",
-      "brand": "foliocraft",
-      "title": "Coverage Highlights 2026 Web Design Trends and Responsive Best Practices",
-      "insight": "Industry outlets are emphasizing 2026 web design trends, inspirations, and responsive best practices. Foliocraft can update its portfolio templates to reflect these contemporary design standards, reinforcing the value of its premium design catalog.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Top Web Design Trends for 2026 - Designmodo",
-          "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE54RHFOT1NzV2JjN3Bta00wS0U4UXRlNzcxb2hZN0FJZVUxcU41Y2o0aUlWZDF6c1BkWlJmc0VjMjhDUUE5WUN4N2dTUzhremNlT3Fn?oc=5",
-          "source": "Designmodo",
-          "retrievedAt": "2026-10-13T07:33:26Z"
-        },
-        {
-          "title": "19 Best Website Design Inspirations in 2026 - Hostinger",
-          "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE9CS3RMV0toOW12RHIwaFZZOEVHazV6WUlLQzNKdEs4bU9XdGdINkhLUlJKWmdRUDJGbXozVE01MmJaYVBxR2VxdUxVbkJWRkJWSU02NldzSndHdU4wbkYyckFSdGRNdmpxSEFCcDhfcVRWSklT?oc=5",
-          "source": "Hostinger",
-          "retrievedAt": "2026-10-13T07:33:26Z"
-        },
-        {
-          "title": "Responsive Web Design: 50 Examples and Best Practices - Designmodo",
-          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1KRzROUlRBSVItS2lBcnE4VkhtTGp6Unc3cnc4TElBakE2WmJGZ0hBSEE4dm04VDREcGVWRHhDUXlncnV1RW15dE5CRlJWdDllZ1RvZ3czZE8zblZ1dzJF?oc=5",
-          "source": "Designmodo",
-          "retrievedAt": "2026-10-13T07:33:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-13T07:34:18Z"
     }
   ]
 }

@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261025T023112Z_1_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — reported Instagram tests of a Reels-first iOS feed and a Longform profile tab (low confidence)."
+    },
+    {
+      "id": "e_20261025T023112Z_2_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 tasks: 9:16 safe-zone/hook QA check and tracking Instagram's feed tests."
+    },
+    {
+      "id": "e_20261025T023112Z_3_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Ask YouTube conversational search live in the US, Shorts watch pages next."
+    },
+    {
+      "id": "e_20261025T023112Z_4_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 research task: check Ask YouTube's music coverage and India availability."
+    },
+    {
+      "id": "e_20261025T023112Z_5_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Relume CMS portfolio collections; Wix Aria learns agency services and pricing."
+    },
+    {
+      "id": "e_20261025T023112Z_6_claude",
+      "at": "2026-10-25T02:31:12Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 code task: spec reusable project collections. Wix Aria task skipped as duplicate of AI style brief."
+    },
+    {
       "id": "e_20261024T023120Z_1_claude",
       "at": "2026-10-24T02:31:20Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: 1 finding — calm, low-stimulation pacing is a growing ask for toddler content."
-    },
-    {
-      "id": "e_20261012T190426Z_2_claude",
-      "at": "2026-10-12T19:04:26Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 finding — Spotify India report shows non-film I-Pop and regional-language music growing."
-    },
-    {
-      "id": "e_20261012T190426Z_3_claude",
-      "at": "2026-10-12T19:04:26Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 finding — design hiring favours shipped work and a few focused case studies."
-    },
-    {
-      "id": "e_20261012T190426Z_4_claude",
-      "at": "2026-10-12T19:04:26Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 1 task: calm wind-down episode style guide."
-    },
-    {
-      "id": "e_20261012T190426Z_5_claude",
-      "at": "2026-10-12T19:04:26Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 tasks: regional-language single concept, YouTube regional genre research."
-    },
-    {
-      "id": "e_20261012T190426Z_6_claude",
-      "at": "2026-10-12T19:04:26Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 tasks: shipped-project block (CODE-SHAKTI), case-study writing prompts."
-    },
-    {
-      "id": "e_20261012T190245Z_1_claude",
-      "at": "2026-10-12T19:02:45Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — Instagram's Reels length guidance and rising pressure to label AI-made kids' video."
     }
   ]
 }
