@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261025T142250Z_1_claude",
+      "at": "2026-10-25T14:22:50Z",
+      "brand": "studio",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA: weekly ops review 2026-W43 (vault#5) — 4 of 6 steps done; AGNI automation proposals await owner approval."
+    },
+    {
       "id": "e_20261025T045046Z_1_gemini",
       "at": "2026-10-25T04:50:46Z",
       "brand": "littleloop",
@@ -890,15 +899,6 @@
       "engine": "claude",
       "kind": "task",
       "text": "Pipeline p_20261012T193219Z_foliocraft ran 5 steps; QA passed; build step awaiting owner approval (Foliocraft repo not yet accessible)."
-    },
-    {
-      "id": "e_20261012T193100Z_1_claude",
-      "at": "2026-10-12T19:31:00Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Pipeline p_20261012T191608Z_sunverse ran 9 steps; gates passed (QA after one fix); release step awaiting owner approval."
     }
   ]
 }
