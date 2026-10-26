@@ -1,6 +1,118 @@
 {
-  "updatedAt": "2026-10-25T02:31:12Z",
+  "updatedAt": "2026-10-26T02:32:11Z",
   "tasks": [
+    {
+      "id": "t_20261026T023211Z_littleloop_1_claude",
+      "title": "Check how Reels display in Instagram for TV and whether kids' Reels appear there",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Instagram for TV now runs on Apple TV too (lit1); display format and kids-content handling on TV are not stated in sources.",
+      "sourceFindings": [
+        "f_20261026T023211Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_littleloop_2_claude",
+      "title": "Draft a parent-and-child co-watch sing-along episode concept for ages 2-5",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Instagram pitches its TV app for watching with family (lit1); a co-viewing format tests that use case. Concept only, no publishing.",
+      "sourceFindings": [
+        "f_20261026T023211Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_sunverse_3_claude",
+      "title": "Draft a fixed weekly Shorts upload calendar for Sunverse",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "YouTube's Shorts bonus pilot rewards consistent uploads (sun1); a steady cadence is useful even before India is eligible. Planning only.",
+      "sourceFindings": [
+        "f_20261026T023211Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_sunverse_4_claude",
+      "title": "Track whether YouTube's Shorts bonus pilot expands to India",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Pilot covers six countries, not India; expansion timing undisclosed (sun1).",
+      "sourceFindings": [
+        "f_20261026T023211Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_sunverse_5_claude",
+      "title": "List the AI music tools Sunverse uses and their commercial-use terms per track",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "India's AI-training licence proposal and pending cases leave rules unsettled (sun2); a per-track tool/terms record reduces risk.",
+      "sourceFindings": [
+        "f_20261026T023211Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_foliocraft_6_claude",
+      "title": "Spec a portfolio SEO health check (indexability, metadata, sitemap) for premium",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Lovable now bundles SEO checks and Search Console (fol1); discoverability is a competing premium feature. Spec first, any deploy needs approval.",
+      "sourceFindings": [
+        "f_20261026T023211Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261026T023211Z_foliocraft_7_claude",
+      "title": "Verify Google's AI Mode official-page and creator-profile tests in Google's own post",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Only a third-party summary reports these tests (fol2); confirm before planning portfolio features around them.",
+      "sourceFindings": [
+        "f_20261026T023211Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-26T02:32:11Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261025T023112Z_littleloop_1_claude",
       "title": "Add a full-screen 9:16 safe-zone and first-second hook check to episode QA",
@@ -1171,118 +1283,6 @@
       "createdAt": "2026-10-13T07:34:43Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T073443Z_foliocraft_6",
-      "title": "Implement 2026 responsive layout updates across portfolio templates",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Current industry design trends prioritize fresh responsive best practices to enhance the perceived value of Foliocraft's premium catalog.",
-      "sourceFindings": [
-        "f_20261013T073418Z_foliocraft_6"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T022735Z_littleloop_1_claude",
-      "title": "Check whether Instagram's Edits AI assistant is available for LittleLoop's account region",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Finding lit1: the Edits assistant is US-only at launch; confirm access before relying on it.",
-      "sourceFindings": [
-        "f_20261013T022735Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T022735Z_littleloop_2_claude",
-      "title": "Draft a monthly Reel review template using real Insights numbers for LittleLoop",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Finding lit1: AI performance analysis is arriving in Edits; a template keeps reviews grounded in recorded numbers with human sign-off.",
-      "sourceFindings": [
-        "f_20261013T022735Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T022735Z_sunverse_3_claude",
-      "title": "Plan alternate versions (acoustic, live, lofi remix) for one Sunverse track",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Finding sun1: Ask Music explicitly indexes remixes, live performances and covers; plan versions and metadata before any release.",
-      "sourceFindings": [
-        "f_20261013T022735Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T022735Z_sunverse_4_claude",
-      "title": "Research how YouTube Music Foundry selects independent artists",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Finding sun2: Foundry offers grants and support, but the selection process is not described in the announcement.",
-      "sourceFindings": [
-        "f_20261013T022735Z_sunverse_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T022735Z_foliocraft_5_claude",
-      "title": "Spec a saved style brief that guides Foliocraft's AI copy suggestions",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Finding fol1: Framer's Skills let users save style instructions for its agent; scope a comparable premium feature.",
-      "sourceFindings": [
-        "f_20261013T022735Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T022735Z_foliocraft_6_claude",
-      "title": "Prototype a reorderable process-steps block for Foliocraft case studies",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Finding fol1: Framer's CMS List field supports repeating, reorderable items; a steps block fits case-study pages. PR only, no merge or deploy.",
-      "sourceFindings": [
-        "f_20261013T022735Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T02:27:35Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
     }
   ]
 }

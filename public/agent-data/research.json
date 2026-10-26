@@ -1,6 +1,120 @@
 {
-  "updatedAt": "2026-10-25T04:53:57Z",
+  "updatedAt": "2026-10-26T02:32:11Z",
   "findings": [
+    {
+      "id": "f_20261026T023211Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram for TV reached Apple TV around Oct 23, adding Reels and live video on big screens",
+      "insight": "Reels now also play on Apple TV, after Fire TV, Google TV and Samsung TVs, and Instagram pitches it for watching with family. LittleLoop shorts may be co-viewed by parent and child on a TV, so test how episodes read at TV distance and try formats a parent and child enjoy together.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Instagram Launches Apple TV App With Reels and More",
+          "url": "https://www.macrumors.com/2026/10/25/instagram-launches-apple-tv-app/",
+          "source": "MacRumors",
+          "retrievedAt": "2026-10-26T02:25:00Z"
+        },
+        {
+          "title": "Instagram Reels Is Moving Onto Apple TV",
+          "url": "https://wersm.com/instagram-reels-is-moving-onto-apple-tv/",
+          "source": "WeRSM",
+          "retrievedAt": "2026-10-26T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-26T02:32:11Z"
+    },
+    {
+      "id": "f_20261026T023211Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "YouTube pilots an invite-only Shorts bonus tied to consistent uploads; India not included",
+      "insight": "Selected YPP creators in the US, UK, Germany, Brazil, Japan and South Korea get a minimum payment for uploading a set number of Shorts per month plus a bonus on valid engaged views. India is not in the pilot, so Sunverse cannot join now, but it signals YouTube rewards a steady Shorts cadence.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Consistency is key: A YouTube Shorts bonus program rewards creators who upload at regular intervals",
+          "url": "https://www.tubefilter.com/2026/10/23/youtube-shorts-pilot-program-consistency-bonus-test/",
+          "source": "Tubefilter",
+          "retrievedAt": "2026-10-26T02:27:00Z"
+        },
+        {
+          "title": "YouTube Pilots Monthly Shorts Bonus Program Tied to Upload Consistency and Views",
+          "url": "https://www.netinfluencer.com/youtube-pilots-monthly-shorts-bonus-program-tied-to-upload-consistency-and-views/",
+          "source": "Net Influencer",
+          "retrievedAt": "2026-10-26T02:28:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-26T02:32:11Z"
+    },
+    {
+      "id": "f_20261026T023211Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "India's proposed blanket licence for AI training on music is still not law; courts undecided",
+      "insight": "A DPIIT working paper proposes a mandatory 'one nation, one licence' for AI training with royalties on commercialisation, but Part II has not appeared and ANI v OpenAI is pending. Rules for AI-assisted music may shift, so Sunverse should keep a record of which AI tools and terms each track used.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Is training AI on song lyrics fair use? US court weighs question as India proposes mandatory licensing",
+          "url": "https://www.medianama.com/2026/10/223-training-ai-song-us-court-india-licence-fee/",
+          "source": "MediaNama",
+          "retrievedAt": "2026-10-26T02:29:00Z"
+        },
+        {
+          "title": "From music streaming to AI training: What India's IP data tells us about the next copyright debate",
+          "url": "https://www.medianama.com/2026/10/223-music-streaming-ai-training-india-ip-data-copyright/",
+          "source": "MediaNama",
+          "retrievedAt": "2026-10-26T02:29:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-26T02:32:11Z"
+    },
+    {
+      "id": "f_20261026T023211Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Lovable added growth tools: SEO fixes, Search Console, and ad campaigns gated by approval",
+      "insight": "Since Oct 14 Lovable checks indexability, metadata, sitemap and robots.txt, connects Search Console and drafts ads that only go live after user approval. Builders now compete on getting sites found, not just built: Foliocraft could offer a portfolio SEO health check, keeping any paid promotion behind explicit approval.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "From building your app to growing it: Lovable now helps you find customers",
+          "url": "https://lovable.dev/blog/introducing-growth-tools",
+          "source": "Lovable",
+          "retrievedAt": "2026-10-26T02:30:00Z"
+        },
+        {
+          "title": "Growth tools",
+          "url": "https://docs.lovable.dev/features/growth-tools",
+          "source": "Lovable Docs",
+          "retrievedAt": "2026-10-26T02:30:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-26T02:32:11Z"
+    },
+    {
+      "id": "f_20261026T023211Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Google reportedly tests official pages atop AI Mode answers and clickable creator names",
+      "insight": "An agency summary of Google's Oct 15 post says AI Mode is testing one or two official pages at the top of answers and creator names linking to Search profiles. If confirmed, a person's own portfolio could become their 'official page'; verify in Google's post before building for it.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Google October 2026 AI Mode Links Update: What Changed and What to Do",
+          "url": "https://eightysix.digital/blog/google-october-2026-ai-mode-links-update-what-changed-and-what-to-do/",
+          "source": "EightySix Digital",
+          "retrievedAt": "2026-10-26T02:30:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-26T02:32:11Z"
+    },
     {
       "id": "f_20261025T045046Z_littleloop_1",
       "brand": "littleloop",
@@ -1140,114 +1254,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-15T02:29:57Z"
-    },
-    {
-      "id": "f_20261015T022957Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Artist site guide stresses multiple photos per piece and a clear enquire/buy path",
-      "insight": "An Oct 8 guide ranks artist site builders on presentation, selling, upkeep and cost, listing multi-photo artwork pages, artwork details and a clear way to enquire or buy as essentials. The publisher sells its own builder, so treat as a signal for a Foliocraft artist template, not proof.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "10 Best Website Builders for Artists in 2026",
-          "url": "https://www.singulart.com/blog/en/2026/10/08/10-best-website-builders-for-artists-in-2026/",
-          "source": "Singulart",
-          "retrievedAt": "2026-10-15T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-15T02:29:57Z"
-    },
-    {
-      "id": "f_20261014T022756Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram swapped its 'AI creator' tag for an 'AI-generated profile' label",
-      "insight": "Profiles built around an AI-generated person should carry the new label; unlabeled ones detected by Instagram can lose Reels/Explore recommendation reach, while labelling itself does not cut reach. Coverage of animated characters is not spelled out, so LittleLoop should decide its profile disclosure deliberately rather than risk being flagged.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Instagram introduces new AI-generated profile label",
-          "url": "https://routenote.com/blog/instagram-ai-generated-profile-label/",
-          "source": "RouteNote",
-          "retrievedAt": "2026-10-14T02:24:00Z"
-        },
-        {
-          "title": "Is it AI? Instagram gets crystal clear with a reworked AI-generated profile label",
-          "url": "https://www.androidcentral.com/apps-software/meta/is-it-ai-instagram-gets-crystal-clear-with-a-reworked-ai-generated-profile-label",
-          "source": "Android Central",
-          "retrievedAt": "2026-10-14T02:24:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-14T02:27:56Z"
-    },
-    {
-      "id": "f_20261014T022756Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "YouTube will add speaking-voice matching to likeness detection later in 2026",
-      "insight": "Announced at Made on YouTube (Sept 23): voice detection joins face detection, with mobile enrolment; flagged videos still need review and India timing is unannounced. It is unclear whether singing-voice clones without a face will be caught, so Sunverse should plan to enrol once available and keep manual privacy reports as fallback.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "YouTube expands likeness detection to voices as Indian courts target AI voice clones",
-          "url": "https://www.medianama.com/2026/09/223-youtube-likeness-detection-voices-clones/",
-          "source": "MediaNama",
-          "retrievedAt": "2026-10-14T02:25:00Z"
-        },
-        {
-          "title": "Innovation for the YouTube Era: What's new for viewers and creators",
-          "url": "https://blog.youtube/news-and-events/innovation-youtube-era-made-on-viewers-creators/",
-          "source": "YouTube Official Blog",
-          "retrievedAt": "2026-10-14T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-14T02:27:56Z"
-    },
-    {
-      "id": "f_20261014T022756Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "YouTube Shorts can now be grouped into seasons and episodes, including on TV",
-      "insight": "Since Sept 23 creators can organise Shorts into series with custom thumbnails and sequential playback across web, mobile and TV. Sunverse could package recurring Shorts (e.g. behind-the-song or lyric-moment episodes) as a series so viewers binge in order instead of seeing isolated clips.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "YouTube Embraces Microdramas with Features for Episodic Shorts",
-          "url": "https://www.tvtechnology.com/platform/streaming/youtube-embraces-microdramas-with-features-for-episodic-shorts",
-          "source": "TV Technology",
-          "retrievedAt": "2026-10-14T02:26:00Z"
-        },
-        {
-          "title": "Innovation for the YouTube Era: What's new for viewers and creators",
-          "url": "https://blog.youtube/news-and-events/innovation-youtube-era-made-on-viewers-creators/",
-          "source": "YouTube Official Blog",
-          "retrievedAt": "2026-10-14T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-14T02:27:56Z"
-    },
-    {
-      "id": "f_20261014T022756Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Webflow added agent-driven translation to Localize (Sept 29)",
-      "insight": "A major builder now uses AI agents to manage site-wide translation, signalling multilingual sites are becoming a standard builder feature. Foliocraft could test a second-language portfolio version as a premium feature for job seekers applying across markets.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Latest updates and features",
-          "url": "https://webflow.com/updates",
-          "source": "Webflow",
-          "retrievedAt": "2026-10-14T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-14T02:27:56Z"
     }
   ]
 }
