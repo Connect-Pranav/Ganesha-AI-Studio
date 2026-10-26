@@ -13,6 +13,7 @@ import { NotificationCenter } from './components/NotificationCenter';
 import { ChatDock } from './components/ChatDock';
 import { GrowthView } from './components/growth/GrowthView';
 import { BrainView } from './components/BrainView';
+import { NeonHud, SkinToggle } from './components/NeonHud';
 import { CboView } from './components/cbo/CboView';
 import { TaskManager } from './components/cbo/TaskManager';
 import { FinanceView } from './components/cbo/FinanceView';
@@ -205,9 +206,11 @@ export default function App() {
                 <EnginePill />
               </button>
               <NotificationCenter data={load.status === 'ready' ? load.data : null} />
+              <SkinToggle />
             </>
           }
         />
+        <NeonHud onOpen={navigate} />
         <SubTabs view={view} onNavigate={navigate} />
         <PageTitle view={view} onNavigate={navigate} />
 

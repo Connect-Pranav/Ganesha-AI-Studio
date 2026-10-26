@@ -251,3 +251,27 @@ test('SAARTHI + GANESHA chat: memory/skills in the prompt, MISSION line plans a 
   const v = await chat.send({ GEMINI_API_KEY: 'g' }, db, 'littleloop_vyasa_scriptwriter', { message: 'x' }, { fetch: async () => geminiRes('ok\nMISSION: {"goal":"some long goal here","brand":"littleloop"}'), sleep: noSleep });
   assert.equal(v.action, null);
 });
+
+test('HUD: level/XP and attention stars are counted from real rows only', async () => {
+  const { hudStats, levelFor } = await import('../brain/hud.mjs');
+  assert.deepEqual(levelFor(0), { level: 1, xpInLevel: 0, xpForNext: 300 });
+  assert.equal(levelFor(300).level, 2);
+  const empty = await hudStats(db);
+  assert.equal(empty.xp, 0);
+  assert.equal(empty.stars, 0);
+  const env = { GEMINI_API_KEY: 'g' };
+  const plan = { thinking: 't', criteria: [], steps: [{ agent: 'narada_market_intelligence', title: 'Research', instruction: 'Find trends' }] };
+  const deps = { fetch: fakeAi({ plan }), sleep: noSleep };
+  const a = await missions.createMission(env, db, { goal: 'Studio trend scan one', brand: 'studio' }, deps);
+  await missions.createMission(env, db, { goal: 'LittleLoop trend scan', brand: 'littleloop' }, deps);
+  await missions.decideMission(db, a.id, { decision: 'approve' });
+  await missions.advance(env, db, a.id, deps);
+  await missions.advance(env, db, a.id, deps);
+  const h = await hudStats(db);
+  assert.equal(h.counts.missions, 1);
+  assert.equal(h.counts.steps, 1);
+  assert.equal(h.xp, 250 + 40);
+  assert.equal(h.attention.missionApprovals, 1, 'the second mission waits for the owner');
+  assert.equal(h.stars, 1);
+  assert.equal(h.brands.littleloop.awaiting, 1);
+});

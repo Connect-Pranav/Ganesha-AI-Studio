@@ -5,6 +5,9 @@ import { StudioProvider } from './services/StudioContext';
 import './styles.css';
 import { startAutoUpdate } from './services/autoUpdate';
 import { startPremiumFx } from './services/premiumFx';
+import { applySkin } from './services/skin';
+
+applySkin(); // before the first paint, so the chosen theme never flashes
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

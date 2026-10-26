@@ -5,6 +5,7 @@ import * as skills from './skills.mjs';
 import * as missions from './missions.mjs';
 import { connectorStatus, testConnector, TARGETS } from './deliver.mjs';
 import { routerStatus } from './router.mjs';
+import { hudStats } from './hud.mjs';
 
 /** Returns a Response, or null when the path is not a Brain route. `sse` streams long work with keepalives. */
 export async function brainRoute({ path, method, seg, env, db, ctx, readBody, sse }) {
@@ -25,6 +26,8 @@ export async function brainRoute({ path, method, seg, env, db, ctx, readBody, ss
       targets: Object.entries(TARGETS).map(([id, t]) => ({ id, name: t.name })),
     });
   }
+
+  if (path === '/api/brain/hud' && method === 'GET') return json(await hudStats(db));
 
   /* memory */
   if (path === '/api/brain/memory' && method === 'GET') return json({ memory: await memory.listMemory(db) });
