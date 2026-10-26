@@ -61,6 +61,7 @@ export const SECTIONS: Section[] = [
     groups: [
       {
         pages: [
+          { id: 'brain', label: 'Brain', hint: 'GANESHA Brain: give a goal — it thinks, plans, runs the agents step by step, checks the work, remembers lessons and delivers.' },
           { id: 'cbo', label: 'Saarthi', hint: 'SAARTHI, your Chief Business Officer: ask anything and hand out work.' },
           { id: 'agents', label: 'Team', hint: 'Every agent, what it does and how its runs went.' },
           { id: 'pipelines', label: 'Pipelines', hint: 'Work in progress, step by step.' },

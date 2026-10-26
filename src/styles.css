@@ -1849,3 +1849,49 @@ select option { background: #0e1540; color: var(--ink); }
 .mc-pack ul, .mc-pack ol { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 .mc-pack p { margin: 0; }
 .mc-tags { font-size: 12px; color: var(--blue); }
+
+/* ---------- Ganesha Brain ---------- */
+.br { display: flex; flex-direction: column; gap: 16px; }
+.br-flow { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 12px 14px; border-radius: var(--radius); border: 1px solid var(--line); background: linear-gradient(90deg, rgba(109, 77, 255, 0.16), rgba(34, 211, 238, 0.08)); font-size: 13px; }
+.br-flow span { padding: 4px 10px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line-2); white-space: nowrap; }
+.br-flow i { font-style: normal; color: var(--ink-3); }
+.br-stats { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-2); }
+.br-stats b { color: var(--ink); }
+.br-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: 16px; align-items: start; }
+@media (max-width: 900px) { .br-grid { grid-template-columns: 1fr; } }
+.br-deliver { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; font-size: 13px; }
+.br-deliver label { flex: 0 0 auto; display: inline-flex; flex-direction: row; align-items: center; gap: 5px; }
+.br-off { opacity: 0.55; }
+.br-list { display: flex; flex-direction: column; gap: 8px; margin-top: 16px; max-height: 520px; overflow-y: auto; }
+.br-item { text-align: left; display: flex; flex-direction: column; gap: 4px; align-items: flex-start; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.br-item.active, .br-item:hover { border-color: var(--violet, #7c5cff); }
+.br-item-goal { font-size: 13.5px; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.br-detail { display: flex; flex-direction: column; gap: 16px; font-size: 13.5px; }
+.br-detail h4 { font-size: 14px; margin-bottom: 6px; }
+.br-title { display: flex; gap: 8px; align-items: baseline; font-weight: 600; overflow-wrap: anywhere; }
+.br-criteria { list-style: none; display: flex; flex-direction: column; gap: 4px; margin-top: 8px; padding: 0; }
+.br-steps { display: flex; flex-direction: column; gap: 10px; padding-left: 0; list-style: none; }
+.br-step { border: 1px solid var(--line); border-left: 3px solid var(--line-2); border-radius: 12px; padding: 10px 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.br-step.running { border-left-color: var(--cyan, #22d3ee); box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.25); }
+.br-step.done { border-left-color: var(--ok); }
+.br-step.failed { border-left-color: var(--err); }
+.br-step-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.br-step details summary { cursor: pointer; font-size: 12.5px; color: var(--ink-2); }
+.br-check { font-size: 12.5px; color: var(--ok); }
+.br-check.bad { color: var(--warn); }
+.br-approve { border: 1px solid var(--line-2); border-radius: 12px; padding: 12px; background: rgba(109, 77, 255, 0.08); display: flex; flex-direction: column; gap: 10px; }
+.br-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.br-result { border-radius: 12px; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); }
+.br-inline { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.br-inline input { flex: 1 1 260px; }
+.br-filter { margin: 12px 0; }
+.br-mem { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.br-mem li { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.br-mem li .cx-sub { grid-column: 2; }
+.br-mem-fact { overflow-wrap: anywhere; }
+.br-mem-act { grid-column: 3; grid-row: 1 / span 2; display: flex; gap: 6px; }
+@media (max-width: 600px) { .br-mem li { grid-template-columns: 1fr; } .br-mem li .cx-sub, .br-mem-act { grid-column: 1; grid-row: auto; } }
+.br-skills { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 12px; }
+.br-skill { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
+.br-skill code { font-size: 12px; color: var(--cyan, #22d3ee); }
+.br-skill-form { margin: 12px 0; }

@@ -15,6 +15,8 @@ import { dailyReport, overview as growthOverview } from './growth/analytics.mjs'
 import { runBlueprint } from './growth/autopilot.mjs';
 import { GROWTH_BRANDS } from './growth/brands.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
+import { brandOf, extractRemember, memoryBlock, memoryFor, saveFacts } from './brain/memory.mjs';
+import { catalog, parseSkillCommand, skillBlock, useSkill } from './brain/skills.mjs';
 
 const MAX_MSG = 4000;
 const HISTORY = 12;
@@ -164,8 +166,21 @@ export async function send(env, db, agentId, { message, research = false }, deps
     const camps = (await db.prepare('SELECT id, brand, name, objective, status FROM growth_campaigns ORDER BY updated_at DESC LIMIT 12').all()).results.map((c) => `${c.id} · ${c.brand} · ${c.name} · ${c.objective} · ${c.status}`).join('\n');
     system = mushakSystem(await liveFacts(env, db, a), camps);
   } else system = systemFor(a, await liveFacts(env, db, a));
+  // Ganesha Brain: long-term memory, the skills catalog, and a skill the owner invoked with /<skill-id>.
+  const brand = a.id === MUSHAK.id ? 'studio' : brandOf(a);
+  const { skill, rest } = await parseSkillCommand(db, message.trim());
+  if (skill) await useSkill(db, skill.id);
+  const skills = await catalog(db, brand);
+  system = [
+    system,
+    memoryBlock(await memoryFor(db, { agentId: a.id, brand: brand === 'studio' ? null : brand }), { defaultScope: brand }),
+    skills ? `SKILLS the owner can call with /<id> (suggest one when it fits):\n${skills}` : '',
+    skill ? skillBlock(skill) : '',
+  ]
+    .filter(Boolean)
+    .join('\n\n');
   const who = a.id === MUSHAK.id ? 'Owner' : 'Owner (prayer)';
-  const transcript = [...past.map((m) => `${m.role === 'user' ? who : a.name}: ${m.content}`), `${who}: ${message.trim()}`].join('\n\n');
+  const transcript = [...past.map((m) => `${m.role === 'user' ? who : a.name}: ${m.content}`), `${who}: ${skill ? `[using skill /${skill.id}] ${rest}` : message.trim()}`].join('\n\n');
 
   // The agent's own engine first; free Gemini as the fallback so every agent can always answer in chat.
   const engines = a.id === MUSHAK.id ? ['gemini'] : [...new Set([...(await enginesFor(db, env, a)), 'gemini'])];
@@ -192,7 +207,9 @@ export async function send(env, db, agentId, { message, research = false }, deps
     await db.prepare("DELETE FROM agent_chat WHERE agent_id = ? AND role = 'user' AND id = (SELECT id FROM agent_chat WHERE agent_id = ? ORDER BY created_at DESC LIMIT 1)").bind(agentId, agentId).run();
     throw new HttpError(409, `${a.name} could not answer — no working AI engine. ${errors.join(' | ') || 'Set a key in Settings → API keys, or change this agent’s engine.'}`);
   }
-  let { text, action } = a.id === MUSHAK.id ? { text: out.text.trim(), action: null } : splitAction(out.text, a);
+  const mem = extractRemember(out.text, brand);
+  const remembered = await saveFacts(db, mem.facts, { source: 'chat', agentId: a.id });
+  let { text, action } = a.id === MUSHAK.id ? { text: mem.text, action: null } : splitAction(mem.text, a);
   let blueprint = null;
   if (a.id === MUSHAK.id) {
     const m = /\n?\s*BLUEPRINT:\s*(\{[\s\S]*\})\s*$/.exec(text);
@@ -208,12 +225,13 @@ export async function send(env, db, agentId, { message, research = false }, deps
       action = blueprint;
     }
   }
+  if (remembered.length) text = `${text}\n\n_🧠 Yaad rakha: ${remembered.map((f) => f.fact).join(' · ')}_`;
   const reply = { id: newId('am'), agent_id: agentId, role: 'assistant', content: (text || '…').slice(0, 20000), engine: out.provider, model: out.model, created_at: nowIso() };
   await db
     .prepare('INSERT INTO agent_chat (id, agent_id, role, content, engine, model, action_json, sources_json, created_at) VALUES (?,?,?,?,?,?,?,?,?)')
     .bind(reply.id, agentId, 'assistant', reply.content, reply.engine, reply.model, action ? JSON.stringify(action) : null, JSON.stringify(out.sources ?? []), reply.created_at)
     .run();
-  return { ...reply, action, blueprint, sources: out.sources ?? [] };
+  return { ...reply, action, blueprint, sources: out.sources ?? [], remembered, skill: skill?.id ?? null };
 }
 
 export const canResearch = (id) => RESEARCHERS.has(id);

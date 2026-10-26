@@ -16,8 +16,17 @@ export const SECRET_NAMES = {
   IG_ACCESS_TOKEN: 'Optional — leave empty. Only for a manually generated token instead of Connect Instagram',
   YT_CLIENT_ID: 'Google OAuth client ID (Web application) — Sunverse watch time via YouTube Analytics',
   YT_CLIENT_SECRET: 'Google OAuth client secret — same OAuth client',
+  GROQ_API_KEY: 'Groq API key (free tier, console.groq.com) — fast second free engine for chat, missions and checks',
+  GROQ_MODEL: 'Groq model ID (optional, default llama-3.3-70b-versatile)',
+  GITHUB_TOKEN: 'GitHub fine-grained token (free) with Contents read/write on the vault repo — Brain saves mission results there',
+  GITHUB_VAULT_REPO: 'Vault repo for mission results (optional, default Connect-Pranav/Ganesha-AI-Vault)',
+  DRIVE_WEBHOOK_URL: 'Google Drive: your free Apps Script web-app URL (see docs/BRAIN.md) — Brain saves mission results to Drive',
+  DRIVE_WEBHOOK_SECRET: 'Google Drive: shared secret you also put in the Apps Script (optional but recommended)',
+  NOTION_TOKEN: 'Notion internal integration secret (free) — Brain writes mission results as pages',
+  NOTION_PAGE_ID: 'Notion parent page ID shared with the integration (32 hex characters from the page link)',
+  SLACK_WEBHOOK_URL: 'Slack incoming webhook URL (free) — mission summaries and approval reminders',
 };
-const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID', 'YT_CLIENT_ID']);
+const NOT_SECRET = new Set(['OPENAI_MODEL', 'OPENAI_MAX_OUTPUT_TOKENS', 'OPENAI_DAILY_REQUEST_LIMIT', 'IG_APP_ID', 'YT_CLIENT_ID', 'GROQ_MODEL', 'GITHUB_VAULT_REPO', 'NOTION_PAGE_ID']);
 // Obvious placeholders are refused so a working key is never replaced by "YOUR_KEY_HERE" or "sk-...".
 const PLACEHOLDER = /^(your|xxx+|placeholder|example|changeme|null|undefined)\b|<[^>]*>|\.{3}|\*{3}|YOUR_|_HERE$/i;
 const intIn = (min, max) => (v) => (/^\d+$/.test(v) && Number(v) >= min && Number(v) <= max ? null : `must be a whole number ${min}–${max}`);
@@ -30,6 +39,14 @@ const VALIDATE = {
   IG_APP_SECRET: (v) => (/^[a-f0-9]{32}$/i.test(v) ? null : 'does not look like an Instagram app secret (32 letters/numbers, no spaces)'),
   YT_CLIENT_ID: (v) => (/^[0-9]+-[a-z0-9]+\.apps\.googleusercontent\.com$/.test(v) ? null : 'must look like 1234-abc.apps.googleusercontent.com'),
   YT_CLIENT_SECRET: (v) => (/^[A-Za-z0-9_-]{20,64}$/.test(v) ? null : 'does not look like a Google OAuth client secret (no spaces)'),
+  GROQ_API_KEY: (v) => (/^gsk_[A-Za-z0-9]{20,}$/.test(v) ? null : 'does not look like a Groq API key (starts with "gsk_", no spaces)'),
+  GROQ_MODEL: (v) => (/^[A-Za-z0-9][A-Za-z0-9._:\/-]{1,79}$/.test(v) ? null : 'must be a Groq model ID such as llama-3.3-70b-versatile'),
+  GITHUB_TOKEN: (v) => (/^(github_pat_|ghp_)[A-Za-z0-9_]{20,}$/.test(v) ? null : 'does not look like a GitHub token (starts with "github_pat_" or "ghp_")'),
+  GITHUB_VAULT_REPO: (v) => (/^[A-Za-z0-9-]+\/[A-Za-z0-9._-]+$/.test(v) ? null : 'must be owner/repo'),
+  DRIVE_WEBHOOK_URL: (v) => (/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(v) ? null : 'must be an Apps Script web-app URL ending in /exec'),
+  NOTION_TOKEN: (v) => (/^(ntn_|secret_)[A-Za-z0-9]{20,}$/.test(v) ? null : 'does not look like a Notion integration secret (starts with "ntn_" or "secret_")'),
+  NOTION_PAGE_ID: (v) => (/^[a-f0-9]{32}$/i.test(v.replace(/-/g, '')) ? null : 'must be the 32-character page ID from the Notion page link'),
+  SLACK_WEBHOOK_URL: (v) => (/^https:\/\/hooks\.slack\.com\/services\/[A-Za-z0-9/_-]+$/.test(v) ? null : 'must be a Slack incoming webhook URL (https://hooks.slack.com/services/...)'),
   IG_ACCESS_TOKEN: (v) => (/^[A-Za-z0-9_.|-]{40,}$/.test(v) ? null : 'does not look like an Instagram access token (long, no spaces)'),
 };
 const b64 = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf)));

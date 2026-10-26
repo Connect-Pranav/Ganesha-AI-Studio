@@ -1,17 +1,22 @@
-// Provider registry: Anthropic Messages API + Gemini generateContent + OpenAI Responses API (worker/openai.mjs).
+// Provider registry: Anthropic Messages API + Gemini generateContent + Groq (free tier, OpenAI-compatible
+// chat completions) + OpenAI Responses API (worker/openai.mjs).
 // Server-side only. Keys come from Worker secrets and are never logged or returned.
 // Every call is recorded in provider_calls (model, tokens, latency, outcome) — never prompt text.
 import { newId, nowIso } from './util.mjs';
 import { generate as openaiGenerate, openaiConfig, testConnection as openaiTest } from './openai.mjs';
 
-export const PROVIDERS = ['claude', 'gemini', 'openai'];
+export const PROVIDERS = ['claude', 'gemini', 'groq', 'openai'];
 // Providers that may be added automatically when ALLOW_PROVIDER_FALLBACK=true. OpenAI is paid per
 // request, so it is only used where the owner (or an agent's registry entry) names it explicitly.
-export const AUTO_FALLBACK_PROVIDERS = ['claude', 'gemini'];
+export const AUTO_FALLBACK_PROVIDERS = ['claude', 'gemini', 'groq'];
+/** Free-tier engines, in the order the studio tries them when nothing else is asked for. */
+export const FREE_PROVIDERS = ['gemini', 'groq'];
 
 const DEFAULTS = {
   claude: { model: 'claude-sonnet-5-5', timeoutMs: 120_000 },
   gemini: { model: 'gemini-3.8-flash', timeoutMs: 90_000 },
+  // Groq free tier (console.groq.com). Model is configurable because Groq rotates its free models.
+  groq: { model: 'llama-3.3-70b-versatile', timeoutMs: 60_000 },
 };
 const MAX_RETRIES = 2; // 3 attempts total
 const RETRYABLE = new Set([408, 409, 425, 429, 500, 502, 503, 504, 529]);
@@ -36,6 +41,15 @@ export function providerConfig(env, provider) {
       price: parsePrice(env.GEMINI_PRICE_PER_MTOK),
     };
   }
+  if (provider === 'groq') {
+    return {
+      provider,
+      configured: Boolean(env.GROQ_API_KEY),
+      model: (env.GROQ_MODEL || DEFAULTS.groq.model).trim(),
+      secretName: 'GROQ_API_KEY',
+      price: parsePrice(env.GROQ_PRICE_PER_MTOK),
+    };
+  }
   if (provider === 'openai') return openaiConfig(env);
   throw new Error(`Unknown provider "${provider}"`);
 }
@@ -57,7 +71,7 @@ export class ProviderError extends Error {
 
 const redact = (text, env) => {
   let t = String(text ?? '');
-  for (const k of [env.ANTHROPIC_API_KEY, env.GEMINI_API_KEY, env.OPENAI_API_KEY]) if (k) t = t.split(k).join('[redacted]');
+  for (const k of [env.ANTHROPIC_API_KEY, env.GEMINI_API_KEY, env.OPENAI_API_KEY, env.GROQ_API_KEY]) if (k) t = t.split(k).join('[redacted]');
   return t.slice(0, 500);
 };
 
@@ -86,6 +100,33 @@ function buildRequest(env, cfg, { system, prompt, maxTokens, json }) {
           text,
           stop: body.stop_reason,
           usage: { input: body.usage?.input_tokens ?? null, output: body.usage?.output_tokens ?? null },
+        };
+      },
+    };
+  }
+  if (cfg.provider === 'groq') {
+    return {
+      url: 'https://api.groq.com/openai/v1/chat/completions',
+      init: {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', authorization: `Bearer ${env.GROQ_API_KEY}` },
+        body: JSON.stringify({
+          model: cfg.model,
+          max_tokens: maxTokens,
+          temperature: 0.5,
+          messages: [
+            { role: 'system', content: json ? `${system}\n\nRespond with one JSON object only. No prose, no code fences.` : system },
+            { role: 'user', content: prompt },
+          ],
+          ...(json ? { response_format: { type: 'json_object' } } : {}),
+        }),
+      },
+      parse(body) {
+        const c = body.choices?.[0];
+        return {
+          text: c?.message?.content ?? '',
+          stop: c?.finish_reason ?? null,
+          usage: { input: body.usage?.prompt_tokens ?? null, output: body.usage?.completion_tokens ?? null },
         };
       },
     };

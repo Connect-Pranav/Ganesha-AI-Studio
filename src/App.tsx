@@ -12,6 +12,7 @@ import { BrandWorkspace } from './components/BrandWorkspace';
 import { NotificationCenter } from './components/NotificationCenter';
 import { ChatDock } from './components/ChatDock';
 import { GrowthView } from './components/growth/GrowthView';
+import { BrainView } from './components/BrainView';
 import { CboView } from './components/cbo/CboView';
 import { TaskManager } from './components/cbo/TaskManager';
 import { FinanceView } from './components/cbo/FinanceView';
@@ -25,7 +26,7 @@ import { loadDashboard } from './services/dashboardService';
 import { deriveAiStatus } from './services/aiStatusService';
 import type { AiStatus, DashboardData, ProductId, View } from './types';
 
-const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection', 'settings', 'growth'];
+const VIEWS: View[] = ['universe', 'overview', 'cbo', 'tasks', 'finance', 'subscriptions', 'pipelines', 'analytics', 'studio', 'voices', 'characters', 'littleloop', 'sunverse', 'foliocraft', 'agents', 'connection', 'settings', 'growth', 'brain'];
 const PRODUCT_VIEWS: View[] = ['littleloop', 'sunverse', 'foliocraft'];
 
 function viewFromHash(): View {
@@ -169,6 +170,8 @@ export default function App() {
         <PipelinesView {...common} />
       ) : view === 'growth' ? (
         <GrowthView />
+      ) : view === 'brain' ? (
+        <BrainView />
       ) : view === 'settings' ? (
         <SettingsView />
       ) : view === 'connection' ? (

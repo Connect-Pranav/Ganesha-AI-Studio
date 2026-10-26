@@ -365,7 +365,7 @@ test('http: create workflow with Idempotency-Key, read it back, provider status 
   const g = await (await worker.fetch(req(`/api/workflows/${id}`, { headers }), env, ctx)).json();
   assert.equal(g.tasks.length, 3);
   const p = await (await worker.fetch(req('/api/providers', { headers }), env, ctx)).json();
-  assert.deepEqual(p.providers.map((x) => [x.provider, x.state]), [['claude', 'not_configured'], ['gemini', 'not_configured'], ['openai', 'not_configured']]);
+  assert.deepEqual(p.providers.map((x) => [x.provider, x.state]), [['claude', 'not_configured'], ['gemini', 'not_configured'], ['groq', 'not_configured'], ['openai', 'not_configured']]);
   const agents = await (await worker.fetch(req('/api/agents', { headers }), env, ctx)).json();
   assert.equal(agents.count, 31);
 });

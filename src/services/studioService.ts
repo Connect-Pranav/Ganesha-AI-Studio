@@ -9,6 +9,7 @@ export interface Health {
   db: boolean;
   adminTokenSet: boolean;
   geminiKeySet?: boolean;
+  groqKeySet?: boolean;
   claudeKeySet?: boolean;
   youtubeKeySet?: boolean;
   primaryEngine?: string | null;

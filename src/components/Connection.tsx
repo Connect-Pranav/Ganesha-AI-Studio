@@ -339,7 +339,7 @@ export function useEngineOverall(): EngineView & { dot: 'connected' | 'error' | 
     if (st.includes('key_set_untested')) return { label: 'Key set · untested', tone: 'warn', detail: 'No request yet.', dot: 'disconnected' };
     return { label: 'Not configured', tone: 'muted', detail: 'No AI key on the Worker.', dot: 'not_configured' };
   }
-  const anyKey = health.geminiKeySet || health.claudeKeySet;
+  const anyKey = health.geminiKeySet || health.groqKeySet || health.claudeKeySet;
   return anyKey
     ? { label: 'Key set', tone: 'muted', detail: 'Unlock to see whether real requests succeed.', dot: 'not_configured' }
     : { label: 'Not configured', tone: 'muted', detail: 'No AI key on the Worker.', dot: 'not_configured' };

@@ -1,8 +1,8 @@
 export type ProductId = 'littleloop' | 'sunverse' | 'foliocraft';
 export type BrandId = ProductId | 'studio';
 export type AgentId = 'ganesha' | 'narada' | 'code-shakti';
-export type View = 'universe' | 'overview' | 'cbo' | 'tasks' | 'finance' | 'subscriptions' | 'pipelines' | 'analytics' | 'studio' | 'voices' | 'characters' | ProductId | 'agents' | 'connection' | 'settings' | 'growth';
-export type EngineId = 'claude' | 'gemini' | 'openai';
+export type View = 'universe' | 'overview' | 'cbo' | 'tasks' | 'finance' | 'subscriptions' | 'pipelines' | 'analytics' | 'studio' | 'voices' | 'characters' | ProductId | 'agents' | 'connection' | 'settings' | 'growth' | 'brain';
+export type EngineId = 'claude' | 'gemini' | 'groq' | 'openai';
 
 export interface Metric {
   label: string;

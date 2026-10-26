@@ -3,12 +3,14 @@
 // remaining quota · capabilities. A state is "connected" only after a real request succeeded.
 import { ttsModel } from './voices.mjs';
 import { openaiConfig, testConnection } from './openai.mjs';
+import { connectorStatus } from './brain/deliver.mjs';
 
 export async function listConnections(env, db, llmProviders) {
   const lastCall = async (provider) => db.prepare("SELECT status, error, created_at FROM provider_calls WHERE provider = ? ORDER BY created_at DESC LIMIT 1").bind(provider).first();
   const lastOk = async (provider) => db.prepare("SELECT created_at FROM provider_calls WHERE provider = ? AND status = 'success' ORDER BY created_at DESC LIMIT 1").bind(provider).first();
   const claude = llmProviders.find((p) => p.provider === 'claude');
   const gemini = llmProviders.find((p) => p.provider === 'gemini');
+  const groq = llmProviders.find((p) => p.provider === 'groq');
   const oai = await lastCall('openai');
   const tts = await lastCall('gemini_tts');
   const ttsOk = await lastOk('gemini_tts');
@@ -50,6 +52,42 @@ export async function listConnections(env, db, llmProviders) {
       nextAction: gemini.state === 'not_configured' ? 'Create a key at aistudio.google.com → Get API key, then `npx wrangler secret put GEMINI_API_KEY`.' : gemini.state === 'last_request_ok' ? null : 'Run Test connection.',
       testable: true,
     },
+    ...(groq
+      ? [
+          {
+            id: 'groq',
+            name: 'Groq API (free tier)',
+            kind: 'api',
+            state: llmState(groq),
+            authMethod: 'API key (Settings → GROQ_API_KEY or Worker secret)',
+            model: groq.model,
+            capabilities: ['Second free engine: agent chat fallback, Brain mission steps, fast quality checks'],
+            lastSuccessAt: groq.lastSuccessAt,
+            lastError: groq.lastError,
+            quotaVisibility: 'Free-tier rate limits are shown at console.groq.com',
+            billingVisibility: 'Free tier — no billing unless you upgrade at Groq',
+            missing: groq.state === 'not_configured' ? ['GROQ_API_KEY'] : [],
+            nextAction: groq.state === 'not_configured' ? 'Free: console.groq.com → API Keys → Create, then Settings → API keys → GROQ_API_KEY.' : groq.state === 'last_request_ok' ? null : 'Run Test connection.',
+            testable: true,
+          },
+        ]
+      : []),
+    ...connectorStatus(env).map((c) => ({
+      id: `brain_${c.id}`,
+      name: `${c.name} (Brain delivery)`,
+      kind: 'api',
+      state: c.configured ? 'credentials_set_untested' : 'not_configured',
+      authMethod: c.missing.length ? `Needs ${c.missing.join(', ')}` : 'Key saved',
+      model: null,
+      capabilities: ['Receives finished mission results you approved for this destination'],
+      lastSuccessAt: null,
+      lastError: null,
+      quotaVisibility: 'n/a',
+      billingVisibility: 'Free',
+      missing: c.missing,
+      nextAction: c.configured ? 'Agents → Brain → Connectors → Test.' : 'See docs/BRAIN.md for the free setup, then Settings → API keys.',
+      testable: false,
+    })),
     {
       id: 'gemini_tts',
       name: 'Gemini TTS (speech for voice profiles)',

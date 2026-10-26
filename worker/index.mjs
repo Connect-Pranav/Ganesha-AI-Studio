@@ -36,6 +36,8 @@ import * as voiceSamples from './voicesamples.mjs';
 import * as flowPack from './flowpack.mjs';
 import * as sheetAgent from './sheetagent.mjs';
 import { growthRoute } from './growth/routes.mjs';
+import { brainRoute } from './brain/routes.mjs';
+import { scheduledMissions } from './brain/missions.mjs';
 import { scheduledMushak, advance as advanceMushak } from './growth/autopilot.mjs';
 import * as appSecrets from './secrets.mjs';
 import { finishedWork } from './finished.mjs';
@@ -140,7 +142,7 @@ async function route(request, env, ctx, rawEnv = env) {
 
   if (path === '/api/health' && method === 'GET') {
     // Booleans only — never key values.
-    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), youtubeKeySet: Boolean(env.YOUTUBE_API_KEY), primaryEngine: env.PRIMARY_ENGINE || null, agents: REGISTRY.agents.length }, 200, corsHeaders(request));
+    return json({ ok: true, version: VERSION, time: nowIso(), db: Boolean(env.DB), adminTokenSet: Boolean(env.ADMIN_TOKEN), geminiKeySet: Boolean(env.GEMINI_API_KEY), groqKeySet: Boolean(env.GROQ_API_KEY), claudeKeySet: Boolean(env.ANTHROPIC_API_KEY), youtubeKeySet: Boolean(env.YOUTUBE_API_KEY), primaryEngine: env.PRIMARY_ENGINE || null, agents: REGISTRY.agents.length }, 200, corsHeaders(request));
   }
 
   // Public read: the report holds only public channel statistics, cached so a page view
@@ -566,6 +568,7 @@ async function route(request, env, ctx, rawEnv = env) {
     return json({ ok: true });
   }
   /* ---------- GANESHA GROWTH AI (owner-only; brand scoping inside) ---------- */
+  if (seg[1] === 'brain') return brainRoute({ path, method, seg, env, db, ctx, readBody: () => readBody(request), sse });
   if (seg[1] === 'growth') return json(await growthRoute({ env, db, method, seg, url, body: () => readBody(request) }));
   if (path === '/api/finished' && method === 'GET') return json(await finishedWork(envIg, db, url.searchParams.get('limit')));
 
@@ -709,6 +712,8 @@ export default {
         .catch((e) => console.error('reels failed', e.message)),
     );
     // MUSHAK autopilot: a growth cycle every few hours, a couple of steps per tick.
+    // Ganesha Brain: approved missions move forward a step or two per tick.
+    ctx.waitUntil(scheduledMissions(env, env.DB).then((r) => r.length && console.log('missions', JSON.stringify(r))).catch((e) => console.error('missions failed', e.message)));
     ctx.waitUntil(scheduledMushak(env, env.DB).then((c) => c && console.log('mushak', c.id, c.status)).catch((e) => console.error('mushak failed', e.message)));
     ctx.waitUntil(ig.withIg(env, env.DB).then((e2) => scheduledAnalytics(e2, env.DB)).then((r) => r.length && console.log('analytics', JSON.stringify(r))).catch((e) => console.error('analytics failed', e.message)));
   },

@@ -210,7 +210,9 @@ test('CBO picks the cheapest allowed engine, records why, and the call really go
   assert.equal(d.chosen_provider, 'gemini');
   assert.match(d.reason, /lowest conservative cost/);
   assert.match(d.reason, /Consumer subscriptions are not callable/);
-  assert.equal(JSON.parse(d.candidates_json).length, 2);
+  const cands = JSON.parse(d.candidates_json);
+  assert.equal(cands.length, 3, 'claude + gemini + groq (free fallback, no key here)');
+  assert.equal(cands.find((c) => c.provider === 'groq').eligible, false);
   assert.equal((await getTasks(db, wf.id)).find((t) => t.step_key === 'research').provider, 'gemini');
 });
 

@@ -125,6 +125,8 @@ export function PipelineBoard({ pipelines, limit }: { pipelines: Pipeline[]; lim
 /* ---------- Agent directory ---------- */
 const ENGINE_OPTIONS: { value: string; label: string }[] = [
   { value: 'gemini', label: 'Gemini only' },
+  { value: 'gemini,groq', label: 'Gemini, then Groq (both free)' },
+  { value: 'groq,gemini', label: 'Groq, then Gemini (both free)' },
   { value: 'gemini,claude', label: 'Gemini, then Claude' },
   { value: 'claude', label: 'Claude only' },
   { value: 'claude,gemini', label: 'Claude, then Gemini' },
@@ -178,7 +180,7 @@ export function AgentDirectory({ pipelines, liveAgents }: { pipelines: Pipeline[
   const keyOk = (e: string) => {
     const p = summary?.providers.find((x) => x.provider === e);
     if (p) return p.state !== 'not_configured';
-    return e === 'gemini' ? Boolean(health?.geminiKeySet) : e === 'claude' ? Boolean(health?.claudeKeySet) : false;
+    return e === 'gemini' ? Boolean(health?.geminiKeySet) : e === 'groq' ? Boolean(health?.groqKeySet) : e === 'claude' ? Boolean(health?.claudeKeySet) : false;
   };
   const setEngine = async (id: string, value: string) => {
     setSaving(id);
