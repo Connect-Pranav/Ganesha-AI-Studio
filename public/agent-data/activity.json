@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261026T051937Z_1_claude",
+      "at": "2026-10-26T05:19:37Z",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "engine": "claude",
+      "kind": "code",
+      "text": "Opened PR #3: spec for reusable project collections (docs/specs/foliocraft/project-collections.md)."
+    },
+    {
       "id": "e_20261026T023211Z_1_claude",
       "at": "2026-10-26T02:32:11Z",
       "brand": "littleloop",
@@ -890,15 +899,6 @@
       "engine": "gemini",
       "kind": "research",
       "text": "2 new findings for Foliocraft from 16 sources"
-    },
-    {
-      "id": "e_20261013T022735Z_1_claude",
-      "at": "2026-10-13T02:27:35Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 finding — Instagram Edits adds an AI assistant that explains Reel performance (US-only for now)."
     }
   ]
 }

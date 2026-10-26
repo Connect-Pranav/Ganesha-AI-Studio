@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-26T02:32:11Z",
+  "updatedAt": "2026-10-26T05:19:37Z",
   "tasks": [
     {
       "id": "t_20261026T023211Z_littleloop_1_claude",
@@ -166,7 +166,7 @@
       "title": "Spec reusable project collections so users manage portfolio entries in one list",
       "brand": "foliocraft",
       "agent": "code_shakti",
-      "status": "queued",
+      "status": "review",
       "priority": "medium",
       "reason": "fol1: Relume now ships portfolio collections free; a structured project list should be part of Foliocraft's free core.",
       "sourceFindings": [
@@ -175,7 +175,8 @@
       "requiresApproval": false,
       "createdAt": "2026-10-25T02:31:12Z",
       "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
+      "engine": "claude",
+      "prUrl": "https://github.com/Connect-Pranav/Ganesha-AI-Studio/pull/3"
     },
     {
       "id": "t_20261024T023120Z_littleloop_1_claude",
