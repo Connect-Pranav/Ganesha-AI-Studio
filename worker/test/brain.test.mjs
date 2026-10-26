@@ -211,3 +211,43 @@ test('cron: frees a stuck step and moves running missions forward', async () => 
   await missions.scheduledMissions(env, db, deps);
   assert.equal((await missions.getMission(db, m.id)).status, 'done');
 });
+
+test('SAARTHI + GANESHA chat: memory/skills in the prompt, MISSION line plans a mission that waits for approval', async () => {
+  const cbochat = await import('../cbochat.mjs');
+  await memory.addMemory(db, { scope: 'studio', fact: 'Owner reviews work at 9 PM IST' });
+  const plan = { thinking: 't', criteria: ['c'], steps: [{ agent: 'sunverse_vagdevi_lyricist', title: 'Lyrics', instruction: 'Write' }] };
+  const base = fakeAi({ plan });
+  const seen = [];
+  // Interactions API is not mocked → SAARTHI falls back to generateContent, which this fake answers.
+  const fetchImpl = async (url, init) => {
+    if (url.includes(':generateContent')) {
+      const b = JSON.parse(init.body);
+      const sys = b.systemInstruction?.parts?.[0]?.text ?? '';
+      if (sys.includes('SAARTHI')) {
+        seen.push(sys);
+        return geminiRes('Tathastu.\nMISSION: {"goal":"Sunverse monsoon song pack: lyrics, SEO","brand":"sunverse"}\nREMEMBER: Monsoon songs release on Fridays');
+      }
+    }
+    if (url.includes('interactions')) return new Response('{"error":{"message":"not here"}}', { status: 404 });
+    return base(url, init);
+  };
+  const r = await cbochat.send({ GEMINI_API_KEY: 'g' }, db, [], { message: '/yt-seo monsoon song launch karo' }, { fetch: fetchImpl, sleep: noSleep });
+  assert.match(seen[0], /Owner reviews work at 9 PM IST/);
+  assert.match(seen[0], /ACTIVE SKILL — Sunverse YouTube SEO pack/);
+  assert.match(seen[0], /MISSION: \{"goal"/);
+  assert.equal(r.mission.status, 'awaiting_approval');
+  assert.equal(r.action.type, 'mission');
+  assert.doesNotMatch(r.content, /MISSION:|REMEMBER:/);
+  assert.match(r.content, /Yaad rakha/);
+  const m = await missions.getMission(db, r.mission.id);
+  assert.equal(m.brand, 'sunverse');
+  assert.ok(m.steps.every((s) => s.status === 'pending'), 'nothing runs before the owner approves');
+  const hist = await cbochat.history(db);
+  assert.equal(hist.at(-1).action.type, 'mission', 'the mission card survives a reload');
+
+  // GANESHA's own chat can start missions too; other agents cannot.
+  const g = await chat.send({ GEMINI_API_KEY: 'g' }, db, 'ganesha_orchestrator', { message: 'Foliocraft launch pack banao' }, { fetch: async (u, i) => (JSON.parse(i.body).systemInstruction?.parts?.[0]?.text?.includes('THINK about a goal') ? base(u, i) : geminiRes('Tathastu.\nMISSION: {"goal":"Foliocraft launch pack","brand":"foliocraft"}')), sleep: noSleep });
+  assert.equal(g.action.type, 'mission');
+  const v = await chat.send({ GEMINI_API_KEY: 'g' }, db, 'littleloop_vyasa_scriptwriter', { message: 'x' }, { fetch: async () => geminiRes('ok\nMISSION: {"goal":"some long goal here","brand":"littleloop"}'), sleep: noSleep });
+  assert.equal(v.action, null);
+});

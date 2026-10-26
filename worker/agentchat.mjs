@@ -17,6 +17,10 @@ import { GROWTH_BRANDS } from './growth/brands.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
 import { brandOf, extractRemember, memoryBlock, memoryFor, saveFacts } from './brain/memory.mjs';
 import { catalog, parseSkillCommand, skillBlock, useSkill } from './brain/skills.mjs';
+import { MISSION_PROMPT, extractMission, proposeMission } from './brain/missions.mjs';
+
+// GANESHA (orchestrator) can start Brain missions from its own chat.
+const MISSION_AGENTS = new Set(['ganesha_orchestrator']);
 
 const MAX_MSG = 4000;
 const HISTORY = 12;
@@ -176,6 +180,7 @@ export async function send(env, db, agentId, { message, research = false }, deps
     memoryBlock(await memoryFor(db, { agentId: a.id, brand: brand === 'studio' ? null : brand }), { defaultScope: brand }),
     skills ? `SKILLS the owner can call with /<id> (suggest one when it fits):\n${skills}` : '',
     skill ? skillBlock(skill) : '',
+    MISSION_AGENTS.has(a.id) ? MISSION_PROMPT : '',
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -209,7 +214,13 @@ export async function send(env, db, agentId, { message, research = false }, deps
   }
   const mem = extractRemember(out.text, brand);
   const remembered = await saveFacts(db, mem.facts, { source: 'chat', agentId: a.id });
-  let { text, action } = a.id === MUSHAK.id ? { text: mem.text, action: null } : splitAction(mem.text, a);
+  const ms = MISSION_AGENTS.has(a.id) ? extractMission(mem.text) : { text: mem.text, request: null };
+  const mission = ms.request ? await proposeMission(env, db, ms.request, deps) : null;
+  let { text, action } = a.id === MUSHAK.id ? { text: ms.text, action: null } : splitAction(ms.text, a);
+  if (mission) {
+    if (action) action.mission = mission;
+    else action = mission;
+  }
   let blueprint = null;
   if (a.id === MUSHAK.id) {
     const m = /\n?\s*BLUEPRINT:\s*(\{[\s\S]*\})\s*$/.exec(text);
@@ -231,7 +242,7 @@ export async function send(env, db, agentId, { message, research = false }, deps
     .prepare('INSERT INTO agent_chat (id, agent_id, role, content, engine, model, action_json, sources_json, created_at) VALUES (?,?,?,?,?,?,?,?,?)')
     .bind(reply.id, agentId, 'assistant', reply.content, reply.engine, reply.model, action ? JSON.stringify(action) : null, JSON.stringify(out.sources ?? []), reply.created_at)
     .run();
-  return { ...reply, action, blueprint, sources: out.sources ?? [], remembered, skill: skill?.id ?? null };
+  return { ...reply, action, blueprint, sources: out.sources ?? [], remembered, mission, skill: skill?.id ?? null };
 }
 
 export const canResearch = (id) => RESEARCHERS.has(id);

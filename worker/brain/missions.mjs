@@ -308,3 +308,33 @@ export async function scheduledMissions(env, db, deps = {}) {
   }
   return out;
 }
+
+/* ---------------- missions proposed from chat (SAARTHI, GANESHA) ---------------- */
+export const MISSION_PROMPT = `MISSIONS (Ganesha Brain): when the owner wants a multi-step piece of work done by several agents (research → create → review, a launch pack, a week's content), start a mission by adding ONE line at the very end:
+MISSION: {"goal":"<clear goal with the deliverables wanted>","brand":"littleloop|sunverse|foliocraft|studio"}
+GANESHA then thinks and plans it; the owner sees the plan right here in chat and approves or rejects it with one tap. Nothing runs before that. Use it only when work is wanted, at most one per reply.`;
+
+/** Pulls a MISSION: {...} line out of a reply. Returns { text, request } (request null if none/invalid). */
+export function extractMission(text) {
+  const m = /^[ \t]*MISSION:[ \t]*(\{.*\})[ \t]*$/m.exec(String(text ?? ''));
+  if (!m) return { text: String(text ?? '').trim(), request: null };
+  const rest = (text.slice(0, m.index) + text.slice(m.index + m[0].length)).replace(/\n{3,}/g, '\n\n').trim();
+  try {
+    const r = JSON.parse(m[1]);
+    const goal = String(r.goal ?? '').trim();
+    const brand = BRANDS.includes(r.brand) ? r.brand : 'studio';
+    return { text: rest, request: goal.length >= 8 ? { goal: goal.slice(0, 2000), brand } : null };
+  } catch {
+    return { text: rest, request: null };
+  }
+}
+
+/** Plans a mission from a chat line; never throws (the chat answer must still arrive). */
+export async function proposeMission(env, db, request, deps = {}) {
+  try {
+    const m = await createMission(env, db, { goal: request.goal, brand: request.brand, deliver: [] }, deps);
+    return { type: 'mission', id: m.id, goal: m.goal, brand: m.brand, status: m.status, steps: m.steps.length, error: m.error ?? null };
+  } catch (e) {
+    return { type: 'mission', id: null, goal: request.goal, brand: request.brand, status: 'failed', steps: 0, error: String(e.message ?? e).slice(0, 300) };
+  }
+}

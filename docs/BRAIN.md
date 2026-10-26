@@ -56,3 +56,6 @@ Then Brain → Connectors → **Test** each one.
 `GET /api/brain` · `GET|POST /api/brain/memory` · `PATCH|DELETE /api/brain/memory/:id` · `GET|PUT /api/brain/skills` · `DELETE /api/brain/skills/:id` · `POST /api/brain/connectors/:id/test` · `GET|POST /api/brain/missions` · `GET /api/brain/missions/:id` · `POST /api/brain/missions/:id/decide` `{decision: approve|reject|cancel, deliver?}` · `POST /api/brain/missions/:id/advance`.
 
 Tables: `brain_memory`, `brain_skills`, `missions`, `mission_steps`, `mission_deliveries` (migration 0021, created automatically).
+
+## Missions from chat
+SAARTHI (CBO chat) and GANESHA's own agent chat can start a mission: ask for multi-step work ("Sunverse ka monsoon song pack banao") and the plan appears in the chat with **Approve / Reject**. Nothing runs before you tap Approve. SAARTHI also reads the studio memory, takes `/skill-id` commands and saves "yaad rakho" facts.

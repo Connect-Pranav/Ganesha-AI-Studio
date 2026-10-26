@@ -264,6 +264,23 @@ function MissionDetail({ id, connectors, onChange }: { id: string; connectors: C
   );
 }
 
+/* ---------------- Mission card inside a chat (SAARTHI / GANESHA) ---------------- */
+export interface ChatMissionRef { type: 'mission'; id: string | null; goal: string; brand: string; status: string; steps: number; error: string | null }
+const noop = () => {};
+export function ChatMission({ mission }: { mission: ChatMissionRef }) {
+  const [connectors, setConnectors] = useState<Connector[] | null>(null);
+  useEffect(() => {
+    api<BrainStatus>('/api/brain').then((s) => setConnectors(s.connectors)).catch(() => setConnectors([]));
+  }, []);
+  if (!mission.id) return <div className="sd-action"><p><strong>🎯 Mission:</strong> {mission.goal}</p><p className="form-error">{mission.error ?? 'Could not plan this mission.'}</p></div>;
+  return (
+    <div className="br-chat">
+      <p className="cx-sub">🎯 GANESHA ne mission plan kiya — approve karte hi agents kaam shuru karenge (Agents → Brain mein bhi dikhega).</p>
+      {connectors ? <MissionDetail id={mission.id} connectors={connectors} onChange={noop} /> : <p className="ai-note">Loading plan…</p>}
+    </div>
+  );
+}
+
 /* ---------------- Memory ---------------- */
 function MemoryTab({ onChange }: { onChange: () => void }) {
   const [rows, setRows] = useState<Memory[] | null>(null);

@@ -1895,3 +1895,5 @@ select option { background: #0e1540; color: var(--ink); }
 .br-skill { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: var(--surface); display: flex; flex-direction: column; gap: 6px; }
 .br-skill code { font-size: 12px; color: var(--cyan, #22d3ee); }
 .br-skill-form { margin: 12px 0; }
+.br-chat { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.br-chat .card { margin: 0; }

@@ -14,6 +14,9 @@ import { cboReport } from './cbo.mjs';
 import { TEMPLATES } from './orchestrator.mjs';
 import * as reels from './reels.mjs';
 import { HttpError, newId, nowIso } from './util.mjs';
+import { extractRemember, memoryBlock, memoryFor, saveFacts } from './brain/memory.mjs';
+import { catalog, parseSkillCommand, skillBlock, useSkill } from './brain/skills.mjs';
+import { MISSION_PROMPT, extractMission, proposeMission } from './brain/missions.mjs';
 
 const MAX_MSG = 4000;
 const HISTORY = 16;
@@ -92,6 +95,7 @@ WHEN THE OWNER ASKS FOR A PLAN OR BLUEPRINT (e.g. a revenue target, a launch, "n
 For approvals, uploads, settings or connections, point to the exact panel place. Panel map (use only these):
 - Top bar: Command Center, Overview, CBO (this chat), Agents (decisions by agent + finished work), LittleLoop (Reel Factory: switch, Flow clips, approvals), Sunverse, Foliocraft, Analytics (range dropdown, Instagram/YouTube stats).
 - Gear icon / sidebar → Settings: API keys (Gemini, OpenAI/ChatGPT, Claude, YouTube, Instagram app ID/secret) saved encrypted from the app, Connect Instagram, chat defaults, updates.
+- Agents → Brain: missions (plan → approve → run → result), long-term memory, skills library, connectors (Groq, GitHub vault, Drive, Notion, Slack keys go in Settings → API keys).
 - Sidebar: Pipelines, Task Manager, CFO & Costs, Subscriptions (Quick setup for plan/price/renewal), Video & Film Studio, Voice Library, Characters (upload character sheet: name + image), AI Connection (test providers).
 ChatGPT app plans (Go/Plus) have no API; ChatGPT here needs an OpenAI API key in Settings. Consumer plans (Google AI Pro, ChatGPT, Claude, Canva) expose no usage API — their plan details go in Subscriptions → Quick setup.`;
 
@@ -234,7 +238,21 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
 
   const past = await history(db, HISTORY);
   await db.prepare("INSERT INTO cbo_chat (id, role, content, created_at) VALUES (?, 'user', ?, ?)").bind(newId('msg'), image ? `${message.trim()}\n\n_(image attached)_` : message.trim(), nowIso()).run();
-  const system = `${SYSTEM()}\n\nLIVE STUDIO SNAPSHOT (read just now):\n${await snapshot(env, db, providers)}`;
+  // Ganesha Brain: long-term memory, skills (/skill-id), and missions SAARTHI can start for approval.
+  const { skill, rest } = await parseSkillCommand(db, message.trim());
+  if (skill) await useSkill(db, skill.id);
+  const skills = await catalog(db, 'studio');
+  const system = [
+    SYSTEM(),
+    MISSION_PROMPT,
+    memoryBlock(await memoryFor(db, {}), { defaultScope: 'studio' }),
+    skills ? `SKILLS the owner can call with /<id>:\n${skills}` : '',
+    skill ? skillBlock(skill) : '',
+    `LIVE STUDIO SNAPSHOT (read just now):\n${await snapshot(env, db, providers)}`,
+  ]
+    .filter(Boolean)
+    .join('\n\n');
+  const prompt = skill ? `[using skill /${skill.id}] ${rest}` : message.trim();
 
   let out;
   let toolAction = null;
@@ -245,7 +263,7 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
         db,
         {
           system,
-          prompt: message.trim(),
+          prompt,
           messages: past.map((m) => ({ role: m.role, content: m.content })),
           images: image ? [image] : [],
           reasoning: think ? 'high' : 'low',
@@ -268,10 +286,10 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
     const lastGemini = [...past].reverse().find((m) => m.role === 'assistant' && m.engine === 'gemini');
     const previous = lastGemini ? (await db.prepare('SELECT interaction_id FROM cbo_chat_meta WHERE msg_id = ?').bind(lastGemini.id).first())?.interaction_id : null;
     try {
-      out = await callGeminiInteraction(env, db, { system, message: message.trim(), previous, think, research }, deps);
+      out = await callGeminiInteraction(env, db, { system, message: prompt, previous, think, research }, deps);
     } catch (e) {
       // Fallback: plain generateContent with the transcript (no research/thinking extras).
-      const transcript = [...past.map((m) => `${m.role === 'user' ? 'Owner' : 'CBO'}: ${m.content}`), `Owner: ${message.trim()}`].join('\n\n');
+      const transcript = [...past.map((m) => `${m.role === 'user' ? 'Owner' : 'CBO'}: ${m.content}`), `Owner: ${prompt}`].join('\n\n');
       try {
         const r = await callProvider(env, db, 'gemini', { system, prompt: `${transcript}\n\nCBO:`, maxTokens: 2048, purpose: 'cbo_chat' }, deps);
         out = { text: r.text.trim().replace(/^CBO:\s*/, ''), model: r.model, interactionId: null, thoughts: null, sources: [], fallback: String(e.message).slice(0, 200) };
@@ -280,6 +298,12 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
       }
     }
   }
+  // Brain: save REMEMBER lines, plan a proposed MISSION (it waits for the owner's tap).
+  const mem = extractRemember(out.text, 'studio');
+  const remembered = await saveFacts(db, mem.facts, { source: 'chat', agentId: 'saarthi_cbo' });
+  const ms = extractMission(mem.text);
+  out.text = ms.text;
+  const mission = ms.request ? await proposeMission(env, db, ms.request, deps) : null;
   // Delegation to Mushak: a trailing "MUSHAK: <command>" line is sent to Mushak, who plans and runs it.
   let delegation = null;
   const dm = /^[ \t]*MUSHAK:[ \t]*(.+)$/m.exec(out.text);
@@ -297,13 +321,15 @@ export async function send(env, db, providers, { message, engine = 'gemini', thi
   const extracted = extractAction(out.text);
   const text = extracted.text;
   // A goal proposal keeps the button; a Mushak delegation is shown alongside it.
-  const action = toolAction ?? extracted.action ?? delegation;
+  const action = toolAction ?? extracted.action ?? delegation ?? mission;
   if (action && delegation && action !== delegation) action.delegation = delegation;
-  const reply = { id: newId('msg'), role: 'assistant', content: (text || '…').slice(0, 20000), engine, model: out.model, created_at: nowIso() };
+  if (action && mission && action !== mission) action.mission = mission;
+  const finalText = remembered.length ? `${text}\n\n_🧠 Yaad rakha: ${remembered.map((f) => f.fact).join(' · ')}_` : text;
+  const reply = { id: newId('msg'), role: 'assistant', content: (finalText || '…').slice(0, 20000), engine, model: out.model, created_at: nowIso() };
   const mode = { think: Boolean(think), research: Boolean(research), image: Boolean(image), fallback: out.fallback ?? null, requestId: out.requestId ?? null, incomplete: out.incomplete ?? null };
   await db.batch([
     db.prepare('INSERT INTO cbo_chat (id, role, content, engine, model, created_at) VALUES (?,?,?,?,?,?)').bind(reply.id, reply.role, reply.content, reply.engine, reply.model, reply.created_at),
     db.prepare('INSERT INTO cbo_chat_meta (msg_id, interaction_id, thoughts, sources_json, action_json, mode_json) VALUES (?,?,?,?,?,?)').bind(reply.id, out.interactionId ?? null, out.thoughts ?? null, JSON.stringify(out.sources ?? []), action ? JSON.stringify(action) : null, JSON.stringify(mode)),
   ]);
-  return { ...reply, thoughts: out.thoughts ?? null, sources: out.sources ?? [], action, delegation, mode };
+  return { ...reply, thoughts: out.thoughts ?? null, sources: out.sources ?? [], action, delegation, mission, remembered, skill: skill?.id ?? null, mode };
 }

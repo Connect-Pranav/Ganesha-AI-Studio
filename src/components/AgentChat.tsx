@@ -6,9 +6,10 @@ import { postStream } from '../services/sseChat';
 import { Markdown } from './Markdown';
 import { formatWhen } from './ui';
 import { BlueprintCard, type Blueprint } from './BlueprintCard';
+import { ChatMission, type ChatMissionRef } from './BrainView';
 
-interface Action { type: 'start_goal'; template: string; title: string; goal: string }
-interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?: string | null; model?: string | null; created_at: string; action: Action | Blueprint | null; sources: { url: string; title: string }[] }
+interface Action { type: 'start_goal'; template: string; title: string; goal: string; mission?: ChatMissionRef }
+interface Msg { id: string; role: 'user' | 'assistant'; content: string; engine?: string | null; model?: string | null; created_at: string; action: Action | Blueprint | ChatMissionRef | null; sources: { url: string; title: string }[] }
 
 const SUGGEST: Record<string, string[]> = {
   default: ['Aap kya kya kar sakte ho?', 'Aaj ke liye 3 ideas do', 'Mere brand ke liye aapki salah?'],
@@ -128,6 +129,8 @@ export function AgentChat({ agentId, name }: { agentId: string; name: string }) 
                 </div>
               )}
               {m.action?.type === 'blueprint' && <BlueprintCard bp={m.action} />}
+              {m.action?.type === 'mission' && <ChatMission mission={m.action} />}
+              {m.action?.type === 'start_goal' && m.action.mission && <ChatMission mission={m.action.mission} />}
               {m.action?.type === 'start_goal' && (
                 <div className="sd-action">
                   <p><strong>Proposed goal:</strong> {m.action.title}</p>

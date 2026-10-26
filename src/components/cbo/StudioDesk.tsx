@@ -10,6 +10,7 @@ import { Card, EmptyState, formatWhen } from '../ui';
 import { agentName } from '../../data/agentsMeta';
 import { SheetThumb } from '../SheetThumb';
 import { Markdown } from '../Markdown';
+import { ChatMission, type ChatMissionRef } from '../BrainView';
 
 /* ---------------- shared ---------------- */
 function useLive<T>(path: string, every = 60_000) {
@@ -57,7 +58,7 @@ function OutputViewer({ artifactId, onClose }: { artifactId: string; onClose: ()
 
 /* ---------------- CBO chat ---------------- */
 interface MushakDelegation { type: 'mushak'; command: string; reply?: string; blueprint?: Blueprint | null; error?: string }
-interface ChatAction { type: 'start_goal'; template: string; title: string; goal: string; delegation?: MushakDelegation }
+interface ChatAction { type: 'start_goal'; template: string; title: string; goal: string; delegation?: MushakDelegation; mission?: ChatMissionRef }
 interface Msg {
   id: string;
   role: 'user' | 'assistant';
@@ -67,7 +68,7 @@ interface Msg {
   created_at: string;
   thoughts?: string | null;
   sources?: { url: string; title: string }[];
-  action?: ChatAction | MushakDelegation | null;
+  action?: (ChatAction | (MushakDelegation & { mission?: ChatMissionRef }) | ChatMissionRef) | null;
   mode?: { think?: boolean; research?: boolean; image?: boolean; fallback?: string | null; requestId?: string | null; incomplete?: string | null } | null;
 }
 interface Engine { id: 'gemini' | 'openai'; name: string; available: boolean; note: string; think?: boolean; research?: boolean; images?: boolean; stream?: boolean }
@@ -275,6 +276,10 @@ export function CboChat({ compact = false, title = 'Chat with SAARTHI' }: { comp
                   {d.blueprint && <BlueprintCard bp={d.blueprint} from="Mushak" />}
                 </div>
               ) : null;
+            })()}
+            {(() => {
+              const mm = m.action?.type === 'mission' ? m.action : m.action && 'mission' in m.action ? m.action.mission : undefined;
+              return mm ? <ChatMission mission={mm} /> : null;
             })()}
             {m.action?.type === 'start_goal' && (
               <div className="sd-action">
