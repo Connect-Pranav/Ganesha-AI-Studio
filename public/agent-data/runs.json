@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261027T022703Z_narada_claude_1",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "startedAt": "2026-10-27T02:00:00Z",
+      "finishedAt": "2026-10-27T02:27:03Z",
+      "status": "success",
+      "summary": "5 findings: LittleLoop 1, Sunverse 2, Foliocraft 2"
+    },
+    {
+      "id": "run_20261027T022703Z_ganesha_claude_2",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-27T02:25:00Z",
+      "finishedAt": "2026-10-27T02:27:03Z",
+      "status": "success",
+      "summary": "7 tasks queued: LittleLoop 2, Sunverse 3, Foliocraft 2"
+    },
+    {
       "id": "run_20261026T051937Z_code_claude_1",
       "agent": "code_shakti",
       "engine": "claude",

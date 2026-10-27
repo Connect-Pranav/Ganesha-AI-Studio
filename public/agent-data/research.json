@@ -1,6 +1,108 @@
 {
-  "updatedAt": "2026-10-26T02:32:11Z",
+  "updatedAt": "2026-10-27T02:27:03Z",
   "findings": [
+    {
+      "id": "f_20261027T022703Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram tests 'Features': up to 90-min videos with up to 8 Reels linking to them",
+      "insight": "Instagram began a limited US creator test on Oct 26 of long horizontal videos that short Reels can link to; wider rollout is planned but undated and monetisation is unstated. LittleLoop could prepare to bundle a season's shorts into one compilation with each Reel pointing to it, once the tool reaches its market.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Why Instagram is about to look a lot more like YouTube",
+          "url": "https://www.fastcompany.com/91630089/why-instagram-is-about-to-look-a-lot-more-like-youtube",
+          "source": "Fast Company",
+          "retrievedAt": "2026-10-27T02:12:00Z"
+        },
+        {
+          "title": "Instagram takes aim at YouTube with new 90-minute video test",
+          "url": "https://www.dexerto.com/entertainment/instagram-takes-aim-at-youtube-with-new-90-minute-video-test-3422003/",
+          "source": "Dexerto",
+          "retrievedAt": "2026-10-27T02:08:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-27T02:27:03Z"
+    },
+    {
+      "id": "f_20261027T022703Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "Believe/TuneCore and Spotify plan licensed AI fan remixes and covers with opt-in",
+      "insight": "Announced Oct 20: an upcoming paid Spotify Premium add-on lets fans make AI remixes/covers of participating tracks, linking back to the original and paying royalties. Believe/TuneCore artists must opt in twice. No launch date or markets given. Sunverse should decide its stance before its distributor offers a similar programme.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Believe and Spotify Partner to Unlock New Opportunities for Artists Through Licensed Fan Remixes and Covers",
+          "url": "https://newsroom.spotify.com/2026-10-20/believe-spotify-licensing-agreement-fan-made-covers-remixes/",
+          "source": "Spotify Newsroom",
+          "retrievedAt": "2026-10-27T02:16:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-27T02:27:03Z"
+    },
+    {
+      "id": "f_20261027T022703Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Deezer plans a setting to hide AI-generated music entirely before end of 2026",
+      "insight": "TechRadar (Oct 15) reports Deezer will let listeners exclude AI-generated music from their feeds, while YouTube Music only labels tracks made primarily with generative AI. AI-heavy Sunverse tracks could lose reach on Deezer; keep accurate AI-use records per track so classification can be checked.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Deezer will let you ban AI music from your feed as YouTube Music adds warning labels for slop",
+          "url": "https://www.techradar.com/audio/audio-streaming/youtube-music-adds-ai-labels-to-warn-you-about-slop-as-deezer-goes-further-with-new-on-off-toggle-for-millions-of-ai-generated-songs",
+          "source": "TechRadar",
+          "retrievedAt": "2026-10-27T02:13:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-27T02:27:03Z"
+    },
+    {
+      "id": "f_20261027T022703Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Webflow is now usable inside the Gemini app, including AI-citation (AEO) analytics",
+      "insight": "Since Oct 15 a free Gemini connector to Webflow's MCP server lets users build pages, edit CMS, run SEO/accessibility audits and see how AI systems cite their site, with actions logged. Martech launches the same month also centre on AI-search visibility. Foliocraft could show premium users whether AI answers cite their portfolio.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Webflow and Google Gemini Announce New Agentic Integration",
+          "url": "https://www.cmswire.com/the-wire/webflow-and-google-gemini-announce-new-agentic-integration/",
+          "source": "CMSWire",
+          "retrievedAt": "2026-10-27T02:23:00Z"
+        },
+        {
+          "title": "The latest AI-powered martech news and releases",
+          "url": "https://martech.org/the-latest-ai-powered-martech-news-and-releases/",
+          "source": "MarTech",
+          "retrievedAt": "2026-10-27T02:21:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-27T02:27:03Z"
+    },
+    {
+      "id": "f_20261027T022703Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Webflow Campaigns builds on-brand landing pages with per-audience URL variants",
+      "insight": "Launched Oct 20, Webflow Campaigns extracts a brand's design system from its site and generates landing pages and ads, including personalised variants with unique URLs per persona or account. Validates Foliocraft's planned tailored portfolio variants; reusing a user's existing style for each variant is the bar to meet.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Webflow Campaigns Brings On-Brand Landing Pages, Ads and Analytics",
+          "url": "https://www.cmswire.com/digital-experience/webflow-launches-ai-campaign-builder-for-marketers/",
+          "source": "CMSWire",
+          "retrievedAt": "2026-10-27T02:23:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-27T02:27:03Z"
+    },
     {
       "id": "f_20261026T023211Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1158,102 +1260,6 @@
       "agent": "narada_market_intelligence",
       "engine": "gemini",
       "createdAt": "2026-10-17T04:35:54Z"
-    },
-    {
-      "id": "f_20261017T043554Z_sunverse_3",
-      "brand": "sunverse",
-      "title": "Slowed + Reverb and Focus Lofi Mashups Maintain YouTube Traction",
-      "insight": "Trending uploads highlight sustained engagement for slowed and reverb Hindi tracks and hour-long lofi mashups targeted at study, focus, and late-night listening. Sunverse should curate its music catalogue into extended mood-based compilations and concentration mixes to capture passive streaming hours.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Meri Gali Ki Ladki || Slowed and Reverbn || #lofimusic #lofi #trending #trendingvideo #trendingsong - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9Mamh6MENoMUplcnhacWk5OWUxeDI1NEw2RFdvaDZGWGg1V1RsY1Z6cTA2WGFfLTc3WlBCUExaLTJBWVJOcHlIaEpmd3JTbE5rc25tU3BqZXpoQy1O?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-17T04:35:39Z"
-        },
-        {
-          "title": "Heartbreaking 💔 Lofi Mashup 🎧 | 1 Hour Slowed + Reverb Songs | Study, Focus & Late Night Vibes - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE5hOHNkZkEzVzNzOG8yX05NTGNzZmhFWEV4NG1TTktRWmdxRWhJSEVMSV83Vy1lRnJXdUlZWkx2YWVCdw?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-17T04:35:39Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-17T04:35:54Z"
-    },
-    {
-      "id": "f_20261017T043606Z_foliocraft_4",
-      "brand": "foliocraft",
-      "title": "Demand Persists for Dedicated Resume and CV Site Templates",
-      "insight": "ThemeGrill highlighting 17 free WordPress resume and CV themes shows job seekers remain an active audience for personal web builders. Foliocraft can introduce modern CV and resume portfolio templates to attract job hunters, converting them to paid tiers with features like custom domains and analytics.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "17 Best Free WordPress Resume & CV Themes (2026) - ThemeGrill",
-          "url": "https://news.google.com/rss/articles/CBMiaEFVX3lxTE94MXNsLWw4dTlXYUZVVDVkTG1kYm1JNHU1Q2NCZ0R5RUp3Vng5SVZmVGhZVHVoNXBGQVAxLUdIZHhSUTY3dGtLTlZLZmxLejI3eXpVWGJGdlpPOWxUcTgxWUVJdnlHQ3lw?oc=5",
-          "source": "ThemeGrill",
-          "retrievedAt": "2026-10-17T04:35:55Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-17T04:36:06Z"
-    },
-    {
-      "id": "f_20261015T022957Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Greece will bar under-15s from Instagram from 1 Jan 2027, no parental override",
-      "insight": "Greece's bill (vote expected Oct 22) bans under-15 social accounts with real age checks. Age limits are tightening, so LittleLoop's Instagram viewers are parents, not kids: write captions, hooks and CTAs for parents and never invite children to comment or follow.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "How Greece's under-15 social media ban will work on Facebook, Instagram and TikTok",
-          "url": "https://en.protothema.gr/2026/10/12/how-greeces-under-15-social-media-ban-will-work-on-facebook-instagram-and-tiktok",
-          "source": "ProtoThema English",
-          "retrievedAt": "2026-10-15T02:27:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-15T02:29:57Z"
-    },
-    {
-      "id": "f_20261015T022957Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "YouTube now lists AI music that is a video's main focus as required GenAI disclosure",
-      "insight": "A policy tracker saw YouTube's GenAI disclosure page add music that is the main focus of a video (first seen Oct 3). Sunverse should set 'AI use' at upload for any AI-made track or lyric video; disclosure reportedly does not limit reach or monetisation, but repeated non-disclosure risks penalties.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "YouTube Adds AI-Generated Music to Its Core GenAI Disclosure Rules: October 2026",
-          "url": "https://www.auditsocials.com/blog/youtube-ai-generated-music-disclosure-rule-october-2026",
-          "source": "AuditSocials",
-          "retrievedAt": "2026-10-15T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-15T02:29:57Z"
-    },
-    {
-      "id": "f_20261015T022957Z_foliocraft_3_claude",
-      "brand": "foliocraft",
-      "title": "Webflow announced 'Releases' to stage whole-site changes and publish when ready",
-      "insight": "At Webflow Conf (Sept 2-3) Webflow announced Releases (beta later this year) to branch a site and publish staged updates together, plus agent context files. A draft/staged redesign mode would let Foliocraft users rework a live portfolio safely; worth considering as a premium feature.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "Webflow Conf 2026: 8 Announcements That Quietly Change Who Builds Your Website",
-          "url": "https://weblumbaai.com/blog/webflow-conf-2026-announcements",
-          "source": "Weblumba AI",
-          "retrievedAt": "2026-10-15T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-15T02:29:57Z"
     }
   ]
 }

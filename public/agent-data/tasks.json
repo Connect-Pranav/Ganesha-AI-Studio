@@ -1,6 +1,118 @@
 {
-  "updatedAt": "2026-10-26T05:19:37Z",
+  "updatedAt": "2026-10-27T02:27:03Z",
   "tasks": [
+    {
+      "id": "t_20261027T022703Z_littleloop_1_claude",
+      "title": "Draft a season compilation plan where each episode Reel links to one long video",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Instagram's Features test lets up to 8 Reels link to a long video (lit1); plan only, no posting.",
+      "sourceFindings": [
+        "f_20261027T022703Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_littleloop_2_claude",
+      "title": "Track when Instagram Features (90-min videos) opens beyond the US creator test",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Rollout beyond the limited US test is undated (lit1).",
+      "sourceFindings": [
+        "f_20261027T022703Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_sunverse_3_claude",
+      "title": "Draft a Sunverse stance on opting tracks into AI fan remix/cover programmes",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Believe/TuneCore and Spotify require artist opt-in for AI remixes (sun1); owner decides any opt-in.",
+      "sourceFindings": [
+        "f_20261027T022703Z_sunverse_2_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_sunverse_4_claude",
+      "title": "Check whether Sunverse's distributor offers an AI remix opt-in and its terms",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Programme announced for Believe/TuneCore only, no markets or date (sun1).",
+      "sourceFindings": [
+        "f_20261027T022703Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_sunverse_5_claude",
+      "title": "Track Deezer's AI-music filter launch and how it classifies AI-assisted tracks",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Deezer plans to let listeners hide AI music (sun2); classification rules unknown.",
+      "sourceFindings": [
+        "f_20261027T022703Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_foliocraft_6_claude",
+      "title": "Spec a premium 'AI answer visibility' check showing if AI search cites a portfolio",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Webflow ships AEO citation analytics via Gemini and martech launches focus on AI visibility (fol1).",
+      "sourceFindings": [
+        "f_20261027T022703Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261027T022703Z_foliocraft_7_claude",
+      "title": "Compare how Webflow Campaigns reuses a site's design system for variants",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Informs the open tailored-variants spec (fol2) with competitor evidence.",
+      "sourceFindings": [
+        "f_20261027T022703Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-27T02:27:03Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261026T023211Z_littleloop_1_claude",
       "title": "Check how Reels display in Instagram for TV and whether kids' Reels appear there",
@@ -1172,118 +1284,6 @@
       "createdAt": "2026-10-14T02:27:56Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
-    },
-    {
-      "id": "t_20261014T022756Z_foliocraft_4_claude",
-      "title": "Prototype a second-language version toggle for Foliocraft portfolios",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Webflow's agentic translation (fol1) suggests multilingual sites are becoming standard; prototype as a PR with no paid translation API.",
-      "sourceFindings": [
-        "f_20261014T022756Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-14T02:27:56Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261014T022756Z_foliocraft_5_claude",
-      "title": "Add a projects-first default layout that shows work above the fold",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Hiring reviewers want to reach projects within seconds and prefer portfolio websites (fol2).",
-      "sourceFindings": [
-        "f_20261014T022756Z_foliocraft_5_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-14T02:27:56Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261013T073443Z_littleloop_1",
-      "title": "Develop a bus-themed looping animation concept for an Instagram Reel",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Preschool animation trends show vehicle and bus themes dominate engagement; a bite-sized looping concept taps into familiar musical patterns.",
-      "sourceFindings": [
-        "f_20261013T073306Z_littleloop_1"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T073443Z_littleloop_2",
-      "title": "Storyboard an animal dance-along animated short for toddler imitation",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Toddler rhymes pairing animals with dance movements drive physical imitation and repeat viewing, ideal for LittleLoop's core audience.",
-      "sourceFindings": [
-        "f_20261013T073306Z_littleloop_2"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T073443Z_sunverse_3",
-      "title": "Produce a demo Lofi House track to test ambient electronic formats",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Lofi Girl's move into Lofi House signals genre diversification into upbeat ambient music, offering Sunverse an opportunity in continuous streaming.",
-      "sourceFindings": [
-        "f_20261013T073326Z_sunverse_3"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T073443Z_sunverse_4",
-      "title": "Draft a creator-first partnership pitch deck for indie Indian musicians",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Indian artists are actively avoiding traditional labels, allowing Sunverse to attract talent through non-restrictive production and distribution terms.",
-      "sourceFindings": [
-        "f_20261013T073326Z_sunverse_4"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261013T073443Z_foliocraft_5",
-      "title": "Benchmark AI site builder creation workflows against Design.com and Wix",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Major comparisons highlight Design.com and Wix; benchmarking will reveal user onboarding strengths and differentiation gaps for Foliocraft.",
-      "sourceFindings": [
-        "f_20261013T073418Z_foliocraft_5"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-13T07:34:43Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
     }
   ]
 }

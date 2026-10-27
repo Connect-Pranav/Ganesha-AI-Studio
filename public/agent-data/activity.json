@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261027T022703Z_1_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Instagram tests 90-min 'Features' videos that Reels can link to."
+    },
+    {
+      "id": "e_20261027T022703Z_2_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: season compilation plan, track Features rollout."
+    },
+    {
+      "id": "e_20261027T022703Z_3_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Spotify/Believe AI fan remix opt-in; Deezer plans AI-music filter."
+    },
+    {
+      "id": "e_20261027T022703Z_4_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 3 Sunverse tasks: AI remix stance (approval), distributor check, Deezer tracking."
+    },
+    {
+      "id": "e_20261027T022703Z_5_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Webflow in Gemini with AEO analytics; Webflow Campaigns URL variants."
+    },
+    {
+      "id": "e_20261027T022703Z_6_claude",
+      "at": "2026-10-27T02:27:03Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: AI answer visibility spec, Campaigns variant research."
+    },
+    {
       "id": "e_20261026T051937Z_1_claude",
       "at": "2026-10-26T05:19:37Z",
       "brand": "foliocraft",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "task",
       "text": "Owner approved the build for vault#3; coding task queued for KARMA (blocked: repo not connected)."
-    },
-    {
-      "id": "e_20261013T073443Z_4_gemini",
-      "at": "2026-10-13T07:34:43Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for LittleLoop"
-    },
-    {
-      "id": "e_20261013T073443Z_5_gemini",
-      "at": "2026-10-13T07:34:43Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for Sunverse"
-    },
-    {
-      "id": "e_20261013T073443Z_6_gemini",
-      "at": "2026-10-13T07:34:43Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for Foliocraft"
-    },
-    {
-      "id": "e_20261013T073306Z_1_gemini",
-      "at": "2026-10-13T07:33:06Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for LittleLoop from 15 sources"
-    },
-    {
-      "id": "e_20261013T073326Z_2_gemini",
-      "at": "2026-10-13T07:33:26Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Sunverse from 18 sources"
-    },
-    {
-      "id": "e_20261013T073418Z_3_gemini",
-      "at": "2026-10-13T07:34:18Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Foliocraft from 16 sources"
     }
   ]
 }
