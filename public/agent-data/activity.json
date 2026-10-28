@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261028T023101Z_1_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "1 finding: Instagram Edits adds an AI assistant that reviews Reels results (US first)."
+    },
+    {
+      "id": "e_20261028T023101Z_2_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "2 findings: YouTube chat-based Shorts editing due early 2027; Suno adds team workspaces and albums."
+    },
+    {
+      "id": "e_20261028T023101Z_3_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "2 findings: Webflow/Framer add live editor presence; Framer adds a country/path Firewall."
+    },
+    {
+      "id": "e_20261028T023101Z_4_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Planned 2 tasks: check Edits Assistant access; draft a monthly hook/retention review template."
+    },
+    {
+      "id": "e_20261028T023101Z_5_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Planned 2 research tasks: track chat-based Shorts editor rules; check Suno shared-model terms."
+    },
+    {
+      "id": "e_20261028T023101Z_6_claude",
+      "at": "2026-10-28T02:31:01Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "Planned 2 code specs: live shared editing with presence; premium access rules for private pages."
+    },
+    {
       "id": "e_20261027T022703Z_1_claude",
       "at": "2026-10-27T02:27:03Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: YouTube adds voice likeness detection later in 2026; Shorts can now be grouped into seasons and episodes."
-    },
-    {
-      "id": "e_20261014T022756Z_4_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Sunverse tasks: track voice-detection rollout, plan a 4-episode making-of Shorts series."
-    },
-    {
-      "id": "e_20261014T022756Z_5_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: Webflow added agentic translation; UX hiring survey favours portfolio sites with projects found fast."
-    },
-    {
-      "id": "e_20261014T022756Z_6_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Foliocraft code tasks: second-language toggle prototype, projects-first default layout."
-    },
-    {
-      "id": "e_20261013T092542Z_1_claude",
-      "at": "2026-10-13T09:25:42Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Owner approved the release package for vault#1; pipeline completed. Upload stays manual."
-    },
-    {
-      "id": "e_20261013T092542Z_2_claude",
-      "at": "2026-10-13T09:25:42Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Owner approved the posting package for vault#2; pipeline completed. Posting stays manual."
-    },
-    {
-      "id": "e_20261013T092542Z_3_claude",
-      "at": "2026-10-13T09:25:42Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Owner approved the build for vault#3; coding task queued for KARMA (blocked: repo not connected)."
     }
   ]
 }

@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-10-27T02:27:03Z",
+  "updatedAt": "2026-10-28T02:31:01Z",
   "tasks": [
+    {
+      "id": "t_20261028T023101Z_littleloop_1_claude",
+      "title": "Check whether Edits Assistant is available for LittleLoop's account and region",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit1: Edits Assistant is US-first with no confirmed wider rollout; confirm access before planning around it.",
+      "sourceFindings": [
+        "f_20261028T023101Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261028T023101Z_littleloop_2_claude",
+      "title": "Draft a monthly episode review template comparing hooks and retention per Reel",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit1: Edits Assistant centres on retention and hooks; a template filled with owner-supplied numbers makes reviews consistent.",
+      "sourceFindings": [
+        "f_20261028T023101Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261028T023101Z_sunverse_3_claude",
+      "title": "Track rollout and AI-label rules for YouTube's chat-based Shorts editor",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "sun1: launch is early 2027 with regions, languages and labelling unstated.",
+      "sourceFindings": [
+        "f_20261028T023101Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261028T023101Z_sunverse_4_claude",
+      "title": "Check Suno terms on ownership of shared custom models and workspace tracks",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "sun2: Suno's new shared custom models and workspaces raise rights questions before any team use.",
+      "sourceFindings": [
+        "f_20261028T023101Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261028T023101Z_foliocraft_5_claude",
+      "title": "Spec live shared editing with presence for client or mentor portfolio review",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol1: Webflow and Framer now show live presence of collaborators and agents in the editor.",
+      "sourceFindings": [
+        "f_20261028T023101Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261028T023101Z_foliocraft_6_claude",
+      "title": "Spec a premium access rule to restrict or redirect private portfolio pages",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "fol2: Framer's Firewall shows demand for visitor access controls on builder sites.",
+      "sourceFindings": [
+        "f_20261028T023101Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-28T02:31:01Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261027T022703Z_littleloop_1_claude",
       "title": "Draft a season compilation plan where each episode Reel links to one long video",
@@ -1186,102 +1282,6 @@
       ],
       "requiresApproval": true,
       "createdAt": "2026-10-15T02:29:57Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261015T022957Z_sunverse_5_claude",
-      "title": "Verify on YouTube Help whether AI background tracks fall under 'main focus'",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "sun1 relies on a secondary tracker; the primary YouTube Help page could not be retrieved this run and 'main focus' is undefined.",
-      "sourceFindings": [
-        "f_20261015T022957Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-15T02:29:57Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261015T022957Z_foliocraft_6_claude",
-      "title": "Prototype a draft mode to stage portfolio edits and publish them together",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "low",
-      "reason": "fol1: Webflow's announced Releases shows demand for safe staged redesigns of live sites.",
-      "sourceFindings": [
-        "f_20261015T022957Z_foliocraft_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-15T02:29:57Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261015T022957Z_foliocraft_7_claude",
-      "title": "Spec an artist template with multi-photo artwork pages and an enquiry button",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "low",
-      "reason": "fol2: artist site guidance lists multi-photo pieces, artwork details and a clear enquire/buy path as essentials (low confidence).",
-      "sourceFindings": [
-        "f_20261015T022957Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-15T02:29:57Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261014T022756Z_littleloop_1_claude",
-      "title": "Draft LittleLoop profile bio and AI-assisted animation disclosure wording",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Instagram's new AI-generated profile label (lit1) affects reach of undisclosed accounts; profile-level wording is needed before any change goes live.",
-      "sourceFindings": [
-        "f_20261014T022756Z_littleloop_1_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-14T02:27:56Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261014T022756Z_sunverse_2_claude",
-      "title": "Track when YouTube voice likeness detection reaches India and covers singing",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Voice matching is announced for later in 2026 but India timing and singing-voice coverage are unconfirmed (sun1).",
-      "sourceFindings": [
-        "f_20261014T022756Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-14T02:27:56Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261014T022756Z_sunverse_3_claude",
-      "title": "Plan a 4-episode Shorts series around the making of one Sunverse track",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Shorts series with seasons/episodes are now live on web, mobile and TV (sun2). Plan only; publishing needs separate approval.",
-      "sourceFindings": [
-        "f_20261014T022756Z_sunverse_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-14T02:27:56Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
     }
