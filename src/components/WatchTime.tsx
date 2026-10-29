@@ -24,6 +24,12 @@ interface Report {
   notes?: string[];
 }
 
+/** 7.9 → "7h 54m" so decimal hours are not misread as minutes. */
+const hm = (v: number | undefined) => {
+  if (v === undefined) return '';
+  const m = Math.round(v * 60);
+  return `${Math.floor(m / 60).toLocaleString('en-IN')}h ${m % 60}m · `;
+};
 const hrs = (v: number | undefined) => (v === undefined ? '—' : v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString('en-IN', { maximumFractionDigits: 1 }));
 const dur = (s: number | null | undefined) => (s === null || s === undefined ? '—' : `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`);
 
@@ -111,9 +117,9 @@ export function WatchTime({ subscribers }: { subscribers: number | null }) {
   return (
     <Card title="Watch time" action={<LiveBadge label="YouTube Analytics" />}>
       <section className="grid-4 wt-grid" aria-label="Watch time">
-        <div className="stat"><p className="stat-label">Watch hours · lifetime</p><p className="stat-value">{hrs(r.lifetime?.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{(r.lifetime?.views ?? 0).toLocaleString('en-IN')} views</span></div></div>
-        <div className="stat"><p className="stat-label">Watch hours · last 365 days</p><p className="stat-value">{hrs(y.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{y.views.toLocaleString('en-IN')} views</span></div></div>
-        <div className="stat"><p className="stat-label">Watch hours · last 28 days</p><p className="stat-value">{hrs(r.last28?.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{(r.last28?.views ?? 0).toLocaleString('en-IN')} views</span></div></div>
+        <div className="stat"><p className="stat-label">Watch hours · lifetime (hrs)</p><p className="stat-value">{hrs(r.lifetime?.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{hm(r.lifetime?.watchHours)}{(r.lifetime?.views ?? 0).toLocaleString('en-IN')} views</span></div></div>
+        <div className="stat"><p className="stat-label">Watch hours · last 365 days</p><p className="stat-value">{hrs(y.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{hm(y.watchHours)}{y.views.toLocaleString('en-IN')} views</span></div></div>
+        <div className="stat"><p className="stat-label">Watch hours · last 28 days</p><p className="stat-value">{hrs(r.last28?.watchHours)}</p><div className="stat-foot"><span className="stat-hint">{hm(r.last28?.watchHours)}{(r.last28?.views ?? 0).toLocaleString('en-IN')} views</span></div></div>
         <div className="stat"><p className="stat-label">Average view duration</p><p className="stat-value">{dur(r.last28?.avgViewSeconds)}</p><div className="stat-foot"><span className="stat-hint">last 28 days · lifetime {dur(r.lifetime?.avgViewSeconds)}</span></div></div>
       </section>
 
