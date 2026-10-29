@@ -19,7 +19,6 @@ self.addEventListener('fetch', (e) => {
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return; // fonts etc. go straight to the network
   if (url.pathname.startsWith('/api/') || url.pathname.includes('/agent-data/') || url.pathname.endsWith('/version.json')) return; // always live
-  if (url.pathname.startsWith('/agentverse')) return; // separate app: never cache it as the studio's index.html
   if (req.mode === 'navigate') {
     e.respondWith(
       fetch(req)
