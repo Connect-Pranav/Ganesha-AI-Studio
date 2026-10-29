@@ -26,9 +26,11 @@ interface Report {
 const hrs = (v: number | undefined) => (v === undefined ? '—' : v >= 1000 ? `${(v / 1000).toFixed(1)}K` : v.toLocaleString('en-IN', { maximumFractionDigits: 1 }));
 const dur = (s: number | null | undefined) => (s === null || s === undefined ? '—' : `${Math.floor(s / 60)}:${String(Math.round(s % 60)).padStart(2, '0')}`);
 
-export function WatchTime({ subscribers }: { subscribers: number | null }) {
-  const [state, setState] = useState<{ s: 'locked' } | { s: 'loading' } | { s: 'error'; m: string } | { s: 'ready'; r: Report }>({ s: getToken() ? 'loading' : 'locked' });
-  const [busy, setBusy] = useState(false);
+type WatchState = { s: 'locked' } | { s: 'loading' } | { s: 'error'; m: string } | { s: 'ready'; r: Report };
+
+/** Loads the owner-only watch time report; reloads when the studio is unlocked. */
+function useWatchTime() {
+  const [state, setState] = useState<WatchState>({ s: getToken() ? 'loading' : 'locked' });
   const load = useCallback((refresh = false) => {
     if (!getToken()) return setState({ s: 'locked' });
     setState((x) => (x.s === 'ready' ? x : { s: 'loading' }));
@@ -42,6 +44,53 @@ export function WatchTime({ subscribers }: { subscribers: number | null }) {
     window.addEventListener(AUTH_EVENT, on);
     return () => window.removeEventListener(AUTH_EVENT, on);
   }, [load]);
+  return { state, setState, load };
+}
+
+/** Compact channel watch time card for the Sunverse workspace. Same data as the full panel in Progress. */
+export function WatchTimeCard({ onOpen }: { onOpen: () => void }) {
+  const { state } = useWatchTime();
+  const title = 'Channel watch time';
+  const open = (
+    <button className="btn btn-small" onClick={onOpen}>
+      Watch time details <Icon name="arrow" size={14} />
+    </button>
+  );
+  if (state.s === 'locked')
+    return <Card title={title}><EmptyState title="Unlock the studio to see watch time" hint="Watch time is private channel data, so it is shown only to you (bell → Unlock)." /></Card>;
+  if (state.s === 'loading') return <Card title={title}><p className="ai-note">Loading watch time…</p></Card>;
+  if (state.s === 'error') return <Card title={title}><p className="form-error">{state.m}</p>{open}</Card>;
+  const r = state.r;
+  if (!r.connected || !r.last365)
+    return (
+      <Card title={title}>
+        <EmptyState title="YouTube Analytics not connected" hint={r.problem ?? 'Connect once from the watch time panel in Progress.'} />
+        {open}
+      </Card>
+    );
+  const pctDone = Math.min(100, Math.round((r.last365.watchHours / r.ypp.hours) * 1000) / 10);
+  return (
+    <Card title={title} action={<LiveBadge label="YouTube Analytics" />}>
+      <dl className="kv-row" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))' }}>
+        <div><dt>Last 28 days</dt><dd>{hrs(r.last28?.watchHours)} hrs</dd></div>
+        <div><dt>Last 365 days</dt><dd>{hrs(r.last365.watchHours)} hrs</dd></div>
+        <div><dt>Lifetime</dt><dd>{hrs(r.lifetime?.watchHours)} hrs</dd></div>
+        <div><dt>Avg view (28 d)</dt><dd>{dur(r.last28?.avgViewSeconds)}</dd></div>
+      </dl>
+      <div className="wt-bar" role="progressbar" aria-valuenow={pctDone} aria-valuemin={0} aria-valuemax={100} aria-label="Watch hours toward the Partner Program bar" style={{ marginTop: 12 }}>
+        <span style={{ width: `${pctDone}%` }} />
+      </div>
+      <p className="ai-note">
+        {pctDone}% of {r.ypp.hours.toLocaleString('en-IN')} Partner Program hours · fetched {r.fetchedAt ? formatWhen(r.fetchedAt) : '—'}
+      </p>
+      {open}
+    </Card>
+  );
+}
+
+export function WatchTime({ subscribers }: { subscribers: number | null }) {
+  const { state, setState, load } = useWatchTime();
+  const [busy, setBusy] = useState(false);
 
   const connect = async () => {
     setBusy(true);

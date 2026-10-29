@@ -3,6 +3,7 @@ import { BrandMark, hasLogo } from './BrandMark';
 import { useCallback, useEffect, useState } from 'react';
 import { ReelFactory } from './ReelFactory';
 import { AnalyticsView } from './AnalyticsView';
+import { WatchTimeCard } from './WatchTime';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
 import { StudioWorkflows } from './StudioWorkflows';
@@ -308,6 +309,7 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
         </div>
         <div className="col">
           {productId === 'sunverse' && <SunverseChannel onNavigate={onNavigate} />}
+          {productId === 'sunverse' && <WatchTimeCard onOpen={() => pickTab('progress')} />}
           <Integrations brand={productId} />
           <Card title={handoff.title}>
             <ol className="flow">
