@@ -98,3 +98,28 @@ test('http: watch time is owner-only', async () => {
   assert.equal(j.connected, false);
   assert.equal(/GOCSPX/.test(JSON.stringify(j)), false, 'never echoes the client secret');
 });
+
+test('monetization tracker: daily snapshots from real fetches, owner checklist validated', async () => {
+  // Not connected: cron does nothing, nothing is invented.
+  assert.deepEqual(await yt.trackDaily(ENV, db), { skipped: 'not connected' });
+  assert.deepEqual((await yt.tracker(db)).history, []);
+
+  const { url } = await yt.startConnect(ENV, db);
+  const state = new URL(url).searchParams.get('state');
+  await yt.finishConnect(ENV, db, new URL(`https://studio.example/yt/callback?code=abc&state=${state}`), { fetch: google() });
+
+  const now = new Date('2026-10-20T12:00:00Z');
+  assert.deepEqual(await yt.trackDaily(ENV, db, { fetch: google(), now }), { tracked: '2026-10-20' });
+  let t = await yt.tracker(db);
+  assert.equal(t.history.length, 1);
+  assert.equal(t.history[0].longFormHours365, 40);
+  assert.equal(t.history[0].shortsViews90, 9000);
+  assert.deepEqual(await yt.trackDaily(ENV, db, { fetch: google(), now }), { skipped: 'already tracked today' });
+
+  assert.equal(t.checklist.length, 6);
+  assert.ok(t.checklist.every((c) => c.done === false), 'nothing is pre-ticked');
+  t = await yt.setCheck(db, { id: 'twosv', done: true });
+  assert.equal(t.checklist.find((c) => c.id === 'twosv').done, true);
+  await assert.rejects(yt.setCheck(db, { id: 'nope', done: true }), /Unknown requirement/);
+  await assert.rejects(yt.setCheck(db, { id: 'strikes', done: 'yes' }), /true or false/);
+});

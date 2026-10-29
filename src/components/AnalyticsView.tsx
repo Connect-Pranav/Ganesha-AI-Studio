@@ -7,6 +7,7 @@ import { BrandWorkCounts, StudioOps } from './StudioOps';
 import { InstagramConnect } from './cbo/StudioDesk';
 import { AnalyticsRange } from './AnalyticsRange';
 import { WatchTime } from './WatchTime';
+import { YppTracker } from './YppTracker';
 
 type Tab = ProductId | 'studio';
 // SOMA's YouTube analysis (Sunverse) comes first: it is the tab with real channel data.
@@ -173,7 +174,7 @@ export function AnalyticsView({ initialBrand = 'sunverse', embedded = false }: {
         <Stat label={ig ? 'Average views / post' : 'Average views / video'} value={n(s.avgViewsPerVideo)} hint={`Median ${n(s.medianViewsPerVideo)}`} />
       </section>
 
-      {!ig && brand === 'sunverse' && <div id="ws-watchtime" className="anchor"><WatchTime subscribers={r.channel.subscribersHidden ? null : r.channel.subscribers} /></div>}
+      {!ig && brand === 'sunverse' && <div id="ws-watchtime" className="anchor ypp-stack"><WatchTime subscribers={r.channel.subscribersHidden ? null : r.channel.subscribers} /><YppTracker /></div>}
 
       <AnalyticsRange brand={brand} labels={ig ? { followers: 'followers', views: 'views', posts: 'posts' } : { followers: 'subscribers', views: 'channel views', posts: 'videos' }} />
 

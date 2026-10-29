@@ -5,6 +5,7 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { api, AUTH_EVENT, getToken } from '../services/adminService';
 import { loadAnalytics } from '../services/analyticsService';
+import { TRACKER_EVENT, type TrackerData } from './YppTracker';
 
 interface Tier { id: 'fan' | 'ads'; label: string; subscribers: number; hours: number; shortsViews90: number; uploads90: number | null }
 interface WatchReport {
@@ -65,6 +66,7 @@ function Tile({ label, value, children, hint, onClick }: { label: string; value:
 export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
   const [watch, setWatch] = useState<Watch>({ s: getToken() ? 'loading' : 'locked' });
   const [pub, setPub] = useState<Pub>({ s: 'loading' });
+  const [core, setCore] = useState<{ done: number; total: number } | null>(null);
 
   const loadWatch = useCallback(() => {
     if (!getToken()) return setWatch({ s: 'locked' });
@@ -77,6 +79,19 @@ export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
     window.addEventListener(AUTH_EVENT, loadWatch);
     return () => window.removeEventListener(AUTH_EVENT, loadWatch);
   }, [loadWatch]);
+  // Owner-confirmed core requirements (2-Step Verification, strikes, AdSense …) from the tracker.
+  useEffect(() => {
+    const loadCore = () => {
+      if (!getToken()) return setCore(null);
+      api<TrackerData>('/api/youtube/ypp')
+        .then((d) => setCore({ done: d.checklist.filter((c) => c.done).length, total: d.checklist.length }))
+        .catch(() => setCore(null));
+    };
+    loadCore();
+    window.addEventListener(AUTH_EVENT, loadCore);
+    window.addEventListener(TRACKER_EVENT, loadCore);
+    return () => (window.removeEventListener(AUTH_EVENT, loadCore), window.removeEventListener(TRACKER_EVENT, loadCore));
+  }, []);
   useEffect(() => {
     loadAnalytics('sunverse')
       .then((r) => {
@@ -118,6 +133,10 @@ export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
     return true;
   };
   const upNeed = tiers.find((t) => t.uploads90 !== null)?.uploads90 ?? 3;
+  // Ready to apply for ad revenue only when the numbers AND every core requirement are met.
+  const adsV = verdict(tiers[tiers.length - 1]);
+  const coreV = core === null ? null : core.done === core.total;
+  const overall = adsV === false || coreV === false ? false : adsV === null || coreV === null ? null : true;
   const label = (v: boolean | null) => (v === true ? 'Ready' : v === false ? 'Not yet' : '—');
 
   return (
@@ -146,7 +165,7 @@ export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
       >
         <Bars have={shorts} tiers={tiers} pick={(t) => t.shortsViews90} show={short} />
       </Tile>
-      <Tile label="Monetization status" value={label(verdict(tiers[tiers.length - 1]))} hint="Also needs 2-Step Verification, no strikes, AdSense · Studio → Earn" onClick={onOpen}>
+      <Tile label="Monetization status" value={label(overall)} hint={core ? 'Numbers + core requirements · Studio → Earn is final' : 'Core requirements: unlock to see · Studio → Earn is final'} onClick={onOpen}>
         <ul className="mz-status">
           {tiers.map((t) => {
             const v = verdict(t);
@@ -160,6 +179,10 @@ export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
           <li className={uploads === null ? '' : uploads >= upNeed ? 'met' : 'not'}>
             <span>Public uploads · 90 days</span>
             <b>{uploads === null ? '—' : `${uploads} / ${upNeed}`}</b>
+          </li>
+          <li className={core === null ? '' : core.done === core.total ? 'met' : 'not'}>
+            <span>Core requirements</span>
+            <b>{core === null ? '—' : `${core.done} / ${core.total}`}</b>
           </li>
         </ul>
       </Tile>

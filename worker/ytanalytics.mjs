@@ -233,7 +233,81 @@ export async function watchTime(env, db, { force = false, deps = {} } = {}) {
     ],
   };
   await db.prepare('INSERT INTO yt_watch_cache (id, data_json, fetched_at) VALUES (1,?,?) ON CONFLICT(id) DO UPDATE SET data_json = excluded.data_json, fetched_at = excluded.fetched_at').bind(JSON.stringify(out), out.fetchedAt).run();
+  await recordSnapshot(db, out, ymd(now));
   return out;
+}
+
+/* ---------- Monetization tracker: daily progress history + owner-confirmed core requirements ---------- */
+const HISTORY_KEY = 'ypp_history';
+const CHECKLIST_KEY = 'ypp_checklist';
+const HISTORY_MAX = 400;
+/** Requirements YouTube does not expose through an API; the owner confirms them in YouTube Studio. */
+export const CORE_CHECKS = [
+  { id: 'policies', label: 'Follows YouTube channel monetization policies and Community Guidelines' },
+  { id: 'location', label: 'Lives in a country where YPP is available (India)' },
+  { id: 'strikes', label: 'No active Community Guidelines strikes' },
+  { id: 'twosv', label: '2-Step Verification on the Google account' },
+  { id: 'advanced', label: 'Advanced features enabled on YouTube' },
+  { id: 'adsense', label: 'AdSense for YouTube account linked (or ready to link)' },
+];
+
+async function readSetting(db, key, fallback) {
+  const r = await db.prepare('SELECT value_json FROM studio_settings WHERE key = ?').bind(key).first();
+  if (!r) return fallback;
+  try {
+    return JSON.parse(r.value_json);
+  } catch {
+    return fallback;
+  }
+}
+const writeSetting = (db, key, value) =>
+  db.prepare('INSERT INTO studio_settings (key, value_json, updated_at) VALUES (?,?,?) ON CONFLICT(key) DO UPDATE SET value_json = excluded.value_json, updated_at = excluded.updated_at').bind(key, JSON.stringify(value), nowIso()).run();
+
+/** One entry per UTC day (the latest fetch of the day wins), measured numbers only. */
+export async function recordSnapshot(db, report, day = String(report?.fetchedAt ?? nowIso()).slice(0, 10)) {
+  if (!report?.connected || !report.last365) return;
+  const split = report.split && !report.split.error ? report.split : null;
+  const entry = {
+    day,
+    totalHours365: report.last365.watchHours,
+    longFormHours365: split?.longFormWatchHours365 ?? null,
+    shortsViews90: split?.shortsViews90 ?? null,
+  };
+  const hist = (await readSetting(db, HISTORY_KEY, [])).filter((h) => h && h.day !== day);
+  hist.push(entry);
+  hist.sort((a, b) => a.day.localeCompare(b.day));
+  await writeSetting(db, HISTORY_KEY, hist.slice(-HISTORY_MAX));
+}
+
+/** Cron: make sure today has a snapshot (uses the 3-hour cache, so at most one Google fetch). */
+export async function trackDaily(env, db, deps = {}) {
+  const st = await status(env, db);
+  if (!st.connected) return { skipped: 'not connected' };
+  const today = (deps.now ?? new Date()).toISOString().slice(0, 10);
+  const hist = await readSetting(db, HISTORY_KEY, []);
+  if (hist.some((h) => h.day === today)) return { skipped: 'already tracked today' };
+  const r = await watchTime(env, db, { deps });
+  if (r.cached) await recordSnapshot(db, r, today);
+  return { tracked: today };
+}
+
+export async function tracker(db) {
+  const saved = await readSetting(db, CHECKLIST_KEY, {});
+  return {
+    checklist: CORE_CHECKS.map((c) => ({ ...c, done: Boolean(saved[c.id]?.done), updatedAt: saved[c.id]?.updatedAt ?? null })),
+    history: await readSetting(db, HISTORY_KEY, []),
+    ypp: yppTarget(),
+  };
+}
+
+export async function setCheck(db, body) {
+  const id = String(body?.id ?? '');
+  if (!CORE_CHECKS.some((c) => c.id === id)) throw new HttpError(400, `Unknown requirement "${id}". Use one of: ${CORE_CHECKS.map((c) => c.id).join(', ')}`);
+  if (typeof body.done !== 'boolean') throw new HttpError(400, '"done" must be true or false');
+  const saved = await readSetting(db, CHECKLIST_KEY, {});
+  saved[id] = { done: body.done, updatedAt: nowIso() };
+  await writeSetting(db, CHECKLIST_KEY, saved);
+  return tracker(db);
 }
 
 export async function disconnect(db) {

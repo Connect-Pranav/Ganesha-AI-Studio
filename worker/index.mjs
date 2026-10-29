@@ -539,6 +539,8 @@ async function route(request, env, ctx, rawEnv = env) {
   /* ---------- YouTube Analytics (Sunverse watch time, owner-only) ---------- */
   if (path === '/api/youtube' && method === 'GET') return json(await yt.status(env, db));
   if (path === '/api/youtube/connect' && method === 'POST') return json(await yt.startConnect(env, db));
+  if (path === '/api/youtube/ypp' && method === 'GET') return json(await yt.tracker(db));
+  if (path === '/api/youtube/ypp/checklist' && method === 'PUT') return json(await yt.setCheck(db, await readBody(request)));
   if (path === '/api/youtube/watchtime' && method === 'GET') return json(await yt.watchTime(env, db, { force: url.searchParams.get('refresh') === '1' }));
   if (path === '/api/youtube' && method === 'DELETE') {
     await yt.disconnect(db);
@@ -711,6 +713,8 @@ export default {
         .then((r) => r.length && console.log('reels', JSON.stringify(r)))
         .catch((e) => console.error('reels failed', e.message)),
     );
+    // Sunverse monetization tracker: one watch-time snapshot per day while YouTube Analytics is connected.
+    ctx.waitUntil(yt.trackDaily(env, env.DB).catch((e) => console.error('ypp track failed', e.message)));
     // MUSHAK autopilot: a growth cycle every few hours, a couple of steps per tick.
     // Ganesha Brain: approved missions move forward a step or two per tick.
     ctx.waitUntil(scheduledMissions(env, env.DB).then((r) => r.length && console.log('missions', JSON.stringify(r))).catch((e) => console.error('missions failed', e.message)));
