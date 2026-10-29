@@ -1309,6 +1309,7 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
   background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(167, 139, 250, 0.13), transparent 45%);
 }
 .app:not([data-fx='minimal']) .fx-tilting > * { position: relative; z-index: 1; }
+.app:not([data-fx='minimal']) .fx-tilting > .stat-go { position: absolute; } /* keep the › arrow in the corner while tilting */
 
 /* Page enter: lift + fade + de-blur, children cascade in */
 @keyframes view-in { from { opacity: 0; transform: translateY(14px) scale(0.995); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
@@ -1690,8 +1691,9 @@ select option { background: #0e1540; color: var(--ink); }
 .mz-bar { display: block; height: 6px; }
 .mz-bars, .mz-status { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 7px; }
 .mz-bar-label { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--ink-3); margin-bottom: 3px; }
-.mz-bar-label b { color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
-.mz-bars li.met .mz-bar-label b, .mz-status li.met b { color: var(--ok); }
+.mz-ach { color: var(--ink-3); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.mz-ach b { color: var(--ink); font-weight: 700; }
+.mz-bars li.met .mz-ach b, .mz-status li.met b { color: var(--ok); }
 .mz-status li { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
 .mz-status li b { font-weight: 600; color: var(--ink-3); }
 .mz-status li.not b { color: var(--warn, #f5b942); }

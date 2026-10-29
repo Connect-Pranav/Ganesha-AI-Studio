@@ -37,7 +37,10 @@ function Bars({ have, tiers, pick, show }: { have: number | null; tiers: Tier[];
         return (
           <li key={t.id} className={have !== null && have >= need ? 'met' : ''}>
             <span className="mz-bar-label">
-              {t.label} <b>{show(need)}</b>
+              <span>{t.label}</span>
+              <span className="mz-ach">
+                <b>{have === null ? '—' : show(have)}</b> / {show(need)}
+              </span>
             </span>
             <span className="wt-bar mz-bar" role="progressbar" aria-valuenow={p} aria-valuemin={0} aria-valuemax={100} aria-label={`${t.label}: ${have === null ? 'unknown' : show(have)} of ${show(need)}`}>
               <span style={{ width: `${p}%` }} />
@@ -114,10 +117,10 @@ export function MonetizationGoal({ onOpen }: { onOpen: () => void }) {
   const uploads = pub.s === 'ready' ? pub.uploads90 : null;
 
   const watchMissing =
-    watch.s === 'locked' ? 'Unlock the studio to see (private data)'
+    watch.s === 'locked' ? 'Private data · unlock the studio (bell → Unlock)'
     : watch.s === 'loading' ? 'Loading…'
     : watch.s === 'error' ? watch.m
-    : !watch.r.connected ? watch.r.problem || 'Connect YouTube Analytics once'
+    : !watch.r.connected ? watch.r.problem || 'Not connected · tap to connect YouTube Analytics →'
     : watch.r.split?.error ? `Shorts split unavailable: ${watch.r.split.error}`
     : 'Refresh watch time to load the Shorts split';
 
