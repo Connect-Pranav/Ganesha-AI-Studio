@@ -123,3 +123,15 @@ test('monetization tracker: daily snapshots from real fetches, owner checklist v
   await assert.rejects(yt.setCheck(db, { id: 'nope', done: true }), /Unknown requirement/);
   await assert.rejects(yt.setCheck(db, { id: 'strikes', done: 'yes' }), /true or false/);
 });
+
+test('wrangler routes every Worker-handled page path to the Worker before static assets', async () => {
+  const { readFileSync } = await import('node:fs');
+  const root = new URL('../../', import.meta.url);
+  const cfg = readFileSync(new URL('wrangler.jsonc', root), 'utf8');
+  const first = JSON.parse(/"run_worker_first":\s*(\[[^\]]*\])/.exec(cfg)[1]);
+  const src = readFileSync(new URL('worker/index.mjs', root), 'utf8');
+  // Prefixes the fetch handler serves itself (e.g. the Google OAuth return /yt/callback).
+  const handled = new Set([...src.matchAll(/pathname(?: ===|\.startsWith\()\s*'(\/[a-z]+)\//g)].map((m) => `${m[1]}/*`));
+  assert.ok(handled.has('/yt/*'), 'sanity: /yt/callback is handled by the Worker');
+  for (const p of handled) assert.ok(first.includes(p), `${p} must be in assets.run_worker_first, or the static app answers instead (blank page)`);
+});
