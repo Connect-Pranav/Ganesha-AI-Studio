@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261029T055902Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-10-29T05:57:20Z",
+      "finishedAt": "2026-10-29T05:59:02Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
+      "id": "run_20261029T055720Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-10-29T05:54:10Z",
+      "finishedAt": "2026-10-29T05:57:20Z",
+      "status": "partial",
+      "summary": "2 findings across 3 brands",
+      "error": "Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
       "id": "run_20261029T022636Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",

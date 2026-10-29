@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261029T055523Z_1_gemini",
+      "at": "2026-10-29T05:55:23Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for LittleLoop from 18 sources"
+    },
+    {
       "id": "e_20261029T022636Z_1_claude",
       "at": "2026-10-29T02:26:36Z",
       "brand": "littleloop",
@@ -890,15 +899,6 @@
       "engine": "claude",
       "kind": "task",
       "text": "GANESHA queued 2 LittleLoop tasks: parent-directed caption guidelines and age-law tracking."
-    },
-    {
-      "id": "e_20261015T022957Z_3_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 finding on YouTube's GenAI disclosure list now naming AI music as a video's main focus."
     }
   ]
 }

@@ -1,6 +1,48 @@
 {
-  "updatedAt": "2026-10-29T02:26:36Z",
+  "updatedAt": "2026-10-29T05:57:20Z",
   "findings": [
+    {
+      "id": "f_20261029T055523Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Industry Reports Highlight Shifting Kids' TV and Animation Trends",
+      "insight": "Nielsen and Glance have released new reports tracking television, streaming, and kids' programming trends. LittleLoop should track insights from these industry analyses to align animated Instagram short themes with broader viewership patterns among 2-to-8-year-olds.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Nielsen Animation Day 2026 Reports Highlights Key Toon TV & Streaming Trends - Animation Magazine",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQNHBvdlBxTWFMREV6eXc0NjlUY1dsSUt4WGppOUFDNTBRSUdPX3lyVVBQV2FpS1RWWVAxcFVoZHZMZUZsdjVRUFdKV0p0ZTlPa3lwdTYxc0tiRFF2NHUzRURmWEhqSDFKcldwTVJpdS1majNZQi1BZHIxeERXQ0pVNkh6YTI2QW5oR0p6eVFfR293QnBkQXY5YjZ0OEJKdFBVYzhWeF8zbC0tUE54TzhYQnRQQWNLRFR5?oc=5",
+          "source": "Animation Magazine",
+          "retrievedAt": "2026-10-29T05:54:11Z"
+        },
+        {
+          "title": "Glance Unveils Three Kids’ TV Trends at MIPJUNIOR - FormatBiz",
+          "url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTFBwaGYxbW1fYXF0RDJOajgwVkhoYWdETkt6UDg3UnV0RU9WTnVINTFoaC1IQU9mUXlFeFp0aHE3THdfcnhtbnowRS14MVJheU9lTXdPU04zdW9uT1k?oc=5",
+          "source": "FormatBiz",
+          "retrievedAt": "2026-10-29T05:54:11Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-29T05:55:23Z"
+    },
+    {
+      "id": "f_20261029T055523Z_littleloop_2",
+      "brand": "littleloop",
+      "title": "Major Kids' Franchises Expand Reach via Animated Shorts",
+      "insight": "The release of a new Frozen animated short on YouTube shows leading family franchises continuing to invest in digital short-form video. LittleLoop can observe how major animated properties structure bite-sized stories to keep preschool and early-school viewers engaged.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "New Frozen YouTube Short: Royal Fitting + Where to Watch - Totally The Bomb",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPbXJ1b3pwUlNxT2JyWTNCRjRweldkMFVKY0R5d2Z2bGM1OTk0Q1ZoUkZkRXByNWZqekJOaHdCLTZrWjNDYlA3WldLelRNN3hHcWJsemhtN1JvR1FXYjJGTkV4OGF1Tkc0OEZCSndjVUxnYkxNREpWNVJDd0lFRUNsNQ?oc=5",
+          "source": "Totally The Bomb",
+          "retrievedAt": "2026-10-29T05:54:11Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-29T05:55:23Z"
+    },
     {
       "id": "f_20261029T022636Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1206,48 +1248,6 @@
       "agent": "narada_market_intelligence",
       "engine": "gemini",
       "createdAt": "2026-10-19T04:48:54Z"
-    },
-    {
-      "id": "f_20261019T022526Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram keeps widening tests of a Series tab that groups Reels into episodes",
-      "insight": "Instagram moved its Series test (group Reels into series, seasons, episodes and watch in order) to publishers in June, and in October was seen internally testing creator series tabs with a short-clips section. LittleLoop should plan episodes as numbered, recurring-character seasons so they can be grouped if the tool opens up. Still a test; not generally available.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Instagram tests Series tab with publishers for microdrama content",
-          "url": "https://indiantelevision.com/iworld/instagram-tests-series-tab-with-publishers-for-microdrama-content/",
-          "source": "indiantelevision.com",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        },
-        {
-          "title": "(October 12, 2026) Instagram updates, news, and features",
-          "url": "https://socialbee.com/blog/instagram-updates/",
-          "source": "SocialBee",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-19T02:25:26Z"
-    },
-    {
-      "id": "f_20261019T022526Z_littleloop_2_claude",
-      "brand": "littleloop",
-      "title": "New preschool slate leans on STEM problem-solving with a 'plan, test, solve' loop",
-      "insight": "Netflix's preschool slate includes an animated Sesame Street spin-off (premiering Oct 26) built around using STEM skills to solve problems with a plan-test-solve approach. LittleLoop could try a short where a character plans, tries, fails gently and fixes a small problem, an easy learning point for ages 4-6. One source; signal of direction, not demand data.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "New Sesame Street Film and Gabby's Dollhouse Series for Preschoolers and Kids Coming to Netflix",
-          "url": "https://www.netflix.com/tudum/articles/new-netflix-preschool-shows-games",
-          "source": "Netflix Tudum",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-19T02:25:26Z"
     }
   ]
 }
