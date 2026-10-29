@@ -22,6 +22,8 @@ const google = (calls = []) => async (url, init) => {
   if (s.startsWith('https://www.googleapis.com/youtube/v3/channels')) return Response.json({ items: [{ id: 'UC1', snippet: { title: 'SURVERSE', publishedAt: '2024-05-01T00:00:00Z' } }] });
   if (s.startsWith('https://youtubeanalytics.googleapis.com/v2/reports')) {
     const u = new URL(s);
+    if (u.searchParams.get('dimensions') === 'creatorContentType')
+      return Response.json({ columnHeaders: [{ name: 'creatorContentType' }, { name: 'views' }, { name: 'estimatedMinutesWatched' }], rows: [['VIDEO_ON_DEMAND', 300, 2400], ['SHORTS', 9000, 600]] });
     if (u.searchParams.get('dimensions') === 'day')
       return Response.json({ columnHeaders: [{ name: 'day' }, { name: 'views' }, { name: 'estimatedMinutesWatched' }], rows: [['2026-10-01', 10, 30], ['2026-10-02', 20, 90]] });
     const start = u.searchParams.get('startDate');
@@ -56,6 +58,9 @@ test('connect: state-checked Google OAuth → refresh token stored encrypted; wa
   assert.equal(w.lifetime.avgViewSeconds, 42);
   assert.deepEqual(w.daily.map((d) => d.watchHours), [0.5, 1.5]);
   assert.equal(w.ypp.hours, 4000, 'before 1 Feb 2027 the bar is 4,000 hours');
+  assert.equal(w.split.longFormWatchHours365, 40, 'Shorts watch time is excluded from YPP hours');
+  assert.equal(w.split.shortsViews90, 9000);
+  assert.deepEqual(w.ypp.tiers.map((t) => [t.id, t.subscribers, t.hours, t.shortsViews90]), [['fan', 500, 3000, 3_000_000], ['ads', 1000, 4000, 10_000_000]]);
   const before = calls.length;
   const again = await yt.watchTime(ENV, db, { deps: { fetch: google(calls) } });
   assert.equal(again.cached, true);
@@ -68,6 +73,8 @@ test('connect: state-checked Google OAuth → refresh token stored encrypted; wa
 test('ypp target switches to 8,000 hours for new applicants from 1 Feb 2027', () => {
   assert.equal(yt.yppTarget(new Date('2027-01-31T23:00:00Z')).hours, 4000);
   assert.equal(yt.yppTarget(new Date('2027-02-01T00:00:00Z')).hours, 8000);
+  assert.equal(yt.yppTarget(new Date('2027-02-01T00:00:00Z')).tiers[1].shortsViews90, 20_000_000);
+  assert.equal(yt.yppTarget(new Date('2027-02-01T00:00:00Z')).tiers[0].hours, 3000, 'fan funding bar unchanged');
 });
 
 test('expired sign-in is reported plainly; changed secret is detected', async () => {

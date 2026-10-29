@@ -18,12 +18,22 @@ export const redirectUri = (env) => `${publicBase(env)}/yt/callback`;
 export const appConfigured = (env) => Boolean(env.YT_CLIENT_ID && env.YT_CLIENT_SECRET);
 const MISSING = (env) => ['YT_CLIENT_ID', 'YT_CLIENT_SECRET'].filter((k) => !env[k]);
 
-/** YouTube Partner Program watch-hour bar for a new applicant on a given day (official, Aug 2026). */
+/**
+ * YouTube Partner Program bars for a new applicant on a given day.
+ * Ad revenue tier: 1,000 subs + 4,000 long-form public watch hours (12 months) or 10M Shorts views (90 days);
+ * from 1 Feb 2027 new applicants need 8,000 hours or 20M Shorts views.
+ * Fan funding tier: 500 subs + 3 public uploads (90 days) + 3,000 hours (12 months) or 3M Shorts views (90 days).
+ * `hours` / `subscribers` stay at the ad revenue bar for older callers.
+ */
 export function yppTarget(today = new Date()) {
   const after = today.getTime() >= Date.UTC(2027, 1, 1);
+  const ads = after
+    ? { id: 'ads', label: 'Ad revenue', subscribers: 1000, hours: 8000, shortsViews90: 20_000_000, uploads90: null }
+    : { id: 'ads', label: 'Ad revenue', subscribers: 1000, hours: 4000, shortsViews90: 10_000_000, uploads90: null };
+  const fan = { id: 'fan', label: 'Fan funding', subscribers: 500, hours: 3000, shortsViews90: 3_000_000, uploads90: 3 };
   return after
-    ? { hours: 8000, subscribers: 1000, from: '2027-02-01', note: 'New applicants from 1 Feb 2027: 1,000 subscribers + 8,000 public watch hours in 365 days.' }
-    : { hours: 4000, subscribers: 1000, until: '2027-01-31', note: 'Until 31 Jan 2027: 1,000 subscribers + 4,000 public watch hours in 365 days. From 1 Feb 2027 new applicants need 8,000.' };
+    ? { hours: ads.hours, subscribers: ads.subscribers, from: '2027-02-01', tiers: [fan, ads], note: 'New applicants from 1 Feb 2027: 1,000 subscribers + 8,000 public watch hours in 365 days (or 20M Shorts views in 90 days).' }
+    : { hours: ads.hours, subscribers: ads.subscribers, until: '2027-01-31', tiers: [fan, ads], note: 'Until 31 Jan 2027: 1,000 subscribers + 4,000 public watch hours in 365 days (or 10M Shorts views in 90 days). From 1 Feb 2027 new applicants need 8,000 hours or 20M Shorts views.' };
 }
 
 async function key(env) {
@@ -188,8 +198,26 @@ export async function watchTime(env, db, { force = false, deps = {} } = {}) {
     report(fetchImpl, token, { startDate: ymd(daysAgo(28, now)), endDate: end, metrics: METRICS }),
     report(fetchImpl, token, { startDate: ymd(daysAgo(28, now)), endDate: end, metrics: 'views,estimatedMinutesWatched', dimensions: 'day', sort: 'day' }),
   ]);
+  // Split by content type: YPP counts long-form watch hours (Shorts excluded) and Shorts views separately.
+  // Optional: if YouTube refuses the breakdown, the totals above still stand and the split shows as unavailable.
+  let split = null;
+  try {
+    const [byType365, byType90] = await Promise.all([
+      report(fetchImpl, token, { startDate: ymd(daysAgo(365, now)), endDate: end, metrics: 'views,estimatedMinutesWatched', dimensions: 'creatorContentType' }),
+      report(fetchImpl, token, { startDate: ymd(daysAgo(90, now)), endDate: end, metrics: 'views,estimatedMinutesWatched', dimensions: 'creatorContentType' }),
+    ]);
+    const isShorts = (r) => String(r.creatorContentType ?? '').toUpperCase() === 'SHORTS';
+    const longMin = byType365.filter((r) => !isShorts(r)).reduce((a, r) => a + (r.estimatedMinutesWatched ?? 0), 0);
+    split = {
+      longFormWatchHours365: Math.round((longMin / 60) * 10) / 10,
+      shortsViews90: byType90.filter(isShorts).reduce((a, r) => a + (r.views ?? 0), 0),
+    };
+  } catch (e) {
+    split = { error: e instanceof Error ? e.message : String(e) };
+  }
   const out = {
     connected: true,
+    split,
     channelId: ch.id,
     channelTitle: ch.title,
     fetchedAt: nowIso(),

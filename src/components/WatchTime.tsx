@@ -20,6 +20,7 @@ interface Report {
   last28?: Totals;
   daily?: { day: string; views: number; watchHours: number }[];
   ypp: { hours: number; subscribers: number; note: string };
+  split?: { longFormWatchHours365?: number; shortsViews90?: number; error?: string } | null;
   notes?: string[];
 }
 
@@ -102,7 +103,9 @@ export function WatchTime({ subscribers }: { subscribers: number | null }) {
 
   const y = r.last365!;
   const goal = r.ypp.hours;
-  const pctDone = Math.min(100, Math.round((y.watchHours / goal) * 1000) / 10);
+  // YPP counts long-form hours only; fall back to the total when the split isn't available.
+  const yppHours = r.split?.longFormWatchHours365 ?? y.watchHours;
+  const pctDone = Math.min(100, Math.round((yppHours / goal) * 1000) / 10);
   const daily = r.daily ?? [];
   const peak = Math.max(0.01, ...daily.map((d) => d.watchHours));
   return (
@@ -117,7 +120,7 @@ export function WatchTime({ subscribers }: { subscribers: number | null }) {
       <div className="wt-ypp">
         <div className="wt-ypp-head">
           <strong>Monetization progress (YouTube Partner Program)</strong>
-          <span>{hrs(y.watchHours)} / {goal.toLocaleString('en-IN')} hrs · {subscribers === null ? '— ' : subscribers.toLocaleString('en-IN')} / {r.ypp.subscribers.toLocaleString('en-IN')} subs</span>
+          <span>{hrs(yppHours)}{r.split?.longFormWatchHours365 === undefined ? '' : ' long-form'} / {goal.toLocaleString('en-IN')} hrs · {subscribers === null ? '— ' : subscribers.toLocaleString('en-IN')} / {r.ypp.subscribers.toLocaleString('en-IN')} subs</span>
         </div>
         <div className="wt-bar" role="progressbar" aria-valuenow={pctDone} aria-valuemin={0} aria-valuemax={100} aria-label="Watch hours toward the Partner Program bar">
           <span style={{ width: `${pctDone}%` }} />

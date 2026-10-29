@@ -1687,7 +1687,14 @@ select option { background: #0e1540; color: var(--ink); }
 .wt-bar span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--green), var(--cyan)); }
 .mz-tile { display: flex; flex-direction: column; justify-content: flex-start; }
 .mz-value { font-size: 26px; white-space: nowrap; }
-.mz-bar { height: 6px; margin: 0 0 10px; }
+.mz-bar { display: block; height: 6px; }
+.mz-bars, .mz-status { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 7px; }
+.mz-bar-label { display: flex; justify-content: space-between; gap: 8px; font-size: 11.5px; color: var(--ink-3); margin-bottom: 3px; }
+.mz-bar-label b { color: var(--ink-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+.mz-bars li.met .mz-bar-label b, .mz-status li.met b { color: var(--ok); }
+.mz-status li { display: flex; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--ink-2); }
+.mz-status li b { font-weight: 600; color: var(--ink-3); }
+.mz-status li.not b { color: var(--warn, #f5b942); }
 .wt-chart { display: flex; align-items: flex-end; gap: 3px; height: 110px; margin: 16px 0 8px; padding: 8px; border-radius: 12px; background: rgba(10, 16, 51, 0.5); }
 .wt-chart span { flex: 1; min-width: 3px; border-radius: 3px 3px 0 0; background: linear-gradient(180deg, var(--cyan), var(--green)); opacity: 0.9; }
 .wt-chart span:hover { opacity: 1; filter: brightness(1.2); }
