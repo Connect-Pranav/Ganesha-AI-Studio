@@ -8,6 +8,7 @@ import { openNewGoal, GOAL_TYPES } from './GoalModal';
 import { agentById, agentName } from '../data/agentsMeta';
 import { ApiError, api, getToken } from '../services/adminService';
 import { loadArtifact } from '../services/studioService';
+import { VoyageRoute, type StationState } from './VoyageRoute';
 import { OPEN_STATUSES, WF_STATUS } from '../services/StudioContext';
 
 interface WfRow { id: string; template: string; brand: string; title: string; status: string; created_at: string; updated_at: string }
@@ -34,6 +35,11 @@ interface Task {
 interface EventRow { id: number; task_id: string | null; kind: string; message: string; data_json: string | null; created_at: string }
 interface Detail { workflow: WfRow & { goal: string }; tasks: Task[]; approvals: { id: string; task_id: string; status: string; decided_at: string | null; note: string | null }[]; events: EventRow[] }
 
+const stationState = (s: string): StationState =>
+  s === 'completed' || s === 'skipped' || s === 'approved' ? 'done'
+  : s === 'failed' || s === 'rejected' || s === 'cancelled' ? 'blocked'
+  : s === 'running' || s.startsWith('waiting_') ? 'current'
+  : 'todo';
 const pill = (s: string) => <span className={`pill ${WF_STATUS[s]?.cls ?? 'pill-idle'}`}>{WF_STATUS[s]?.label ?? s}</span>;
 const dur = (a: string | null, b: string | null) => {
   if (!a || !b) return null;
@@ -204,6 +210,12 @@ export function StudioWorkflows({ brand, title = 'Studio goals', compact = false
                           <Icon name="check" size={14} /> Done means every step produced its written deliverable and you confirmed any manual step.
                           Agents do not render audio or video, build files, or publish anything themselves.
                         </p>
+                      )}
+                      {detail.tasks.length > 1 && (
+                        <VoyageRoute
+                          label={`Route: ${detail.tasks.filter((t) => stationState(t.status) === 'done').length} of ${detail.tasks.length} steps done`}
+                          stations={detail.tasks.map((t) => ({ key: t.id, label: agentName(t.agent_id), sub: t.status.replace(/_/g, ' '), state: stationState(t.status), title: t.deliverable }))}
+                        />
                       )}
                       <ol className="wf-steps">
                         {detail.tasks.map((t) => {

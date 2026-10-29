@@ -185,7 +185,7 @@ export function PageTitle({ view, onNavigate }: { view: View; onNavigate: (v: Vi
   return (
     <div className="gx-page">
       <small>{section.id === 'home' ? 'Ganesha AI Studio' : section.label}</small>
-      <h1>{page.label === 'Home' ? 'Command Center' : page.label}</h1>
+      <h1 key={view} className="gx-title-sweep">{page.label === 'Home' ? 'Command Center' : page.label}</h1>
       <p>{page.hint}</p>
       {section.id === 'home' && <HeroCast onOpen={onNavigate} />}
     </div>

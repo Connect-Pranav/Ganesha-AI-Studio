@@ -1323,6 +1323,41 @@ code { background: rgba(129, 140, 248, 0.16); color: var(--ink); }
 ::view-transition-new(root) { animation: 0.32s cubic-bezier(.2, .8, .2, 1) both vt-in; }
 @keyframes vt-out { to { opacity: 0; transform: scale(0.99); } }
 @keyframes vt-in { from { opacity: 0; transform: scale(1.01); } }
+/* Circular reveal: the new page grows from the click point over the old one (clip-path set in premiumFx). */
+.vt-reveal::view-transition-old(root) { animation: none; }
+.vt-reveal::view-transition-new(root) { animation: none; }
+.vt-reveal::view-transition-image-pair(root) { isolation: isolate; }
+
+/* Voyage route: steps as stations on a curved route, a star badge travels to the current one. */
+.voyage { position: relative; height: 112px; margin: 6px 0 10px; }
+.voyage-svg { display: block; overflow: visible; }
+.voyage-base { fill: none; stroke: var(--line-2, rgba(160, 178, 255, 0.3)); stroke-width: 2; stroke-dasharray: 2 6; stroke-linecap: round; }
+.voyage-done { fill: none; stroke: var(--accent, var(--cyan)); stroke-width: 3; stroke-linecap: round; filter: drop-shadow(0 0 6px var(--accent, var(--cyan))); }
+.voyage-stn circle { fill: var(--surface-solid, #0b113c); stroke: var(--line-2, rgba(160, 178, 255, 0.35)); stroke-width: 2; }
+.voyage-stn.st-done circle { fill: var(--accent, var(--cyan)); stroke: var(--accent, var(--cyan)); }
+.voyage-stn.st-current circle { stroke: var(--accent, var(--cyan)); stroke-width: 3; }
+.voyage-stn.st-blocked circle { stroke: var(--err); fill: var(--err-soft, rgba(255, 80, 80, 0.2)); }
+.voyage-tick { fill: none; stroke: #04102a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.voyage-boat rect { fill: #0a0f2e; stroke: var(--accent, var(--cyan)); stroke-width: 1.5; filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.55)); }
+.voyage-boat path { fill: var(--accent, var(--cyan)); }
+.voyage-labels { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; pointer-events: none; }
+.voyage-labels li { position: absolute; transform: translateX(-50%); display: grid; justify-items: center; text-align: center; font-size: 11.5px; line-height: 1.25; color: var(--ink-3); white-space: nowrap; pointer-events: auto; }
+.voyage-labels li span { color: var(--ink-2); font-weight: 500; }
+.voyage-labels li.st-current span { color: var(--ink); }
+.voyage-labels li.st-blocked small { color: var(--err); }
+.voyage-labels li:first-child { transform: translateX(-22px); justify-items: start; }
+.voyage-labels li:last-child { transform: translateX(calc(-100% + 22px)); justify-items: end; }
+
+/* Page title sweeps in left to right; progress bars fill; chart lines draw themselves. */
+@keyframes title-sweep { from { clip-path: inset(0 100% 0 0); opacity: 0.2; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+@keyframes bar-grow { from { transform: scaleX(0); } }
+@keyframes line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+.app:not([data-fx='minimal']) :is(.view-enter .ws-title, .gx-title-sweep) { animation: title-sweep 0.8s cubic-bezier(.65, 0, .35, 1) 0.1s both; }
+.app:not([data-fx='minimal']) .wt-bar span { transform-origin: left center; animation: bar-grow 1.1s cubic-bezier(.65, 0, .35, 1) 0.2s both; }
+.app:not([data-fx='minimal']) .chart-draw { stroke-dasharray: 1; animation: line-draw 1.4s cubic-bezier(.65, 0, .35, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .view-enter .ws-title, .gx-title-sweep, .wt-bar span, .chart-draw { animation: none !important; }
+}
 
 /* Active nav: living gradient + glow; buttons press in */
 .app:not([data-fx='minimal']) .topnav-item.active, .app:not([data-fx='minimal']) .nav-item.active {

@@ -23,7 +23,7 @@ function Line({ points, k, color }: { points: History['points']; k: 'views' | 'f
   const xy = points
     .filter((p) => typeof p[k] === 'number')
     .map((p) => `${(((Date.parse(p.at) - t0) / (t1 - t0 || 1)) * 600).toFixed(1)},${(150 - ((p[k]! - min) / (max - min || 1)) * 130 - 10).toFixed(1)}`);
-  return <polyline points={xy.join(' ')} fill="none" stroke={color} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />;
+  return <polyline key={xy.join(' ')} className="chart-draw" pathLength={1} points={xy.join(' ')} fill="none" stroke={color} strokeWidth="2.2" strokeLinejoin="round" strokeLinecap="round" />;
 }
 
 export function AnalyticsRange({ brand, labels }: { brand: ProductId; labels: { followers: string; views: string; posts: string } }) {

@@ -58,10 +58,30 @@ export function startPremiumFx() {
   });
 }
 
-/** Smooth cross-fade between pages where the browser supports View Transitions. */
+// Where the last click/tap happened: page changes open as a circle from that point.
+let origin: { x: number; y: number } | null = null;
+if (typeof document !== 'undefined') {
+  document.addEventListener('pointerdown', (e) => (origin = { x: e.clientX, y: e.clientY }), { passive: true, capture: true });
+}
+
+/** Page change as a circular reveal from the click point (View Transitions); cross-fade fallback. */
 export function withViewTransition(fn: () => void) {
-  const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+  const d = document as Document & { startViewTransition?: (cb: () => void) => { ready: Promise<void> } };
   const app = document.querySelector('.app');
   if (!d.startViewTransition || app?.getAttribute('data-fx') === 'minimal' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return fn();
-  d.startViewTransition(() => fn());
+  const x = origin?.x ?? window.innerWidth / 2;
+  const y = origin?.y ?? 0;
+  origin = null;
+  const r = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y));
+  document.documentElement.classList.add('vt-reveal');
+  const t = d.startViewTransition(() => fn());
+  t.ready
+    .then(() =>
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${r}px at ${x}px ${y}px)`] },
+        { duration: 650, easing: 'cubic-bezier(.65,0,.35,1)', pseudoElement: '::view-transition-new(root)' },
+      ),
+    )
+    .catch(() => undefined);
+  (t as unknown as { finished?: Promise<void> }).finished?.finally(() => document.documentElement.classList.remove('vt-reveal'));
 }

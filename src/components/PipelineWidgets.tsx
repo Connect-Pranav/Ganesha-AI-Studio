@@ -10,6 +10,7 @@ import { openNewGoal } from './GoalModal';
 import type { Agent, Pipeline, PipelineStatus, StepStatus } from '../types';
 import { useStudio } from '../services/StudioContext';
 import { api } from '../services/adminService';
+import { VoyageRoute, type StationState } from './VoyageRoute';
 import type { AgentStat } from '../services/studioService';
 
 const pStatusLabel: Record<PipelineStatus, string> = {
@@ -27,6 +28,8 @@ const stepLabel: Record<StepStatus, string> = {
   approval_required: 'needs approval',
   skipped: 'skipped',
 };
+
+const STATION: Record<StepStatus, StationState> = { completed: 'done', skipped: 'done', running: 'current', approval_required: 'current', failed: 'blocked', pending: 'todo' };
 
 /* ---------- New goal buttons ---------- */
 export function NewGoalButtons() {
@@ -68,9 +71,10 @@ function PipelineCard({ p }: { p: Pipeline }) {
         </div>
         <span className={`pstat pstat-${p.status}`}>{pStatusLabel[p.status]}</span>
       </div>
-      <div className="pipe-bar" aria-label={`${pct}% complete`}>
-        <span style={{ width: `${pct}%` }} />
-      </div>
+      <VoyageRoute
+        label={`${pct}% complete: ${done} of ${p.steps.length} steps`}
+        stations={p.steps.map((s) => ({ key: s.key, label: agentName(s.agent), sub: stepLabel[s.status], state: STATION[s.status], title: s.deliverable }))}
+      />
       <ol className="pipe-steps">
         {p.steps.map((s) => (
           <li key={s.key} className={`chip chip-${s.status}`} title={`${s.deliverable} — ${stepLabel[s.status]}${s.attempts > 1 ? ` (attempt ${s.attempts})` : ''}`}>
