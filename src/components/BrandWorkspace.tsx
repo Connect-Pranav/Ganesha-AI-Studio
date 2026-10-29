@@ -2,6 +2,7 @@
 import { BrandMark, hasLogo } from './BrandMark';
 import { useCallback, useEffect, useState } from 'react';
 import { ReelFactory } from './ReelFactory';
+import { MonetizationGoal } from './MonetizationGoal';
 import { AnalyticsView } from './AnalyticsView';
 import { Icon } from './Icon';
 import { Card, EmptyState, LiveBadge, formatWhen } from './ui';
@@ -273,8 +274,10 @@ export function BrandWorkspace({ data, productId, onNavigate }: { data: Dashboar
         </button>
       </section>
 
-      <section className="grid-4" aria-label={`${product.name} status`}>
-        {live ? (
+      <section className="grid-4" aria-label={productId === 'sunverse' ? 'Sunverse monetization goal: achieved vs required' : `${product.name} status`}>
+        {productId === 'sunverse' ? (
+          <MonetizationGoal onOpen={() => (pickTab('progress'), scrollToSection('ws-watchtime'))} />
+        ) : live ? (
           <>
             <StatCard metric={{ label: 'Goals', value: String(total), hint: 'Started on the studio backend' }} onClick={() => openWork('ws-goals')} />
             <StatCard metric={{ label: 'In progress', value: String(open), hint: `${c.running ?? 0} working now` }} onClick={() => openWork('ws-goals')} />

@@ -173,7 +173,7 @@ export function AnalyticsView({ initialBrand = 'sunverse', embedded = false }: {
         <Stat label={ig ? 'Average views / post' : 'Average views / video'} value={n(s.avgViewsPerVideo)} hint={`Median ${n(s.medianViewsPerVideo)}`} />
       </section>
 
-      {!ig && brand === 'sunverse' && <WatchTime subscribers={r.channel.subscribersHidden ? null : r.channel.subscribers} />}
+      {!ig && brand === 'sunverse' && <div id="ws-watchtime" className="anchor"><WatchTime subscribers={r.channel.subscribersHidden ? null : r.channel.subscribers} /></div>}
 
       <AnalyticsRange brand={brand} labels={ig ? { followers: 'followers', views: 'views', posts: 'posts' } : { followers: 'subscribers', views: 'channel views', posts: 'videos' }} />
 
