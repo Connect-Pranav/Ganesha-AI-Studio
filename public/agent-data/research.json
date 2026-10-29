@@ -1,6 +1,96 @@
 {
-  "updatedAt": "2026-10-28T02:31:01Z",
+  "updatedAt": "2026-10-29T02:26:36Z",
   "findings": [
+    {
+      "id": "f_20261029T022636Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Meta's Edits app is testing a desktop version and launched an iPhone Duo layout",
+      "insight": "Edits now has a folding-screen layout with side-by-side timeline preview, and a desktop version is in testing with live access for selected creators. LittleLoop could do episode assembly on a larger screen if access opens; check availability before changing the edit workflow.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Edits comes to iPhone Duo and desktop",
+          "url": "https://www.socialmediatoday.com/news/edits-comes-to-iphone-duo-and-desktop/833909/",
+          "source": "Social Media Today",
+          "retrievedAt": "2026-10-29T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-29T02:26:36Z"
+    },
+    {
+      "id": "f_20261029T022636Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Australia is consulting on a law to let users switch off algorithmic feeds",
+      "insight": "The proposal under Australia's Digital Duty of Care framework would make non-algorithmic, follow-only feeds the default option; it is still in consultation and Instagram argues it would cut creator reach. If adopted, followers would matter more than recommendations for LittleLoop's reach in Australia.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Australia's proposed algorithmic opt-out gets pushback",
+          "url": "https://www.socialmediatoday.com/news/australias-proposed-algorithmic-opt-out-gets-pushback/872830/",
+          "source": "Social Media Today",
+          "retrievedAt": "2026-10-29T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-29T02:26:36Z"
+    },
+    {
+      "id": "f_20261029T022636Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube tests a $20 minimum AdSense payout (down from $100) in the US, India and Indonesia",
+      "insight": "Starting with October 2026 payments, a random group of YPP creators in these countries can cash out at a lower threshold; eligibility rules are unchanged. Sunverse can check its AdSense payout settings to see whether it is in the test.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube tests reduced payout thresholds to aid creators in developing economies",
+          "url": "https://www.tubefilter.com/2026/10/28/youtube-partner-program-lower-payout-threshold-test/",
+          "source": "Tubefilter",
+          "retrievedAt": "2026-10-29T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-29T02:26:36Z"
+    },
+    {
+      "id": "f_20261029T022636Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "Alphabet: living-room TV viewing now drives one-third of YouTube ad revenue",
+      "insight": "In Q3 2026 earnings coverage, YouTube ad revenue rose 9% YoY and YouTube cited a record 150M Premium and Music subscribers. TV-screen viewing is a large revenue surface, so Sunverse long-form uploads should be checked for how they look and read on a TV.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube's living room TV viewership now brings in one-third of its ad revenue",
+          "url": "https://www.tubefilter.com/2026/10/28/youtube-living-room-tv-ad-revenue-q3-2026-earnings/",
+          "source": "Tubefilter",
+          "retrievedAt": "2026-10-29T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-29T02:26:36Z"
+    },
+    {
+      "id": "f_20261029T022636Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Carrd shipped built-in cookie-free analytics (Oct 2) and custom meta tag overrides (Oct 28)",
+      "insight": "A low-cost competitor now bundles privacy-friendly visitor analytics without cookie banners and lets users override default meta tags. Foliocraft could consider cookie-free portfolio analytics as a premium feature to stay competitive.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Changelog - General - Documentation - Carrd",
+          "url": "https://carrd.com/docs/general/changelog",
+          "source": "Carrd",
+          "retrievedAt": "2026-10-29T02:26:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-29T02:26:36Z"
+    },
     {
       "id": "f_20261028T023101Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1158,108 +1248,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-19T02:25:26Z"
-    },
-    {
-      "id": "f_20261019T022526Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "YouTube Music now shows listener-facing labels on tracks made mainly with generative AI",
-      "insight": "From Oct 14, YouTube Music shows an AI label on the player page (tap for detail), coming to the main YouTube app later. Partners declare Fully, Partly or No Gen AI; pitch correction counts as No Gen AI, and AI use alone does not block monetization. Sunverse should decide each track's designation before release and confirm how its distributor submits it.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "YouTube Music launches new labels as AI-generated music floods streaming platforms",
-          "url": "https://techcrunch.com/2026/10/14/youtube-music-launches-new-labels-as-ai-generated-music-floods-streaming-platforms",
-          "source": "TechCrunch",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        },
-        {
-          "title": "YouTube Music labels songs made primarily with generative AI",
-          "url": "https://ppc.land/youtube-music-labels-songs-made-primarily-with-generative-ai",
-          "source": "PPC Land",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-19T02:25:26Z"
-    },
-    {
-      "id": "f_20261019T022526Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Webflow became a connected app in Google Gemini via its MCP server (Oct 16)",
-      "insight": "Webflow's free Gemini connector lets users build pages, edit CMS, check analytics and run SEO/accessibility audits by chat, matching what it already offers in other AI assistants, with AI actions logged. Assistant-based editing is becoming a builder expectation; Foliocraft could scope a small, permissioned connector as a future premium feature.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Webflow, Google Gemini announce new agentic integration",
-          "url": "https://martechcube.com/webflow-google-gemini-announce-new-agentic-integration",
-          "source": "MarTech Cube",
-          "retrievedAt": "2026-10-19T02:25:26Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-19T02:25:26Z"
-    },
-    {
-      "id": "f_20261018T044046Z_littleloop_1",
-      "brand": "littleloop",
-      "title": "Daily Hygiene and Healthy Habits Offer Fresh Narrative Angles for Toddlers",
-      "insight": "The release of 'Wash Your Hands Song' shows continued demand for healthy habit nursery rhymes. LittleLoop can produce short-form animations focusing on toddler daily routines like handwashing, giving parents practical, habit-reinforcing content to share on Instagram.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Wash Your Hands Song | Healthy Habits Nursery Rhyme for Kids | Fun Kids Rhyme to Stay Healthy - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9DRThOa05td0lKQm4yMU9VVDJ2SWR6Yk5LX1V1WDV3NUxiZDJGUE1nUkJFNGpTdUhjVTJLRUoxRk9wbEk1REl4dGJ2XzNfYXRLQTNtT2tvZTBkaHVu?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-18T04:40:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-18T04:40:46Z"
-    },
-    {
-      "id": "f_20261018T044046Z_littleloop_2",
-      "brand": "littleloop",
-      "title": "Father-Child Bonding Themes Offer Relatable Resonance for Caregivers",
-      "insight": "Themes centered on parental love, such as 'Daddy, You’re My Superhero,' tap into emotional family connections. LittleLoop can feature sweet caregiver-child interactions in upcoming shorts, strengthening emotional appeal for parents navigating Instagram with young children.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Daddy, You’re My Superhero 💙 | Sweet Dad & Baby Song for Kids | Leo with Daddy | Nursery Rhyme - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBLMUhsejJiYkktblBHOUZKN2NNcmZDVi1md1RDX3VLSlotck1iRC1RLW5Bb1lidVUtd0dZVFBNSXFyVG9mQV8tNWF6LWE0OHVlb3hFY3pVRDQzU20y?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-18T04:40:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-18T04:40:46Z"
-    },
-    {
-      "id": "f_20261018T044100Z_sunverse_3",
-      "brand": "sunverse",
-      "title": "Punjabi Rap and Indian Hip-Hop Expand Regional and Global Footprint",
-      "insight": "With Chandigarh hip-hop talent Lehar reaching global stages and new Punjabi rap releases from artists like VEKAAFFII, Indian hip-hop is seeing steady movement. Sunverse can produce or collaborate on Punjabi and regional rap tracks to capture strong youth and diaspora streaming demand.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "From Chandigarh’s Streets to the Global Stage: How Lehar is Redefining India’s Hip-Hop Culture - Khalsa Vox",
-          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQYzJGYjdLWXhkaDk0TXlXM2M4cE5mN1IxSTBBdzNFc1VMeWkzUXZaZGNBTF9uSk9PVHprdXBvZFU1MlVtQ2R3TWFHZFc4XzFkRUZuUklDLVVoQXNGbkZmSFpucEl0S3k5MFh6OE1VVHRaNGlrOGVwcUF0WHVQZTV3eHA5bVoycF81LUp1WDdFTzJqSzJpaFdvSkhsUFVSQ0dTVEhrZk03YVBUbTVHMkhuNkFRUUtHSHUtQ09wcGdMODI?oc=5",
-          "source": "Khalsa Vox",
-          "retrievedAt": "2026-10-18T04:40:47Z"
-        },
-        {
-          "title": "Punjabi Rap Artist VEKAAFFII Releases Powerful New Single - openPR.com",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOTVN4UzFfRHlTMTlCVzFoNDZYclFzOEFKWU54X1BjRFhtMWV2R2pXS2pFVGo2SU04YmF1UDQwalFEeV9RcTZLanhVRVJQVWdXR0lSNkxFWkZfbWJBalQxczBCZ2JIMXEtMVJwWHpPNkt1Z0syaU00NnVnRFM2QU1hc09PQXpLdU5aTXk2bHY5Z2dSRzRxQTQwTQ?oc=5",
-          "source": "openPR.com",
-          "retrievedAt": "2026-10-18T04:40:47Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-18T04:41:00Z"
     }
   ]
 }

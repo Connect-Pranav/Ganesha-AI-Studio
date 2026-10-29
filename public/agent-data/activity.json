@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261029T022636Z_1_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 LittleLoop findings — Edits desktop testing; Australia's algorithmic feed opt-out proposal."
+    },
+    {
+      "id": "e_20261029T022636Z_2_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop research tasks: Edits desktop access, Australia feed opt-out bill."
+    },
+    {
+      "id": "e_20261029T022636Z_3_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 Sunverse findings — $20 payout threshold test in India; TV drives a third of YouTube ad revenue."
+    },
+    {
+      "id": "e_20261029T022636Z_4_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: check AdSense payout test, add TV viewing check to release checklist."
+    },
+    {
+      "id": "e_20261029T022636Z_5_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 Foliocraft finding — Carrd added cookie-free analytics and meta tag overrides."
+    },
+    {
+      "id": "e_20261029T022636Z_6_claude",
+      "at": "2026-10-29T02:26:36Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 Foliocraft task: spec cookie-free visitor analytics for premium (CODE-SHAKTI)."
+    },
+    {
       "id": "e_20261028T023101Z_1_claude",
       "at": "2026-10-28T02:31:01Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: 1 finding on YouTube's GenAI disclosure list now naming AI music as a video's main focus."
-    },
-    {
-      "id": "e_20261015T022957Z_4_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 Sunverse tasks on AI-use disclosure: checklist step, upload review (approval) and policy check."
-    },
-    {
-      "id": "e_20261015T022957Z_5_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings on Webflow's staged Releases and artist portfolio essentials."
-    },
-    {
-      "id": "e_20261015T022957Z_6_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Foliocraft tasks: staged-edit draft mode prototype and artist template spec."
-    },
-    {
-      "id": "e_20261014T022756Z_1_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: Instagram replaced the AI creator tag with an AI-generated profile label; unlabeled AI profiles can lose reach."
-    },
-    {
-      "id": "e_20261014T022756Z_2_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 1 LittleLoop task: draft profile AI-disclosure wording (approval required)."
-    },
-    {
-      "id": "e_20261014T022756Z_3_claude",
-      "at": "2026-10-14T02:27:56Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: YouTube adds voice likeness detection later in 2026; Shorts can now be grouped into seasons and episodes."
     }
   ]
 }
