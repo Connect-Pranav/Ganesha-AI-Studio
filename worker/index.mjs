@@ -194,6 +194,26 @@ async function route(request, env, ctx, rawEnv = env) {
   }
   const kick = () => ctx.waitUntil(tick(env, db).catch((e) => console.error('tick failed', e.message)));
 
+  // AGENTVERSE (/agentverse/) brain: free engines only (Gemini → Groq). Paid engines are never used here.
+  if (path === '/api/agentverse/chat' && method === 'POST') {
+    const b = await readBody(request);
+    const system = String(b.system ?? '').slice(0, 12_000);
+    const prompt = String(b.prompt ?? '').slice(0, 24_000);
+    if (!prompt) throw new HttpError(400, 'prompt is required');
+    const order = ['gemini', 'groq'].filter((p) => providerConfig(env, p).configured);
+    if (!order.length) throw new HttpError(503, 'No free AI key is set on the Worker (GEMINI_API_KEY or GROQ_API_KEY).');
+    const errors = [];
+    for (const p of order) {
+      try {
+        const r = await callProvider(env, db, p, { system, prompt, json: true, maxTokens: b.quick ? 1200 : 3000, purpose: 'agentverse', timeoutMs: 45_000 });
+        return json({ provider: r.provider, model: r.model, json: r.json ?? null, text: r.json ? undefined : r.text });
+      } catch (e) {
+        errors.push(`${p}: ${String(e.message).slice(0, 180)}`);
+      }
+    }
+    throw new HttpError(502, `All free engines failed — ${errors.join(' | ')}`);
+  }
+
   // Providers
   if (path === '/api/providers' && method === 'GET') return json({ providers: await providersStatus(env, db) });
   if (seg[1] === 'providers' && seg[3] === 'test' && method === 'POST') {

@@ -13,3 +13,9 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
+/agentverse
+  ! Permissions-Policy
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
+/agentverse/*
+  ! Permissions-Policy
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
