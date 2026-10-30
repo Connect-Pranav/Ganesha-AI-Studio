@@ -1,6 +1,54 @@
 {
-  "updatedAt": "2026-10-30T02:36:07Z",
+  "updatedAt": "2026-10-30T05:57:24Z",
   "findings": [
+    {
+      "id": "f_20261030T055711Z_sunverse_1",
+      "brand": "sunverse",
+      "title": "Demand for Indian Lofi and Slowed+Reverb Tracks Persists on YouTube",
+      "insight": "Recent uploads highlight consistent engagement with Indian lofi, slowed+reverb edits, and mood mashups on YouTube. Sunverse should consider producing and releasing official slowed+reverb and lofi alternate mixes of its original productions to capture this active listening trend.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "The Lifestyle Slowed+Reverb | Lofi Music | Saki ft Slobity | Mundy Dy Aun Ty Raflaan Gonjiaa - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE5qNmEwaHRsRkVHaUV0ZXR2UFEyWkpudFRmYk9CWnkzWTV2UHRjZGs2TG81NDdxYUlhTGxTT2hHVC0xbUh4VjZoSUR4WGgtdEJiczFINjFPSjdHYjlS?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-30T05:55:51Z"
+        },
+        {
+          "title": "❤️ Trending Instagram Lofi Mashup 2026 💗 | Slowed + Reverb | Heart Touching Lofi Songs 🎧✨ - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9vR21sOFZteU8ycGgwankwM3BVN2tDUlM5cTNIQlROeEFvamhXREppYjRtNUQ0UUNIQ2RCNkEwQWplSk9QV2dhOEVHQlFzSW5QV01MczJlbWpoVVBz?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-30T05:55:51Z"
+        },
+        {
+          "title": "Ek Baat Main Apne Dil Mein💔Mood off Lofi Slowed Reverb Indian Song🎶 #new #lofimusic #love #trending - YouTube",
+          "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE9DeXFoTGRNcDFUeDgxZGl2dGNURDhvY1NqaVFmNVFQSk02TW8zRzZCZWgzYjNaTDhZcm5uVlU3YnFza29jMXpkc0lzRy1DR2t3?oc=5",
+          "source": "YouTube",
+          "retrievedAt": "2026-10-30T05:55:51Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-30T05:57:11Z"
+    },
+    {
+      "id": "f_20261030T055711Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "YouTube Ad Revenues Rise 9% to $11.2 Billion, Underpinning Channel Monetization",
+      "insight": "Alphabet CFO Anat Ashkenazi revealed that YouTube advertising revenues increased 9% to $11.2 billion. This steady expansion in YouTube's ad business signals a healthy monetization environment for music video publishers and production houses like Sunverse.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "‘YouTube advertising revenues increased 9% to $11.2 billion’: Alphabet CFO Anat Ashkenazi - Storyboard18",
+          "url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxQSkdTNEtoX3BMbFlrUjg1SVViVk1icnVsVHFZR19TZDdmMEl0NElTTHFhMExjSjFfSDdUQnNvWm01dWN3TEsxaU8tWUdyTDR1dGpycUcxTktTNEI1QVNSdzREdGp6QWtpR1FBM24ySFlWemxaN3lJaG8tN3h1d3pZTGk4dFdLWl9wZGJjZl9YU0poeUxjb2hhTnlmYTliSXBXc1hzMVlLODFYdTdoZEt4WC0wWTlGMWVZalJlOXphUzJUbXlhRUpEaWU5MGh6Y3dKRFdySjdvQ2ctc04ydmJTN1JXd9IB4wFBVV95cUxQSkdTNEtoX3BMbFlrUjg1SVViVk1icnVsVHFZR19TZDdmMEl0NElTTHFhMExjSjFfSDdUQnNvWm01dWN3TEsxaU8tWUdyTDR1dGpycUcxTktTNEI1QVNSdzREdGp6QWtpR1FBM24ySFlWemxaN3lJaG8tN3h1d3pZTGk4dFdLWl9wZGJjZl9YU0poeUxjb2hhTnlmYTliSXBXc1hzMVlLODFYdTdoZEt4WC0wWTlGMWVZalJlOXphUzJUbXlhRUpEaWU5MGh6Y3dKRFdySjdvQ2ctc04ydmJTN1JXdw?oc=5",
+          "source": "Storyboard18",
+          "retrievedAt": "2026-10-30T05:55:51Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-10-30T05:57:11Z"
+    },
     {
       "id": "f_20261030T023607Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1182,54 +1230,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-21T02:32:17Z"
-    },
-    {
-      "id": "f_20261021T023217Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Squarespace now sells custom-domain email with Titan from $3 per user per month",
-      "insight": "Squarespace added Essential Email by Titan (inbox, calendar, contacts) for customers with a Squarespace-bought or connected domain, from $3/user/month, live in the US, UK, Canada and Australia with more markets planned. Bundling domain + site + email is a premium hook Foliocraft could evaluate.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Titan partners with Squarespace to offer custom-domain email to users",
-          "url": "https://www.business-standard.com/companies/news/titan-partners-with-squarespace-to-offer-custom-domain-email-to-users-126101301214_1.html",
-          "source": "Business Standard",
-          "retrievedAt": "2026-10-21T02:30:00Z"
-        },
-        {
-          "title": "Squarespace and Titan team up to offer $3/month professional email",
-          "url": "https://techradar.com/pro/squarespace-and-titan-team-up-to-offer-usd3-month-professional-email",
-          "source": "TechRadar",
-          "retrievedAt": "2026-10-21T02:30:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-21T02:32:17Z"
-    },
-    {
-      "id": "f_20261020T023659Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram's Edits app added a carousel editor mixing photos and video (iOS, Oct 8)",
-      "insight": "Edits can now build multi-slide carousels combining photos and clips, with images and headlines spanning slides and saved fonts/colour presets carried over; posts go straight to Instagram. iOS only for now, Android in development. LittleLoop could test a parent-facing carousel per episode (key stills + the learning point) built with the same presets as its Reels.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Instagram's Edits Now Lets You Create Custom Carousels",
-          "url": "https://www.androidheadlines.com/2026/10/instagrams-edits-now-lets-you-create-custom-carousels.html",
-          "source": "Android Headlines",
-          "retrievedAt": "2026-10-20T02:33:00Z"
-        },
-        {
-          "title": "Instagram Adds Carousel Editor To Its Edits App",
-          "url": "https://www.netinfluencer.com/instagram-adds-carousel-editor-to-its-edits-app/",
-          "source": "Net Influencer",
-          "retrievedAt": "2026-10-20T02:33:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-20T02:36:59Z"
     }
   ]
 }

@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261030T055711Z_1_gemini",
+      "at": "2026-10-30T05:57:11Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Sunverse from 18 sources"
+    },
+    {
       "id": "e_20261030T023607Z_1_claude",
       "at": "2026-10-30T02:36:07Z",
       "brand": "littleloop",
@@ -890,15 +899,6 @@
       "engine": "gemini",
       "kind": "task",
       "text": "Planned 1 task(s) for LittleLoop"
-    },
-    {
-      "id": "e_20261017T043625Z_5_gemini",
-      "at": "2026-10-17T04:36:25Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 1 task(s) for Sunverse"
     }
   ]
 }
