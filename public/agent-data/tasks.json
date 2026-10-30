@@ -1,6 +1,86 @@
 {
-  "updatedAt": "2026-10-29T02:26:36Z",
+  "updatedAt": "2026-10-30T02:36:07Z",
   "tasks": [
+    {
+      "id": "t_20261030T023607Z_littleloop_1_claude",
+      "title": "Draft a dialogue-led hook test: 3 episode openings voiced by characters vs music-only",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Recent Reels sample (lit1) suggests family content performs with original spoken audio; test it as a draft before any posting.",
+      "sourceFindings": [
+        "f_20261030T023607Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-30T02:36:07Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261030T023607Z_littleloop_2_claude",
+      "title": "Draft an evergreen-episode list and a re-surfacing plan for older LittleLoop Reels",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Kids titles have long shelf lives (lit2); plan which episodes to keep evergreen. Any reposting needs approval.",
+      "sourceFindings": [
+        "f_20261030T023607Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-30T02:36:07Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261030T023607Z_sunverse_3_claude",
+      "title": "Add a YouTube Music Art Track/topic listing check to the Sunverse release checklist",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "YouTube Music and Premium reached 150M subscribers (sun1); confirm each release appears as official audio via the distributor.",
+      "sourceFindings": [
+        "f_20261030T023607Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-30T02:36:07Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261030T023607Z_foliocraft_4_claude",
+      "title": "Compare Foliocraft project editing with Figma Make + Payload's admin panel",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Figma Make sites now get CMS, login and admin panel (fol1); document gaps and what Foliocraft should keep premium.",
+      "sourceFindings": [
+        "f_20261030T023607Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-10-30T02:36:07Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261030T023607Z_foliocraft_5_claude",
+      "title": "Spec a CMS-style project collection editor with role-based access for portfolios",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Competitors now pair sites with an admin panel and roles (fol1). Spec only; merge and deploy need approval.",
+      "sourceFindings": [
+        "f_20261030T023607Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": true,
+      "createdAt": "2026-10-30T02:36:07Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261029T022636Z_littleloop_1_claude",
       "title": "Check whether the Edits desktop version is available to LittleLoop's account",
@@ -1201,87 +1281,6 @@
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-18T04:41:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261018T044153Z_sunverse_4",
-      "title": "Analyze South Indian music catalog growth and independent licensing trends",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Major labels are aggressively acquiring South Indian catalogues as regional genres surge. Market intelligence will identify regional partnership and catalogue opportunities for Sunverse.",
-      "sourceFindings": [
-        "f_20261018T044100Z_sunverse_4",
-        "f_20261017T043554Z_sunverse_2"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-18T04:41:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261018T044153Z_foliocraft_5",
-      "title": "Audit and streamline the onboarding flow to minimize time-to-publish",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Major 2026 website builder roundups heavily emphasize frictionless no-code onboarding. Reducing friction helps Foliocraft compete directly with leading self-serve builders.",
-      "sourceFindings": [
-        "f_20261018T044127Z_foliocraft_5"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-18T04:41:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261018T044153Z_foliocraft_6",
-      "title": "Build an inspirational showcase gallery page for top user portfolios",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Industry roundups highlight high-design sites built on user-friendly builders. An inspirational showcase helps attract design-conscious creators and highlights platform capabilities.",
-      "sourceFindings": [
-        "f_20261018T044127Z_foliocraft_6"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-18T04:41:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261017T043625Z_littleloop_1",
-      "title": "Storyboard a color and shape recognition animated short for toddlers",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Preschool releases show strong interest in basic foundational educational concepts. A visual-first short centered on shape and color recognition appeals directly to parents seeking skill-building content.",
-      "sourceFindings": [
-        "f_20261017T043537Z_littleloop_1"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-17T04:36:25Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261017T043625Z_sunverse_2",
-      "title": "Compile a 1-hour Hindi slowed and reverb focus mix for YouTube",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Slowed, reverb, and lofi focus mashups continue to drive strong passive streaming hours on YouTube. Curating catalog tracks into a longform mix captures study and concentration audiences.",
-      "sourceFindings": [
-        "f_20261017T043554Z_sunverse_3"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-17T04:36:25Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "gemini"
     }

@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261030T023607Z_1_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 low-confidence LittleLoop findings — dialogue-led family Reels and long shelf life of kids titles."
+    },
+    {
+      "id": "e_20261030T023607Z_2_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop drafts: dialogue hook test and evergreen-episode plan."
+    },
+    {
+      "id": "e_20261030T023607Z_3_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: YouTube Music and Premium passed 150M subscribers in Q3 2026."
+    },
+    {
+      "id": "e_20261030T023607Z_4_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 Sunverse task: add a YouTube Music official-audio check to the release checklist."
+    },
+    {
+      "id": "e_20261030T023607Z_5_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: Figma Make sites now ship with Payload CMS, logins and an admin panel."
+    },
+    {
+      "id": "e_20261030T023607Z_6_claude",
+      "at": "2026-10-30T02:36:07Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: competitor editing comparison and a project-collection editor spec."
+    },
+    {
       "id": "e_20261029T055523Z_1_gemini",
       "at": "2026-10-29T05:55:23Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "gemini",
       "kind": "task",
       "text": "Planned 1 task(s) for Sunverse"
-    },
-    {
-      "id": "e_20261017T043625Z_6_gemini",
-      "at": "2026-10-17T04:36:25Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 1 task(s) for Foliocraft"
-    },
-    {
-      "id": "e_20261017T043537Z_1_gemini",
-      "at": "2026-10-17T04:35:37Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "1 new finding for LittleLoop from 12 sources"
-    },
-    {
-      "id": "e_20261017T043554Z_2_gemini",
-      "at": "2026-10-17T04:35:54Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Sunverse from 18 sources"
-    },
-    {
-      "id": "e_20261017T043606Z_3_gemini",
-      "at": "2026-10-17T04:36:06Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "1 new finding for Foliocraft from 16 sources"
-    },
-    {
-      "id": "e_20261015T022957Z_1_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 finding on Greece's under-15 social media ban and what it means for parent-facing Reels."
-    },
-    {
-      "id": "e_20261015T022957Z_2_claude",
-      "at": "2026-10-15T02:29:57Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 LittleLoop tasks: parent-directed caption guidelines and age-law tracking."
     }
   ]
 }

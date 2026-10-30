@@ -1,6 +1,84 @@
 {
-  "updatedAt": "2026-10-29T05:57:20Z",
+  "updatedAt": "2026-10-30T02:36:07Z",
   "findings": [
+    {
+      "id": "f_20261030T023607Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Late-Oct Reels sample: family Reels lean on original dialogue; 'spooky but cute' prompts",
+      "insight": "A weekly Reels review (Oct 17-24) found family/kids posts winning with their own spoken audio and one simple set, not trending sounds, and seasonal Add Yours prompts like 'spooky but cute'. LittleLoop could test character-voiced dialogue hooks and gentle seasonal prompts. Single vendor sample, so treat as a hypothesis.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "What Is Trending on Instagram — October 2026 Weekly Report",
+          "url": "https://lightreel.ai/blogs/whats-trending-on-instagram",
+          "source": "Lightreel",
+          "retrievedAt": "2026-10-30T02:36:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-30T02:36:07Z"
+    },
+    {
+      "id": "f_20261030T023607Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Kids and family titles stay in Netflix's top 10 longer than other genres",
+      "insight": "Kidscreen reports kids content makes up 40% of Netflix's longest-running licensed titles in its global top 10. Kids episodes have long shelf lives, so LittleLoop could plan evergreen episodes and periodic re-surfacing of older Reels. Only the article teaser was readable; streaming data may not carry over to Instagram.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "REPORT: How kids and family titles punch above their weight on Netflix",
+          "url": "https://kidscreen.com/2026/10/29/report-how-kids-and-family-titles-punch-above-their-weight-on-netflix/",
+          "source": "Kidscreen",
+          "retrievedAt": "2026-10-30T02:36:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-30T02:36:07Z"
+    },
+    {
+      "id": "f_20261030T023607Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube Music and Premium passed 150 million subscribers in Q3 2026",
+      "insight": "Per Alphabet's Q3 results, YouTube Music and Premium reached 150M subscribers including trials, and Google credited YouTube subscriptions for growth. A paying YouTube Music audience makes clean official audio listings (Art Tracks via the distributor) worth checking for every Sunverse release, not only the video.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube Music and Premium Subscribers Top 150 Million Globally",
+          "url": "https://digitalmusicnews.com/2026/10/28/youtube-music-subscribers-q3-2026",
+          "source": "Digital Music News",
+          "retrievedAt": "2026-10-30T02:36:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-30T02:36:07Z"
+    },
+    {
+      "id": "f_20261030T023607Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Figma Make sites now ship with Payload CMS, logins and an admin panel",
+      "insight": "Since Oct 15, prompt-built Figma Make sites can get a database, file storage, user login and a role-based admin panel via open-source Payload; hosting is a free beta with pricing unannounced. Prompt-to-site builders now include content editing, so Foliocraft should compare its project-editing flow and decide what stays premium.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Figma adds Payload: prompt-built sites now ship with a database and admin panel",
+          "url": "https://toolnavs.com/article/2587-figma-adds-payload-prompt-built-sites-now-ship-with-a-database-and-admin-panel",
+          "source": "ToolNavs",
+          "retrievedAt": "2026-10-30T02:36:07Z"
+        },
+        {
+          "title": "Figma: 21 product updates in October 2026",
+          "url": "https://spyingbee.com/updates/figma/2026-10",
+          "source": "SpyingBee",
+          "retrievedAt": "2026-10-30T02:36:07Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-30T02:36:07Z"
+    },
     {
       "id": "f_20261029T055523Z_littleloop_1",
       "brand": "littleloop",
@@ -1152,102 +1230,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-20T02:36:59Z"
-    },
-    {
-      "id": "f_20261020T023659Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "YouTube Shorts now cuts reach for channels that mainly re-upload or aggregate others' clips",
-      "insight": "Since early October YouTube's Shorts recommendations favour original clips; minor edits or template changes don't count as original, and YouTube has not defined an exact threshold. Monetisation rules are unchanged. Sunverse Shorts should use its own studio, performance and making-of footage with real editing or commentary rather than recut third-party material.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "YouTube Shorts just changed its algorithm to bury reuploads. Musicians who post their own clips stand to gain.",
-          "url": "https://artvoice.com/youtube-shorts-just-changed-its-algorithm-to-bury-reuploads-musicians-who-post-t",
-          "source": "Artvoice",
-          "retrievedAt": "2026-10-20T02:27:00Z"
-        },
-        {
-          "title": "YouTube Shorts & Monetisation Updates (October 2026)",
-          "url": "https://schedulifyx.com/blog/youtube-shorts-monetisation-updates-october-2026",
-          "source": "Schedulifyx",
-          "retrievedAt": "2026-10-20T02:27:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-20T02:36:59Z"
-    },
-    {
-      "id": "f_20261020T023659Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "From Feb 1, 2027 Shorts revenue share needs 10M qualified Shorts views per 90 days",
-      "insight": "YouTube's updated YPP terms (effective Feb 1, 2027, signed in YouTube Studio) pause Shorts ad/subscription revenue share for channels under 10M qualified Shorts views in the last 90 days; long-form earnings continue. New applicants need 8,000 watch hours/365 days or 20M Shorts views/90 days; existing members are not affected by the entry change. Sunverse should weight revenue planning toward long-form uploads.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "YouTube Partner Program updates for 2027",
-          "url": "https://blog.youtube/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/",
-          "source": "YouTube Official Blog",
-          "retrievedAt": "2026-10-20T02:29:00Z"
-        },
-        {
-          "title": "YouTube tightens monetisation rules, Shorts creators now need 10 mn views every 90 days",
-          "url": "https://www.exchange4media.com/industry-briefing-news/youtube-sets-10-million-shorts-views-for-monetisation-from-2027-157245.html",
-          "source": "exchange4media",
-          "retrievedAt": "2026-10-20T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-20T02:36:59Z"
-    },
-    {
-      "id": "f_20261020T023659Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Wix's Symphony agents can now pay on a user's behalf, with approval for every purchase",
-      "insight": "Wix's multi-agent assistant for solopreneurs (Symphony) integrated Stripe's Link wallet on Oct 15: agents show merchant, item and exact total, the owner approves each spend, and agents never see card details; rolling out to US Link users. Builders are moving from advising to acting. If Foliocraft adds AI actions, per-action human approval should be the default pattern.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Symphony by Wix and Link by Stripe: AI agent payments",
-          "url": "https://www.wix.com/blog/symphony-wix-link-stripe-ai-agent-payments",
-          "source": "Wix Blog",
-          "retrievedAt": "2026-10-20T02:35:00Z"
-        },
-        {
-          "title": "Symphony by Wix integrates Link's Wallet for Agents",
-          "url": "https://techintelpro.com/news/AI/Agentic-AI/symphony-by-wix-integrates-links-wallet-for-agents",
-          "source": "TechIntelPro",
-          "retrievedAt": "2026-10-20T02:35:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-20T02:36:59Z"
-    },
-    {
-      "id": "f_20261019T044854Z_littleloop_1",
-      "brand": "littleloop",
-      "title": "School Readiness and Classroom Themes Resonate in Preschool Animation",
-      "insight": "New releases highlight school journeys and back-to-school concepts for early childhood audiences. LittleLoop can create micro-episodes depicting classroom routines and first-day experiences, helping toddlers aged 2-4 navigate preschool transitions while engaging parents looking for supportive milestone content.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Wheels on the Bus 🚌 Back to School with animals! | Nursery Rhymes & Kids Songs - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1Ud1ZzcWFYeWZVdS01WG1fVVV0MTB4SE44UW1mLU9ZNmJwdGxDOF9yZy1VV0k0ZjZmdWpCM1dtNEFZalpPNFFfOEdNemVnUGZSUzBmTnE5aHhXY25q?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-19T04:48:39Z"
-        },
-        {
-          "title": "Chidiya Rani Ka School | चिड़िया रानी चली स्कूल | Hindi Nursery Rhymes & Kids Songs | Coco TV Rhymes - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiQkFVX3lxTE56eV9VYjRWY2t6LXJjalJNS0tOMXZTamFwbjVGZHluaVBMODNDbFljOWlwYXBmbmJNTXp1ak5sZGZlZw?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-19T04:48:39Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-19T04:48:54Z"
     }
   ]
 }
