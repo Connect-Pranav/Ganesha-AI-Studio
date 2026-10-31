@@ -1,6 +1,96 @@
 {
-  "updatedAt": "2026-10-30T05:57:24Z",
+  "updatedAt": "2026-10-31T02:25:35Z",
   "findings": [
+    {
+      "id": "f_20261031T022535Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram removed linked Reels on Oct 28; existing series links are gone",
+      "insight": "Reels can no longer be chained, and old links were removed (views and insights unaffected). LittleLoop seasons should rely on numbered covers, a 'next part' caption line, a pinned Part 1 and a story highlight per series instead of in-app links.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram Removed Reels Series Linking: What Should Creators Do?",
+          "url": "https://www.awarexone.com/research/instagram-reels-linking-removed",
+          "source": "AwareXone",
+          "retrievedAt": "2026-10-31T02:15:00Z"
+        },
+        {
+          "title": "(October 26, 2026) Instagram updates, news, and features",
+          "url": "https://socialbee.com/blog/instagram-updates/",
+          "source": "SocialBee",
+          "retrievedAt": "2026-10-31T02:15:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-31T02:25:35Z"
+    },
+    {
+      "id": "f_20261031T022535Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Hasbro, Acamar Films and Radio Flyer back new digital-first preschool YouTube series",
+      "insight": "Kidscreen reports established kids' brands launching digital-first series built to attract and hold preschoolers on YouTube. Details are paywalled, so treat this only as a signal that preschool short-form competition is rising; LittleLoop should study the released episodes directly before copying any format idea.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "The strategies behind 3 new digital-first kids series",
+          "url": "https://kidscreen.com/2026/10/30/the-strategies-behind-3-new-digital-first-kids-series/",
+          "source": "Kidscreen",
+          "retrievedAt": "2026-10-31T02:17:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-31T02:25:35Z"
+    },
+    {
+      "id": "f_20261031T022535Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "YouTube app moves Subs to a Home top bar with a dedicated Music feed tab",
+      "insight": "On Android and iOS, Subscriptions leaves the bottom bar and sits in a Home top bar next to Live, Music and Movies & TV feeds; US users can also save custom feeds. Sunverse should check how its uploads surface in the Music feed and keep metadata clearly music-labelled.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube removing 'Subscriptions' bottom bar tab on Android, iOS after nearly a decade",
+          "url": "https://9to5google.com/2026/10/22/youtube-subscriptions-android-ios/?ct=1792764407351",
+          "source": "9to5Google",
+          "retrievedAt": "2026-10-31T02:20:00Z"
+        },
+        {
+          "title": "Your YouTube App is About to Look a Lot Different",
+          "url": "https://www.droid-life.com/2026/10/23/youtube-app-getting-2-major-changes/",
+          "source": "Droid Life",
+          "retrievedAt": "2026-10-31T02:20:00Z"
+        },
+        {
+          "title": "YouTube creator news October 2026",
+          "url": "https://tubebuddy.com/blog/youtube-creator-news-october-2026",
+          "source": "TubeBuddy",
+          "retrievedAt": "2026-10-31T02:18:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-31T02:25:35Z"
+    },
+    {
+      "id": "f_20261031T022535Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Framer's Asset Panel refresh lets AI agents sort components, colours and styles into folders",
+      "insight": "Framer (Oct 26) added custom folders for components, colours, text styles and vectors, with its Agents able to organise them. Foliocraft could offer a simple, agent-assisted way to keep a user's brand colours, fonts and media tidy as a premium editor convenience.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Framer Changelog — Asset Panel Refresh",
+          "url": "https://www.framer.com/changelog",
+          "source": "Framer",
+          "retrievedAt": "2026-10-31T02:23:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-10-31T02:25:35Z"
+    },
     {
       "id": "f_20261030T055711Z_sunverse_1",
       "brand": "sunverse",
@@ -1146,90 +1236,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261022T022741Z_foliocraft_6_claude",
-      "brand": "foliocraft",
-      "title": "Black Friday builder deals started early: Hostinger from Oct 19, Bluehost from Oct 1",
-      "insight": "As of Oct 21 a roundup lists Hostinger's builder sale (Oct 19-Dec 14) and Bluehost's tiered discount (Oct 1-Nov 30) as live; Wix, Framer, Webflow and Squarespace had not announced 2026 deals. Foliocraft should decide early on any premium promo. Single affiliate-linked source.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "Best Black Friday Website Builder Deals 2026 (16 Builders)",
-          "url": "https://justwebworld.com/black-friday-website-builder-deals/",
-          "source": "JustWebWorld",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261021T023217Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "MIPJunior 2026 research: animation, music-led series and animals (cats rising) still lead kids' taste",
-      "insight": "Glance's MIPJunior keynote says animation stays children's favourite genre, music-driven series remain a reliable draw, animals are a strong character territory with cats gaining on dogs, and vertical/creator-led series are growing. LittleLoop can test a recurring animal (e.g. cat) character in short musical Reels.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Report: Kids' programmes increasingly inspired by social media",
-          "url": "https://www.advanced-television.com/2026/10/12/report-kids-programmes-increasingly-inspired-by-social-media/",
-          "source": "Advanced Television",
-          "retrievedAt": "2026-10-21T02:20:00Z"
-        },
-        {
-          "title": "MIPJUNIOR 2026",
-          "url": "https://www.mediametrie.fr/en/audiences-and-results/tv-video-worldwide/kids-tv-report-animation-trends/mipjunior-2026",
-          "source": "Médiamétrie / Glance",
-          "retrievedAt": "2026-10-21T02:24:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-21T02:32:17Z"
-    },
-    {
-      "id": "f_20261021T023217Z_littleloop_2_claude",
-      "brand": "littleloop",
-      "title": "Disney Jr. says it tests stories with children and feeds results back to writers",
-      "insight": "At MIPJunior, Disney Jr.'s programming lead said stories are regularly tested with children to check what preschoolers understand, then revised. LittleLoop could add a lightweight comprehension check (e.g. parent preview of the script/animatic) before producing an episode.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "MipJunior 2026: Disney focuses on audience feedback to build new franchises",
-          "url": "https://senalnews.com/en/events/mipjunior-2026-disney-focuses-on-audience-feedback-to-build-new-franchises",
-          "source": "Señal News",
-          "retrievedAt": "2026-10-21T02:24:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-21T02:32:17Z"
-    },
-    {
-      "id": "f_20261021T023217Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "Spotify: 50M+ slop/spam tracks pulled from recommendations in 2026; AI Credits and verification pushed",
-      "insight": "Spotify's Oct 20 update says it removed 50M+ slop/spam tracks from recommendations this year, targets mass uploads, duplicates and artificially short tracks, and says likely-AI tracks are far more likely to miss the 1,000-stream royalty threshold. Sunverse should disclose AI roles via AI Credits, avoid duplicate/short uploads, and seek artist verification.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "One Year In: Putting Human Artistry First on Spotify",
-          "url": "https://newsroom.spotify.com/2026-10-20/prioritizing-human-artistry/",
-          "source": "Spotify Newsroom",
-          "retrievedAt": "2026-10-21T02:27:00Z"
-        },
-        {
-          "title": "Spotify Says It's Removed 50M+ AI Tracks from Recommendations",
-          "url": "https://www.digitalmusicnews.com/2026/10/20/spotify-ai-recommendations-stats/",
-          "source": "Digital Music News",
-          "retrievedAt": "2026-10-21T02:27:30Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-21T02:32:17Z"
     }
   ]
 }

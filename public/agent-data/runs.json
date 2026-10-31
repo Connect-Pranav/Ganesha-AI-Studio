@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261031T022535Z_narada_claude_1",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "startedAt": "2026-10-31T02:05:00Z",
+      "finishedAt": "2026-10-31T02:25:35Z",
+      "status": "success",
+      "summary": "4 findings: littleloop 2, sunverse 1, foliocraft 1"
+    },
+    {
+      "id": "run_20261031T022535Z_ganesha_claude_2",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-10-31T02:24:00Z",
+      "finishedAt": "2026-10-31T02:25:35Z",
+      "status": "success",
+      "summary": "4 tasks queued: littleloop 2, sunverse 1, foliocraft 1"
+    },
+    {
       "id": "run_20261030T055737Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",

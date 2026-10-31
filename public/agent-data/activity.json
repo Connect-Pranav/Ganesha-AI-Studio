@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261031T022535Z_1_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Instagram removed linked Reels on Oct 28; new digital-first preschool YouTube series (low confidence)."
+    },
+    {
+      "id": "e_20261031T022535Z_2_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 tasks: pinned Part 1 + series highlight plan (approval needed); review new preschool series formats."
+    },
+    {
+      "id": "e_20261031T022535Z_3_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — YouTube app moves Subs to a Home top bar with a dedicated Music feed tab."
+    },
+    {
+      "id": "e_20261031T022535Z_4_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: check how Sunverse uploads appear in YouTube's new Music feed."
+    },
+    {
+      "id": "e_20261031T022535Z_5_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Framer's Asset Panel refresh lets AI agents organise assets into folders."
+    },
+    {
+      "id": "e_20261031T022535Z_6_claude",
+      "at": "2026-10-31T02:25:35Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task for CODE-SHAKTI: spec agent-assisted asset folders in the editor."
+    },
+    {
       "id": "e_20261030T055711Z_1_gemini",
       "at": "2026-10-30T05:57:11Z",
       "brand": "sunverse",
@@ -845,60 +899,6 @@
       "engine": "gemini",
       "kind": "task",
       "text": "Planned 2 task(s) for LittleLoop"
-    },
-    {
-      "id": "e_20261018T044153Z_5_gemini",
-      "at": "2026-10-18T04:41:53Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for Sunverse"
-    },
-    {
-      "id": "e_20261018T044153Z_6_gemini",
-      "at": "2026-10-18T04:41:53Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for Foliocraft"
-    },
-    {
-      "id": "e_20261018T044046Z_1_gemini",
-      "at": "2026-10-18T04:40:46Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for LittleLoop from 13 sources"
-    },
-    {
-      "id": "e_20261018T044100Z_2_gemini",
-      "at": "2026-10-18T04:41:00Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Sunverse from 18 sources"
-    },
-    {
-      "id": "e_20261018T044127Z_3_gemini",
-      "at": "2026-10-18T04:41:27Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Foliocraft from 15 sources"
-    },
-    {
-      "id": "e_20261017T043625Z_4_gemini",
-      "at": "2026-10-17T04:36:25Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 1 task(s) for LittleLoop"
     }
   ]
 }
