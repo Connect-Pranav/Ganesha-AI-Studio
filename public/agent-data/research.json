@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-10-31T02:25:35Z",
+  "updatedAt": "2026-11-01T02:25:42Z",
   "findings": [
+    {
+      "id": "f_20261101T022542Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram's Edits app now builds photo+video carousels on one canvas (iOS; Android later)",
+      "insight": "Edits' carousel editor lets an image or headline span several slides, offers layouts and cutout stickers, and reuses saved fonts, colours and presets from other Edits projects. LittleLoop can make swipe-through carousels (e.g. a character lineup across slides) that match the episode look without a separate design tool. Android support is still pending.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Instagram Adds Carousel Editor to Its Edits App",
+          "url": "https://www.netinfluencer.com/instagram-adds-carousel-editor-to-its-edits-app/",
+          "source": "Net Influencer",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        },
+        {
+          "title": "Instagram Edits gets carousel creation with photos, videos and text",
+          "url": "https://www.fonearena.com/blog/494470/instagram-edits-carousel-creation-photos-videos-text.html/amp",
+          "source": "FoneArena",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-01T02:25:42Z"
+    },
+    {
+      "id": "f_20261101T022542Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Late-Oct Reels formats: '1% to 100% recharged' glow-ups and 'toggle on' series teasers",
+      "insight": "Later's Oct 30 trend update lists a before/after 'Recharged' format (low to full energy) and a switch-style 'Toggle on' transition for teasing a new series. Both translate easily to animation (a sleepy character waking up; teasing the next episode). The listed audios are mashups or creator mixes, so LittleLoop should use its own or royalty-free audio and check lyrics for age-fit.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Top Instagram Reels Trends to Try in 2026 (Updated Weekly)",
+          "url": "https://later.com/blog/instagram-reels-trends/",
+          "source": "Later",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-01T02:25:42Z"
+    },
+    {
+      "id": "f_20261101T022542Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Feed controls on Meta, TikTok and YouTube shift music discovery toward user choice",
+      "insight": "Hypebot (Oct 26) notes users can now pick topics or reset history on YouTube, refresh/filter feeds on TikTok and use Show More/Less and Favorites on Meta. It suggests asking core fans to 'train' their feeds, using descriptive genre keywords in titles, captions and spoken audio, and moving fans to owned channels. Sunverse can test a fan ask plus keyword-rich descriptions.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Fans Now Control Their Feeds: How Music Marketers Must Adapt",
+          "url": "https://www.hypebot.com/fans-now-control-their-feeds-how-music-marketers-must-adapt/",
+          "source": "Hypebot",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-01T02:25:42Z"
+    },
+    {
+      "id": "f_20261101T022542Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "Free visualizer tools can make full-length YouTube music videos; some add watermarks",
+      "insight": "A Hypebot roundup (Oct 26) lists free options such as Music Visualizer Lab and SoundTools (no account or watermark, landscape or portrait) for full-song YouTube visualizers, while Tuneform's free full-length exports carry a watermark and others need paid credits. Sunverse can trial a free tool for low-cost long-form uploads, after checking each tool's commercial-use terms.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "9 Free or Cheap Tools for Music Visualizers and Spotify Canvas Loops",
+          "url": "https://www.hypebot.com/9-free-or-cheap-tools-for-music-visualizers-and-spotify-canvas-loops/",
+          "source": "Hypebot",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-01T02:25:42Z"
+    },
+    {
+      "id": "f_20261101T022542Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace's October update adds invoice taxes, custom numbering and SMS pay links",
+      "insight": "Squarespace's Oct 22 product update adds built-in tax rates, custom invoice numbers and multiple recipients to Invoicing, sharing Pay Links by SMS, and UPI/PIX/USDC on Link for US-based businesses. This sets a concrete competitor baseline for Foliocraft's planned freelancer invoicing feature; sharing a payment link by message is a gap worth specifying.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "October 2026 Product Updates",
+          "url": "https://www.squarespace.com/blog/product-updates-october-2026",
+          "source": "Squarespace",
+          "retrievedAt": "2026-11-01T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-01T02:25:42Z"
+    },
     {
       "id": "f_20261031T022535Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1128,114 +1224,6 @@
       "agent": "narada_market_intelligence",
       "engine": "gemini",
       "createdAt": "2026-10-22T04:58:13Z"
-    },
-    {
-      "id": "f_20261022T022741Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram's Edits app is testing auto-syncing video effects to a song's beat",
-      "insight": "Edits is testing a Labs option that matches effects to the music's rhythm automatically, for some creators only and not officially announced. For LittleLoop's song-led shorts this could cut manual beat-timing in edits; check access before planning around it.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Instagram testet Edits-Funktion: Reels-Effekte synchron zum Beat",
-          "url": "https://onlinemarketing.de/social-media-marketing/instagram-testet-edits-videoeffekte-mit-musik-synchronisieren",
-          "source": "OnlineMarketing.de",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        },
-        {
-          "title": "Instagram updates, news, and features",
-          "url": "https://socialbee.com/blog/instagram-updates/",
-          "source": "SocialBee",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261022T022741Z_littleloop_2_claude",
-      "brand": "littleloop",
-      "title": "AI Reels showing distressed kids with 'like to free them' bait drew scrutiny of Meta",
-      "insight": "Reporting (Oct 16) found AI clips of children in distress that ask viewers to like and follow; Meta removed some but similar videos stayed up. LittleLoop should keep CTAs free of guilt or urgency bait and keep characters clearly animated, to protect parent trust and reach.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Meta's AI Reels show crying kids 'arrested' and told they'll be freed if viewers like and follow",
-          "url": "https://www.thecooldown.com/green-tech/meta-ai-generated-content-crying-kids/",
-          "source": "The Cool Down",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261022T022741Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "YouTube announced seasons and episodes for Shorts, viewable on mobile, desktop and TV",
-      "insight": "At Made on YouTube (Sept 23) YouTube said creators can group Shorts into series with seasons, episodes and custom thumbnails; no rollout date or India timing given. Sunverse can pre-plan recurring Shorts strands (e.g. track breakdowns) so they slot into a series once available.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "What's new from Made on YouTube 2026?",
-          "url": "https://www.medianama.com/2026/09/223-whats-new-made-on-youtube-2026/",
-          "source": "MediaNama",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        },
-        {
-          "title": "YouTube 2026 Update: AI Editing, Ask YouTube Shopping, Shorts Series Announced",
-          "url": "https://www.analyticsinsight.net/news/youtube-2026-update-ai-editing-ask-youtube-shopping-shorts-series-announced",
-          "source": "Analytics Insight",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261022T022741Z_sunverse_4_claude",
-      "brand": "sunverse",
-      "title": "India-focused distributors now pitch royalty transparency and DSP error-flagging",
-      "insight": "Madverse's CEO (MBW, Oct 13) says Indian indie artists lack infrastructure and that its own tools show where earnings come from and flag DSP reporting inconsistencies. Sunverse should check how detailed its distributor's per-platform royalty reports are before the next release.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "'Independent artists in India deserve the same infrastructure access, royalty transparency, and global reach that Western artists have been exposed to.'",
-          "url": "https://www.musicbusinessworldwide.com/independent-artists-in-india-deserve-the-same-infrastructure-access-royalty-transparency-and-global-reach-that-western-artists-have-been-exposed-to/",
-          "source": "Music Business Worldwide",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
-    },
-    {
-      "id": "f_20261022T022741Z_foliocraft_5_claude",
-      "brand": "foliocraft",
-      "title": "Webflow launched Campaigns: brand-based landing pages with variants on their own URLs",
-      "insight": "Webflow Campaigns (Oct 20) extracts a brand into a design system and generates landing-page variations, each with its own URL, plus conversion tracking. Aimed at marketing teams, but the idea maps to Foliocraft: tailored portfolio variants per job or client pitch as a premium feature.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Your next campaign starts here. Meet Webflow Campaigns.",
-          "url": "https://webflow.com/blog/campaigns-launch",
-          "source": "Webflow",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        },
-        {
-          "title": "Latest updates and features",
-          "url": "https://webflow.com/updates",
-          "source": "Webflow",
-          "retrievedAt": "2026-10-22T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-22T02:27:41Z"
     }
   ]
 }

@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261101T022542Z_1_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 LittleLoop findings: Edits carousel editor; Recharged and Toggle-on Reels formats."
+    },
+    {
+      "id": "e_20261101T022542Z_2_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: character carousel concept and a sleepy-to-recharged Reel concept."
+    },
+    {
+      "id": "e_20261101T022542Z_3_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 Sunverse findings: user feed controls change discovery; free full-length visualizer tools."
+    },
+    {
+      "id": "e_20261101T022542Z_4_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: train-your-feed template and a visualizer tool terms comparison."
+    },
+    {
+      "id": "e_20261101T022542Z_5_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 Foliocraft finding: Squarespace adds invoice taxes, custom numbering and SMS pay links."
+    },
+    {
+      "id": "e_20261101T022542Z_6_claude",
+      "at": "2026-11-01T02:25:42Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 Foliocraft task: spec sharing invoice pay links by SMS/WhatsApp."
+    },
+    {
       "id": "e_20261031T022535Z_1_claude",
       "at": "2026-10-31T02:25:35Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: 1 Sunverse finding — YouTube Music now labels tracks made mainly with generative AI."
-    },
-    {
-      "id": "e_20261019T022526Z_3_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 Foliocraft finding — Webflow launched a Gemini connector via its MCP server."
-    },
-    {
-      "id": "e_20261019T022526Z_4_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 LittleLoop tasks: season plan, Series availability check, problem-solving episode concept."
-    },
-    {
-      "id": "e_20261019T022526Z_5_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 1 Sunverse task: confirm distributor Gen AI designation for YouTube Music labels."
-    },
-    {
-      "id": "e_20261019T022526Z_6_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Foliocraft tasks: compare AI-assistant connectors; spec a read-only MCP endpoint."
-    },
-    {
-      "id": "e_20261018T142135Z_1_claude",
-      "at": "2026-10-18T14:21:35Z",
-      "brand": "studio",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Weekly ops review 2026-W42 (vault#4): 4 of 6 steps done; automation proposals await owner approval."
-    },
-    {
-      "id": "e_20261018T044153Z_4_gemini",
-      "at": "2026-10-18T04:41:53Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 2 task(s) for LittleLoop"
     }
   ]
 }
