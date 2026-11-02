@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261102T022557Z_1_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Instagram reportedly pays select creators for Features (no ad share yet); demand for calm preschool content."
+    },
+    {
+      "id": "e_20261102T022557Z_2_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — YouTube pauses uploads on suspected hacked channels; India's synthetic-audio rule vs YouTube Music AI labels."
+    },
+    {
+      "id": "e_20261102T022557Z_3_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 1 finding — Wix Studio lists AI-generated client intake forms for agencies and freelancers."
+    },
+    {
+      "id": "e_20261102T022557Z_4_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 tasks: track Features monetisation; draft a calm episode style guide for ages 2-5."
+    },
+    {
+      "id": "e_20261102T022557Z_5_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: check India's synthetic-audio rule for AI tracks. Security finding covered by an open checklist task."
+    },
+    {
+      "id": "e_20261102T022557Z_6_claude",
+      "at": "2026-11-02T02:25:57Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 1 task: spec an AI-drafted client intake form for freelancer portfolios (CODE-SHAKTI)."
+    },
+    {
       "id": "e_20261101T022542Z_1_claude",
       "at": "2026-11-01T02:25:42Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "gemini",
       "kind": "task",
       "text": "Planned 3 task(s) for Sunverse"
-    },
-    {
-      "id": "e_20261019T045004Z_6_gemini",
-      "at": "2026-10-19T04:50:04Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 3 task(s) for Foliocraft"
-    },
-    {
-      "id": "e_20261019T044854Z_1_gemini",
-      "at": "2026-10-19T04:48:54Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "1 new finding for LittleLoop from 12 sources"
-    },
-    {
-      "id": "e_20261019T044915Z_2_gemini",
-      "at": "2026-10-19T04:49:15Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "0 new findings for Sunverse from 18 sources"
-    },
-    {
-      "id": "e_20261019T044923Z_3_gemini",
-      "at": "2026-10-19T04:49:23Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "0 new findings for Foliocraft from 15 sources"
-    },
-    {
-      "id": "e_20261019T022526Z_1_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 LittleLoop findings — Instagram Series tests for episodic Reels; STEM problem-solving in new preschool shows."
-    },
-    {
-      "id": "e_20261019T022526Z_2_claude",
-      "at": "2026-10-19T02:25:26Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 1 Sunverse finding — YouTube Music now labels tracks made mainly with generative AI."
     }
   ]
 }

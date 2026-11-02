@@ -1,6 +1,70 @@
 {
-  "updatedAt": "2026-11-01T02:25:42Z",
+  "updatedAt": "2026-11-02T02:25:57Z",
   "tasks": [
+    {
+      "id": "t_20261102T022557Z_littleloop_1_claude",
+      "title": "Track whether Instagram adds ad revenue sharing for Features long-form videos",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Features has no ad share yet and paid deals go to select creators (lit1); compilation plans should not assume income.",
+      "sourceFindings": [
+        "f_20261102T022557Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-02T02:25:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261102T022557Z_littleloop_2_claude",
+      "title": "Draft a calm, low-stimulation episode style guide (pacing, sound, colour) for ages 2-5",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Kidscreen reports parent demand for gentle preschool content (lit2, low confidence); a style guide lets us test it cheaply.",
+      "sourceFindings": [
+        "f_20261102T022557Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-02T02:25:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261102T022557Z_sunverse_3_claude",
+      "title": "Check whether India's synthetic-audio disclosure rule applies to Sunverse AI tracks",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "India's rules may require an audible disclosure that YouTube Music's visual label does not provide (sun2); scope for AI songs is unsettled.",
+      "sourceFindings": [
+        "f_20261102T022557Z_sunverse_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-02T02:25:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261102T022557Z_foliocraft_4_claude",
+      "title": "Spec an AI-drafted client intake form for Foliocraft freelancer portfolios",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Wix Studio lists AI intake forms from a project description (fol1); pairs with the queued invoicing spec as a premium client workflow.",
+      "sourceFindings": [
+        "f_20261102T022557Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-02T02:25:57Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261101T022542Z_littleloop_1_claude",
       "title": "Draft a swipe-through character-introduction carousel concept using Edits presets",
@@ -1216,70 +1280,6 @@
         "f_20261017T043554Z_sunverse_3"
       ],
       "requiresApproval": true,
-      "createdAt": "2026-10-19T04:50:04Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261019T045004Z_sunverse_6",
-      "title": "Standardize track metadata tags to support conversational music search",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "YouTube Music's Ask Music feature relies on descriptive metadata to surface remixes, live sets, and mood-based tracks. Standardizing tags across releases prepares the catalog for discovery.",
-      "sourceFindings": [
-        "f_20261013T022735Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-19T04:50:04Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261019T045004Z_foliocraft_7",
-      "title": "Build a 'Switch from Squarespace' landing page highlighting cost savings",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Squarespace price hikes of up to 26% create an opportunity to win price-sensitive portfolio creators. A dedicated migration landing page clarifies Foliocraft's transparent value.",
-      "sourceFindings": [
-        "f_20261012T190245Z_foliocraft_6_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-19T04:50:04Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261019T045004Z_foliocraft_8",
-      "title": "Research review and submission criteria for major website builder roundups",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Major tech outlets are publishing 2026 website builder roundups focused on no-code ease of use. Identifying specific scoring rubrics enables targeted builder improvements and editorial pitches.",
-      "sourceFindings": [
-        "f_20261018T044127Z_foliocraft_5"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-19T04:50:04Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "gemini"
-    },
-    {
-      "id": "t_20261019T045004Z_foliocraft_9",
-      "title": "Research developer requirements for Google Gemini connected app integrations",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Webflow's Gemini MCP connector sets an expectation for assistant-based site management. Analyzing Google Gemini connector specifications will clarify compliance and API requirements for Foliocraft.",
-      "sourceFindings": [
-        "f_20261019T022526Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
       "createdAt": "2026-10-19T04:50:04Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "gemini"
