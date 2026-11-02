@@ -12,6 +12,7 @@ export function startFestiveTheme() {
       target: document.documentElement,
       // hi = bright accent on dark, deep = primary fill behind white text (keeps --primary-ink readable).
       vars: { hi: ['--blue', '--violet'], hi2: ['--cyan'], deep: ['--green', '--green-2'] },
+      artBase: '/',
       position: 'bottom',
       offset: window.innerWidth < 900 ? 84 : 24, // clear the phone bottom nav
       particles: 16,
