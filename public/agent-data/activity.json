@@ -1,6 +1,15 @@
 {
   "events": [
     {
+      "id": "e_20261102T051949Z_1_claude",
+      "at": "2026-11-02T05:19:49Z",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "engine": "claude",
+      "kind": "code",
+      "text": "Opened PR #4: spec for a premium portfolio SEO health check (indexability, metadata, sitemap). Spec only; awaiting review."
+    },
+    {
       "id": "e_20261102T022557Z_1_claude",
       "at": "2026-11-02T02:25:57Z",
       "brand": "littleloop",
@@ -890,15 +899,6 @@
       "engine": "gemini",
       "kind": "task",
       "text": "Planned 3 task(s) for LittleLoop"
-    },
-    {
-      "id": "e_20261019T045004Z_5_gemini",
-      "at": "2026-10-19T04:50:04Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 3 task(s) for Sunverse"
     }
   ]
 }
