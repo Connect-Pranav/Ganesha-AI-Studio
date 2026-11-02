@@ -6,6 +6,7 @@ import './styles.css';
 import { startAutoUpdate } from './services/autoUpdate';
 import { startPremiumFx } from './services/premiumFx';
 import { applySkin } from './services/skin';
+import { startFestiveTheme } from './services/festiveTheme';
 
 applySkin(); // before the first paint, so the chosen theme never flashes
 
@@ -26,3 +27,4 @@ if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
 
 startAutoUpdate();
 startPremiumFx();
+startFestiveTheme();
