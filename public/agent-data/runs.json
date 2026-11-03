@@ -1,6 +1,24 @@
 {
   "runs": [
     {
+      "id": "run_20261103T023604Z_narada_claude_1",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "startedAt": "2026-11-03T02:23:06Z",
+      "finishedAt": "2026-11-03T02:36:04Z",
+      "status": "success",
+      "summary": "6 findings across 3 brands (2 each)"
+    },
+    {
+      "id": "run_20261103T023604Z_ganesha_claude_2",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "startedAt": "2026-11-03T02:23:06Z",
+      "finishedAt": "2026-11-03T02:36:04Z",
+      "status": "success",
+      "summary": "6 tasks planned across 3 brands (2 each), no duplicates of open tasks"
+    },
+    {
       "id": "run_20261102T062244Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",

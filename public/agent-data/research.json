@@ -1,6 +1,114 @@
 {
-  "updatedAt": "2026-11-02T02:25:57Z",
+  "updatedAt": "2026-11-03T02:36:04Z",
   "findings": [
+    {
+      "id": "f_20261103T023604Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Edits adds 13 text animations, bulk caption editing and per-clip volume boost (Oct 27)",
+      "insight": "Meta's Oct 27 Edits update adds new text animations, more caption styles with bulk editing, per-clip volume up to 150% and auto colour fixes; the carousel editor now also works on Android. Bulk caption edits can speed up checking on-screen words for young viewers; reuse one approved text style rather than mixing animations.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram Edits Adds Halloween Effects, 13 Text Animations and New Editing Tools",
+          "url": "https://www.thereelstars.com/tech/instagram-edits-adds-halloween-effects-13-text-animations-and-new-editing-tools/",
+          "source": "The Reel Stars",
+          "retrievedAt": "2026-11-03T02:31:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
+    {
+      "id": "f_20261103T023604Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Later lists a 'small text zoom' Reels format (Oct 30): short text overlay plus zoom",
+      "insight": "Later's weekly trend list (Oct 30) describes a format pairing a small heartfelt or teaser line of text with a zoom effect, usable in any niche. LittleLoop could adapt it for parent-facing teasers (e.g. a new episode hint) using original or licensed audio instead of the trending mashup.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Top Instagram Reels Trends to Try in 2026 (Updated Weekly)",
+          "url": "https://later.com/blog/instagram-reels-trends/",
+          "source": "Later",
+          "retrievedAt": "2026-11-03T02:29:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
+    {
+      "id": "f_20261103T023604Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Spotify India pushes artist-first programmes; RADAR India adds Malayalam (Nov 2)",
+      "insight": "Spotify says Indian artist-first releases are growing beyond film music and highlights Fresh Finds for new independent acts and RADAR (now incl. Punjabi, Tamil, Malayalam). Figures are Spotify's own. Sunverse could pitch upcoming tracks via Spotify for Artists alongside its YouTube-first releases.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Spotify doubles down on artist-first music in India as Indian creators' royalties climb",
+          "url": "https://www.varindia.com/news/Spotify-doubles-down-on-artist-first-music-in-India-as-Indian-creators%E2%80%99-royalties-climb",
+          "source": "VARINDIA",
+          "retrievedAt": "2026-11-03T02:34:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
+    {
+      "id": "f_20261103T023604Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "Op-ed: AI labels may lower how listeners rate identical music; hiding AI use is riskier",
+      "insight": "An Inc. column (syndicated Nov 1) argues that YouTube Music's AI labels can reduce listener ratings even when audio is identical, citing a piano-perception study, but that concealment backfires. Sunverse should declare AI use accurately and explain the human roles (writing, vocals, mixing) in descriptions.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "YouTube just started labelling AI music. Have you been misled?",
+          "url": "https://www.thestar.com.my/tech/tech-news/2026/11/01/youtube-just-started-labelling-ai-music-have-you-been-misled",
+          "source": "The Star (Inc./Tribune News Service)",
+          "retrievedAt": "2026-11-03T02:31:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
+    {
+      "id": "f_20261103T023604Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Framer adds a localization Content panel with per-item opt-in across locales (Nov 2)",
+      "insight": "Framer's Nov 2 update lists all pages, collections and components per locale, letting users include, leave untranslated or hide each item, in bulk, and choose a default when adding a locale. Foliocraft could spec gradual multilingual portfolios (e.g. English + Hindi) as a premium option.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Framer Updates: Features and improvements",
+          "url": "https://www.framer.com/updates",
+          "source": "Framer",
+          "retrievedAt": "2026-11-03T02:31:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
+    {
+      "id": "f_20261103T023604Z_foliocraft_6_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace cuts ~19% of staff as prompt-built site tools reshape the market (Nov 2)",
+      "insight": "TechCrunch reports Squarespace is laying off about 19% of staff in a restructuring, amid competition from prompt-to-site tools (Wix/Base44, Lovable, Google Stitch); it has a waitlist for Forma, an AI-native platform. Signals that prompt-first creation is now the baseline Foliocraft is compared against.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Web host Squarespace lays off 19% of its employees",
+          "url": "https://techcrunch.com/2026/11/02/web-host-squarespace-lays-off-19-of-its-employees/",
+          "source": "TechCrunch",
+          "retrievedAt": "2026-11-03T02:31:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-03T02:36:04Z"
+    },
     {
       "id": "f_20261102T022557Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1104,120 +1212,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-24T02:31:20Z"
-    },
-    {
-      "id": "f_20261023T045913Z_littleloop_1",
-      "brand": "littleloop",
-      "title": "Cultural Adaptations of Classic Nursery Rhymes Engage Diverse Audiences",
-      "insight": "Adapting public-domain nursery melodies with cultural or community-specific twists, such as 'Old Adam Had a Farm', demonstrates a pathway for LittleLoop to create inclusive, relatable short-form musical content that resonates with multicultural family demographics.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Old Adam Had a Farm E-I-E-I-O | Islamic Kids Nasheed | Muslim Kids Nursery Rhymes | Cartoon Song - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE4yMUUxblRmRkwxcjZheVZENzNqSExHVkRPT3ZkTENrTHRGbXowNXY0UEc3d2JnRjJxdlFQbVBaal9hd1dRc3NZM2swUHVSTm1KZ21qYVFR?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-23T04:58:33Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-23T04:59:13Z"
-    },
-    {
-      "id": "f_20261023T050020Z_sunverse_2",
-      "brand": "sunverse",
-      "title": "Indian Industry Acceptance for Responsible AI Adoption in Music",
-      "insight": "Composer Shankar Mahadevan noted there is nothing wrong with using AI if used responsibly. For Sunverse, adopting ethical AI tools for workflow enhancements, ideation, and production is viable as long as transparency and human oversight are maintained.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "‘There is nothing wrong with using AI, provided it is used responsibly’: Shankar Mahadevan - The Times of India",
-          "url": "https://news.google.com/rss/articles/CBMiiwJBVV95cUxQVmw5M3prVlh0OVhaNFJtX0s2d1Y4NW1fMER0akFOaklzUmctYjU2T1hVZjdyLVljOGxGU3M4RXB0OXpNSzZlUzA1bGNZZWpKWmRNTkZJNUhwWUhoUUlqaWo3ODFPUUFMV2t0Y0lidjBMMVl3RmpaNUVpaEkzTG9xY2ZEX1RDTUlHSWRyNXdfME9nbGFBTFlwR1E3NmxjRm02SkV0NWZhTlJCWFZkNkdLSVhwQ3UyeExFZXRYZHFQU0UxbnF0UkNvQ1lBbFdOMjN0czE0N1FNZWdZS3p5OWVveERJX2Zyc0R5aFpxb2lpQmJFWk9JUjR5VjVCSEY3WldfUmFfVmlHTUdoUHfSAZACQVVfeXFMT181d09JNHA3c003NkVmTlRodi02TmdON1R3RlRGTkdzM2oyNVJPUEtMRFVTWWpHUFlMUF9BczM1NmZ6a0NKRWNrdVpMd2d2ZkpPcHZkTlNXbWFYSEFsalZNNkoxQUdCejdMLTItVHpHb3RlSkhfUTdPU2h2Z1l4dUxMdXk3dHhBUHBQcm4yTnFXWjY0d2IwWUJ2elVJQklqbkVVYjBmZEc0UlBiS0QzcENQczRJeWtNS0lrN0RoNEtMcXY0OWtsQWx0SmZaM21KZ2d4enFrTFY0NlV0ZUI2Zm93TmNwN19YNURWZGFVa1ZuRTlhUHhtY0lXcFVBU0VKaFBkUTRyQUdhY1dDZTMtaWU?oc=5",
-          "source": "The Times of India",
-          "retrievedAt": "2026-10-23T04:59:14Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-23T05:00:20Z"
-    },
-    {
-      "id": "f_20261023T050020Z_sunverse_3",
-      "brand": "sunverse",
-      "title": "Mainstream Pop and Hip-Hop Crossovers Continue to Emerge",
-      "insight": "Nikhita Gandhi's release 'RUDE' featuring rapper Dino James underscores the continuing demand for pop vocalist and hip-hop artist crossover tracks. Sunverse can pair melodic singers with emerging rap talent to bridge audiences across distinct Indian music listener segments.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Nikhita Gandhi Teams Up with Dino James for New Song ‘RUDE’ - mamaraazzi.com",
-          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQa004QXc5bmJSSGliVndqVWtrNlpTbDR6cmRPM0ZMUXVRaE92OGhxaEJWTWVsVnJ4WXlGTHllUzNOODdSbzN6bWQ4M0gyODg1d3lwQXFlR3JWVmZuQUdYWm9iSUxsLXRpQjJqc2dSR2pkZ19ObnJjNl9DTVFZS2p5NXJyRjNGaFdja0dOZHZEa0pvWnJsSkdR?oc=5",
-          "source": "mamaraazzi.com",
-          "retrievedAt": "2026-10-23T04:59:14Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-23T05:00:20Z"
-    },
-    {
-      "id": "f_20261023T050114Z_foliocraft_4",
-      "brand": "foliocraft",
-      "title": "AI Builder Benchmarks Pit Emerging Challengers Against Wix and Squarespace",
-      "insight": "Coverage comparing Design.com against Wix and Squarespace shows AI-first website generation is becoming the standard baseline for comparisons. Foliocraft should differentiate its paid premium offering by emphasizing specialized portfolio presentation and creative agency layouts that generic AI site generators overlook.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Design.com vs. Wix vs. Squarespace: Comparing AI Website Builders in 2026 - https://tech-insider.org/",
-          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNOHlBS0ZMcW1uX2JjenZIeFFrQnkxNmUwdF9zdFNkNUg1ajN1TlFWZUF5dUUwb1JMYjlMRjhoZVpQY3RsZDFsRE9qTWtqbWNKSUlCTjlJZDc3QkFQWGVkdFNESnQ4bXI4Y1J6SW1GenI5b0taZWJybDhpQlh2ZGVSU1lRWXAtWUZlU2U5UUhCeGluUWlKVVlmbFhKVFY?oc=5",
-          "source": "https://tech-insider.org/",
-          "retrievedAt": "2026-10-23T05:00:21Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-23T05:01:14Z"
-    },
-    {
-      "id": "f_20261023T022653Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram drops Reels series linking on Oct 28; Edits adds reusable style Kits",
-      "insight": "Meta is removing the option to link Reels into a series (from Oct 28) while Edits adds Kits that save a visual style for reuse and an iOS 'use as reference' camera overlay. LittleLoop should carry episode order in titles/captions instead of series links and save its look as a Kit for consistency.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Meta adds audio links, trending insights and reference Reels to Edits, drops series linking",
-          "url": "https://www.netinfluencer.com/meta-adds-audio-links-trending-insights-and-reference-reels-to-edits-drops-series-linking/",
-          "source": "Net Influencer",
-          "retrievedAt": "2026-10-23T02:26:53Z"
-        },
-        {
-          "title": "Meta adds video creation tools to Edits, introduces Reels reference feature",
-          "url": "https://socialsamosa.com/news-2/meta-adds-video-creation-tools-to-edits-reels-reference-feature-12681204",
-          "source": "Social Samosa",
-          "retrievedAt": "2026-10-23T02:26:53Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-23T02:26:53Z"
-    },
-    {
-      "id": "f_20261023T022653Z_littleloop_2_claude",
-      "brand": "littleloop",
-      "title": "Australia is preparing a court case over platforms' compliance with its under-16 ban",
-      "insight": "Australia's minister says eSafety is gathering evidence for a Federal Court case against Meta, TikTok, Snap and YouTube over the under-16 ban, and is courting other countries. LittleLoop should keep addressing parents, not children, in captions and calls to action.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Australia set to sue Meta, TikTok, Snap and YouTube, Bloomberg reports",
-          "url": "https://thenextweb.com/news/australia-social-media-ban-sue-meta-tiktok-snap-youtube",
-          "source": "The Next Web",
-          "retrievedAt": "2026-10-23T02:26:53Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-23T02:26:53Z"
     }
   ]
 }

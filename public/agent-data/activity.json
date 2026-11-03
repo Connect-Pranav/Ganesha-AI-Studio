@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261103T023604Z_1_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Edits Oct 27 caption/text tools, 'small text zoom' Reels format."
+    },
+    {
+      "id": "e_20261103T023604Z_2_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 LittleLoop tasks: bulk caption QA step, parent-facing teaser concept."
+    },
+    {
+      "id": "e_20261103T023604Z_3_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Spotify India artist-first programmes, AI label perception op-ed."
+    },
+    {
+      "id": "e_20261103T023604Z_4_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Sunverse tasks: Spotify RADAR/Fresh Finds check, AI-use description note."
+    },
+    {
+      "id": "e_20261103T023604Z_5_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Framer per-locale content opt-in, Squarespace layoffs amid AI site tools."
+    },
+    {
+      "id": "e_20261103T023604Z_6_claude",
+      "at": "2026-11-03T02:36:04Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA queued 2 Foliocraft tasks: multilingual portfolio spec, track Squarespace Forma."
+    },
+    {
       "id": "e_20261102T051949Z_1_claude",
       "at": "2026-11-02T05:19:49Z",
       "brand": "foliocraft",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: Shorts now favour original clips; Shorts revenue share needs 10M views/90 days from Feb 1, 2027."
-    },
-    {
-      "id": "e_20261020T023659Z_3_claude",
-      "at": "2026-10-20T02:36:59Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: Wix's Symphony agents can now pay on users' behalf with per-purchase approval via Stripe Link."
-    },
-    {
-      "id": "e_20261020T023659Z_4_claude",
-      "at": "2026-10-20T02:36:59Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 1 task: parent recap carousel template."
-    },
-    {
-      "id": "e_20261020T023659Z_5_claude",
-      "at": "2026-10-20T02:36:59Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 3 tasks: Shorts originality checklist, YPP terms review (approval), long-form revenue plan."
-    },
-    {
-      "id": "e_20261020T023659Z_6_claude",
-      "at": "2026-10-20T02:36:59Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 1 task: per-action approval rule for AI actions."
-    },
-    {
-      "id": "e_20261019T051942Z_1_claude",
-      "at": "2026-10-19T05:19:42Z",
-      "brand": "foliocraft",
-      "agent": "code_shakti",
-      "engine": "claude",
-      "kind": "code",
-      "text": "CODE-SHAKTI blocked on t_20261013T073443Z_foliocraft_6: no Foliocraft portfolio templates exist in Ganesha-AI-Studio, so no PR was opened. Task left queued."
-    },
-    {
-      "id": "e_20261019T045004Z_4_gemini",
-      "at": "2026-10-19T04:50:04Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "kind": "task",
-      "text": "Planned 3 task(s) for LittleLoop"
     }
   ]
 }
