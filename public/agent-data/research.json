@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-11-03T02:36:04Z",
+  "updatedAt": "2026-11-04T02:30:02Z",
   "findings": [
+    {
+      "id": "f_20261104T023002Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Early-Nov Reels trend lists favour calm formats; an autumn instrumental is business-cleared",
+      "insight": "Nuelink (Nov 3) lists an 'If You're Feeling Stressed' audio trend for calming, recharge moments; NewEngen (Nov 2) lists 'Autumn Colors', a relaxed acoustic instrumental cleared for business accounts. LittleLoop could test a gentle seasonal teaser, but must confirm audio clearance for its own account first.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "What's Trending on Instagram November 2026? Top Trending Reel (Updated November 3, 2026)",
+          "url": "https://blog.nuelink.com/trending-on-instagram-november-2026/",
+          "source": "Nuelink",
+          "retrievedAt": "2026-11-04T02:20:00Z"
+        },
+        {
+          "title": "Instagram Trends: November 2026 — Updated Weekly",
+          "url": "https://newengen.com/insights/instagram-trends/",
+          "source": "NewEngen",
+          "retrievedAt": "2026-11-04T02:12:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-04T02:30:02Z"
+    },
+    {
+      "id": "f_20261104T023002Z_sunverse_2_claude",
+      "brand": "sunverse",
+      "title": "YouTube's 'Replace song' AI tracks reach creators outside the US (Nov 3)",
+      "insight": "Creators with audio claims can swap the song for one of four AI-generated instrumentals in Studio (desktop only), auto-removing the Content ID claim; EEA excluded and ownership of the tracks is unclear. Sunverse should note this for claimed Shorts and as free competition for background-music use.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube gives creators 4 AI tracks to clear music copyright claims",
+          "url": "https://ppc.land/youtube-gives-creators-4-ai-tracks-to-clear-music-copyright-claims/",
+          "source": "PPC Land",
+          "retrievedAt": "2026-11-04T02:13:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-04T02:30:02Z"
+    },
+    {
+      "id": "f_20261104T023002Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Believe and Spotify license AI fan remixes/covers; opt-in for Believe and TuneCore artists",
+      "insight": "Music Plus (Nov 2) reports a Believe-Spotify deal letting Believe/TuneCore artists opt in to Spotify's upcoming AI remix and cover tool for royalties. No launch date, India availability or payout terms yet. Relevant if Sunverse distributes via Believe or TuneCore.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Believe-Spotify deal could open new revenue opportunities for Indian independent artists",
+          "url": "https://www.musicplus.in/believe-spotify-deal-could-open-new-revenue-opportunities-for-indian-independent-artists/",
+          "source": "Music Plus",
+          "retrievedAt": "2026-11-04T02:16:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-04T02:30:02Z"
+    },
+    {
+      "id": "f_20261104T023002Z_foliocraft_4_claude",
+      "brand": "foliocraft",
+      "title": "Guide: Squarespace, Wix, Format, Readymag portfolios lose own-domain sites when unpaid",
+      "insight": "A Fast Web guide (Oct 16) says none of the four keeps a portfolio live on the user's domain after they stop paying, and exports are partial. Foliocraft could differentiate premium with full, usable portfolio export and clear downgrade behaviour.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Your portfolio on Squarespace, Wix, Format or Readymag: what happens to your site and your domain when you stop paying",
+          "url": "https://www.fast-web.es/en/blog/portfolio-what-happens-when-you-stop-paying",
+          "source": "Fast Web",
+          "retrievedAt": "2026-11-04T02:23:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-04T02:30:02Z"
+    },
+    {
+      "id": "f_20261104T023002Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Framer 'Harness 2' lets its AI agent run whole workflows in one program (Nov 2)",
+      "insight": "Framer rebuilt the Framer Agent harness to handle multi-step workflows in one program, showing progress sooner with fewer tool steps. Signals rivals moving from single AI edits to end-to-end site tasks; worth reviewing for Foliocraft's AI editing roadmap.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Framer Updates",
+          "url": "https://www.framer.com/updates?page=1",
+          "source": "Framer",
+          "retrievedAt": "2026-11-04T02:16:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-04T02:30:02Z"
+    },
     {
       "id": "f_20261103T023604Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1122,96 +1218,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-25T02:31:12Z"
-    },
-    {
-      "id": "f_20261024T023120Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram says AI content isn't down-ranked, but more AI labels and voluntary tagging are coming",
-      "insight": "Instagram's head said reach isn't cut just for being AI-made, but more AI labels are planned and creators are encouraged to tag AI use; he is also worried about AI copies of creators' work, with no fix announced yet. LittleLoop should tag AI-assisted episodes itself and keep dated records of its original characters and episodes in case copies appear.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Instagram chief says stronger AI slop prevention is needed",
-          "url": "https://www.socialmediatoday.com/news/instagram-chief-says-stronger-ai-slop-prevention-is-needed/833416/",
-          "source": "Social Media Today",
-          "retrievedAt": "2026-10-24T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-24T02:31:20Z"
-    },
-    {
-      "id": "f_20261024T023120Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "Korea's Komca withholds Shorts royalties over suspected paid placements and inaudible song use",
-      "insight": "Komca is holding back royalties on 802 songs from four rights holders, suspecting they paid Shorts channels to use their tracks (some unrelated to the video or barely audible) and possibly used AI-generated songs. Sunverse should never pay for or accept kickback-style Shorts placements and should keep usage of its tracks genuine to protect its royalties.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Korea music group withholds $18 million in YouTube Shorts royalties amid fraud probe",
-          "url": "https://www.koreajoongangdaily.com/business/korea-music-group-withholds-18-million-in-youtube-shorts-royalties-amid-fraud-probe/12934835",
-          "source": "Korea JoongAng Daily",
-          "retrievedAt": "2026-10-24T02:27:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-24T02:31:20Z"
-    },
-    {
-      "id": "f_20261024T023120Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "EY-IMI survey: YouTube is India's most-used music platform, narrowly ahead of Spotify",
-      "insight": "An EY and IMI survey (reported July 2026, older than 30 days) put YouTube at 32% usage vs Spotify 31% among Indian smartphone users, and 42% of never-paying respondents said YouTube met their music needs free. Sunverse should treat YouTube as its primary India release surface rather than an afterthought to streaming DSPs.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "YouTube tops most-used music platform in India, Spotify follows closely: Report",
-          "url": "https://www.socialsamosa.com/news-2/youtube-tops-most-used-music-platform-india-spotify-follows-12201069",
-          "source": "Social Samosa",
-          "retrievedAt": "2026-10-24T02:30:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-24T02:31:20Z"
-    },
-    {
-      "id": "f_20261024T023120Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Squarespace's October update adds invoicing tax settings, customer profiles and UPI payments",
-      "insight": "Squarespace's Oct 22 product update added invoice tax settings, custom numbering and multi-recipient invoices, unified customer profiles, service-location tax, and UPI for India. Builders are bundling client billing for creatives; Foliocraft could evaluate a simple client-invoicing premium feature for freelancers, with UPI for Indian users.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "October 2026 Product Updates",
-          "url": "https://www.squarespace.com/blog/product-updates-october-2026",
-          "source": "Squarespace",
-          "retrievedAt": "2026-10-24T02:30:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-24T02:31:20Z"
-    },
-    {
-      "id": "f_20261024T023120Z_foliocraft_5_claude",
-      "brand": "foliocraft",
-      "title": "Squarespace applied to run 15 new top-level domains, including .firm, .skill, .hub and .lab",
-      "insight": "Squarespace applied to ICANN to operate 15 new gTLDs (e.g. .brand, .firm, .skill, .hub, .lab, .learn); GoDaddy competes for nine. No launch timeline was given. Foliocraft should watch these as possible professional-portfolio domain options, without assuming availability or pricing.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "Squarespace gets into the domain registry business",
-          "url": "https://domainnamewire.com/2026/10/07/squarespace-gets-into-the-domain-registry-business/",
-          "source": "Domain Name Wire",
-          "retrievedAt": "2026-10-24T02:30:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-24T02:31:20Z"
     }
   ]
 }

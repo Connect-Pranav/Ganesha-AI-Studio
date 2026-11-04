@@ -1,6 +1,86 @@
 {
-  "updatedAt": "2026-11-03T02:36:04Z",
+  "updatedAt": "2026-11-04T02:30:02Z",
   "tasks": [
+    {
+      "id": "t_20261104T023002Z_littleloop_1_claude",
+      "title": "Verify which trending Reels audios are cleared for LittleLoop's account type",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Trend lists flag some audios as licensed or business-cleared and others unconfirmed (lit1); clearance must be checked before any use.",
+      "sourceFindings": [
+        "f_20261104T023002Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-04T02:30:02Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261104T023002Z_littleloop_2_claude",
+      "title": "Draft an autumn-themed calm episode teaser concept with cleared or original audio",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Calm and autumn formats are listed as current Reels trends (lit1). Concept only; posting needs owner approval.",
+      "sourceFindings": [
+        "f_20261104T023002Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-04T02:30:02Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261104T023002Z_sunverse_3_claude",
+      "title": "Check Replace song AI-track availability in India and its reuse terms for Sunverse",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "YouTube expanded AI replacement tracks outside the US with unclear ownership and reuse limits (sun1).",
+      "sourceFindings": [
+        "f_20261104T023002Z_sunverse_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-04T02:30:02Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261104T023002Z_foliocraft_4_claude",
+      "title": "Spec a full portfolio export and clear downgrade behaviour for Foliocraft premium",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Competitors take portfolios off the user's domain when unpaid and offer partial exports (fol1); portability could be a premium differentiator.",
+      "sourceFindings": [
+        "f_20261104T023002Z_foliocraft_4_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-04T02:30:02Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261104T023002Z_foliocraft_5_claude",
+      "title": "Review Framer Harness 2 for multi-step AI workflow ideas in Foliocraft's editor",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "low",
+      "reason": "Framer's agent now runs whole workflows in one program (fol2); assess what this means for Foliocraft's AI roadmap.",
+      "sourceFindings": [
+        "f_20261104T023002Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-04T02:30:02Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261103T023604Z_littleloop_1_claude",
       "title": "Add a bulk caption review (spelling, simple words, placement) step to episode QA",
@@ -1200,87 +1280,6 @@
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-21T02:32:17Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261021T023217Z_foliocraft_6_claude",
-      "title": "Spec a custom-domain email option for Foliocraft premium (costs flagged)",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "low",
-      "reason": "fol1: domain + site + email bundling is a competitor premium hook; any provider contract spends money.",
-      "sourceFindings": [
-        "f_20261021T023217Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-21T02:32:17Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261020T023659Z_littleloop_1_claude",
-      "title": "Design a parent recap carousel template (key stills + learning point) for episodes",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Edits now builds photo+video carousels with shared presets (lit1). A reusable template lets each episode get a parent-facing companion post. Posting stays approval-gated.",
-      "sourceFindings": [
-        "f_20261020T023659Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-20T02:36:59Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261020T023659Z_sunverse_2_claude",
-      "title": "Write an originality checklist for Sunverse Shorts (own footage, real edit or commentary)",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Shorts recommendations now reduce reach for re-uploaded or lightly edited clips (sun1). A pre-upload checklist keeps Sunverse Shorts clearly original.",
-      "sourceFindings": [
-        "f_20261020T023659Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-20T02:36:59Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261020T023659Z_sunverse_3_claude",
-      "title": "Review and sign the updated YPP terms in YouTube Studio before Feb 1, 2027",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "high",
-      "reason": "Updated YPP terms take effect Feb 1, 2027 and change Shorts revenue eligibility (sun2). Accepting terms is an account action, so it needs owner approval.",
-      "sourceFindings": [
-        "f_20261020T023659Z_sunverse_3_claude"
-      ],
-      "requiresApproval": true,
-      "createdAt": "2026-10-20T02:36:59Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261020T023659Z_sunverse_4_claude",
-      "title": "Rebalance the Sunverse release plan toward long-form uploads for revenue",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Shorts revenue share will require 10M qualified Shorts views per 90 days while long-form earnings continue (sun2). Plan revenue around long-form; Shorts for discovery.",
-      "sourceFindings": [
-        "f_20261020T023659Z_sunverse_3_claude",
-        "f_20261020T023659Z_sunverse_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-20T02:36:59Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
     }
