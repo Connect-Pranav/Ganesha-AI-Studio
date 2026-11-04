@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261104T063554Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-04T06:35:41Z",
+      "finishedAt": "2026-11-04T06:35:54Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
+      "id": "run_20261104T063541Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-04T06:34:11Z",
+      "finishedAt": "2026-11-04T06:35:41Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
       "id": "run_20261104T023002Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",
@@ -920,15 +940,6 @@
       "finishedAt": "2026-10-12T19:02:45Z",
       "status": "success",
       "summary": "7 findings across 3 brands (littleloop 2, sunverse 3, foliocraft 2), each with retrieved sources."
-    },
-    {
-      "id": "run_20261012T190245Z_ganesha_claude_2",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "startedAt": "2026-10-12T19:02:00Z",
-      "finishedAt": "2026-10-12T19:02:45Z",
-      "status": "success",
-      "summary": "9 tasks planned (3 per brand), 3 flagged for human approval."
     }
   ]
 }
