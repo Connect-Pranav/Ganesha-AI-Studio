@@ -1,6 +1,120 @@
 {
-  "updatedAt": "2026-11-04T02:30:02Z",
+  "updatedAt": "2026-11-05T02:31:05Z",
   "findings": [
+    {
+      "id": "f_20261105T023105Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram is developing Reels 'Series' to group Reels by topic or story (Nov 2 roundup)",
+      "insight": "After linked Reels were removed on Oct 28, a Series grouping is reported in development. It is not live, so LittleLoop should keep numbered titles and pinned Part 1 for now, and be ready to group each season into a Series if it ships.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "(November 2, 2026) Instagram updates, news, and features",
+          "url": "https://socialbee.com/blog/instagram-updates/",
+          "source": "SocialBee",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
+    {
+      "id": "f_20261105T023105Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Reels 'Use as reference' keeps a trend clip on screen while recording (iOS only)",
+      "insight": "A movable, pausable reference window with a countdown helps match a trend's timing (Reels under 90s; Android promised, no date). For LittleLoop it could help time voice or live-action reference takes against a trend before animating; check it on the account first.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram lança cola para reproduzir vídeos virais sem precisar decorar",
+          "url": "https://canaltech.com.br/apps/instagram-lanca-cola-para-reproduzir-videos-virais-sem-precisar-decorar/",
+          "source": "Canaltech",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        },
+        {
+          "title": "Instagram Updates & News 2026",
+          "url": "https://metricool.com/instagram-news/",
+          "source": "Metricool",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
+    {
+      "id": "f_20261105T023105Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Cubase 16 (Nov 4) adds Yamaha-engine vocal synthesis, lyrics entry and Instrument Stacks",
+      "insight": "Omnivocal Basic generates singing from MIDI with two voicebanks and a Lyrics function in the Key Editor; Instrument Stacks layer instruments. Sunverse could use it for guide vocals and demos, but must check voicebank commercial-use terms before any release.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Steinberg Releases Cubase 16 with New MIDI Tools, Instrument Stacking and Yamaha Vocal Synthesis",
+          "url": "https://yamahamusicians.com/steinberg-releases-cubase-16-with-new-midi-tools-instrument-stacking-and-yamaha-vocal-synthesis/",
+          "source": "YamahaMusicians.com",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
+    {
+      "id": "f_20261105T023105Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "YouTube Android code references 'Tamba', an Instagram-like app with DMs and group chats",
+      "insight": "Unconfirmed code findings (Nov 4) mention followers, DMs and group chats that may carry Shorts. Nothing is live and it may be an internal sandbox; worth watching only as a possible future fan-messaging channel for Sunverse.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "The code for YouTube's Android app reveals a testing ground for Instagram-style social features",
+          "url": "https://www.tubefilter.com/2026/11/04/youtube-android-app-tamba-social-media-platform/",
+          "source": "Tubefilter",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
+    {
+      "id": "f_20261105T023105Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Wix Studio Two (Nov 2): AI agent editor that imports and exports standard React projects",
+      "insight": "Studio Two pairs the Aria 2.0 agent and reusable 'Skills' with React export and deployment outside Wix; rolling out to partners first, pricing not stated. Portability is becoming a pro-tier selling point, so Foliocraft should define what a premium user can export and own.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Wix Introduces Studio Two, a Truly Open, AI-Native Visual Editor for Professional Web Creation",
+          "url": "https://globenewswire.com/news-release/2026/11/02/3393216/0/en/wix-introduces-studio-two-a-truly-open-ai-native-visual-editor-for-professional-web-creation.html",
+          "source": "GlobeNewswire (Wix.com Ltd.)",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
+    {
+      "id": "f_20261105T023105Z_foliocraft_6_claude",
+      "brand": "foliocraft",
+      "title": "Squarespace Circle Day (Nov 2): autosave drafts shareable with clients before publishing",
+      "insight": "Squarespace announced autosaving drafts that can be shared with clients pre-publish (coming soon), plus vertical video blocks and AI Image Studio (available now). A shareable draft-review link would suit Foliocraft users who get feedback before going live.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Circle Day 2026 Product Keynote Recap — Squarespace Circle",
+          "url": "https://pros.squarespace.com/blog/product-keynote-2026",
+          "source": "Squarespace",
+          "retrievedAt": "2026-11-05T02:30:50Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-05T02:31:05Z"
+    },
     {
       "id": "f_20261104T023002Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1104,120 +1218,6 @@
       "agent": "narada_market_intelligence",
       "engine": "gemini",
       "createdAt": "2026-10-25T04:50:46Z"
-    },
-    {
-      "id": "f_20261025T045214Z_sunverse_2",
-      "brand": "sunverse",
-      "title": "Warner Music India Expands South Footprint via Major Catalogue Acquisitions",
-      "insight": "Major labels are aggressively targeting South India through catalogue buyouts and strategic partnerships. Sunverse should explore producing and acquiring regional South Indian music assets to position itself for high-value distribution or catalog licensing deals.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Warner Music India expands South India presence with catalogue acquisitions and strategic partnerships - MediaNews4U",
-          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNNmhNeVdZcWlyUjd0ZHBMWDVRa3l3Z1o0S090S0dmbmhzOS1UelJJa2xzOEdXQkx6VXBZQnpsNVRrS0xacXkzR1p1SjU4LVNaT19CUUFxeHhOS015VDBmZFZfZ2IyaDExbzNJVjFYelJUUkxjUUdQU00zclJqS1N4bWJibU9YRmt6cWFHZnJhbWQwc3l0dUplTjFGSGlVaUtBWklEOW9Rc3NaNHhxT2lYREFvdkM2TkNCVVBBbFhPVW9VTUJSeFBIb0hJNA?oc=5",
-          "source": "MediaNews4U",
-          "retrievedAt": "2026-10-25T04:50:47Z"
-        },
-        {
-          "title": "Warner Music India Expands South With Major Catalog Acquisitions - InterSpace Distribution",
-          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQX2c3blRkVUliR1lPQlltMU1MVTdNUkJzLWNsLVhJZVlnVEFZMzFTVVJrTVgwODNYbXVBQ0J1U0ltUllEVU9hYl8yakI2Yk1SRndIeW1VcGFBa2RNRl9RSWRvUE91X2ZQd2t6UWE2N19GS0Z3Zl9JMGhmTGpIVDA1QlpBa2dMQXdoY0l6clBGUWo0LWs?oc=5",
-          "source": "InterSpace Distribution",
-          "retrievedAt": "2026-10-25T04:50:47Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-25T04:52:14Z"
-    },
-    {
-      "id": "f_20261025T045214Z_sunverse_3",
-      "brand": "sunverse",
-      "title": "Non-Bollywood Genres Gain Traction in India as Bollywood Expands Abroad",
-      "insight": "Luminate data shows domestic listener demand in India is shifting toward non-Bollywood genres. Sunverse should diversify its release slate beyond mainstream commercial film formulas into regional, indie, and alternative sounds to capture this growing domestic audience.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "As Bollywood Expands Global Reach, Other Genres Gain in India - Luminate",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQM0dPZENOQ2Q1eUpCdGFvWlE1dDI1WmFKVGRDcDBJc1Bfd3dmWnJPU0ZualhkM1ZiU09GYWo5TFJLR0tOX0M1ZnpiMFd1OXVGX1FSRFlndHB1ckVsV1JyQ2hwYm90aGZTNmsyT2dvT1hkSGZwYlZYM29mTVluQkR0ekd0enFJX085cmdVRjJ0eENQMmgwa2c?oc=5",
-          "source": "Luminate",
-          "retrievedAt": "2026-10-25T04:50:47Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-25T04:52:14Z"
-    },
-    {
-      "id": "f_20261025T023112Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram reportedly tests a Reels-first iOS feed and a profile Longform tab",
-      "insight": "October trackers report Instagram testing a Reels-first feed on iOS, a Longform profile tab in development and an Edits prompt when uploading Reels. Unconfirmed tests, but they point to more full-screen viewing: LittleLoop should check 9:16 safe zones and a clear first-second hook on every episode.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "(October 19, 2026) Instagram updates, news, and features",
-          "url": "https://socialbee.com/blog/instagram-updates/",
-          "source": "SocialBee",
-          "retrievedAt": "2026-10-25T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-25T02:31:12Z"
-    },
-    {
-      "id": "f_20261025T023112Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "Ask YouTube conversational search is live in the US; Shorts and live watch pages next",
-      "insight": "YouTube's blog (Oct 12) says Ask YouTube, a conversational search tool, is available to US viewers on web, mobile and TV and will soon appear on Shorts and live-stream watch pages. Sunverse should watch whether it surfaces music and reaches India before changing metadata practice.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Official YouTube Blog for Latest YouTube News & Insights",
-          "url": "https://blog.youtube/",
-          "source": "YouTube Official Blog",
-          "retrievedAt": "2026-10-25T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-25T02:31:12Z"
-    },
-    {
-      "id": "f_20261025T023112Z_foliocraft_3_claude",
-      "brand": "foliocraft",
-      "title": "Relume added a CMS with portfolio collections (Oct 20) and a Publish MCP (Oct 14)",
-      "insight": "Relume's changelog says its new CMS adds blog, portfolio and other collection types with AI-assisted content at no extra cost, a week after a Publish MCP for building sites from AI assistants. Collection-based project entries are becoming a free baseline; Foliocraft should treat structured project lists as core, not premium.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "What's New — Relume AI Website Builder Updates",
-          "url": "https://www.relume.ai/whats-new",
-          "source": "Relume",
-          "retrievedAt": "2026-10-25T02:26:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-25T02:31:12Z"
-    },
-    {
-      "id": "f_20261025T023112Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Wix Studio's Aria can now learn an agency's services, pricing and past proposals",
-      "insight": "Wix's updates page (Oct 15) says agencies can teach the Aria assistant their services, pricing, brand guidelines and past proposals via chat or PDF/CSV/DOCX uploads, internal only. Builders are moving to AI that remembers the user's own business context; relevant to any Foliocraft AI copy feature.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "New Releases & Updates",
-          "url": "https://www.wix.com/updates",
-          "source": "Wix",
-          "retrievedAt": "2026-10-25T02:28:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-25T02:31:12Z"
     }
   ]
 }

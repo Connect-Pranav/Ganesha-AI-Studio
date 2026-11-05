@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261105T023105Z_1_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Instagram Reels Series in development; iOS 'Use as reference' recording tool."
+    },
+    {
+      "id": "e_20261105T023105Z_2_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA: 2 research tasks queued — track Reels Series, check 'Use as reference' availability."
+    },
+    {
+      "id": "e_20261105T023105Z_3_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Cubase 16 vocal synthesis (Nov 4); unconfirmed YouTube 'Tamba' social code."
+    },
+    {
+      "id": "e_20261105T023105Z_4_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA: 2 research tasks queued — Omnivocal commercial terms, track Tamba."
+    },
+    {
+      "id": "e_20261105T023105Z_5_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "kind": "research",
+      "text": "NARADA: 2 findings — Wix Studio Two React export; Squarespace client-shareable drafts."
+    },
+    {
+      "id": "e_20261105T023105Z_6_claude",
+      "at": "2026-11-05T02:31:05Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "claude",
+      "kind": "task",
+      "text": "GANESHA: 2 tasks queued — spec draft review link (CODE-SHAKTI), compare Wix export."
+    },
+    {
       "id": "e_20261104T023002Z_1_claude",
       "at": "2026-11-04T02:30:02Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "research",
       "text": "NARADA: 2 findings — Webflow Campaigns launches per-URL landing variants; early Black Friday builder deals."
-    },
-    {
-      "id": "e_20261022T022741Z_6_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 tasks: spec portfolio variants for premium; draft Black Friday offer (needs approval)."
-    },
-    {
-      "id": "e_20261021T200035Z_1_claude",
-      "at": "2026-10-21T20:00:35Z",
-      "brand": "studio",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "Ops review 2026-W42 completed after owner approval; automation PR #2 opened on the studio repo (not merged)."
-    },
-    {
-      "id": "e_20261021T023217Z_1_claude",
-      "at": "2026-10-21T02:32:17Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — MIPJunior kids' trends (music, animals, cats rising) and Disney Jr. story testing."
-    },
-    {
-      "id": "e_20261021T023217Z_2_claude",
-      "at": "2026-10-21T02:32:17Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 LittleLoop tasks: cat musical episode concept and parent-preview comprehension check."
-    },
-    {
-      "id": "e_20261021T023217Z_3_claude",
-      "at": "2026-10-21T02:32:17Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: Spotify pulled 50M+ slop/spam tracks from recommendations; AI Credits and verification pushed."
-    },
-    {
-      "id": "e_20261021T023217Z_4_claude",
-      "at": "2026-10-21T02:32:17Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Sunverse tasks: Spotify AI Credits/anti-spam checklist and verification eligibility check."
     }
   ]
 }
