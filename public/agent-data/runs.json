@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261105T065931Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-05T06:59:19Z",
+      "finishedAt": "2026-11-05T06:59:31Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
+      "id": "run_20261105T065919Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-05T06:55:25Z",
+      "finishedAt": "2026-11-05T06:59:19Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota ex"
+    },
+    {
       "id": "run_20261105T023105Z_narada_claude_1",
       "agent": "narada_market_intelligence",
       "engine": "claude",
@@ -922,24 +942,6 @@
       "finishedAt": "2026-10-12T19:39:58Z",
       "status": "success",
       "summary": "Goal runner: p_20261012T193219Z_foliocraft (vault#3) approval_required; vault#1 and vault#2 still awaiting owner approval."
-    },
-    {
-      "id": "run_20261012T193100Z_ganesha_claude_1",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "startedAt": "2026-10-12T19:16:08Z",
-      "finishedAt": "2026-10-12T19:31:00Z",
-      "status": "success",
-      "summary": "Goal runner: p_20261012T191608Z_sunverse (vault#1) and p_20261012T191610Z_littleloop (vault#2) both approval_required; vault#3 deferred (2-goal limit)."
-    },
-    {
-      "id": "run_20261012T190426Z_narada_claude_1",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "startedAt": "2026-10-12T19:03:15Z",
-      "finishedAt": "2026-10-12T19:04:26Z",
-      "status": "success",
-      "summary": "3 new findings (1 per brand); earlier findings from today not repeated."
     }
   ]
 }
