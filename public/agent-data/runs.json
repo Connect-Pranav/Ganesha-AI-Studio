@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261108T061608Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-08T06:15:55Z",
+      "finishedAt": "2026-11-08T06:16:08Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede"
+    },
+    {
+      "id": "run_20261108T061555Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-08T06:10:39Z",
+      "finishedAt": "2026-11-08T06:15:55Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede"
+    },
+    {
       "id": "run_20261107T061016Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
@@ -926,25 +946,6 @@
       "finishedAt": "2026-10-13T07:34:43Z",
       "status": "success",
       "summary": "6 new tasks planned"
-    },
-    {
-      "id": "run_20261013T073418Z_narada_gemini",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "startedAt": "2026-10-13T07:32:44Z",
-      "finishedAt": "2026-10-13T07:34:18Z",
-      "status": "success",
-      "summary": "6 findings across 3 brands"
-    },
-    {
-      "id": "run_20261013T072459Z_ganesha_gemini",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "startedAt": "2026-10-13T07:24:58Z",
-      "finishedAt": "2026-10-13T07:24:59Z",
-      "status": "failed",
-      "summary": "Planning failed",
-      "error": "Gemini HTTP 404 (model \"gemini-2.5-flash\"): {\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"This model models/gemini-2.5-flash is no longer available to new users. Please update your code to use models/gemini-3.8-flash for the latest features and improvements. We recommend you to use the Interactions API (https://ai.google.dev/gemini-api/docs"
     }
   ]
 }
