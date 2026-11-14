@@ -1,6 +1,25 @@
 {
   "runs": [
     {
+      "id": "run_20261114T063611Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-14T06:36:11Z",
+      "finishedAt": "2026-11-14T06:36:11Z",
+      "status": "success",
+      "summary": "No findings from the last 7 days — nothing to plan"
+    },
+    {
+      "id": "run_20261114T063611Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-14T06:33:57Z",
+      "finishedAt": "2026-11-14T06:36:11Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: This operation was aborted | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede"
+    },
+    {
       "id": "run_20261113T065401Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
@@ -930,26 +949,6 @@
       "finishedAt": "2026-10-17T04:36:06Z",
       "status": "success",
       "summary": "4 findings across 3 brands"
-    },
-    {
-      "id": "run_20261016T044345Z_ganesha_gemini",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "startedAt": "2026-10-16T04:42:02Z",
-      "finishedAt": "2026-10-16T04:43:45Z",
-      "status": "failed",
-      "summary": "Planning failed",
-      "error": "Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
-    },
-    {
-      "id": "run_20261016T044202Z_narada_gemini",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "startedAt": "2026-10-16T04:38:15Z",
-      "finishedAt": "2026-10-16T04:42:02Z",
-      "status": "failed",
-      "summary": "0 findings across 3 brands",
-      "error": "LittleLoop: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n | Sunverse: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n | Foliocraft: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
     }
   ]
 }
