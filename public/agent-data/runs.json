@@ -1,6 +1,25 @@
 {
   "runs": [
     {
+      "id": "run_20261115T064614Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-15T06:46:14Z",
+      "finishedAt": "2026-11-15T06:46:14Z",
+      "status": "success",
+      "summary": "No findings from the last 7 days — nothing to plan"
+    },
+    {
+      "id": "run_20261115T064614Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-15T06:42:35Z",
+      "finishedAt": "2026-11-15T06:46:14Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: This operation was aborted | Sunverse: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede | Foliocraft: Gemini HTTP 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede"
+    },
+    {
       "id": "run_20261114T063611Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
@@ -931,24 +950,6 @@
       "finishedAt": "2026-10-18T04:41:27Z",
       "status": "success",
       "summary": "6 findings across 3 brands"
-    },
-    {
-      "id": "run_20261017T043625Z_ganesha_gemini",
-      "agent": "ganesha_orchestrator",
-      "engine": "gemini",
-      "startedAt": "2026-10-17T04:36:06Z",
-      "finishedAt": "2026-10-17T04:36:25Z",
-      "status": "success",
-      "summary": "3 new tasks planned"
-    },
-    {
-      "id": "run_20261017T043606Z_narada_gemini",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "startedAt": "2026-10-17T04:35:22Z",
-      "finishedAt": "2026-10-17T04:36:06Z",
-      "status": "success",
-      "summary": "4 findings across 3 brands"
     }
   ]
 }
