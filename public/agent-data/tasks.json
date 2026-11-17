@@ -1,6 +1,86 @@
 {
-  "updatedAt": "2026-11-05T02:31:05Z",
+  "updatedAt": "2026-11-17T08:01:50Z",
   "tasks": [
+    {
+      "id": "t_20261117T080150Z_littleloop_1",
+      "title": "Draft a stop-motion style BTS Reel concept highlighting tactile animation",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Parental interest in tactile animation styles presents an opportunity to showcase craft and engage parents through behind-the-scenes production Reels.",
+      "sourceFindings": [
+        "f_20261117T080029Z_littleloop_1"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-17T08:01:50Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261117T080150Z_sunverse_2",
+      "title": "Audit distributor delivery options to optimize YouTube Music catalog curation",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "With YouTube Music reaching 150 million paid subscribers, optimizing catalog delivery ensures Sunverse captures maximum subscription streaming royalties.",
+      "sourceFindings": [
+        "f_20261117T080049Z_sunverse_2"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-17T08:01:50Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261117T080150Z_sunverse_3",
+      "title": "Draft channel membership tier concepts to hedge against ad RPM volatility",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Decelerating YouTube ad revenue growth requires diversifying Sunverse channel revenue through direct fan memberships and sync offerings.",
+      "sourceFindings": [
+        "f_20261117T080049Z_sunverse_3"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-17T08:01:50Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261117T080150Z_foliocraft_4",
+      "title": "Spec a developer portfolio template featuring GitHub embeds and live demos",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Surging demand for developer portfolios creates an opportunity to convert tech talent via dedicated templates supporting GitHub repositories and project demos.",
+      "sourceFindings": [
+        "f_20261117T080105Z_foliocraft_4"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-17T08:01:50Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
+    {
+      "id": "t_20261117T080150Z_foliocraft_5",
+      "title": "Audit Foliocraft onboarding flow friction against ease-of-use benchmarks",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "Ease of use remains the top selection factor in website builder roundups, necessitating a review of Foliocraft's onboarding and editing steps.",
+      "sourceFindings": [
+        "f_20261117T080105Z_foliocraft_5"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-17T08:01:50Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "gemini"
+    },
     {
       "id": "t_20261105T023105Z_littleloop_1_claude",
       "title": "Track Instagram's Reels Series rollout and whether it can group LittleLoop seasons",
@@ -1200,86 +1280,6 @@
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-23T02:26:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261022T022741Z_littleloop_1_claude",
-      "title": "Check whether Edits' beat-synced effects option is available on LittleLoop's account",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Feature is a limited Labs test (lit1); confirm access before building edit plans around it.",
-      "sourceFindings": [
-        "f_20261022T022741Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-22T02:27:41Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261022T022741Z_littleloop_2_claude",
-      "title": "Research Meta's rules on engagement bait and AI depictions of children",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Scrutiny of AI kid-distress bait Reels (lit2) suggests stricter enforcement; LittleLoop needs the exact policy text.",
-      "sourceFindings": [
-        "f_20261022T022741Z_littleloop_2_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-22T02:27:41Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261022T022741Z_sunverse_3_claude",
-      "title": "Track when YouTube Shorts seasons and episodes reach Sunverse's channel",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Shorts series announced without rollout date or India timing (sun1).",
-      "sourceFindings": [
-        "f_20261022T022741Z_sunverse_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-22T02:27:41Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261022T022741Z_sunverse_4_claude",
-      "title": "Compare Sunverse distributor's royalty reporting detail with India-focused alternatives",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "India-focused distributors now compete on royalty transparency and DSP error-flagging (sun2).",
-      "sourceFindings": [
-        "f_20261022T022741Z_sunverse_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-22T02:27:41Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261022T022741Z_foliocraft_5_claude",
-      "title": "Spec tailored portfolio variants with their own URLs for Foliocraft premium",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Webflow Campaigns ships per-variant landing pages (fol1); per-job portfolio variants could be a premium hook.",
-      "sourceFindings": [
-        "f_20261022T022741Z_foliocraft_5_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-22T02:27:41Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
     }

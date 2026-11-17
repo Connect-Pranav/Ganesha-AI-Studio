@@ -1,6 +1,108 @@
 {
-  "updatedAt": "2026-11-05T02:31:05Z",
+  "updatedAt": "2026-11-17T08:01:05Z",
   "findings": [
+    {
+      "id": "f_20261117T080029Z_littleloop_1",
+      "brand": "littleloop",
+      "title": "Parent Interest in Stop-Motion Animation Highlighted by Today's Parent",
+      "insight": "Coverage of the stop-motion film Wildwood in Today's Parent shows editorial interest in tactile animation styles. LittleLoop can test stop-motion aesthetics or behind-the-scenes production reels on Instagram to engage parents seeking quality animated content for young children.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Discover The Magic Behind New Stop-Motion Movie Wildwood - Today's Parent",
+          "url": "https://news.google.com/rss/articles/CBMibkFVX3lxTE93VzZwTHRCcktYTjRGNnd2MW5jaDlXZmJIVk16QnNNaFptZEdLVzV0ekRaUEl6QkdBX3F6akZMTDhqOVFRY192anZ0bkZKT2pXdHotZm90VkN3RDcwdVpsS1FlTnotSWNLZVZVekdn?oc=5",
+          "source": "Today's Parent",
+          "retrievedAt": "2026-11-17T08:00:20Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-17T08:00:29Z"
+    },
+    {
+      "id": "f_20261117T080049Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "YouTube Music and Premium Hit 150 Million Paid Subscribers Globally",
+      "insight": "With YouTube Music and Premium passing 150 million subscribers, paid streaming continues to expand rapidly. Sunverse should optimize its release pipeline for YouTube Music delivery and official catalog curation to capture higher per-stream royalties from premium users.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "YouTube Music and Premium Surpass 150 Million Subscribers Worldwide - RouteNote",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOTFo2QU5lMHh0bVB0UEV5MnBOMmpERm1CSmJ4YTlwSFlSalc2UHVkbkdlUFlMbWxvckJIeFdKQkNiZGFMalY3amFFMHRWRjNsLURNZk9RWHNNX0VQd2RoMmhPalNlZlh2QWp5eWNacDh4cXZhb1M2TUl1cUswaHR0V0V5RC1udzVsemJaWTJVanJ6T01DRTVNbnZqWDk?oc=5",
+          "source": "RouteNote",
+          "retrievedAt": "2026-11-17T08:00:29Z"
+        },
+        {
+          "title": "YouTube Music and Premium surpass 150 million subscribers globally - Music Business Worldwide",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNbmRWNEZBS1ZBb3JpUXhiX0VjZVluRm5jMkFKOVFvVE9VOWNfTzBnVVo5SGJpZzNiZUFta0Nyc1ZWU2VFVy1Obnp4UGNOMkZrUlpjb1h2SGViS3ltNHBWM2I3WFNjMllMYUY3QzNkdmxhcjloQVBTOXFLZUlqdTlUOW1sYk80d3BCMTZOaXVEWHNZRV9zeFdtSjlpRUV3WXdFTF9fUkZUajhQdw?oc=5",
+          "source": "Music Business Worldwide",
+          "retrievedAt": "2026-11-17T08:00:29Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-17T08:00:49Z"
+    },
+    {
+      "id": "f_20261117T080049Z_sunverse_3",
+      "brand": "sunverse",
+      "title": "YouTube Q3 Ad Revenue Growth Decelerates to 9% Reaching $11.2 Billion",
+      "insight": "YouTube ad revenue reached $11.2 billion with growth slowing to 9%. Sunverse should anticipate potential ad RPM volatility on standard video content and diversify channel earnings by actively promoting membership, sync opportunities, and streaming plays on subscription tiers.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube Q3 Ad Revenue Growth Slows, Rising 9% to $11.2 Billion, as Alphabet Misses Earnings Estimates - Variety",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQVEx2c3REaXRIMkZOVUhjOG1rZFNseDE4R2ZSY1ZEcWVOeno5dy12SmNXeDEwTHUzNGo3amFvM2hBaWp6dmx3OThwQ09RbnFyRzVmLXB4a0xJLU5OZWVGYW8xVHFRR2ZJUlBqc3lNd1c0OWJIQno5NmNZYUEtME9lNWJDWGhNSTBsTUJEV2l3OTNnWWlxQVdkZDF6WF9lM0Q2THVz?oc=5",
+          "source": "Variety",
+          "retrievedAt": "2026-11-17T08:00:29Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-17T08:00:49Z"
+    },
+    {
+      "id": "f_20261117T080105Z_foliocraft_4",
+      "brand": "foliocraft",
+      "title": "Surge in Developer Portfolio Demand Signals Need for Niche Tech Templates",
+      "insight": "Coverage of web developer portfolio examples and development learning roadmaps indicates steady interest from tech talent. Foliocraft should launch developer-centric portfolio templates with GitHub embeds and project demo capabilities to convert developers seeking professional portfolio sites.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Web Development Learning Roadmap: From Beginner to Expert (2026) - Coursera",
+          "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9aQXd6S05lNVltcTlwSjE2YUVGcWhtcEM1UWZGal9QdGw2V3VwUVFEVm9iOXhJVW9jRTZoeTFwcUFEZWt4WUc0UDJfVFpJajd1a0ZWdnJpN1A1ejNmNFI5ZnhWb3pHR1FkcFNfQXRSd1V2Y3NZUUE?oc=5",
+          "source": "Coursera",
+          "retrievedAt": "2026-11-17T08:00:49Z"
+        },
+        {
+          "title": "25 web developer portfolio examples for your inspiration - Hostinger",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTFBnVUNnVmptTTB1akdUd0dEb3kzT3hfaXNrTTF3YnhabExPX2xkQ25iWHMxWHdLbkVubzNmVFVyUnRHSnJGQ1Rod2NueFZXV2lsLWFVNlExMFNRQVN0Q1QtLVZjNEJLdlA4b2ZyaFUyQzI?oc=5",
+          "source": "Hostinger",
+          "retrievedAt": "2026-11-17T08:00:49Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-17T08:01:05Z"
+    },
+    {
+      "id": "f_20261117T080105Z_foliocraft_5",
+      "brand": "foliocraft",
+      "title": "Ease of Use Drives Website Builder Benchmarks Amid Heavy Competition",
+      "insight": "TechRadar's evaluation of over 80 website building platforms emphasizes that ease of use is a core selection criterion for users in 2026. Foliocraft should prioritize intuitive onboarding and seamless editing flows, while pitching for inclusion in prominent builder comparison roundups.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "The best website builders of 2026: 80+ platforms tested to find the easiest ways to build a site - TechRadar",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE16VzdoUlYxWVdUR0g4ZHpjYUJ1S2N2N2VkemFBb3RncnlIZ2ZoMjFLV2dRZ3VHaGI0dzhVOGNSQVFfTll2bEZkTVJMcUJPeFRKM2ZMeVBZaHZObWwxcWlaNlZwZzNzZw?oc=5",
+          "source": "TechRadar",
+          "retrievedAt": "2026-11-17T08:00:49Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-17T08:01:05Z"
+    },
     {
       "id": "f_20261105T023105Z_littleloop_1_claude",
       "brand": "littleloop",
@@ -1098,126 +1200,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-26T02:32:11Z"
-    },
-    {
-      "id": "f_20261026T023211Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "YouTube pilots an invite-only Shorts bonus tied to consistent uploads; India not included",
-      "insight": "Selected YPP creators in the US, UK, Germany, Brazil, Japan and South Korea get a minimum payment for uploading a set number of Shorts per month plus a bonus on valid engaged views. India is not in the pilot, so Sunverse cannot join now, but it signals YouTube rewards a steady Shorts cadence.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Consistency is key: A YouTube Shorts bonus program rewards creators who upload at regular intervals",
-          "url": "https://www.tubefilter.com/2026/10/23/youtube-shorts-pilot-program-consistency-bonus-test/",
-          "source": "Tubefilter",
-          "retrievedAt": "2026-10-26T02:27:00Z"
-        },
-        {
-          "title": "YouTube Pilots Monthly Shorts Bonus Program Tied to Upload Consistency and Views",
-          "url": "https://www.netinfluencer.com/youtube-pilots-monthly-shorts-bonus-program-tied-to-upload-consistency-and-views/",
-          "source": "Net Influencer",
-          "retrievedAt": "2026-10-26T02:28:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-26T02:32:11Z"
-    },
-    {
-      "id": "f_20261026T023211Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "India's proposed blanket licence for AI training on music is still not law; courts undecided",
-      "insight": "A DPIIT working paper proposes a mandatory 'one nation, one licence' for AI training with royalties on commercialisation, but Part II has not appeared and ANI v OpenAI is pending. Rules for AI-assisted music may shift, so Sunverse should keep a record of which AI tools and terms each track used.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Is training AI on song lyrics fair use? US court weighs question as India proposes mandatory licensing",
-          "url": "https://www.medianama.com/2026/10/223-training-ai-song-us-court-india-licence-fee/",
-          "source": "MediaNama",
-          "retrievedAt": "2026-10-26T02:29:00Z"
-        },
-        {
-          "title": "From music streaming to AI training: What India's IP data tells us about the next copyright debate",
-          "url": "https://www.medianama.com/2026/10/223-music-streaming-ai-training-india-ip-data-copyright/",
-          "source": "MediaNama",
-          "retrievedAt": "2026-10-26T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-26T02:32:11Z"
-    },
-    {
-      "id": "f_20261026T023211Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Lovable added growth tools: SEO fixes, Search Console, and ad campaigns gated by approval",
-      "insight": "Since Oct 14 Lovable checks indexability, metadata, sitemap and robots.txt, connects Search Console and drafts ads that only go live after user approval. Builders now compete on getting sites found, not just built: Foliocraft could offer a portfolio SEO health check, keeping any paid promotion behind explicit approval.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "From building your app to growing it: Lovable now helps you find customers",
-          "url": "https://lovable.dev/blog/introducing-growth-tools",
-          "source": "Lovable",
-          "retrievedAt": "2026-10-26T02:30:00Z"
-        },
-        {
-          "title": "Growth tools",
-          "url": "https://docs.lovable.dev/features/growth-tools",
-          "source": "Lovable Docs",
-          "retrievedAt": "2026-10-26T02:30:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-26T02:32:11Z"
-    },
-    {
-      "id": "f_20261026T023211Z_foliocraft_5_claude",
-      "brand": "foliocraft",
-      "title": "Google reportedly tests official pages atop AI Mode answers and clickable creator names",
-      "insight": "An agency summary of Google's Oct 15 post says AI Mode is testing one or two official pages at the top of answers and creator names linking to Search profiles. If confirmed, a person's own portfolio could become their 'official page'; verify in Google's post before building for it.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "Google October 2026 AI Mode Links Update: What Changed and What to Do",
-          "url": "https://eightysix.digital/blog/google-october-2026-ai-mode-links-update-what-changed-and-what-to-do/",
-          "source": "EightySix Digital",
-          "retrievedAt": "2026-10-26T02:30:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-26T02:32:11Z"
-    },
-    {
-      "id": "f_20261025T045046Z_littleloop_1",
-      "brand": "littleloop",
-      "title": "Foundational Concept Songs Anchor Early Childhood Video Content",
-      "insight": "Songs teaching core early-learning concepts like colors, shapes, and phonics remain dominant in preschool digital programming. LittleLoop can create punchy, music-driven animated shorts centered on single concepts—such as color recognition or basic shapes—designed for high-repeat engagement across Instagram Reels.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "What's Your Favorite Color? | Kids Color Song & Nursery Rhyme - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE9xOXYyVnY0X2t1UUJTd2pqM3RsazEwR0VPTTFuQ1ljQnpQU1hoQjZJN0pwRVVHV0pRZjFteklORVQySFlQdWVYSlh5QUJ0bVNOejNmZm9R?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-25T04:49:49Z"
-        },
-        {
-          "title": "The Shapes Song | Nursery Rhymes With Lyrics | Kids Music Video | Kidzoo Nursery Rhymes - YouTube",
-          "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE9hREdULUVxbE1xZmVqUkxfbnJTZkJpcHF2aEFiVEthTVBsVDhkVklrVERnS3AwczB6MlFyOGE1Z0hQTXcyOW5vTWJxc0FCTHNaMHFkOE9kVG1USXN3?oc=5",
-          "source": "YouTube",
-          "retrievedAt": "2026-10-25T04:49:49Z"
-        },
-        {
-          "title": "ABC Phonics Song - Toddler Learning Video Songs , A For Apple , Nursery Rhymes , Alphabet Song Alexandra Eala (kH55px2vgz) - Unisba Media",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPOGJEeWVyNHY3WUlEeWxWbXd1WG5YamRURk1OY0FCMWx3QjdtTE5ERGZ6R2RjQmNSMDd2WjdJeFhmOGZRUVo5OHU3R09HUmMtY2FtNzdRZU1OcmZoNjBUSFpqS1BQZk9kRXpGZzZiTDFSMEFXT0VjclUyWU9TQXh2dnh3?oc=5",
-          "source": "Unisba Media",
-          "retrievedAt": "2026-10-25T04:49:49Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "createdAt": "2026-10-25T04:50:46Z"
     }
   ]
 }

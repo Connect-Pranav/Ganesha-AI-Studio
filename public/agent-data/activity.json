@@ -1,6 +1,60 @@
 {
   "events": [
     {
+      "id": "e_20261117T080150Z_4_gemini",
+      "at": "2026-11-17T08:01:50Z",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 1 task(s) for LittleLoop"
+    },
+    {
+      "id": "e_20261117T080150Z_5_gemini",
+      "at": "2026-11-17T08:01:50Z",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 2 task(s) for Sunverse"
+    },
+    {
+      "id": "e_20261117T080150Z_6_gemini",
+      "at": "2026-11-17T08:01:50Z",
+      "brand": "foliocraft",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "kind": "task",
+      "text": "Planned 2 task(s) for Foliocraft"
+    },
+    {
+      "id": "e_20261117T080029Z_1_gemini",
+      "at": "2026-11-17T08:00:29Z",
+      "brand": "littleloop",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "1 new finding for LittleLoop from 1 sources"
+    },
+    {
+      "id": "e_20261117T080049Z_2_gemini",
+      "at": "2026-11-17T08:00:49Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Sunverse from 8 sources"
+    },
+    {
+      "id": "e_20261117T080105Z_3_gemini",
+      "at": "2026-11-17T08:01:05Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Foliocraft from 15 sources"
+    },
+    {
       "id": "e_20261105T023105Z_1_claude",
       "at": "2026-11-05T02:31:05Z",
       "brand": "littleloop",
@@ -845,60 +899,6 @@
       "engine": "claude",
       "kind": "task",
       "text": "GANESHA queued 2 Foliocraft tasks: Framer MCP approval research and a prompt-to-draft generator spec."
-    },
-    {
-      "id": "e_20261022T045813Z_1_gemini",
-      "at": "2026-10-22T04:58:13Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "kind": "research",
-      "text": "2 new findings for Sunverse from 18 sources"
-    },
-    {
-      "id": "e_20261022T022741Z_1_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "littleloop",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — Edits tests beat-synced effects; AI kid-distress bait Reels drew scrutiny of Meta."
-    },
-    {
-      "id": "e_20261022T022741Z_2_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 research tasks: Edits beat-sync access check and Meta engagement-bait policy review."
-    },
-    {
-      "id": "e_20261022T022741Z_3_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "sunverse",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — Shorts seasons/episodes announced; India distributors compete on royalty transparency."
-    },
-    {
-      "id": "e_20261022T022741Z_4_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 research tasks: Shorts series rollout tracking and distributor royalty-report comparison."
-    },
-    {
-      "id": "e_20261022T022741Z_5_claude",
-      "at": "2026-10-22T02:27:41Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: 2 findings — Webflow Campaigns launches per-URL landing variants; early Black Friday builder deals."
     }
   ]
 }
