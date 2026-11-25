@@ -1,6 +1,24 @@
 {
   "events": [
     {
+      "id": "e_20261125T084609Z_1_gemini",
+      "at": "2026-11-25T08:46:09Z",
+      "brand": "sunverse",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Sunverse from 15 sources"
+    },
+    {
+      "id": "e_20261125T084646Z_2_gemini",
+      "at": "2026-11-25T08:46:46Z",
+      "brand": "foliocraft",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "kind": "research",
+      "text": "2 new findings for Foliocraft from 15 sources"
+    },
+    {
       "id": "e_20261117T080150Z_4_gemini",
       "at": "2026-11-17T08:01:50Z",
       "brand": "littleloop",
@@ -881,24 +899,6 @@
       "engine": "claude",
       "kind": "task",
       "text": "GANESHA queued 1 Sunverse task: add channel security and a 24h buffer to the release checklist."
-    },
-    {
-      "id": "e_20261023T022653Z_5_claude",
-      "at": "2026-10-23T02:26:53Z",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "kind": "research",
-      "text": "NARADA: Framer launched an MCP server for agent edits and publishing; Squarespace Forma beta waitlist opened."
-    },
-    {
-      "id": "e_20261023T022653Z_6_claude",
-      "at": "2026-10-23T02:26:53Z",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "engine": "claude",
-      "kind": "task",
-      "text": "GANESHA queued 2 Foliocraft tasks: Framer MCP approval research and a prompt-to-draft generator spec."
     }
   ]
 }

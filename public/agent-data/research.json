@@ -1,6 +1,90 @@
 {
-  "updatedAt": "2026-11-17T08:01:05Z",
+  "updatedAt": "2026-11-25T08:46:46Z",
   "findings": [
+    {
+      "id": "f_20261125T084609Z_sunverse_1",
+      "brand": "sunverse",
+      "title": "India Music Economy Grows 45% to Rs 17,400 Cr Amid Monetisation Challenges",
+      "insight": "With India's music market reaching Rs 17,400 crore, surging 45% according to an EY report, demand is soaring while creators struggle with monetization. Sunverse should diversify revenue beyond standard ad streaming into alternative rights packaging, brand collaborations, and live events to fully capture this market growth.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "India’s music economy grows 45% to Rs 17,400 cr, but creators struggle to monetise demand - Exchange4Media",
+          "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPX3Y3dUhmT0VTZGgtRVlHUm9oVDBuX2x4RkFXempxOFEyTFZ3TUx3ZFVsZUdfSXRDUUhHVDdTWXlTUEV5TERvRURLamFMWXo0d2tEVkFJdHp3MDJwMlNRRW9GTTFEN3YwSjlhbVFSRnpkdFRRUnBYa085WV94ZEIwQkxxR1dRS2tLQlduZlZzZnh3R2h6dFc1ZXY3MDN4Q0lBQ1NFMnBlOHMwa1ppMVRVZHIxb2RTcmpBOVg2dXlYYUNGNDc3dFVLby0wTVhaWlN4aHAwcmpraHlWY2M?oc=5",
+          "source": "Exchange4Media",
+          "retrievedAt": "2026-11-25T08:44:54Z"
+        },
+        {
+          "title": "India’s Music Economy Generates Rs 17,400 Cr In 2025, Grows 45%: EY Report - Everything Experiential",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQZkxOM0pESGw2dnQwZUEyVmJ1TWR6VGRxYUl5eGl3cXUwa2ktdkc5YXpDV1c5anhSWmdzMm1lVDdWQTFrYVVmVEs2RWVpTjJ1VFhuWU11VFFWQ1lteDVyMmhpeThkaGhCdURzemdKVUhkd3ZodVpHdThLTVNEVmdsaGNWbUppU3A3LVlySl9NMzZMb3REWW45eG1vb0kzQWRfV1BRN0dyNzE3Y1d4LV9IMVVaRHJaTTRMU3ItRWN3?oc=5",
+          "source": "Everything Experiential",
+          "retrievedAt": "2026-11-25T08:44:54Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-25T08:46:09Z"
+    },
+    {
+      "id": "f_20261125T084609Z_sunverse_2",
+      "brand": "sunverse",
+      "title": "YouTube Music and Premium Eclipse 150 Million Global Subscribers",
+      "insight": "YouTube Music and Premium surpassing 150 million subscribers highlights a growing shift toward subscription-based listening. Sunverse must ensure all music releases are fully optimized for YouTube Music playlists and premium stream discovery to benefit from higher subscriber-tier royalties.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "YouTube Music and Premium Surpass 150 Million Subscribers Worldwide - RouteNote",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOTFo2QU5lMHh0bVB0UEV5MnBOMmpERm1CSmJ4YTlwSFlSalc2UHVkbkdlUFlMbWxvckJIeFdKQkNiZGFMalY3amFFMHRWRjNsLURNZk9RWHNNX0VQd2RoMmhPalNlZlh2QWp5eWNacDh4cXZhb1M2TUl1cUswaHR0V0V5RC1udzVsemJaWTJVanJ6T01DRTVNbnZqWDk?oc=5",
+          "source": "RouteNote",
+          "retrievedAt": "2026-11-25T08:44:54Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-25T08:46:09Z"
+    },
+    {
+      "id": "f_20261125T084646Z_foliocraft_3",
+      "brand": "foliocraft",
+      "title": "AI and Ease-of-Use Dominate 2026 Website Builder Benchmarks",
+      "insight": "Industry roundups are evaluating platforms on ease of use and AI-driven site creation across dozens of builders. Foliocraft should spotlight its AI portfolio tools and pursue inclusion in major 2026 builder reviews to capture high-intent users seeking easy portfolio setups.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "The best website builders of 2026: 80+ platforms tested to find the easiest ways to build a site - TechRadar",
+          "url": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE16VzdoUlYxWVdUR0g4ZHpjYUJ1S2N2N2VkemFBb3RncnlIZ2ZoMjFLV2dRZ3VHaGI0dzhVOGNSQVFfTll2bEZkTVJMcUJPeFRKM2ZMeVBZaHZObWwxcWlaNlZwZzNzZw?oc=5",
+          "source": "TechRadar",
+          "retrievedAt": "2026-11-25T08:46:09Z"
+        },
+        {
+          "title": "11 Best AI Website Builders 2026 (Tested & Reviewed) - Ventureburn",
+          "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE04WG1mV28xR0lVMldqTjdfSEdvV282VjZ5NndwNXdtU2Nhdl9KX3NPdUFNaTRnYjNTdW52ODVJRU1zTEFhN3JWY2Q0dGJuVXR2N0l4TlRWVFA3ZzZyTEHSAV5BVV95cUxNOFhtZldvMUdJVTJXak43X0hHb1dvNlY2eTZ3cDV3bVNjYXZfSl9zT3VBTWk0Z2IzU3Vudjg1SUVNc0xBYTdyVmNkNHRiblV0djdJeE5UVlRQN2c2ckxB?oc=5",
+          "source": "Ventureburn",
+          "retrievedAt": "2026-11-25T08:46:09Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-25T08:46:46Z"
+    },
+    {
+      "id": "f_20261125T084646Z_foliocraft_4",
+      "brand": "foliocraft",
+      "title": "Competitors Target Portfolio Creators with Developer Showcases",
+      "insight": "Hosting providers are capturing portfolio traffic by publishing curated developer portfolio examples. Foliocraft should build its own curated showcase of top user portfolios and developer-focused templates to improve organic discovery and demonstrate the value of premium designs.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "25 web developer portfolio examples for your inspiration - Hostinger",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE1tV2N6dENRMlg3NlFFTFM0VjJyVmxjU2Y2bzh5SnBBRmx3emcxTXRlSGdaM0Z1TWxna1g3MmNNTjMwM1dBMy1xTWN6M284U3hSNnltNEZRVFNVQUswTU16ZE0xbGFueTVHSGN1aVJCNXU?oc=5",
+          "source": "Hostinger",
+          "retrievedAt": "2026-11-25T08:46:09Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "createdAt": "2026-11-25T08:46:46Z"
+    },
     {
       "id": "f_20261117T080029Z_littleloop_1",
       "brand": "littleloop",
@@ -1116,90 +1200,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-27T02:27:03Z"
-    },
-    {
-      "id": "f_20261027T022703Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "Deezer plans a setting to hide AI-generated music entirely before end of 2026",
-      "insight": "TechRadar (Oct 15) reports Deezer will let listeners exclude AI-generated music from their feeds, while YouTube Music only labels tracks made primarily with generative AI. AI-heavy Sunverse tracks could lose reach on Deezer; keep accurate AI-use records per track so classification can be checked.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Deezer will let you ban AI music from your feed as YouTube Music adds warning labels for slop",
-          "url": "https://www.techradar.com/audio/audio-streaming/youtube-music-adds-ai-labels-to-warn-you-about-slop-as-deezer-goes-further-with-new-on-off-toggle-for-millions-of-ai-generated-songs",
-          "source": "TechRadar",
-          "retrievedAt": "2026-10-27T02:13:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-27T02:27:03Z"
-    },
-    {
-      "id": "f_20261027T022703Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Webflow is now usable inside the Gemini app, including AI-citation (AEO) analytics",
-      "insight": "Since Oct 15 a free Gemini connector to Webflow's MCP server lets users build pages, edit CMS, run SEO/accessibility audits and see how AI systems cite their site, with actions logged. Martech launches the same month also centre on AI-search visibility. Foliocraft could show premium users whether AI answers cite their portfolio.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Webflow and Google Gemini Announce New Agentic Integration",
-          "url": "https://www.cmswire.com/the-wire/webflow-and-google-gemini-announce-new-agentic-integration/",
-          "source": "CMSWire",
-          "retrievedAt": "2026-10-27T02:23:00Z"
-        },
-        {
-          "title": "The latest AI-powered martech news and releases",
-          "url": "https://martech.org/the-latest-ai-powered-martech-news-and-releases/",
-          "source": "MarTech",
-          "retrievedAt": "2026-10-27T02:21:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-27T02:27:03Z"
-    },
-    {
-      "id": "f_20261027T022703Z_foliocraft_5_claude",
-      "brand": "foliocraft",
-      "title": "Webflow Campaigns builds on-brand landing pages with per-audience URL variants",
-      "insight": "Launched Oct 20, Webflow Campaigns extracts a brand's design system from its site and generates landing pages and ads, including personalised variants with unique URLs per persona or account. Validates Foliocraft's planned tailored portfolio variants; reusing a user's existing style for each variant is the bar to meet.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Webflow Campaigns Brings On-Brand Landing Pages, Ads and Analytics",
-          "url": "https://www.cmswire.com/digital-experience/webflow-launches-ai-campaign-builder-for-marketers/",
-          "source": "CMSWire",
-          "retrievedAt": "2026-10-27T02:23:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-27T02:27:03Z"
-    },
-    {
-      "id": "f_20261026T023211Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram for TV reached Apple TV around Oct 23, adding Reels and live video on big screens",
-      "insight": "Reels now also play on Apple TV, after Fire TV, Google TV and Samsung TVs, and Instagram pitches it for watching with family. LittleLoop shorts may be co-viewed by parent and child on a TV, so test how episodes read at TV distance and try formats a parent and child enjoy together.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Instagram Launches Apple TV App With Reels and More",
-          "url": "https://www.macrumors.com/2026/10/25/instagram-launches-apple-tv-app/",
-          "source": "MacRumors",
-          "retrievedAt": "2026-10-26T02:25:00Z"
-        },
-        {
-          "title": "Instagram Reels Is Moving Onto Apple TV",
-          "url": "https://wersm.com/instagram-reels-is-moving-onto-apple-tv/",
-          "source": "WeRSM",
-          "retrievedAt": "2026-10-26T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-26T02:32:11Z"
     }
   ]
 }
