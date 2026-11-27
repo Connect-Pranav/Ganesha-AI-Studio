@@ -1,6 +1,26 @@
 {
   "runs": [
     {
+      "id": "run_20261127T084913Z_ganesha_gemini",
+      "agent": "ganesha_orchestrator",
+      "engine": "gemini",
+      "startedAt": "2026-11-27T08:45:56Z",
+      "finishedAt": "2026-11-27T08:49:13Z",
+      "status": "failed",
+      "summary": "Planning failed",
+      "error": "Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    {
+      "id": "run_20261127T084556Z_narada_gemini",
+      "agent": "narada_market_intelligence",
+      "engine": "gemini",
+      "startedAt": "2026-11-27T08:43:17Z",
+      "finishedAt": "2026-11-27T08:45:56Z",
+      "status": "failed",
+      "summary": "0 findings across 3 brands",
+      "error": "LittleLoop: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n | Sunverse: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n | Foliocraft: Gemini HTTP 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+    },
+    {
       "id": "run_20261126T083630Z_ganesha_gemini",
       "agent": "ganesha_orchestrator",
       "engine": "gemini",
@@ -942,24 +962,6 @@
       "status": "failed",
       "summary": "Planning failed",
       "error": "This operation was aborted"
-    },
-    {
-      "id": "run_20261023T050114Z_narada_gemini",
-      "agent": "narada_market_intelligence",
-      "engine": "gemini",
-      "startedAt": "2026-10-23T04:58:32Z",
-      "finishedAt": "2026-10-23T05:01:14Z",
-      "status": "success",
-      "summary": "4 findings across 3 brands"
-    },
-    {
-      "id": "run_20261023T022653Z_narada_claude_1",
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "startedAt": "2026-10-23T02:22:57Z",
-      "finishedAt": "2026-10-23T02:26:53Z",
-      "status": "success",
-      "summary": "5 findings: littleloop 2, sunverse 1, foliocraft 2"
     }
   ]
 }
