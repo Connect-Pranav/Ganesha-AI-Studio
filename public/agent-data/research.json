@@ -1,6 +1,102 @@
 {
-  "updatedAt": "2026-11-25T08:46:46Z",
+  "updatedAt": "2026-11-28T02:25:44Z",
   "findings": [
+    {
+      "id": "f_20261128T022544Z_littleloop_1_claude",
+      "brand": "littleloop",
+      "title": "Instagram's Edits editor reaches iPad with custom LUTs and background captions (Nov 23)",
+      "insight": "Edits now runs on iPad, shortly after its Mac release, with pre-import trimming, background caption generation and custom .cube LUT import (in Labs). LittleLoop could save one LUT for its episode palette so colour stays consistent across Reels, and use the larger canvas for caption and safe-zone review before posting.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Instagram's Edits lands on iPad with a larger canvas, and a native Threads app is rolling out soon",
+          "url": "https://www.digitaltrends.com/social-media/instagrams-edits-app-is-now-on-ipad-and-it-gives-you-a-larger-canvas-to-edit-on-the-go/",
+          "source": "Digital Trends",
+          "retrievedAt": "2026-11-28T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-28T02:25:44Z"
+    },
+    {
+      "id": "f_20261128T022544Z_littleloop_2_claude",
+      "brand": "littleloop",
+      "title": "Meta extends AI age estimation on Instagram worldwide, moving suspected teens to Teen Accounts",
+      "insight": "Meta said on Nov 9 that AI age estimation now applies to Instagram users globally; accounts judged to be teens are placed in Teen Accounts even with an adult birthday. LittleLoop's real viewers reach it through parents' accounts, so captions and hooks should speak to parents, and reach assumptions should be rechecked rather than assumed.",
+      "confidence": "low",
+      "evidence": [
+        {
+          "title": "Instagram takes AI age checks global to catch teens using adult birthdays",
+          "url": "https://betanews.com/article/instagram-ai-age-checks/",
+          "source": "BetaNews",
+          "retrievedAt": "2026-11-28T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-28T02:25:44Z"
+    },
+    {
+      "id": "f_20261128T022544Z_sunverse_3_claude",
+      "brand": "sunverse",
+      "title": "Saregama tracks AI covers and remakes, licensing or removing them; adds safeguards to deals",
+      "insight": "Saregama's MD told analysts the label sees AI as a cost and speed opportunity but will act on unlicensed use: it tracks AI covers/remakes and either acquires rights or gets them taken down, and new digital licences add anti-dilution and fraud safeguards. Sunverse should avoid AI covers of label catalogue and keep its releases fully original.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "Saregama sees AI boosting efficiency, but vows action against unlicensed use of its music",
+          "url": "https://theprint.in/feature/saregama-sees-ai-boosting-efficiency-but-vows-action-against-unlicensed-use-of-its-music/3097224/",
+          "source": "ThePrint (PTI)",
+          "retrievedAt": "2026-11-28T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-28T02:25:44Z"
+    },
+    {
+      "id": "f_20261128T022544Z_sunverse_4_claude",
+      "brand": "sunverse",
+      "title": "IPRS-EY report: weak metadata leaves 10-12% of songs unmatched for royalties in India",
+      "insight": "The IPRS and EY creator economy report (covered Nov 17) says 10-12% of songs go unmatched due to inadequate metadata and flags a draft DPIIT proposal for a mandatory AI-training royalty framework still under consultation. Sunverse should fill complete writer, composer and ISRC metadata on every release and register works with its collecting society.",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "title": "From royalty gaps to AI risks: India's music industry flags key challenges facing creators",
+          "url": "https://www.exchange4media.com/marketing-news/from-royalty-gaps-to-ai-risks-indias-music-industry-flags-key-challenges-facing-creators-160363.html",
+          "source": "exchange4media",
+          "retrievedAt": "2026-11-28T02:24:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-28T02:25:44Z"
+    },
+    {
+      "id": "f_20261128T022544Z_foliocraft_5_claude",
+      "brand": "foliocraft",
+      "title": "Framer's official MCP lets outside AI agents edit sites; nothing goes live until publish",
+      "insight": "Framer's remote MCP (reported Oct 22) lets agents like Claude or Cursor edit pages, CMS and SEO with the account's permissions; changes stay unpublished by default, the agent publishes only when asked, and branch review is recommended. Localization is unsupported at launch. Foliocraft could offer a similar agent-edit mode that always lands on a reviewable draft.",
+      "confidence": "high",
+      "evidence": [
+        {
+          "title": "Framer Launches Official MCP Server, Letting Outside AI Agents Build and Edit Websites",
+          "url": "https://agilebrandguide.com/framer-launches-official-mcp-server-letting-outside-ai-agents-build-and-edit-websites/",
+          "source": "The Agile Brand Guide",
+          "retrievedAt": "2026-11-28T02:25:00Z"
+        },
+        {
+          "title": "How to connect Claude, Cursor, Grok Bot and more to Framer with MCP",
+          "url": "https://www.framer.com/blog/how-to-connect-claude-cursor-grok-bot-and-more-to-framer-with-mcp/",
+          "source": "Framer",
+          "retrievedAt": "2026-11-28T02:25:00Z"
+        }
+      ],
+      "agent": "narada_market_intelligence",
+      "engine": "claude",
+      "createdAt": "2026-11-28T02:25:44Z"
+    },
     {
       "id": "f_20261125T084609Z_sunverse_1",
       "brand": "sunverse",
@@ -1098,108 +1194,6 @@
       "agent": "narada_market_intelligence",
       "engine": "claude",
       "createdAt": "2026-10-28T02:31:01Z"
-    },
-    {
-      "id": "f_20261028T023101Z_sunverse_3_claude",
-      "brand": "sunverse",
-      "title": "Suno added team workspaces, shareable custom models and album publishing in October",
-      "insight": "Suno's release notes list shared team workspaces and shareable custom models for Premier users (Oct 15), album publishing with follower alerts (Oct 5) and a Speech beta (Oct 1). If Sunverse drafts with Suno, shared workspaces could centralise demos, but rights to shared custom models need checking first.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Suno Release Notes",
-          "url": "https://suno.com/release-notes",
-          "source": "Suno",
-          "retrievedAt": "2026-10-28T02:29:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-28T02:31:01Z"
-    },
-    {
-      "id": "f_20261028T023101Z_foliocraft_4_claude",
-      "brand": "foliocraft",
-      "title": "Webflow and Framer add live editor presence for teammates and AI agents",
-      "insight": "Webflow now shows where an AI agent is working on the canvas (Oct 21); Framer added multiplayer cursors in CMS text fields (Oct 27) and custom asset folders (Oct 26). Real-time co-editing is becoming standard; Foliocraft could consider shared editing for client or mentor review as a premium feature.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Webflow Updates",
-          "url": "https://webflow.com/updates",
-          "source": "Webflow",
-          "retrievedAt": "2026-10-28T02:25:00Z"
-        },
-        {
-          "title": "Framer Updates: Features and improvements",
-          "url": "https://www.framer.com/updates",
-          "source": "Framer",
-          "retrievedAt": "2026-10-28T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-28T02:31:01Z"
-    },
-    {
-      "id": "f_20261028T023101Z_foliocraft_5_claude",
-      "brand": "foliocraft",
-      "title": "Framer added a site Firewall to block or redirect visitors by country or path",
-      "insight": "Framer's Oct 1 update lets site owners set rules that block or redirect traffic by visitor country, requested path or both. Access controls like this could suit Foliocraft premium users who want to restrict draft or client-only portfolio pages.",
-      "confidence": "low",
-      "evidence": [
-        {
-          "title": "Framer Updates: Features and improvements",
-          "url": "https://www.framer.com/updates",
-          "source": "Framer",
-          "retrievedAt": "2026-10-28T02:25:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-28T02:31:01Z"
-    },
-    {
-      "id": "f_20261027T022703Z_littleloop_1_claude",
-      "brand": "littleloop",
-      "title": "Instagram tests 'Features': up to 90-min videos with up to 8 Reels linking to them",
-      "insight": "Instagram began a limited US creator test on Oct 26 of long horizontal videos that short Reels can link to; wider rollout is planned but undated and monetisation is unstated. LittleLoop could prepare to bundle a season's shorts into one compilation with each Reel pointing to it, once the tool reaches its market.",
-      "confidence": "high",
-      "evidence": [
-        {
-          "title": "Why Instagram is about to look a lot more like YouTube",
-          "url": "https://www.fastcompany.com/91630089/why-instagram-is-about-to-look-a-lot-more-like-youtube",
-          "source": "Fast Company",
-          "retrievedAt": "2026-10-27T02:12:00Z"
-        },
-        {
-          "title": "Instagram takes aim at YouTube with new 90-minute video test",
-          "url": "https://www.dexerto.com/entertainment/instagram-takes-aim-at-youtube-with-new-90-minute-video-test-3422003/",
-          "source": "Dexerto",
-          "retrievedAt": "2026-10-27T02:08:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-27T02:27:03Z"
-    },
-    {
-      "id": "f_20261027T022703Z_sunverse_2_claude",
-      "brand": "sunverse",
-      "title": "Believe/TuneCore and Spotify plan licensed AI fan remixes and covers with opt-in",
-      "insight": "Announced Oct 20: an upcoming paid Spotify Premium add-on lets fans make AI remixes/covers of participating tracks, linking back to the original and paying royalties. Believe/TuneCore artists must opt in twice. No launch date or markets given. Sunverse should decide its stance before its distributor offers a similar programme.",
-      "confidence": "medium",
-      "evidence": [
-        {
-          "title": "Believe and Spotify Partner to Unlock New Opportunities for Artists Through Licensed Fan Remixes and Covers",
-          "url": "https://newsroom.spotify.com/2026-10-20/believe-spotify-licensing-agreement-fan-made-covers-remixes/",
-          "source": "Spotify Newsroom",
-          "retrievedAt": "2026-10-27T02:16:00Z"
-        }
-      ],
-      "agent": "narada_market_intelligence",
-      "engine": "claude",
-      "createdAt": "2026-10-27T02:27:03Z"
     }
   ]
 }

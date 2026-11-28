@@ -1,6 +1,87 @@
 {
-  "updatedAt": "2026-11-17T08:01:50Z",
+  "updatedAt": "2026-11-28T02:25:44Z",
   "tasks": [
+    {
+      "id": "t_20261128T022544Z_littleloop_1_claude",
+      "title": "Draft a LittleLoop colour LUT spec (palette, contrast) for reuse in Edits on every episode",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "lit1: Edits on iPad supports custom .cube LUT import, letting one saved grade keep episode colour consistent. Complements, not duplicates, the open Edits Kit task.",
+      "sourceFindings": [
+        "f_20261128T022544Z_littleloop_1_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-28T02:25:44Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261128T022544Z_littleloop_2_claude",
+      "title": "Rewrite the LittleLoop caption template to address parents, not child viewers",
+      "brand": "littleloop",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "low",
+      "reason": "lit2: Meta's global AI age estimation pushes suspected teens into Teen Accounts; LittleLoop's audience arrives via parents, so captions should target them. Low-confidence single source.",
+      "sourceFindings": [
+        "f_20261128T022544Z_littleloop_2_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-28T02:25:44Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261128T022544Z_sunverse_3_claude",
+      "title": "Add a no-AI-covers originality check to the Sunverse release checklist",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun1: Saregama tracks AI covers/remakes and takes down or claims unlicensed ones; each release should confirm it uses no label catalogue melodies or lyrics.",
+      "sourceFindings": [
+        "f_20261128T022544Z_sunverse_3_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-28T02:25:44Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261128T022544Z_sunverse_4_claude",
+      "title": "Draft a release metadata sheet (writers, composers, ISRC, society registration) for Sunverse",
+      "brand": "sunverse",
+      "agent": "ganesha_orchestrator",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "sun2: IPRS-EY report says 10-12% of songs go unmatched due to poor metadata; a per-release sheet reduces lost royalties. Builds on the Nov 25 India music economy finding.",
+      "sourceFindings": [
+        "f_20261128T022544Z_sunverse_4_claude",
+        "f_20261125T084609Z_sunverse_1"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-28T02:25:44Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
+    {
+      "id": "t_20261128T022544Z_foliocraft_5_claude",
+      "title": "Spec an AI-agent edit mode where agent changes land on a reviewable draft before publish",
+      "brand": "foliocraft",
+      "agent": "code_shakti",
+      "status": "queued",
+      "priority": "medium",
+      "reason": "fol1: Framer's MCP keeps agent edits unpublished by default and recommends branch review; Foliocraft should match that safety default. Spec only; any deploy needs approval.",
+      "sourceFindings": [
+        "f_20261128T022544Z_foliocraft_5_claude"
+      ],
+      "requiresApproval": false,
+      "createdAt": "2026-11-28T02:25:44Z",
+      "createdBy": "ganesha_orchestrator",
+      "engine": "claude"
+    },
     {
       "id": "t_20261117T080150Z_littleloop_1",
       "title": "Draft a stop-motion style BTS Reel concept highlighting tactile animation",
@@ -1200,86 +1281,6 @@
       ],
       "requiresApproval": false,
       "createdAt": "2026-10-24T02:31:20Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261023T022653Z_littleloop_1_claude",
-      "title": "Replace Reels series links in the season plan with numbered titles before Oct 28",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "high",
-      "reason": "Series linking is being removed from Oct 28 (lit1); the planned 5-episode season needs another way to show episode order.",
-      "sourceFindings": [
-        "f_20261023T022653Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-23T02:26:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261023T022653Z_littleloop_2_claude",
-      "title": "Define an Edits Kit spec locking LittleLoop's episode look (effects, text style, colours)",
-      "brand": "littleloop",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Edits Kits save reusable visual styles (lit1), which can keep episodes consistent.",
-      "sourceFindings": [
-        "f_20261023T022653Z_littleloop_1_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-23T02:26:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261023T022653Z_sunverse_3_claude",
-      "title": "Add channel-security and a 24h scheduling buffer to the Sunverse release checklist",
-      "brand": "sunverse",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "YouTube can auto-pause uploads for ~24h on suspected compromise (sun1), which could block a planned release.",
-      "sourceFindings": [
-        "f_20261023T022653Z_sunverse_3_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-23T02:26:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261023T022653Z_foliocraft_4_claude",
-      "title": "Research which Framer MCP actions (e.g. publish) require user confirmation",
-      "brand": "foliocraft",
-      "agent": "narada_market_intelligence",
-      "status": "queued",
-      "priority": "low",
-      "reason": "Framer MCP lets agents publish sites (fol1); its approval model informs Foliocraft's per-action approval spec.",
-      "sourceFindings": [
-        "f_20261023T022653Z_foliocraft_4_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-23T02:26:53Z",
-      "createdBy": "ganesha_orchestrator",
-      "engine": "claude"
-    },
-    {
-      "id": "t_20261023T022653Z_foliocraft_5_claude",
-      "title": "Spec a prompt-to-first-draft portfolio generator for Foliocraft onboarding",
-      "brand": "foliocraft",
-      "agent": "ganesha_orchestrator",
-      "status": "queued",
-      "priority": "medium",
-      "reason": "Squarespace Forma beta and Wix's platform-wide AI generator (fol2) make prompt-first creation an expected starting point.",
-      "sourceFindings": [
-        "f_20261023T022653Z_foliocraft_5_claude"
-      ],
-      "requiresApproval": false,
-      "createdAt": "2026-10-23T02:26:53Z",
       "createdBy": "ganesha_orchestrator",
       "engine": "claude"
     }
